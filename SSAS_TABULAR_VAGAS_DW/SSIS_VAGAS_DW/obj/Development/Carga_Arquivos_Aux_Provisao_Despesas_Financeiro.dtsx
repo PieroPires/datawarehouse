@@ -1,0 +1,521 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="3/30/2016 2:27:50 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLMIRROR02"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DTSID="{2126E832-B07B-4D50-B89C-FA0BC9B8B6E9}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.2430.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Arquivos_Aux_Provisao_Despesas_Financeiro"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="9"
+  DTS:VersionGUID="{1053D7B5-B00F-421D-82BC-CE5F30B48083}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CSV]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{EF2ABB19-4541-4453-AC1A-0130EBB15A03}"
+      DTS:ObjectName="CSV">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="M:\TMP\Financeiro\Naturezas e Categorias.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x003B_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Natureza"
+              DTS:DTSID="{0136E0EC-A6F1-40AA-BC06-E69771416495}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x003B_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Descrição"
+              DTS:DTSID="{339EE052-AD8D-4E6C-853B-471CC6D10DE1}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000D__x000A_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Categoria"
+              DTS:DTSID="{15859B29-DC27-4DF5-BEAC-70EDA531500F}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SRV-SQLMIRROR02.VAGAS_DW]"
+      DTS:CreationName="ADO.NET:System.Data.SqlClient.SqlConnection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+      DTS:DTSID="{9683EFEA-D3FB-458F-9943-A23C20F3AECD}"
+      DTS:ObjectName="SRV-SQLMIRROR02.VAGAS_DW">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=SRV-SQLMIRROR02;Initial Catalog=VAGAS_DW;Integrated Security=True;Application Name=SSIS-Carga_Arquivos_Aux_Provisao_Despesas_Financeiro-{9683EFEA-D3FB-458F-9943-A23C20F3AECD}SRV-SQLMIRROR02.VAGAS_DW;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar Base"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{EEF3F2AA-1A12-4B3A-A252-A03E4D9DE0E1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar Base"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{9683EFEA-D3FB-458F-9943-A23C20F3AECD}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.NATUREZA_CATEGORIAS_DESPESAS" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Naturezas e Categorias"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{A0B2FFF7-5C72-43D8-8BF1-346887634E48}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Naturezas e Categorias"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Naturezas e Categorias\DW"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
+              name="DW"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The Destination database table name."
+                  expressionType="Notify"
+                  name="TableOrViewName"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"VAGAS_DW"."NATUREZA_CATEGORIAS_DESPESAS"</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
+                  expressionType="Notify"
+                  name="BatchSize">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
+                  expressionType="Notify"
+                  name="CommandTimeout">30</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
+                  expressionType="Notify"
+                  name="UseBulkInsertWhenPossible">true</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Naturezas e Categorias\DW.Connections[IDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SRV-SQLMIRROR02.VAGAS_DW]"
+                  connectionManagerRefId="Package.ConnectionManagers[SRV-SQLMIRROR02.VAGAS_DW]"
+                  description="Managed connection manager"
+                  name="IDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].Columns[Natureza]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Natureza"
+                      externalMetadataColumnId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[NATUREZA]"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Natureza]" />
+                    <inputColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].Columns[Categoria]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Categoria"
+                      externalMetadataColumnId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[CATEGORIA]"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Categoria]" />
+                    <inputColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].Columns[Descrição]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Descrição"
+                      externalMetadataColumnId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[DESCRICAO]"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Descrição]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[COD_NATUREZA_CATEGORIA_DESPESA]"
+                      dataType="i4"
+                      name="COD_NATUREZA_CATEGORIA_DESPESA" />
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[NATUREZA]"
+                      dataType="wstr"
+                      length="50"
+                      name="NATUREZA" />
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[DESCRICAO]"
+                      dataType="wstr"
+                      length="255"
+                      name="DESCRICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input].ExternalColumns[CATEGORIA]"
+                      dataType="wstr"
+                      length="200"
+                      name="CATEGORIA" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Naturezas e Categorias\DW.Outputs[ADO NET Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="ADO NET Destination Error Output"
+                  synchronousInputId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\DW.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Naturezas e Categorias\DW.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\DW.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Naturezas e Categorias\DW.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Naturezas e Categorias\Natureza e Categorias"
+              componentClassID="Microsoft.FlatFileSource"
+              contactInfo="Flat File Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Flat File Source"
+              localeId="1033"
+              name="Natureza e Categorias"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether zero-length columns are treated as null."
+                  name="RetainNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of an output column containing the file name. If no name is specified, no output column containing the file name will be generated."
+                  name="FileNameColumnName"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Naturezas e Categorias\Natureza e Categorias.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[CSV]"
+                  connectionManagerRefId="Package.ConnectionManagers[CSV]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Natureza]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].ExternalColumns[Natureza]"
+                      length="50"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Natureza]"
+                      name="Natureza"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the data is in binary format."
+                          name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Descrição]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].ExternalColumns[Descrição]"
+                      length="50"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Descrição]"
+                      name="Descrição"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the data is in binary format."
+                          name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Categoria]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].ExternalColumns[Categoria]"
+                      length="50"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].Columns[Categoria]"
+                      name="Categoria"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the data is in binary format."
+                          name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].ExternalColumns[Natureza]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Natureza" />
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].ExternalColumns[Descrição]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Descrição" />
+                    <externalMetadataColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output].ExternalColumns[Categoria]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Categoria" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output]"
+                  isErrorOut="true"
+                  name="Flat File Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output].Columns[Flat File Source Error Output Column]"
+                      codePage="1252"
+                      dataType="text"
+                      description="Flat File Source Error Output Column"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output].Columns[Flat File Source Error Output Column]"
+                      name="Flat File Source Error Output Column" />
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Naturezas e Categorias.Paths[Flat File Source Output]"
+              endId="Package\Naturezas e Categorias\DW.Inputs[ADO NET Destination Input]"
+              name="Flat File Source Output"
+              startId="Package\Naturezas e Categorias\Natureza e Categorias.Outputs[Flat File Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{4E2B0149-40BC-4B9B-90A2-3FED3A10882C}"
+      DTS:From="Package\Limpar Base"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Naturezas e Categorias" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="137,42"
+          Id="Package\Limpar Base"
+          TopLeft="87,26" />
+        <NodeLayout
+          Size="188,42"
+          Id="Package\Naturezas e Categorias"
+          TopLeft="76,93" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="155.5,68">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="14.5,25"
+              Start="0,0"
+              End="14.5,17.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,8.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,8.5"
+                    Point2="0,12.5"
+                    Point3="4,12.5" />
+                  <mssgle:LineSegment
+                    End="10.5,12.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="10.5,12.5"
+                    Point2="14.5,12.5"
+                    Point3="14.5,16.5" />
+                  <mssgle:LineSegment
+                    End="14.5,17.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Naturezas e Categorias">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="183,42"
+          Id="Package\Naturezas e Categorias\Natureza e Categorias"
+          TopLeft="80,40" />
+        <NodeLayout
+          Size="96,42"
+          Id="Package\Naturezas e Categorias\DW"
+          TopLeft="176,140" />
+        <EdgeLayout
+          Id="Package\Naturezas e Categorias.Paths[Flat File Source Output]"
+          TopLeft="171.5,82">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="52.5,58"
+              Start="0,0"
+              End="52.5,50.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25"
+                    Point2="0,29"
+                    Point3="4,29" />
+                  <mssgle:LineSegment
+                    End="48.5,29" />
+                  <mssgle:CubicBezierSegment
+                    Point1="48.5,29"
+                    Point2="52.5,29"
+                    Point3="52.5,33" />
+                  <mssgle:LineSegment
+                    End="52.5,50.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Naturezas e Categorias\DW">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
