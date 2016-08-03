@@ -61,7 +61,6 @@ AND FILA NOT IN ('Junk','Anti-Spam','Não Responda')
 -- * O Campo TMA (Tempo Médio de Atendimento) "conceitualmente" foi renomeado 
 -- para TMR (Tempo Médio de Resposta) (por conta do impacto da alteração fizemos apenas um ALIAS no Analysis Services)
 UPDATE VAGAS_DW.CHAMADOS SET TMA = B.TMA,QTD_REABERTURA = B.QTD_REABERTURA,
-							 TMR_H = CONVERT(NUMERIC,B.TMA) / CASE WHEN A.LOGIN = 'Caroline' THEN 6 ELSE 8 END,
 							 TME = B.TME
 FROM VAGAS_DW.CHAMADOS A
 INNER JOIN VAGAS_DW.CHAMADOS_TMA B ON B.ID_TICKET = A.ID_TICKET
