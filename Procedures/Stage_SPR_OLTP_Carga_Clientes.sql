@@ -1,0 +1,263 @@
+USE STAGE
+GO
+
+IF EXISTS ( SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_OLTP_Carga_Clientes' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')
+DROP PROCEDURE VAGAS_DW.SPR_OLTP_Carga_Clientes
+GO
+
+-- =============================================
+-- Author: Luiz Fernando Braz
+-- Create date: 29/09/2015
+-- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
+-- =============================================
+CREATE PROCEDURE VAGAS_DW.SPR_OLTP_Carga_Clientes 
+
+AS
+SET NOCOUNT ON
+
+TRUNCATE TABLE VAGAS_DW.VAGAS_DW.TMP_CLIENTES
+
+;WITH  MaxPerfilUso AS -- Pegar ÚLTIMO REGISTRO do Perfil do cliente  
+      (  
+      SELECT CodCli_cliPerfUso,MAX(Cod_cliPerfUso) Maxcod_CliPerfUso  
+      FROM  [hrh-data].dbo.[Clientes-PerfilUso] with (nolock)  
+      GROUP BY CodCli_cliPerfUso  
+      )  
+
+SELECT A.Ident_Cli AS Cliente_VAGAS,
+	   A.Cod_Cli AS Cod_Cli,
+	   QtdeMinVagas_cliPerfUso, -- Minimo PerfilContratado RE (Recrutamento externo) 
+       QtdeMaxVagas_cliPerfUso, -- Máximo PerfilContratado RE (Recrutamento externo)
+	   QtdeMinVagasRI_cliPerfUso, -- Minimo PerfilContratado RI (Recrutamento interno)
+	   QtdeMaxVagasRI_cliPerfUso,  -- Máximo PerfilContratado RI (Recrutamento interno)
+	   CASE WHEN A.Cod_Cli = 40647 THEN NULL ELSE -- A TAM EXECUTIVA ESTÁ COM DATA INCONSISTENTE (30130503)
+		   CASE WHEN restrito_cli = 0 AND sobdemanda_cli = 0 THEN CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DataContrato_cliPerfUso,112)) -- FIT
+				WHEN sobdemanda_cli = 1 THEN CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DtContratoServ_cli,112)) -- FLEX A | Créditos VAGAS
+				WHEN restrito_cli = 1 THEN CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DtContratoServ_cli,112)) -- FLEX C
+				ELSE CONVERT(SMALLDATETIME,CONVERT(VARCHAR,ISNULL(DataContrato_cliPerfUso,A.DtContratoServ_cli),112)) /* OUTROS */ END 	   
+	   END AS DataContrato_cliPerfUso,	   
+	   CapacidadeBCAAtual_cli AS Capacidade_BCE,
+	   CASE WHEN restrito_cli = 0 AND sobdemanda_cli = 0 THEN 'FIT'
+		    WHEN CreditosVAGAS_cli = 1 THEN 'Créditos VAGAS'
+			WHEN sobdemanda_cli = 1  THEN 'FLEXA' -- FLEX
+			WHEN restrito_cli = 1 THEN 'FLEXC' 
+			ELSE 'Indefinido' END AS Tipo_Cliente,
+	   A.IdContaCRM_cli AS Conta_CRM,
+	   ISNULL(CASE WHEN A.CreditosVAGAS_cli = 1 THEN D.Creditos_Total ELSE A.RestritoQtdeVagas_cli END,0) AS Creditos_Total,
+	   ISNULL(CASE WHEN A.CreditosVAGAS_cli = 1 THEN D.Creditos_Disponivel ELSE 0 END,0) AS Creditos_Disponivel, -- Apenas já temos calculado o valor no "Creditos VAGAS" (Os FLEX serão calculados na rotina do OLAP)
+	   ISNULL(CASE WHEN A.CreditosVAGAS_cli = 1 THEN D.Creditos_Valor ELSE NULL END,0) AS Creditos_Valor, -- Apenas já temos calculado o valor no "Creditos VAGAS" (Os FLEX serão calculados na rotina do OLAP)
+	   A.IdContaCRM_cli AS CONTA_ID
+INTO #TMP_PERFIL_USO
+FROM [hrh-data].dbo.Clientes A
+LEFT OUTER JOIN MaxPerfilUso B ON B.CodCli_cliPerfUso = A.Cod_Cli
+LEFT OUTER JOIN [hrh-data].dbo.[Clientes-PerfilUso] C ON C.Cod_cliPerfUso = B.Maxcod_CliPerfUso
+OUTER APPLY ( SELECT SUM(Credito_Credv) AS Creditos_Total,
+					 SUM(Usados_Credv) AS Creditos_Disponivel,
+					 SUM(Custo_CredV) AS Creditos_Valor
+			  FROM [hrh-data].dbo.Creditos_VAGAS
+			  WHERE CodCli_CredV = A.Cod_Cli
+			  AND DataVal_CredV >= GETDATE() ) D
+WHERE A.ident_cli NOT IN ('zapt','ficticia', 'ficticia redes', 'teste01', 'Teste Treinamento', 'Teste02', 'teste2012', 'setorial')      
+
+SELECT B.Cliente_VAGAS,
+	   COUNT(*) AS QTD_BCE 
+INTO #TMP_BCE
+FROM [hrh-data].dbo.CandidatoxCliente A
+INNER JOIN #TMP_PERFIL_USO B ON B.Cod_Cli = A.codCliente_candCli
+WHERE Estado_CandCli > 0
+GROUP BY B.Cliente_VAGAS
+
+SELECT A.Cod_Cli,
+	   A.Cliente_VAGAS,
+	   A.QtdeMinVagas_cliPerfUso AS QtdMin_VAGAS , -- MinimoPerfilContratado  
+       A.QtdeMaxVagas_cliPerfUso AS QtdMax_VAGAS, -- MaximoPerfilContratado  
+	   QtdeMinVagasRI_cliPerfUso AS QtdMin_RI_VAGAS,
+	   QtdeMaxVagasRI_cliPerfUso AS QtdMax_RI_VAGAS,
+	   -- Ajuste por conta de um contrato da TAM EXECUTIVA que está com data de 3013
+	   CASE WHEN A.DataContrato_cliPerfUso > DATEADD(MONTH,3,GETDATE()) THEN GETDATE() ELSE A.DataContrato_cliPerfUso  END AS Data_Contrato,
+	   A.Capacidade_BCE,
+	   A.Tipo_Cliente,
+	   A.Conta_CRM,
+	   B.QTD_BCE,
+	   A.Creditos_Total,
+	   A.Creditos_Disponivel,
+	   A.Creditos_Valor,
+	   A.CONTA_ID
+INTO #TMP_GERAL
+FROM #TMP_PERFIL_USO A
+LEFT OUTER JOIN #TMP_BCE B ON B.Cliente_VAGAS = A.Cliente_VAGAS
+ORDER BY Data_Contrato DESC  
+
+DECLARE @ANO_REF SMALLDATETIME
+-- Neste caso consideraremos vagas a partir da data ref. (ref = Início do ano anterior)
+SELECT @ANO_REF = CONVERT(SMALLDATETIME,CONVERT(VARCHAR,YEAR(GETDATE()) - 1) + '0101')
+
+-- VAGAS ABERTAS POR MÊS
+SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtInicioWeb_vaga,112)) AS Data_Publicacao,
+	   B.Ident_Cli AS Cliente_VAGAS,
+	   COUNT(*) AS QTD_VAGAS 
+INTO #TMP_VAGAS
+FROM [hrh-data].dbo.Vagas A
+INNER JOIN [hrh-data].dbo.Clientes B ON B.Cod_Cli = A.CodCliente_vaga
+WHERE ColetaCur_vaga = 0 -- Não contar vagas de CAPTAÇÃO  
+AND VagaComExt_Vaga = 0 -- Não contabilizar Vagas veiculadas em comunidades Externas  
+AND TipoProcesso_vaga = 0 -- Não Contabilizar VAGAS PET/PRC (verificar com Comercial se mantemos essa condição) -- 961131 (tipo 4 = VAGAS REDES)  
+AND Teste_vaga = 0 -- -- nao eh uma vaga de teste (Não considerar no Cálculo)  
+AND VagaModelo_vaga = 0 -- Vaga não é modelo              
+AND LEFT(Cargo_vaga,5) <> 'demo ' -- a vaga nao foi criada durante uma demonstracao    
+AND LEFT(Cargo_vaga,5) <> 'demo-' --     
+AND DtInicioWeb_vaga >= @ANO_REF 
+AND A.Cod_Vaga <> 210366 -- Vaga com data pub. inconsistente  
+GROUP BY CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtInicioWeb_vaga,112)),
+		 B.Ident_Cli
+ORDER BY Cliente_VAGAS, Data_Publicacao
+
+DECLARE @DATA_REFERENCIA_12_MESES SMALLDATETIME
+
+-- Neste caso consideraremos a data ref. como sendo 12 meses atrás [desconsiderando os dias do mes atual]
+SELECT @DATA_REFERENCIA_12_MESES = DATEADD(MONTH,-12,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112)) - DAY(GETDATE()) + 1)
+
+-- drop table #TMP_VAGAS_MENSAL
+SELECT Cliente_VAGAS,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= @DATA_REFERENCIA_12_MESES
+		AND Data_Publicacao < DATEADD(MONTH,1,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_1,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,1,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,2,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_2,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,2,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,3,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_3,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,3,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,4,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_4,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,4,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,5,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_5,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,5,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,6,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_6,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,6,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,7,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_7,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,7,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,8,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_8,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,8,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,9,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_9,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,9,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,10,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_10,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,10,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,11,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_11,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= DATEADD(MONTH,11,@DATA_REFERENCIA_12_MESES)
+		AND Data_Publicacao < DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_MES_12,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DATEADD(DAY,-30,GETDATE()) ,112))
+		AND Data_Publicacao <= GETDATE() ),0) AS QTD_Vagas_30_Dias,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DATEADD(MONTH,-3,GETDATE()) - DAY(DATEADD(MONTH,-3,GETDATE())) + 1,112))
+		AND Data_Publicacao <= DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_ULT_3_Meses,
+	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DATEADD(MONTH,-6,GETDATE()) - DAY(DATEADD(MONTH,-6,GETDATE())) + 1,112))
+		AND Data_Publicacao <= DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_ULT_6_Meses,
+ 	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DATEADD(MONTH,-9,GETDATE()) - DAY(DATEADD(MONTH,-9,GETDATE())) + 1,112))
+		AND Data_Publicacao <=DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_ULT_9_Meses,
+ 	  ISNULL(( SELECT SUM(QTD_VAGAS) 
+		FROM #TMP_VAGAS
+		WHERE Cliente_Vagas = A.Cliente_Vagas
+		AND Data_Publicacao  >= CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DATEADD(MONTH,-12,GETDATE()) - DAY(DATEADD(MONTH,-12,GETDATE())) + 1,112))
+		AND Data_Publicacao <= DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES) ),0) AS QTD_Vagas_ULT_12_Meses
+INTO #TMP_VAGAS_MENSAL
+FROM #TMP_VAGAS A
+--WHERE Cliente_VAGAS = 'Amaggi'
+GROUP BY Cliente_VAGAS
+
+INSERT INTO VAGAS_DW.VAGAS_DW.TMP_CLIENTES (DATA_REFERENCIA,DATA_REFERENCIA_12_MESES_INICIO,DATA_REFERENCIA_12_MESES_FIM,COD_CLI,CLIENTE_VAGAS,
+											QTD_MIN_VAGAS,QTD_MAX_VAGAS,QTD_MIN_RI_VAGAS,QTD_MAX_RI_VAGAS,DATA_CONTRATO_MANUT,CAPACIDADE_BCE,
+											QTD_BCE,TIPO_CLIENTE_MANUT,QTD_CREDITOS_TOTAL,QTD_CREDITOS_DISPONIVEL,VALOR_CREDITOS_VAGAS,
+											QTD_VAGAS_MES_1,QTD_VAGAS_MES_2,QTD_VAGAS_MES_3,QTD_VAGAS_MES_4,
+											QTD_VAGAS_MES_5,QTD_VAGAS_MES_6,QTD_VAGAS_MES_7,QTD_VAGAS_MES_8,QTD_VAGAS_MES_9,QTD_VAGAS_MES_10,
+											QTD_VAGAS_MES_11,QTD_VAGAS_MES_12,QTD_VAGAS_30_DIAS,QTD_VAGAS_ULT_3_MESES,QTD_VAGAS_ULT_6_MESES,
+											QTD_VAGAS_ULT_9_MESES,QTD_VAGAS_ULT_12_MESES,CONTA_ID)
+SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112)) AS DATA_REFERENCIA,
+	   @DATA_REFERENCIA_12_MESES, -- DATA REF. INICIO (12 MESES PRA TRÁS)
+	   DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES), -- DATA REF. FIM (INICIO DO MES ATUAL DE REF.)
+	   A.COD_CLI,
+	   A.Cliente_VAGAS,
+	   A.QtdMin_VAGAS,
+	   A.QtdMax_VAGAS,
+	   A.QtdMin_RI_VAGAS,
+	   A.QtdMax_RI_VAGAS,
+	   A.Data_Contrato,
+	   A.Capacidade_BCE,
+	   A.QTD_BCE,
+	   A.Tipo_Cliente,
+	   A.Creditos_Total,
+	   A.Creditos_Disponivel,
+	   A.Creditos_Valor,
+	   ISNULL(B.QTD_Vagas_MES_1,0) AS QTD_Vagas_MES_1,
+	   ISNULL(B.QTD_Vagas_MES_2,0) AS QTD_Vagas_MES_2,
+	   ISNULL(B.QTD_Vagas_MES_3,0) AS QTD_Vagas_MES_3,
+	   ISNULL(B.QTD_Vagas_MES_4,0) AS QTD_Vagas_MES_4,
+	   ISNULL(B.QTD_Vagas_MES_5,0) AS QTD_Vagas_MES_5,
+	   ISNULL(B.QTD_Vagas_MES_6,0) AS QTD_Vagas_MES_6,
+	   ISNULL(B.QTD_Vagas_MES_7,0) AS QTD_Vagas_MES_7,
+	   ISNULL(B.QTD_Vagas_MES_8,0) AS QTD_Vagas_MES_8,
+	   ISNULL(B.QTD_Vagas_MES_9,0) AS QTD_Vagas_MES_9,
+	   ISNULL(B.QTD_Vagas_MES_10,0) AS QTD_Vagas_MES_10,
+	   ISNULL(B.QTD_Vagas_MES_11,0) AS QTD_Vagas_MES_11,
+	   ISNULL(B.QTD_Vagas_MES_12,0) AS QTD_Vagas_MES_12,
+	   ISNULL(B.QTD_Vagas_30_DIAS,0) AS QTD_Vagas_30_DIAS,
+	   ISNULL(B.QTD_Vagas_ULT_3_Meses,0) AS QTD_Vagas_ULT_3_Meses,
+	   ISNULL(B.QTD_Vagas_ULT_6_Meses,0) AS QTD_Vagas_ULT_6_Meses,
+	   ISNULL(B.QTD_Vagas_ULT_9_Meses,0) AS QTD_Vagas_ULT_9_Meses, 
+	   ISNULL(B.QTD_Vagas_ULT_12_Meses,0) AS QTD_Vagas_ULT_12_Meses,
+	   CONTA_ID
+FROM #TMP_GERAL A
+LEFT OUTER JOIN #TMP_VAGAS_MENSAL B ON B.Cliente_VAGAS = A.Cliente_VAGAS
+ORDER BY 5
+
+DROP TABLE #TMP_PERFIL_USO
+DROP TABLE #TMP_GERAL
+DROP TABLE #TMP_VAGAS_MENSAL
+DROP TABLE #TMP_VAGAS
+DROP TABLE #TMP_BCE
+
+GO
