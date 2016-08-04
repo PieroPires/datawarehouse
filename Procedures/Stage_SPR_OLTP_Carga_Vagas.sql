@@ -53,7 +53,7 @@ AS (
 INSERT INTO VAGAS_DW.TMP_VAGAS
 SELECT A.Cod_Vaga VAGAS_Cod_Vaga,
 	B.Cod_cli AS COD_CLI,
-	B.Nome_Cli AS CLIENTE,
+	B.Ident_cli AS CLIENTE,
 	REPLACE(A.Cargo_vaga, ';', '') CARGO,
 	ISNULL(C.Descr_formMax, 'INDIFERENTE') ESCOLARIDADE,  
 	ISNULL(D.Descr_Hierarquia, '') NIVEL,
