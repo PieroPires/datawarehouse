@@ -8,6 +8,10 @@ import datetime
 from pandas import DataFrame
 import pyodbc
 import json
+import sys
+
+reload(sys)
+sys.setdefaultencoding('cp437')
 
 def conect_db():
 	engine = pyodbc.connect(r'Driver={SQL Server};Server=SRV-SQLMIRROR02;Database=VAGAS_DW;Trusted_Connection=yes;')
@@ -15,6 +19,7 @@ def conect_db():
 
 def clean_date(string):
 	string = string.replace('dateTime','')
+	string = string.replace('date','')
 	string = string.replace('UTC','')
 	string = string.replace('timeZone','')
 	string = string.replace('America/Sao_Paulo','')
@@ -28,11 +33,16 @@ def clean_date(string):
 	string = string.replace('T','')
 	string = string.replace('-','')
 	string = string.replace(' ','')
-	string = string[:-6]
+	
+	if (len(string) > 8):
+		string = string[:-6]
+	else:
+		string = string + '0000'
+
 	return string
 
 def read_google_calendar(calendar_id,max_results):
-	store = file.Storage('credential.json')
+	store = file.Storage('m:\\Projetos\\Scripts_Python\\Google_Calendar\\credential.json')
 	credential = store.get()
 
 	http = credential.authorize(httplib2.Http())
@@ -61,7 +71,7 @@ def save_to_db(events,calendar_list_entry):
 		end_date = clean_date(str(event['end']))
 		id_calendar = str(event['id'])
 		calendar = calendar_list_entry['summary']
-		
+
 		# params to be sent to db
 		params = (id_calendar,summary, start_date, end_date, calendar)
 
@@ -71,6 +81,8 @@ def save_to_db(events,calendar_list_entry):
 
 		# insert calendar 
 		command = "EXEC VAGAS_DW.SPR_OLTP_Carga_Agenda '%s','%s','%s','%s','%s'" % params
+		#print command
+
 		cursor.execute(command)
 
 		# if is a meeting we get all attendees
@@ -100,14 +112,20 @@ def save_to_db(events,calendar_list_entry):
 				params = (id_calendar,display_name, email, response_status, resource)
 		
 				command = "EXEC VAGAS_DW.SPR_OLTP_Carga_Agenda_Participantes '%s','%s','%s','%s',%s" % params
-				#print command
+				#print id_calendar
 				cursor.execute(command)
-
 
 		# close connection		
 		cn.commit()
 		cn.close()
-	
-events,calendar_list_entry = read_google_calendar('vagas.com.br_lrfdu1kl4enpm2rfrqghc3qsck@group.calendar.google.com',20)
-save_to_db(events,calendar_list_entry)
-#read_google_calendar('luiz.braz@vagas.com.br')
+
+def teste():
+	now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+	now2 = datetime.datetime.utcnow().isoformat()
+	timeNow = datetime.datetime.utcnow()
+	anotherTime = timeNow + datetime.timedelta(hours=-3)
+	anotherotherTime = anotherTime.isoformat() + 'Z'
+
+	print now,now2,timeNow,anotherotherTime
+
+teste()
