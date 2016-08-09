@@ -1,0 +1,32 @@
+USE VAGAS_DW
+GO
+
+IF EXISTS ( SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_OLAP_Carga_Ligacoes' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')
+DROP PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Ligacoes
+GO
+
+-- =============================================
+-- Author: Luiz Fernando Braz
+-- Create date: 08/08/2016
+-- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
+-- =============================================
+
+CREATE PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Ligacoes 
+AS
+SET NOCOUNT ON
+
+DELETE VAGAS_DW.LIGACOES
+FROM VAGAS_DW.LIGACOES A
+WHERE EXISTS ( SELECT 1 FROM VAGAS_DW.TMP_LIGACOES
+				WHERE ID = A.ID )
+
+-- Atualizar nomes de equipes (aquelas que se encontram na tabela DE-PARA VAGAS_DW.EQUIPES_CENTRO_CUSTO_TARIFACAO )
+UPDATE VAGAS_DW.TMP_LIGACOES SET NOME_EQUIPE = C.NOME
+FROM VAGAS_DW.TMP_LIGACOES A
+INNER JOIN VAGAS_DW.EQUIPES_CENTRO_CUSTO_TARIFACAO B ON B.CENTRO_CUSTO_TARIFACAO = A.CENTRO_CUSTO_TARIFACAO
+INNER JOIN VAGAS_DW.EQUIPES C ON C.ID_EQUIPE = B.ID_EQUIPE
+
+-- Inserir novos contratos 
+INSERT INTO VAGAS_DW.LIGACOES
+SELECT *
+FROM VAGAS_DW.TMP_LIGACOES
