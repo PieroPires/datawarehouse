@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Demandas_Jira"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="123"
-  DTS:VersionGUID="{F1038139-7F78-4610-BA65-A91EA15E3AE0}">
+  DTS:VersionBuild="125"
+  DTS:VersionGUID="{D094E8BA-D723-4412-98ED-028E38785725}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -117,9 +117,7 @@
             WHEN N.ID IS NOT NULL THEN CONVERT(N1.CUSTOMVALUE USING Latin1) 
             WHEN O.ID IS NOT NULL THEN CONVERT(O1.CUSTOMVALUE USING Latin1)
        ELSE \"\" END AS TIPO_SUB_TAREFA
-,CASE WHEN INSTR(A.SUMMARY,\"#CICLO\") THEN CONVERT(REPLACE(REPLACE(SUBSTRING(A.SUMMARY,INSTR(A.SUMMARY,\"#CICLO\"),LENGTH(A.SUMMARY)),\")\",\"\"),\"(\",\"\") USING Latin1)
-                  WHEN INSTR(I.SUMMARY,\"#CICLO\") THEN CONVERT(REPLACE(REPLACE(SUBSTRING(I.SUMMARY,INSTR(I.SUMMARY,\"#CICLO\"),LENGTH(I.SUMMARY)),\")\",\"\"),\"(\",\"\") USING Latin1)
-            ELSE \"\" END AS CICLO       FROM jiraissue A
+,CONVERT(SUBSTRING(H.vname,INSTR(UPPER(H.vname),\"#CICLO\"),7) USING Latin1) AS CICLO       FROM jiraissue A
 INNER JOIN project B ON B.ID = A.PROJECT
 INNER JOIN issuetype C ON C.ID = A.issuetype
 INNER JOIN issuestatus D ON D.ID = A.issuestatus
@@ -189,9 +187,7 @@ AND A.CREATED &gt;= \"20160609\"  AND A.UPDATED &gt;= "   +  @[User::DATA_ALTERA
             WHEN N.ID IS NOT NULL THEN CONVERT(N1.CUSTOMVALUE USING Latin1) 
             WHEN O.ID IS NOT NULL THEN CONVERT(O1.CUSTOMVALUE USING Latin1)
        ELSE "" END AS TIPO_SUB_TAREFA
-,CASE WHEN INSTR(A.SUMMARY,"#CICLO") THEN CONVERT(REPLACE(REPLACE(SUBSTRING(A.SUMMARY,INSTR(A.SUMMARY,"#CICLO"),LENGTH(A.SUMMARY)),")",""),"(","") USING Latin1)
-                  WHEN INSTR(I.SUMMARY,"#CICLO") THEN CONVERT(REPLACE(REPLACE(SUBSTRING(I.SUMMARY,INSTR(I.SUMMARY,"#CICLO"),LENGTH(I.SUMMARY)),")",""),"(","") USING Latin1)
-            ELSE "" END AS CICLO       FROM jiraissue A
+,CONVERT(SUBSTRING(H.vname,INSTR(UPPER(H.vname),"#CICLO"),7) USING Latin1) AS CICLO       FROM jiraissue A
 INNER JOIN project B ON B.ID = A.PROJECT
 INNER JOIN issuetype C ON C.ID = A.issuetype
 INNER JOIN issuestatus D ON D.ID = A.issuestatus
@@ -443,7 +439,7 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       codePage="1252"
                       dataType="str"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[CICLO]"
-                      length="765"
+                      length="7"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[CICLO]"
                       name="CICLO" />
                   </outputColumns>
@@ -571,7 +567,7 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[CICLO]"
                       codePage="1252"
                       dataType="str"
-                      length="765"
+                      length="7"
                       name="CICLO" />
                   </externalMetadataColumns>
                 </output>
@@ -747,7 +743,7 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       codePage="1252"
                       dataType="str"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[CICLO]"
-                      length="765"
+                      length="7"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[CICLO]"
                       name="CICLO" />
                     <outputColumn
@@ -1005,7 +1001,7 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[CICLO]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="765"
+                      cachedLength="7"
                       cachedName="CICLO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CICLO]"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[CICLO]" />
