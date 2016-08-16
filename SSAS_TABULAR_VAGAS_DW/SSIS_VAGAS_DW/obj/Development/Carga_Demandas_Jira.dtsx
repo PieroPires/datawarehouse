@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Demandas_Jira"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="125"
-  DTS:VersionGUID="{D094E8BA-D723-4412-98ED-028E38785725}">
+  DTS:VersionBuild="127"
+  DTS:VersionGUID="{845BE201-2273-4E63-95BC-B72751C8A6A6}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -117,7 +117,9 @@
             WHEN N.ID IS NOT NULL THEN CONVERT(N1.CUSTOMVALUE USING Latin1) 
             WHEN O.ID IS NOT NULL THEN CONVERT(O1.CUSTOMVALUE USING Latin1)
        ELSE \"\" END AS TIPO_SUB_TAREFA
-,CONVERT(SUBSTRING(H.vname,INSTR(UPPER(H.vname),\"#CICLO\"),7) USING Latin1) AS CICLO       FROM jiraissue A
+,CONVERT(SUBSTRING(H.vname,INSTR(UPPER(H.vname),\"#CICLO\"),7) USING Latin1) AS CICLO, CONVERT(R1.CUSTOMVALUE USING Latin1)	AS GRAVIDADE,
+       CONVERT(Q1.CUSTOMVALUE USING Latin1)	AS URGENCIA,
+       CONVERT(P1.CUSTOMVALUE USING Latin1)	AS ESFORCO       FROM jiraissue A
 INNER JOIN project B ON B.ID = A.PROJECT
 INNER JOIN issuetype C ON C.ID = A.issuetype
 INNER JOIN issuestatus D ON D.ID = A.issuestatus
@@ -136,7 +138,12 @@ LEFT OUTER JOIN customfieldvalue N ON N.ISSUE = A.ID AND A.issuetype = 12209 AND
 LEFT OUTER JOIN customfieldoption N1 ON N1.CUSTOMFIELD = N.CUSTOMFIELD AND N1.ID = N.STRINGVALUE
 LEFT OUTER JOIN customfieldvalue O ON O.ISSUE = A.ID AND A.issuetype = 12210 AND O.CUSTOMFIELD = 12904 # Atividades Internas
 LEFT OUTER JOIN customfieldoption O1 ON O1.CUSTOMFIELD = O.CUSTOMFIELD AND O1.ID = O.STRINGVALUE
-WHERE A.PROJECT = 11500 # POR ENQUANTO ESTAMOS CONSIDERANDO APENAS IN
+ LEFT OUTER JOIN customfieldvalue P ON P.ISSUE = A.ID AND P.CUSTOMFIELD = 13000 # ESFORÇO
+LEFT OUTER JOIN customfieldoption P1 ON P1.CUSTOMFIELD = P.CUSTOMFIELD AND P1.ID = P.STRINGVALUE
+LEFT OUTER JOIN customfieldvalue Q ON Q.ISSUE = A.ID AND Q.CUSTOMFIELD = 13001 # URGÊNCIA
+LEFT OUTER JOIN customfieldoption Q1 ON Q1.CUSTOMFIELD = Q.CUSTOMFIELD AND Q1.ID = Q.STRINGVALUE
+LEFT OUTER JOIN customfieldvalue R ON R.ISSUE = A.ID AND R.CUSTOMFIELD = 13002 # GRAVIDADE
+LEFT OUTER JOIN customfieldoption R1 ON R1.CUSTOMFIELD = R.CUSTOMFIELD AND R1.ID = R.STRINGVALUE WHERE A.PROJECT = 11500 # POR ENQUANTO ESTAMOS CONSIDERANDO APENAS IN
 AND A.CREATED &gt;= \"20160609\"  AND A.UPDATED &gt;= "   +  @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <pipeline
@@ -187,7 +194,9 @@ AND A.CREATED &gt;= \"20160609\"  AND A.UPDATED &gt;= "   +  @[User::DATA_ALTERA
             WHEN N.ID IS NOT NULL THEN CONVERT(N1.CUSTOMVALUE USING Latin1) 
             WHEN O.ID IS NOT NULL THEN CONVERT(O1.CUSTOMVALUE USING Latin1)
        ELSE "" END AS TIPO_SUB_TAREFA
-,CONVERT(SUBSTRING(H.vname,INSTR(UPPER(H.vname),"#CICLO"),7) USING Latin1) AS CICLO       FROM jiraissue A
+,CONVERT(SUBSTRING(H.vname,INSTR(UPPER(H.vname),"#CICLO"),7) USING Latin1) AS CICLO, CONVERT(R1.CUSTOMVALUE USING Latin1)	AS GRAVIDADE,
+       CONVERT(Q1.CUSTOMVALUE USING Latin1)	AS URGENCIA,
+       CONVERT(P1.CUSTOMVALUE USING Latin1)	AS ESFORCO       FROM jiraissue A
 INNER JOIN project B ON B.ID = A.PROJECT
 INNER JOIN issuetype C ON C.ID = A.issuetype
 INNER JOIN issuestatus D ON D.ID = A.issuestatus
@@ -206,7 +215,12 @@ LEFT OUTER JOIN customfieldvalue N ON N.ISSUE = A.ID AND A.issuetype = 12209 AND
 LEFT OUTER JOIN customfieldoption N1 ON N1.CUSTOMFIELD = N.CUSTOMFIELD AND N1.ID = N.STRINGVALUE
 LEFT OUTER JOIN customfieldvalue O ON O.ISSUE = A.ID AND A.issuetype = 12210 AND O.CUSTOMFIELD = 12904 # Atividades Internas
 LEFT OUTER JOIN customfieldoption O1 ON O1.CUSTOMFIELD = O.CUSTOMFIELD AND O1.ID = O.STRINGVALUE
-WHERE A.PROJECT = 11500 # POR ENQUANTO ESTAMOS CONSIDERANDO APENAS IN
+ LEFT OUTER JOIN customfieldvalue P ON P.ISSUE = A.ID AND P.CUSTOMFIELD = 13000 # ESFORÇO
+LEFT OUTER JOIN customfieldoption P1 ON P1.CUSTOMFIELD = P.CUSTOMFIELD AND P1.ID = P.STRINGVALUE
+LEFT OUTER JOIN customfieldvalue Q ON Q.ISSUE = A.ID AND Q.CUSTOMFIELD = 13001 # URGÊNCIA
+LEFT OUTER JOIN customfieldoption Q1 ON Q1.CUSTOMFIELD = Q.CUSTOMFIELD AND Q1.ID = Q.STRINGVALUE
+LEFT OUTER JOIN customfieldvalue R ON R.ISSUE = A.ID AND R.CUSTOMFIELD = 13002 # GRAVIDADE
+LEFT OUTER JOIN customfieldoption R1 ON R1.CUSTOMFIELD = R.CUSTOMFIELD AND R1.ID = R.STRINGVALUE WHERE A.PROJECT = 11500 # POR ENQUANTO ESTAMOS CONSIDERANDO APENAS IN
 AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                 <property
                   dataType="System.Int32"
@@ -442,6 +456,30 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       length="7"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[CICLO]"
                       name="CICLO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[GRAVIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[GRAVIDADE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[GRAVIDADE]"
+                      name="GRAVIDADE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[URGENCIA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[URGENCIA]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[URGENCIA]"
+                      name="URGENCIA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[ESFORCO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[ESFORCO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[ESFORCO]"
+                      name="ESFORCO" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -569,6 +607,24 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       dataType="str"
                       length="7"
                       name="CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[GRAVIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="GRAVIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[URGENCIA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="URGENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[ESFORCO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ESFORCO" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -746,6 +802,30 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       length="7"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[CICLO]"
                       name="CICLO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[GRAVIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[GRAVIDADE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[GRAVIDADE]"
+                      name="GRAVIDADE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[URGENCIA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[URGENCIA]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[URGENCIA]"
+                      name="URGENCIA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[ESFORCO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[ESFORCO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[ESFORCO]"
+                      name="ESFORCO" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1005,6 +1085,30 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       cachedName="CICLO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CICLO]"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[CICLO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[GRAVIDADE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="GRAVIDADE"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[GRAVIDADE]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[GRAVIDADE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[URGENCIA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="URGENCIA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[URGENCIA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[URGENCIA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[ESFORCO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="ESFORCO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ESFORCO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL jiradb.Outputs[ODBC Source Output].Columns[ESFORCO]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1126,6 +1230,24 @@ AND A.CREATED &gt;= "20160609"  AND A.UPDATED &gt;= </property>
                       dataType="str"
                       length="100"
                       name="CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[GRAVIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="GRAVIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[URGENCIA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="URGENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ESFORCO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="ESFORCO" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
