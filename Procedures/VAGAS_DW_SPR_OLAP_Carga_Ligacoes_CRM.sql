@@ -1,0 +1,51 @@
+USE VAGAS_DW
+GO
+
+IF EXISTS ( SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_OLAP_Carga_Ligacoes_CRM' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')
+DROP PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Ligacoes_CRM
+GO
+
+-- =============================================
+-- Author: Luiz Fernando Braz
+-- Create date: 29/09/2015
+-- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
+-- =============================================
+
+CREATE PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Ligacoes_CRM 
+AS
+SET NOCOUNT ON
+
+-- Limpar dados da tabela fato
+DELETE VAGAS_DW.LIGACOES_CRM
+FROM VAGAS_DW.LIGACOES_CRM A
+WHERE EXISTS ( SELECT 1 FROM VAGAS_DW.TMP_LIGACOES_CRM
+				WHERE ID_LIGACAO = A.ID_LIGACAO )
+
+INSERT INTO VAGAS_DW.LIGACOES_CRM (ID_LIGACAO,NOME,DESCRICAO,DATA_CADASTRO,DATA_ALTERACAO,USUARIO_CADASTRO,USUARIO_ALTERACAO,
+									USUARIO_RESPONSAVEL,DURACAO_HORAS,DURACAO_MINUTOS,DATA_INICIO,DATA_FIM,STATUS,TIPO,CLASSIFICACAO)
+SELECT ID_LIGACAO,
+	   NOME,
+	   DESCRICAO,
+	   DATA_CADASTRO,
+	   DATA_ALTERACAO,
+	   USUARIO_CADASTRO,
+	   USUARIO_ALTERACAO,
+	   USUARIO_RESPONSAVEL,
+	   DURACAO_HORAS,
+	   DURACAO_MINUTOS,
+	   DATA_INICIO,
+	   DATA_FIM,
+	   CASE WHEN STATUS = 'Held' THEN 'Realizado'
+			WHEN STATUS = 'Planned' THEN 'Planejado'
+			WHEN STATUS = 'Not Held' THEN 'Não Realizado'
+			ELSE 'Não Classificado' END,
+	   CASE WHEN TIPO = 'Inbound' THEN 'Recebida'
+			WHEN TIPO = 'Outbound' THEN 'Efetuada'
+			ELSE 'Não Classificado' END,
+	   CASE WHEN CHARINDEX('#Prospecção',NOME) > 0 OR CHARINDEX('#Prospecção',DESCRICAO) > 0 THEN 'Prospecção'
+			WHEN CHARINDEX('#Relacionamento',NOME) > 0 OR CHARINDEX('#Relacionamento',DESCRICAO) > 0 THEN 'Relacionamento'
+			ELSE 'Não Classificado' END
+FROM VAGAS_DW.TMP_LIGACOES_CRM
+WHERE FLAG_DELETADO = 0
+
+
