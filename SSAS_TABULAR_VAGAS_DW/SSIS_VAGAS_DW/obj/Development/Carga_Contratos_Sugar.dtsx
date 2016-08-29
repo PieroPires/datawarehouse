@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Contratos_Sugar"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="98"
-  DTS:VersionGUID="{5ED91881-6D50-46AC-A4D3-60641FE6E5CE}">
+  DTS:VersionBuild="103"
+  DTS:VersionGUID="{DA896866-53EE-4E38-8D8F-DD1DB00461D5}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -112,7 +112,15 @@
        CASE WHEN INSTR(C2.PRODUTO,\"REDES\") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_REDES,
        CASE WHEN INSTR(C2.PRODUTO,\"FLEX\") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_FLEX,
        CASE WHEN INSTR(C2.PRODUTO,\"PRC\") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_PRC,
-       CASE WHEN INSTR(C2.PRODUTO,\"VET\") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_VET, CONVERT(B.indice_c USING Latin1) AS INDICE,CONVERT(B.tipo_de_renovacao_c USING Latin1) AS TIPO_RENOVACAO  FROM oqc_contract A
+       CASE WHEN INSTR(C2.PRODUTO,\"VET\") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_VET, CONVERT(B.indice_c USING Latin1) AS INDICE,CONVERT(B.tipo_de_renovacao_c USING Latin1) AS TIPO_RENOVACAO,
+      CONVERT( B.data_da_solicitacao_c,DATETIME) AS DATA_SOLICITACAO,
+       CONVERT(B.emitido_em_c,DATETIME) AS DATA_EMISSAO,
+       CONVERT(B.assinamos_primeiro_em_c,DATETIME) AS DATA_PRM_ASSINATURA,
+       CONVERT(B.recebido_digital_em_c ,DATETIME) AS DATA_RECEBIMENTO_DIGITAL,
+       CONVERT(B.recebido_fisico_em_c ,DATETIME) AS DATA_RECEBIMENTO_FISICO,
+       CONVERT(B.enviado_fisico_em_c ,DATETIME) AS DATA_ENVIO_FISICO,
+       CONVERT(B.enviado_por_c USING Latin1) AS TIPO_ENVIO,
+       CONVERT(B.enviado_por_complemento_c USING Latin1) AS TIPO_ENVIO_COMPLEMENTO  FROM oqc_contract A
  LEFT OUTER JOIN oqc_contract_cstm B ON B.id_c = A.id 
  LEFT OUTER JOIN accounts C ON C.id = A.company_id AND C.deleted = 0
  LEFT OUTER JOIN accounts_cstm C1 ON C1.id_c = C.id LEFT OUTER JOIN ( SELECT A1.oqc_contract_ida AS contract_id,
@@ -380,7 +388,15 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; " +  @[User::DATA_ALTERACAO]</DTS:
        CASE WHEN INSTR(C2.PRODUTO,"REDES") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_REDES,
        CASE WHEN INSTR(C2.PRODUTO,"FLEX") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_FLEX,
        CASE WHEN INSTR(C2.PRODUTO,"PRC") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_PRC,
-       CASE WHEN INSTR(C2.PRODUTO,"VET") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_VET, CONVERT(B.indice_c USING Latin1) AS INDICE,CONVERT(B.tipo_de_renovacao_c USING Latin1) AS TIPO_RENOVACAO  FROM oqc_contract A
+       CASE WHEN INSTR(C2.PRODUTO,"VET") &gt; 0 THEN 1 ELSE 0 END AS CONTEM_VET, CONVERT(B.indice_c USING Latin1) AS INDICE,CONVERT(B.tipo_de_renovacao_c USING Latin1) AS TIPO_RENOVACAO,
+      CONVERT( B.data_da_solicitacao_c,DATETIME) AS DATA_SOLICITACAO,
+       CONVERT(B.emitido_em_c,DATETIME) AS DATA_EMISSAO,
+       CONVERT(B.assinamos_primeiro_em_c,DATETIME) AS DATA_PRM_ASSINATURA,
+       CONVERT(B.recebido_digital_em_c ,DATETIME) AS DATA_RECEBIMENTO_DIGITAL,
+       CONVERT(B.recebido_fisico_em_c ,DATETIME) AS DATA_RECEBIMENTO_FISICO,
+       CONVERT(B.enviado_fisico_em_c ,DATETIME) AS DATA_ENVIO_FISICO,
+       CONVERT(B.enviado_por_c USING Latin1) AS TIPO_ENVIO,
+       CONVERT(B.enviado_por_complemento_c USING Latin1) AS TIPO_ENVIO_COMPLEMENTO  FROM oqc_contract A
  LEFT OUTER JOIN oqc_contract_cstm B ON B.id_c = A.id 
  LEFT OUTER JOIN accounts C ON C.id = A.company_id AND C.deleted = 0
  LEFT OUTER JOIN accounts_cstm C1 ON C1.id_c = C.id LEFT OUTER JOIN ( SELECT A1.oqc_contract_ida AS contract_id,
@@ -631,6 +647,58 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_RENOVACAO]"
                       name="TIPO_RENOVACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_SOLICITACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_SOLICITACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_SOLICITACAO]"
+                      name="DATA_SOLICITACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_EMISSAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_EMISSAO]"
+                      name="DATA_EMISSAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_PRM_ASSINATURA]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_PRM_ASSINATURA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_PRM_ASSINATURA]"
+                      name="DATA_PRM_ASSINATURA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_RECEBIMENTO_DIGITAL]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_RECEBIMENTO_DIGITAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_RECEBIMENTO_DIGITAL]"
+                      name="DATA_RECEBIMENTO_DIGITAL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_RECEBIMENTO_FISICO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_RECEBIMENTO_FISICO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_RECEBIMENTO_FISICO]"
+                      name="DATA_RECEBIMENTO_FISICO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ENVIO_FISICO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ENVIO_FISICO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ENVIO_FISICO]"
+                      name="DATA_ENVIO_FISICO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_ENVIO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_ENVIO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_ENVIO]"
+                      name="TIPO_ENVIO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_ENVIO_COMPLEMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_ENVIO_COMPLEMENTO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_ENVIO_COMPLEMENTO]"
+                      name="TIPO_ENVIO_COMPLEMENTO" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -761,6 +829,42 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
                       dataType="str"
                       length="100"
                       name="TIPO_RENOVACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_SOLICITACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_SOLICITACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_EMISSAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_PRM_ASSINATURA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_PRM_ASSINATURA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_RECEBIMENTO_DIGITAL]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RECEBIMENTO_DIGITAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_RECEBIMENTO_FISICO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RECEBIMENTO_FISICO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ENVIO_FISICO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENVIO_FISICO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_ENVIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO_ENVIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_ENVIO_COMPLEMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="TIPO_ENVIO_COMPLEMENTO" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -945,6 +1049,58 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_RENOVACAO]"
                       name="TIPO_RENOVACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_SOLICITACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_SOLICITACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_SOLICITACAO]"
+                      name="DATA_SOLICITACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_EMISSAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_EMISSAO]"
+                      name="DATA_EMISSAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_PRM_ASSINATURA]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_PRM_ASSINATURA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_PRM_ASSINATURA]"
+                      name="DATA_PRM_ASSINATURA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_RECEBIMENTO_DIGITAL]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_RECEBIMENTO_DIGITAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_RECEBIMENTO_DIGITAL]"
+                      name="DATA_RECEBIMENTO_DIGITAL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_RECEBIMENTO_FISICO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_RECEBIMENTO_FISICO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_RECEBIMENTO_FISICO]"
+                      name="DATA_RECEBIMENTO_FISICO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_ENVIO_FISICO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ENVIO_FISICO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_ENVIO_FISICO]"
+                      name="DATA_ENVIO_FISICO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_ENVIO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_ENVIO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_ENVIO]"
+                      name="TIPO_ENVIO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_ENVIO_COMPLEMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_ENVIO_COMPLEMENTO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_ENVIO_COMPLEMENTO]"
+                      name="TIPO_ENVIO_COMPLEMENTO" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1216,6 +1372,58 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
                       cachedName="TIPO_RENOVACAO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_RENOVACAO]"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_RENOVACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_PRM_ASSINATURA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_PRM_ASSINATURA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_PRM_ASSINATURA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_PRM_ASSINATURA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_RECEBIMENTO_DIGITAL]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_RECEBIMENTO_DIGITAL"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RECEBIMENTO_DIGITAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_RECEBIMENTO_DIGITAL]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_RECEBIMENTO_FISICO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_RECEBIMENTO_FISICO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RECEBIMENTO_FISICO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_RECEBIMENTO_FISICO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_ENVIO_FISICO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_ENVIO_FISICO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENVIO_FISICO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ENVIO_FISICO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[TIPO_ENVIO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="TIPO_ENVIO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_ENVIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_ENVIO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[TIPO_ENVIO_COMPLEMENTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="TIPO_ENVIO_COMPLEMENTO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_ENVIO_COMPLEMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_ENVIO_COMPLEMENTO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_SOLICITACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_SOLICITACAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_SOLICITACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_SOLICITACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_EMISSAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_EMISSAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_EMISSAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_EMISSAO]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1355,6 +1563,42 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
                       dataType="str"
                       length="100"
                       name="TIPO_RENOVACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_PRM_ASSINATURA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_PRM_ASSINATURA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RECEBIMENTO_DIGITAL]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RECEBIMENTO_DIGITAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RECEBIMENTO_FISICO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RECEBIMENTO_FISICO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENVIO_FISICO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENVIO_FISICO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_ENVIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO_ENVIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_ENVIO_COMPLEMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="TIPO_ENVIO_COMPLEMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_SOLICITACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_SOLICITACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_EMISSAO" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1425,6 +1669,7 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
       DTS:refId="Package\Processar CUBO"
       DTS:CreationName="Microsoft.DTSProcessingTask"
       DTS:Description="Analysis Services Processing Task"
+      DTS:Disabled="True"
       DTS:DTSID="{f83b687f-c43e-40e4-946c-caeb3fc56c5d}"
       DTS:ExecutableType="Microsoft.DTSProcessingTask"
       DTS:LocaleID="-1"
