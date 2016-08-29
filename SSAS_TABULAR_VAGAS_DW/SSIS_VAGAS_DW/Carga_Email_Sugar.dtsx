@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Email_Sugar"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="72"
-  DTS:VersionGUID="{739A2C2E-A276-47A5-9B7F-1C2CCFBBA0A7}">
+  DTS:VersionBuild="73"
+  DTS:VersionGUID="{9056AF8D-E579-4BB1-BA86-1A57D2067570}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -91,20 +91,39 @@
       <DTS:Variables />
       <DTS:PropertyExpression
         DTS:Name="[MySQL].[SqlCommand]">"SELECT CONVERT(A.id USING Latin1) AS ID_EMAIL,
-       A.date_entered AS DATA_CADASTRO,
-       A.date_modified AS DATA_ALTERACAO,
+       CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
        CONVERT(B.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
        CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
        CONVERT(D.user_name USING Latin1) AS USUARIO_CADASTRO,
        A.deleted AS FLAG_DELETADO,
-       A.date_sent AS DATA_ENVIO,
+       CONVERT_TZ(A.date_sent,@@session.time_zone, '-03:00') AS DATA_ENVIO,
        CONVERT(A.name USING Latin1) AS NOME,
        CONVERT(A.type USING Latin1) AS TIPO,
-       CONVERT(A.status USING Latin1) AS STATUS
+       CONVERT(A.status USING Latin1) AS STATUS,
+        CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+            WHEN F.id IS NOT NULL THEN F.name
+            WHEN G.id IS NOT NULL THEN G.name
+            WHEN H.id IS NOT NULL THEN H.name
+            WHEN I.id IS NOT NULL THEN CONCAT(IFNULL(I.first_name,\"\"),\" \",IFNULL(I.last_name,\"\"))
+            WHEN J.id IS NOT NULL THEN CONCAT(IFNULL(J.first_name,\"\"),\" \",IFNULL(J.last_name,\"\"))
+            ELSE \"\" END USING Latin1) AS REFERENTE_A
 FROM emails A
 INNER JOIN users B ON B.id = A.assigned_user_id
 INNER JOIN users C ON C.id = A.modified_user_id
-INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; " + @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
+INNER JOIN users D ON D.id = A.created_by 
+LEFT OUTER JOIN cases E ON E.id = A.parent_id 
+							   AND A.parent_type = \"Cases\"
+LEFT OUTER JOIN oqc_contract F ON F.id = A.parent_id 
+							   AND A.parent_type = \"oqc_Contract\"
+LEFT OUTER JOIN opportunities G ON G.id = A.parent_id 
+							   AND A.parent_type = \"Opportunities\"
+LEFT OUTER JOIN accounts H ON H.id = A.parent_id 
+							   AND A.parent_type = \"Accounts\"                               
+LEFT OUTER JOIN contacts I ON I.id = A.parent_id 
+							   AND A.parent_type = \"Contacts\"                                                              
+LEFT OUTER JOIN leads J ON J.id = A.parent_id 
+							   AND A.parent_type = \"Leads\" WHERE A.date_modified &gt; " + @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <pipeline
           version="1">
@@ -128,20 +147,39 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; " + @[User:
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand">SELECT CONVERT(A.id USING Latin1) AS ID_EMAIL,
-       A.date_entered AS DATA_CADASTRO,
-       A.date_modified AS DATA_ALTERACAO,
+       CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
        CONVERT(B.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
        CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
        CONVERT(D.user_name USING Latin1) AS USUARIO_CADASTRO,
        A.deleted AS FLAG_DELETADO,
-       A.date_sent AS DATA_ENVIO,
+       CONVERT_TZ(A.date_sent,@@session.time_zone, '-03:00') AS DATA_ENVIO,
        CONVERT(A.name USING Latin1) AS NOME,
        CONVERT(A.type USING Latin1) AS TIPO,
-       CONVERT(A.status USING Latin1) AS STATUS
+       CONVERT(A.status USING Latin1) AS STATUS,
+        CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+            WHEN F.id IS NOT NULL THEN F.name
+            WHEN G.id IS NOT NULL THEN G.name
+            WHEN H.id IS NOT NULL THEN H.name
+            WHEN I.id IS NOT NULL THEN CONCAT(IFNULL(I.first_name,"")," ",IFNULL(I.last_name,""))
+            WHEN J.id IS NOT NULL THEN CONCAT(IFNULL(J.first_name,"")," ",IFNULL(J.last_name,""))
+            ELSE "" END USING Latin1) AS REFERENTE_A
 FROM emails A
 INNER JOIN users B ON B.id = A.assigned_user_id
 INNER JOIN users C ON C.id = A.modified_user_id
-INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
+INNER JOIN users D ON D.id = A.created_by 
+LEFT OUTER JOIN cases E ON E.id = A.parent_id 
+							   AND A.parent_type = "Cases"
+LEFT OUTER JOIN oqc_contract F ON F.id = A.parent_id 
+							   AND A.parent_type = "oqc_Contract"
+LEFT OUTER JOIN opportunities G ON G.id = A.parent_id 
+							   AND A.parent_type = "Opportunities"
+LEFT OUTER JOIN accounts H ON H.id = A.parent_id 
+							   AND A.parent_type = "Accounts"                               
+LEFT OUTER JOIN contacts I ON I.id = A.parent_id 
+							   AND A.parent_type = "Contacts"                                                              
+LEFT OUTER JOIN leads J ON J.id = A.parent_id 
+							   AND A.parent_type = "Leads" WHERE A.date_modified &gt; </property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -286,6 +324,14 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS]"
                       name="STATUS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]"
+                      name="REFERENTE_A" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -347,6 +393,12 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
                       dataType="str"
                       length="100"
                       name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="REFERENTE_A" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -434,6 +486,14 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS]"
                       name="STATUS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[REFERENTE_A]"
+                      name="REFERENTE_A" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -603,6 +663,14 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
                       cachedName="STATUS"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[REFERENTE_A]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="REFERENTE_A"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[REFERENTE_A]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -664,6 +732,18 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
                       dataType="str"
                       length="200"
                       name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="REFERENTE_A" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[GRUPO_VENDEDOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="GRUPO_VENDEDOR" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -938,13 +1018,13 @@ INNER JOIN users D ON D.id = A.created_by WHERE A.date_modified &gt; </property>
       <GraphLayout
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="111,42"
-          Id="Package\MySQL -&gt; SQL Server\MySQL"
-          TopLeft="165,95" />
-        <NodeLayout
           Size="104,42"
           Id="Package\MySQL -&gt; SQL Server\OLTP"
           TopLeft="241,194" />
+        <NodeLayout
+          Size="111,42"
+          Id="Package\MySQL -&gt; SQL Server\MySQL"
+          TopLeft="165,95" />
         <EdgeLayout
           Id="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
           TopLeft="220.5,137">

@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Ligacao_Sugar"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="63"
-  DTS:VersionGUID="{17808A10-1656-4505-83D4-F3722B536FE3}">
+  DTS:VersionBuild="68"
+  DTS:VersionGUID="{8AAB8C42-CAD1-47D3-B2D1-3855B81AEC34}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -93,22 +93,32 @@
         DTS:Name="[MySQL].[SqlCommand]">"SELECT CONVERT(A.id USING Latin1) AS ID_LIGACAO,
 	   CONVERT(A.name USING Latin1) AS NOME,
        CONVERT(CAST(A.description AS CHAR(1000)) USING Latin1)  AS DESCRICAO,
-       A.date_entered AS DATA_CADASTRO,
-       A.date_modified AS DATA_ALTERACAO,
+       CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
        CONVERT(B.user_name USING Latin1) AS USUARIO_CADASTRO,
        CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
        A.deleted AS FLAG_DELETADO,
        CONVERT(D.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
        A.duration_hours AS DURACAO_HORAS,
        A.duration_minutes AS DURACAO_MINUTOS,
-       A.date_start AS DATA_INICIO,
-       A.date_end AS DATA_FIM,
+       CONVERT_TZ(A.date_start,@@session.time_zone, '-03:00') AS DATA_INICIO,
+       CONVERT_TZ(A.date_end,@@session.time_zone, '-03:00') AS DATA_FIM,
        CONVERT(A.Status USING Latin1) AS STATUS,
-       CONVERT(A.direction USING Latin1) AS TIPO
+       CONVERT(A.direction USING Latin1) AS TIPO,
+       CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+			WHEN F.id IS NOT NULL THEN CONCAT(IFNULL(F.first_name,\"\"),\" \",IFNULL(F.last_name,\"\"))
+            WHEN G.id IS NOT NULL THEN G.name
+            ELSE \"\" END USING Latin1)  AS REFERENTE_A
  FROM calls A
  INNER JOIN users B ON B.id = A.created_by
  INNER JOIN users C ON C.id = A.modified_user_id
- INNER JOIN users D ON D.id = A.assigned_user_id WHERE A.date_modified &gt; " + @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
+ INNER JOIN users D ON D.id = A.assigned_user_id 
+ LEFT OUTER JOIN opportunities E ON E.id = A.parent_id 
+								AND A.parent_type = \"Opportunities\"
+ LEFT OUTER JOIN leads F ON F.id = A.parent_id 
+								AND A.parent_type = \"Leads\"
+ LEFT OUTER JOIN accounts G ON G.id = A.parent_id 
+								AND A.parent_type = \"Accounts\"  WHERE A.date_modified &gt; " + @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <pipeline
           version="1">
@@ -134,22 +144,32 @@
                   name="SqlCommand">SELECT CONVERT(A.id USING Latin1) AS ID_LIGACAO,
 	   CONVERT(A.name USING Latin1) AS NOME,
        CONVERT(CAST(A.description AS CHAR(1000)) USING Latin1)  AS DESCRICAO,
-       A.date_entered AS DATA_CADASTRO,
-       A.date_modified AS DATA_ALTERACAO,
+       CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
        CONVERT(B.user_name USING Latin1) AS USUARIO_CADASTRO,
        CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
        A.deleted AS FLAG_DELETADO,
        CONVERT(D.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
        A.duration_hours AS DURACAO_HORAS,
        A.duration_minutes AS DURACAO_MINUTOS,
-       A.date_start AS DATA_INICIO,
-       A.date_end AS DATA_FIM,
+       CONVERT_TZ(A.date_start,@@session.time_zone, '-03:00') AS DATA_INICIO,
+       CONVERT_TZ(A.date_end,@@session.time_zone, '-03:00') AS DATA_FIM,
        CONVERT(A.Status USING Latin1) AS STATUS,
-       CONVERT(A.direction USING Latin1) AS TIPO
+       CONVERT(A.direction USING Latin1) AS TIPO,
+       CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+			WHEN F.id IS NOT NULL THEN CONCAT(IFNULL(F.first_name,"")," ",IFNULL(F.last_name,""))
+            WHEN G.id IS NOT NULL THEN G.name
+            ELSE "" END USING Latin1)  AS REFERENTE_A
  FROM calls A
  INNER JOIN users B ON B.id = A.created_by
  INNER JOIN users C ON C.id = A.modified_user_id
- INNER JOIN users D ON D.id = A.assigned_user_id WHERE A.date_modified &gt; </property>
+ INNER JOIN users D ON D.id = A.assigned_user_id 
+ LEFT OUTER JOIN opportunities E ON E.id = A.parent_id 
+								AND A.parent_type = "Opportunities"
+ LEFT OUTER JOIN leads F ON F.id = A.parent_id 
+								AND A.parent_type = "Leads"
+ LEFT OUTER JOIN accounts G ON G.id = A.parent_id 
+								AND A.parent_type = "Accounts"  WHERE A.date_modified &gt; </property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -320,6 +340,14 @@
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO]"
                       name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      length="201"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]"
+                      name="REFERENTE_A" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -399,6 +427,12 @@
                       dataType="str"
                       length="100"
                       name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      length="201"
+                      name="REFERENTE_A" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -524,6 +558,14 @@
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      length="201"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[REFERENTE_A]"
+                      name="REFERENTE_A" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -707,6 +749,14 @@
                       cachedName="TIPO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[REFERENTE_A]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="201"
+                      cachedName="REFERENTE_A"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[REFERENTE_A]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -786,6 +836,12 @@
                       dataType="str"
                       length="200"
                       name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="REFERENTE_A" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
