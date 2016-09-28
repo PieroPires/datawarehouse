@@ -254,6 +254,33 @@ AND B.MEDIA_DURACAO > 30 -- APENAS PARA RELATÓRIOS QUE A MÉDIA SEJA MAIOR QUE 30
 
 -- TEMOS SEMPRE QUE FICAR ATENTOS A ESTRUTURA DA TABELA [TMP_LOG_IIS] POIS O BULK INSERT DÁ PROBLEMA COM TODAS AS COLUNAS 
 -- POR ISSO PRECISAMOS FICAR INCLUINDO E EXCLUINDO AS COLUNAS DE APOIO
+
+-- método alternativo devido ao erro "The table "TMP_LOG_IIS" has been created, but its maximum row
+-- size exceeds the allowed maximum of 8060 bytes. INSERT or UPDATE to this table will fail if the resulting row exceeds the size
+-- limit."
+
+DROP TABLE [VAGAS_DW].[TMP_LOG_IIS]
+
+CREATE TABLE [VAGAS_DW].[TMP_LOG_IIS](
+	[date] [varchar](200) NULL,
+	[time] [varchar](100) NULL,
+	[s-ip] [varchar](100) NULL,
+	[cs-method] [varchar](50) NULL,
+	[cs-uri-stem] [varchar](500) NULL,
+	[cs-uri-query] [varchar](max) NULL,
+	[s-port] [varchar](max) NULL,
+	[cs-username] [varchar](100) NULL,
+	[c-ip] [varchar](100) NULL,
+	[cs(User-Agent)] [varchar](max) NULL,
+	[cs(Cookie)] [varchar](max) NULL,
+	[cs(Referer)] [varchar](max) NULL,
+	[cs-host] [varchar](max) NULL,
+	[sc-status] [varchar](max) NULL,
+	[sc-substatus] [varchar](max) NULL,
+	[sc-win32-status] [varchar](max) NULL,
+	[time-taken] [varchar](max) NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
 ALTER TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_IIS] ADD ID INT IDENTITY 
 ALTER TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_IIS] ADD ID_GRUPO INT
 ALTER TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_IIS] ADD ACCESS_TOKEN VARCHAR(50)
