@@ -53,5 +53,3 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                                         LEFT OUTER JOIN sugarcrm.trn_treinamentos_trn_participantes_c AS E ON A.id = E.trn_treinamentos_trn_participantestrn_participantes_idb
                                         LEFT OUTER JOIN sugarcrm.trn_treinamentos AS F ON E.trn_treinamentos_trn_participantestrn_treinamentos_ida = F.id
                                         LEFT OUTER JOIN sugarcrm.accounts AS G ON A.account_id_c = G.id   
-                                        
-                                        
