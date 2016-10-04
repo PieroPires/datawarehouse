@@ -259,9 +259,9 @@ AND B.MEDIA_DURACAO > 30 -- APENAS PARA RELATÓRIOS QUE A MÉDIA SEJA MAIOR QUE 30
 -- size exceeds the allowed maximum of 8060 bytes. INSERT or UPDATE to this table will fail if the resulting row exceeds the size
 -- limit."
 
-DROP TABLE [VAGAS_DW].[TMP_LOG_IIS]
+DROP TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_IIS]
 
-CREATE TABLE [VAGAS_DW].[TMP_LOG_IIS](
+CREATE TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_IIS](
 	[date] [varchar](200) NULL,
 	[time] [varchar](100) NULL,
 	[s-ip] [varchar](100) NULL,
