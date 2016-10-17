@@ -46,7 +46,10 @@ SELECT A.Ident_Cli AS Cliente_VAGAS,
 	   ISNULL(CASE WHEN A.CreditosVAGAS_cli = 1 THEN D.Creditos_Total ELSE A.RestritoQtdeVagas_cli END,0) AS Creditos_Total,
 	   ISNULL(CASE WHEN A.CreditosVAGAS_cli = 1 THEN D.Creditos_Disponivel ELSE 0 END,0) AS Creditos_Disponivel, -- Apenas já temos calculado o valor no "Creditos VAGAS" (Os FLEX serão calculados na rotina do OLAP)
 	   ISNULL(CASE WHEN A.CreditosVAGAS_cli = 1 THEN D.Creditos_Valor ELSE NULL END,0) AS Creditos_Valor, -- Apenas já temos calculado o valor no "Creditos VAGAS" (Os FLEX serão calculados na rotina do OLAP)
-	   A.IdContaCRM_cli AS CONTA_ID
+	   A.IdContaCRM_cli AS CONTA_ID ,
+	   (SELECT UPPER(LTRIM(RTRIM(A.Uf_cli)))
+	    FROM [hrh-data].[dbo].[Cad_estadosBR] AS A1
+		WHERE A.Uf_cli = A1.Descr_estadoBR) AS UF
 INTO #TMP_PERFIL_USO
 FROM [hrh-data].dbo.Clientes A
 LEFT OUTER JOIN MaxPerfilUso B ON B.CodCli_cliPerfUso = A.Cod_Cli
@@ -57,7 +60,7 @@ OUTER APPLY ( SELECT SUM(Credito_Credv) AS Creditos_Total,
 			  FROM [hrh-data].dbo.Creditos_VAGAS
 			  WHERE CodCli_CredV = A.Cod_Cli
 			  AND DataVal_CredV >= GETDATE() ) D
-WHERE A.ident_cli NOT IN ('zapt','ficticia', 'ficticia redes', 'teste01', 'Teste Treinamento', 'Teste02', 'teste2012', 'setorial')      
+WHERE A.ident_cli NOT IN ('zapt','ficticia', 'ficticia redes', 'teste01', 'Teste Treinamento', 'Teste02', 'teste2012', 'setorial')  
 
 SELECT B.Cliente_VAGAS,
 	   COUNT(*) AS QTD_BCE 
@@ -82,7 +85,8 @@ SELECT A.Cod_Cli,
 	   A.Creditos_Total,
 	   A.Creditos_Disponivel,
 	   A.Creditos_Valor,
-	   A.CONTA_ID
+	   A.CONTA_ID,
+	   A.UF
 INTO #TMP_GERAL
 FROM #TMP_PERFIL_USO A
 LEFT OUTER JOIN #TMP_BCE B ON B.Cliente_VAGAS = A.Cliente_VAGAS
@@ -215,7 +219,7 @@ INSERT INTO VAGAS_DW.VAGAS_DW.TMP_CLIENTES (DATA_REFERENCIA,DATA_REFERENCIA_12_M
 											QTD_VAGAS_MES_1,QTD_VAGAS_MES_2,QTD_VAGAS_MES_3,QTD_VAGAS_MES_4,
 											QTD_VAGAS_MES_5,QTD_VAGAS_MES_6,QTD_VAGAS_MES_7,QTD_VAGAS_MES_8,QTD_VAGAS_MES_9,QTD_VAGAS_MES_10,
 											QTD_VAGAS_MES_11,QTD_VAGAS_MES_12,QTD_VAGAS_30_DIAS,QTD_VAGAS_ULT_3_MESES,QTD_VAGAS_ULT_6_MESES,
-											QTD_VAGAS_ULT_9_MESES,QTD_VAGAS_ULT_12_MESES,CONTA_ID)
+											QTD_VAGAS_ULT_9_MESES,QTD_VAGAS_ULT_12_MESES,CONTA_ID,UF)
 SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112)) AS DATA_REFERENCIA,
 	   @DATA_REFERENCIA_12_MESES, -- DATA REF. INICIO (12 MESES PRA TRÁS)
 	   DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES), -- DATA REF. FIM (INICIO DO MES ATUAL DE REF.)
@@ -249,8 +253,9 @@ SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112)) AS DATA_REFERENCIA,
 	   ISNULL(B.QTD_Vagas_ULT_6_Meses,0) AS QTD_Vagas_ULT_6_Meses,
 	   ISNULL(B.QTD_Vagas_ULT_9_Meses,0) AS QTD_Vagas_ULT_9_Meses, 
 	   ISNULL(B.QTD_Vagas_ULT_12_Meses,0) AS QTD_Vagas_ULT_12_Meses,
-	   CONTA_ID
-FROM #TMP_GERAL A
+	   CONTA_ID,
+	   UF
+FROM #TMP_GERAL A 
 LEFT OUTER JOIN #TMP_VAGAS_MENSAL B ON B.Cliente_VAGAS = A.Cliente_VAGAS
 ORDER BY 5
 
