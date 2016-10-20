@@ -35,7 +35,7 @@ CREATE TABLE #TMP_CANDIDATOS([Cod_Cand] [int] NOT NULL,[CodFormMax_cand] [smalli
 	[dtcriacao_cand] [datetime] NULL,[UltDtAtual_cand] [datetime] NOT NULL,[Email_cand] [nvarchar](60) NULL,
 	[FezAcessoIrrestrito_cand] [bit] NOT NULL,[DtUltSal_cand] [datetime] NULL,[UltSal_cand] [int] NULL,
 	[CodCidade_cand] [int] NULL,[CodEstadoCivil_cand] [smallint] NULL,[EstadoReg_cand] [tinyint] NOT NULL,
-	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL ) 
+	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL,LIBERACAO_CV_NOVO TINYINT ) 
 
 IF @DT_ATUALIZACAO_INICIO IS NOT NULL -- TESTA SE É CARGA FULL
 BEGIN 
@@ -59,7 +59,8 @@ BEGIN
 		   CodEstadoCivil_cand,
 		   EstadoReg_cand,
 		   Ficticio_cand,
-		   CPF_Cand
+		   CPF_Cand,
+		   liberacaocvnovo AS LIBERACAO_CV_NOVO
 	FROM [hrh-data].dbo.Candidatos A
 	WHERE A.UltDtAtual_cand >= @DT_ATUALIZACAO_INICIO AND A.UltDtAtual_cand < @DT_ATUALIZACAO_FIM 
 	--AND A.Cod_cand = ( SELECT MAX(Cod_cand) FROM [hrh-data]..candidatos
@@ -88,14 +89,14 @@ BEGIN
 		   CodEstadoCivil_cand,
 		   EstadoReg_cand,
 		   Ficticio_cand,
-		   CPF_Cand
+		   CPF_Cand,
+		   liberacaocvnovo AS LIBERACAO_CV_NOVO
 	FROM [hrh-data].dbo.Candidatos A
 	
 
 END
 
-
-DELETE FROM #TMP_CANDIDATOS WHERE EstadoReg_cand <> 1 OR ISNULL(Ficticio_cand, 0) <> 0
+DELETE FROM #TMP_CANDIDATOS WHERE ISNULL(Ficticio_cand, 0) <> 0
 
 CREATE CLUSTERED INDEX IDX_COD_CAND ON #TMP_CANDIDATOS (COD_CAND)
 CREATE TABLE #TMP_CANDIDATO_LOGIN (CodCand_logCand INT,Data_logCand DATETIME)
@@ -112,13 +113,6 @@ GROUP BY CodCand_logCand
 INSERT INTO VAGAS_DW.VAGAS_DW.TMP_CANDIDATOS 
 SELECT A.Cod_Cand, 
 	  CONVERT(VARCHAR,ISNULL(ISNULL(ultCargoNormalizado_exp, UltCargo_exp),'Não Classificado'),100) AS ULTIMO_CARGO,
-	  --CASE	WHEN CodFormMax_cand IN ( 5,7,10 ) THEN 'Primeiro Grau'
-			--WHEN CodFormMax_cand IN ( 20, 25, 30 ) THEN 'Segundo Grau'
-			--WHEN CodFormMax_cand IN ( 27, 40 ) THEN 'Segundo Grau - Profissionalisante'
-			--WHEN CodFormMax_cand IN ( 50, 55, 60 ) THEN 'Formação Superior'
-			--WHEN CodFormMax_cand IN ( 70, 80, 90 ) THEN 'Pós Graduação'
-			--ELSE 'Não Classificado'
-	  -- END AS FORMACAO,
 	P.Descr_formMax AS FORMACAO,
 	CONVERT(VARCHAR(100),D.Descr_Hierarquia) AS NIVEL,
 	CONVERT(VARCHAR(100),E.Descr_cidadeMER) AS CIDADE,
@@ -203,7 +197,8 @@ SELECT A.Cod_Cand,
 							WHERE CodCand_hist = A.Cod_Cand AND Tipo_Hist = 0 ) 
 			  THEN 'Removido [BCE]'
 			  ELSE 'Não Completo [via BCE]' END
-		ELSE 'Do VAGAS - BCC' END AS ACESSO_RESTRITO,
+		ELSE CASE WHEN EstadoReg_cand = 1 THEN 'Do VAGAS - BCC' ELSE 'Não Completo [via BCC]' END
+		     END AS ACESSO_RESTRITO,
 	A.CodFormMax_cand, -- Campo será utilizado na carga do MAPA DE CARREIRAS
 	A.DtUltSal_cand, -- Campo será utilizado na carga do MAPA DE CARREIRAS
 	A.UltSal_cand,
@@ -216,15 +211,9 @@ SELECT A.Cod_Cand,
 	CONVERT(VARCHAR(100),I2.Descr_setor) AS AREA_INTERESSE_2,
 	CONVERT(VARCHAR(100),I3.Descr_setor) AS AREA_INTERESSE_3,
 	CONVERT(VARCHAR(100),I4.Descr_setor) AS AREA_INTERESSE_4,
-	CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5
-	--A.Nome_cand AS NOME,
-	--A.Celular_cand AS CELULAR,
-	--A.CPF_cand AS CPF,
-	--A.Email_cand AS EMAIL,
-	--A.Endereco_cand AS ENDERECO,
-	--A.Bairro_cand AS BAIRRO,
-	--A.Cep_cand AS CEP
---FROM [hrh-data].dbo.Candidatos A
+	CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5,
+	M.Descr_fonteCandidatura AS FONTE_CADASTRO,
+	A.LIBERACAO_CV_NOVO
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
@@ -286,4 +275,3 @@ LEFT OUTER JOIN [hrh-data].dbo.Cad_FonteCandidaturas M ON M.cod_fonteCandidatura
 LEFT OUTER JOIN [hrh-data].dbo.Divisoes N ON N.Cod_Div = L1.TipoNav_fnt
 LEFT OUTER JOIN [hrh-data].dbo.Clientes O ON O.Cod_Cli = N.CodCli_div
 LEFT OUTER JOIN [hrh-data].dbo.Cad_formacaoMax P ON P.Cod_formMax = A.CodFormMax_cand
-
