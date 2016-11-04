@@ -32,7 +32,11 @@ SELECT A.id AS ID_TREINAMENTO ,
     CASE WHEN LTRIM(RTRIM(A.description)) LIKE '%Ecossistema%' AND (LTRIM(RTRIM(A.description)) LIKE '%Ecossistema%' OR LTRIM(RTRIM(A.description)) LIKE '#%' OR A.modulo = 'academia_vagas') THEN 'Ecossistema VAGAS' 
 		 WHEN LTRIM(RTRIM(A.description)) LIKE '%Plus%' AND (LTRIM(RTRIM(A.description)) LIKE '%Ecossistema%' OR LTRIM(RTRIM(A.description)) LIKE '#%' OR A.modulo = 'academia_vagas') THEN 'VAGAS e-partner Módulo Plus' 
          WHEN LTRIM(RTRIM(A.description)) LIKE '%Essencial%' AND (LTRIM(RTRIM(A.description)) LIKE '%Essencial%' OR LTRIM(RTRIM(A.description)) LIKE '#%' OR A.modulo = 'academia_vagas') THEN 'VAGAS e-partner Módulo Essencial'  
-         WHEN LTRIM(RTRIM(A.description)) LIKE '%cabe_a%' AND (LTRIM(RTRIM(A.description)) LIKE '%cabe_a%' OR LTRIM(RTRIM(A.description)) LIKE '#%' OR A.modulo = 'academia_vagas') THEN 'Caindo de Cabeça nos Relatórios' END AS TIPO_ACADEMIA_VAGAS
+         WHEN LTRIM(RTRIM(A.description)) LIKE '%cabe_a%' AND SUBSTRING(REVERSE(LTRIM(RTRIM(A.description))), 1, LOCATE(' ', REVERSE(LTRIM(RTRIM(A.description))))) = 'I'  THEN 'Caindo de Cabeça nos Relatórios - Módulo I'
+         WHEN LTRIM(RTRIM(A.description)) LIKE '%cabe_a%' AND SUBSTRING(REVERSE(LTRIM(RTRIM(A.description))), 1, LOCATE(' ', REVERSE(LTRIM(RTRIM(A.description))))) = 'II' THEN 'Caindo de Cabeça nos Relatórios - Módulo II'
+         END AS TIPO_ACADEMIA_VAGAS
+         #LOCATE(' ', REVERSE(LTRIM(RTRIM(A.description)))) AS POSICAO_CARACTERE_BUSCADO ,
+		 #SUBSTRING(REVERSE(LTRIM(RTRIM(A.description))), 1, LOCATE(' ', REVERSE(LTRIM(RTRIM(A.description))))) AS MODULO
 FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.modified_user_id = B.id
 										LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
                                         LEFT OUTER JOIN sugarcrm.users AS D ON A.assigned_user_id = D.id

@@ -15,6 +15,7 @@ GO
 -- 27/07/2016 - Adicionado os campos do CNAE "CNAE_SECAO_ID", "CNAE_SECAO", "CNAE_DIVISAO_ID", "CNAE_DIVISAO", "CNAE_CLASSE_ID", "CNAE_CLASSE", "CNAE_FAIXA_FUNCIONARIOS" [solicitação Paula Oliveira Consultora]
 -- 05/08/2016 - Adicionado o campo "SEGMENTO_COMERC" [solicitação equipe comercial]
 -- 15/08/2016 - Adicionado campo "CNPJ" [solicitação Wesley (Financeiro)]
+-- 03/11/2016 - Adicionado os campos do CNAE "CNAE_SUBCLASSE_ID_C" e "CNAE_SUBCLASSE_DESCR_C".
 -- =============================================
 CREATE PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Clientes
 
