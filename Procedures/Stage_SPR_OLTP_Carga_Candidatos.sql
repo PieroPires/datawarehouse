@@ -213,7 +213,8 @@ SELECT A.Cod_Cand,
 	CONVERT(VARCHAR(100),I4.Descr_setor) AS AREA_INTERESSE_4,
 	CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5,
 	M.Descr_fonteCandidatura AS FONTE_CADASTRO,
-	A.LIBERACAO_CV_NOVO
+	A.LIBERACAO_CV_NOVO,
+	ISNULL(Q.regiao_estadoBR, '') AS REGIAO
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
@@ -275,3 +276,4 @@ LEFT OUTER JOIN [hrh-data].dbo.Cad_FonteCandidaturas M ON M.cod_fonteCandidatura
 LEFT OUTER JOIN [hrh-data].dbo.Divisoes N ON N.Cod_Div = L1.TipoNav_fnt
 LEFT OUTER JOIN [hrh-data].dbo.Clientes O ON O.Cod_Cli = N.CodCli_div
 LEFT OUTER JOIN [hrh-data].dbo.Cad_formacaoMax P ON P.Cod_formMax = A.CodFormMax_cand
+LEFT OUTER JOIN [hrh-data].[dbo].[Cad_estadosBR] AS Q ON F.Cod_EstadoMer = Q.Cod_estadoBR
