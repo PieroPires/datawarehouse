@@ -115,7 +115,8 @@ SELECT A.Cod_Vaga VAGAS_Cod_Vaga,
 		 WHEN ISNULL(A.tipoprocesso_vaga, 0) = 2 THEN 'PRC'
 		 WHEN ISNULL(A.tipoprocesso_vaga, 0) = 4 THEN 'REDES'
 		 ELSE 'NÃO CLASSIFICADO' END AS TIPO_PROCESSO,
-	CASE WHEN Teste_vaga = 0 THEN 'NÃO' ELSE 'SIM' END AS FLAG_VAGA_TESTE
+	CASE WHEN Teste_vaga = 0 THEN 'NÃO' ELSE 'SIM' END AS FLAG_VAGA_TESTE,
+	ISNULL(P.regiao_estadoBR, '') AS REGIAO
 
 FROM [hrh-data].dbo.VAGAS A
 INNER JOIN [hrh-data].dbo.Clientes B ON B.Cod_cli = A.CodCliente_vaga
@@ -135,6 +136,7 @@ LEFT OUTER JOIN [hrh-data].dbo.Cad_segmentos_grupos L ON L.Cod_segmentoGrp = J.C
 LEFT OUTER JOIN [hrh-data].dbo.Cad_Paises M ON M.Cod_pais = F.CodPais_estadoMer
 LEFT JOIN [hrh-data].dbo.Divisoes N ON N.Cod_div = A.CodDivVeic_vaga 
 LEFT JOIN [hrh-data].dbo.Cad_NavEx O ON O.Cod_navEx = N.CodNavEx_div
+LEFT OUTER JOIN [hrh-data].[dbo].[Cad_estadosBR] AS P ON F.Cod_estadoMer = P.Cod_estadoBR
 
 WHERE ColetaCur_vaga = 0 -- Não contar vagas de CAPTAÇÃO
 -- 23/03/2016 (CONFORME SUGESTÃO DA BETH PASSAREMOS A CONTABILIZAR VAGAS DE TESTE. CRIEI UMA SEGMENTAÇÃO COM O CAMPO "FLAG_TESTE")
