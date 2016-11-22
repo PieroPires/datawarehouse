@@ -207,14 +207,15 @@ SELECT A.Cod_Cand,
 	ISNULL(N.Nome_div,'VAGAS.com') AS Divisao_Origem,
 	ISNULL(O.Ident_cli,'VAGAS.com') AS Cliente_Origem,
 	M.Descr_fonteCandidatura AS Mecanismo_Origem,
+	M.Descr_fonteCandidatura AS FONTE_CADASTRO,
+	A.LIBERACAO_CV_NOVO,
+	ISNULL(Q.regiao_estadoBR, '') AS REGIAO,
 	CONVERT(VARCHAR(100),I.Descr_setor) AS AREA_INTERESSE_1,
 	CONVERT(VARCHAR(100),I2.Descr_setor) AS AREA_INTERESSE_2,
 	CONVERT(VARCHAR(100),I3.Descr_setor) AS AREA_INTERESSE_3,
 	CONVERT(VARCHAR(100),I4.Descr_setor) AS AREA_INTERESSE_4,
 	CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5,
-	M.Descr_fonteCandidatura AS FONTE_CADASTRO,
-	A.LIBERACAO_CV_NOVO,
-	ISNULL(Q.regiao_estadoBR, '') AS REGIAO
+	CASE WHEN ISNULL(O.Ident_cli,'VAGAS.com') = 'VAGAS.com' THEN 0 ELSE 1 END AS ORIGEM_TRABALHE_CONOSCO
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
