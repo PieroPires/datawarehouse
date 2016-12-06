@@ -24,15 +24,15 @@ TRUNCATE TABLE VAGAS_DW.TMP_INDICADORES_DOLAR
 DECLARE @CMD VARCHAR(8000)
 
 -- Processar dados do IPCA (buscar do portalbrasil)
-SET @CMD = 'C:\Python27\python M:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "IPCA"'
+SET @CMD = 'C:\Python27\python G:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "IPCA"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 -- Processar dados do IGP-M (buscar do portalbrasil)
-SET @CMD = 'C:\Python27\python M:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "IGPM"'
+SET @CMD = 'C:\Python27\python G:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "IGPM"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 -- Processar dados do dólar (buscar do cotacoes.economia.uol.com.br)
-SET @CMD = 'C:\Python27\python M:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "DOLAR"'
+SET @CMD = 'C:\Python27\python G:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "DOLAR"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 
