@@ -55,6 +55,15 @@ SET OPTIN_EXACT_TARGET = 1 ;
 UPDATE [VAGAS_DW].[VAGAS_DW].[CONTATOS_CRM] 
 SET OPTIN_EXACT_TARGET = 0 
 WHERE EMAIL = 'Michelle.Mica@dentsuaegis.com' ; 
+
+-- Atualização do campo "dominio" baseado no campo e-mail
+UPDATE VAGAS_DW.CONTATOS_CRM SET DOMINIO = REPLACE(REPLACE(SUBSTRING(EMAIL,CHARINDEX('@',EMAIL),LEN(EMAIL)),
+			   SUBSTRING(SUBSTRING(EMAIL,CHARINDEX('@',EMAIL),LEN(EMAIL)),CHARINDEX('.',SUBSTRING(EMAIL,CHARINDEX('@',EMAIL),LEN(EMAIL))),
+			   LEN(SUBSTRING(EMAIL,CHARINDEX('@',EMAIL),LEN(EMAIL)))),
+	   ''),'@','')
+FROM VAGAS_DW.CONTATOS_CRM
+WHERE DOMINIO IS NULL
+
  
  
 -- Fazer a carga particionada, conforme a data modificação e a data de inclusão, considerar os updates nos campos dos contatos já existentes em VAGAS_DW.CONTATOS_CRM, e fazer o insert a partir da VAGAS_DW.TMP_CONTA.
