@@ -109,7 +109,7 @@ SELECT A.Cod_Vaga VAGAS_Cod_Vaga,
 	CASE WHEN A.InvisivelEmLista_vaga = 1 THEN 'SIM' ELSE 'NÃO' END AS INVISIVEL,
 
 	CASE WHEN N.CodNavEx_div = 300 THEN 'RI' -- RECRUTAMENTO INTERNO
-		 WHEN ISNULL(A.QtdeRespCand_vaga, 0) = 0 THEN 'GESTÃO' -- VAGAS DE GESTÃO SÃO AQUELAS ONDE NÃO HÁ CANDIDATURAS
+		 WHEN ISNULL(A.QtdeRespCand_vaga, 0) = 0 AND ISNULL(A.tipoprocesso_vaga, 0) <> 4 THEN 'GESTÃO' -- VAGAS DE GESTÃO SÃO AQUELAS ONDE NÃO HÁ CANDIDATURAS (20161227 - NÃO CONSIDERAR VAGAS REDES)
 		 WHEN ISNULL(A.tipoprocesso_vaga, 0) = 0 THEN 'RE'
 		 WHEN ISNULL(A.tipoprocesso_vaga, 0) = 1 THEN 'PET'
 		 WHEN ISNULL(A.tipoprocesso_vaga, 0) = 2 THEN 'PRC'
