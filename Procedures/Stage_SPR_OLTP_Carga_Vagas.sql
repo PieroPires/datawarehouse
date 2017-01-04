@@ -40,6 +40,20 @@ TRUNCATE TABLE VAGAS_DW.TMP_VAGAS
    WHERE CountOfCand_czMonitVaga >= 0    
    GROUP BY CodVaga_czMonitVaga;
 
+-- Inclusão do campo QTD_MENSAGENS_UNICAS:
+SELECT	A.CodVaga_hist ,
+		COUNT(DISTINCT A.CodCand_hist) AS QTD_MENSAGENS_UNICAS
+INTO	#TMP_MSG_UNICA
+FROM	[hrh-data].[dbo].[Historico] AS A
+WHERE	A.Tipo_hist IN (-120, -107)
+		AND A.Anotacao_hist LIKE '%foi%aprovado%'
+		AND A.ChaveSQL_hist >= 1322983768 
+		AND A.CodVaga_hist IS NOT NULL
+GROUP BY A.CodVaga_hist	;
+
+CREATE NONCLUSTERED INDEX IDX_#TMP_MSG_UNICA ON #TMP_MSG_UNICA (CodVaga_hist) ;
+
+
 -- DROP TABLE Tempdb.dbo.TMP_VAGAS
 WITH SETOR -- Para as VAGAS selecionadas, listar pela ordem de criação, os setores de cada uma
 AS (    
@@ -116,7 +130,8 @@ SELECT A.Cod_Vaga VAGAS_Cod_Vaga,
 		 WHEN ISNULL(A.tipoprocesso_vaga, 0) = 4 THEN 'REDES'
 		 ELSE 'NÃO CLASSIFICADO' END AS TIPO_PROCESSO,
 	CASE WHEN Teste_vaga = 0 THEN 'NÃO' ELSE 'SIM' END AS FLAG_VAGA_TESTE,
-	ISNULL(P.regiao_estadoBR, '') AS REGIAO
+	ISNULL(P.regiao_estadoBR, '') AS REGIAO ,
+	CASE WHEN Q.QTD_MENSAGENS_UNICAS IS NULL THEN 0 ELSE Q.QTD_MENSAGENS_UNICAS END AS QTD_MENSAGENS_UNICAS
 
 FROM [hrh-data].dbo.VAGAS A
 INNER JOIN [hrh-data].dbo.Clientes B ON B.Cod_cli = A.CodCliente_vaga
@@ -137,6 +152,7 @@ LEFT OUTER JOIN [hrh-data].dbo.Cad_Paises M ON M.Cod_pais = F.CodPais_estadoMer
 LEFT JOIN [hrh-data].dbo.Divisoes N ON N.Cod_div = A.CodDivVeic_vaga 
 LEFT JOIN [hrh-data].dbo.Cad_NavEx O ON O.Cod_navEx = N.CodNavEx_div
 LEFT OUTER JOIN [hrh-data].[dbo].[Cad_estadosBR] AS P ON F.Cod_estadoMer = P.Cod_estadoBR
+LEFT OUTER JOIN #TMP_MSG_UNICA AS Q ON A.Cod_vaga = Q.CodVaga_hist
 
 WHERE ColetaCur_vaga = 0 -- Não contar vagas de CAPTAÇÃO
 -- 23/03/2016 (CONFORME SUGESTÃO DA BETH PASSAREMOS A CONTABILIZAR VAGAS DE TESTE. CRIEI UMA SEGMENTAÇÃO COM O CAMPO "FLAG_TESTE")

@@ -216,7 +216,8 @@ SELECT A.Cod_Cand,
 	CONVERT(VARCHAR(100),I4.Descr_setor) AS AREA_INTERESSE_4,
 	CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5,
 	CASE WHEN ISNULL(O.Ident_cli,'VAGAS.com') = 'VAGAS.com' THEN 0 ELSE 1 END AS ORIGEM_TRABALHE_CONOSCO ,
-	CASE WHEN DATEDIFF(YEAR, A.DtNasc_Cand, CAST(GETDATE() AS DATE)) < 0 THEN NULL ELSE DATEDIFF(YEAR, A.DtNasc_Cand, CAST(GETDATE() AS DATE)) END AS IDADE_CAND
+	CASE WHEN DATEDIFF(YEAR, A.DtNasc_Cand, CAST(GETDATE() AS DATE)) < 0 THEN NULL ELSE DATEDIFF(YEAR, A.DtNasc_Cand, CAST(GETDATE() AS DATE)) END AS IDADE_CAND ,
+	CASE WHEN R.CodCand_candREM IS NULL THEN 0 ELSE 1 END AS CAND_REMOVIDO
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
@@ -279,3 +280,4 @@ LEFT OUTER JOIN [hrh-data].dbo.Divisoes N ON N.Cod_Div = L1.TipoNav_fnt
 LEFT OUTER JOIN [hrh-data].dbo.Clientes O ON O.Cod_Cli = N.CodCli_div
 LEFT OUTER JOIN [hrh-data].dbo.Cad_formacaoMax P ON P.Cod_formMax = A.CodFormMax_cand
 LEFT OUTER JOIN [hrh-data].[dbo].[Cad_estadosBR] AS Q ON F.Cod_EstadoMer = Q.Cod_estadoBR
+LEFT OUTER JOIN [hrh-data].[dbo].[Cand-REM] AS R ON A.Cod_Cand = R.CodCand_candREM
