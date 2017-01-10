@@ -111,7 +111,7 @@ DECLARE @ANO_REF SMALLDATETIME
 SELECT @ANO_REF = CONVERT(SMALLDATETIME,CONVERT(VARCHAR,YEAR(GETDATE()) - 1) + '0101')
 
 -- VAGAS ABERTAS POR MÊS
-SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtInicioWeb_vaga,112)) AS Data_Publicacao,
+SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtPrimInicioWeb_vaga,112)) AS Data_Publicacao,
 	   B.Ident_Cli AS Cliente_VAGAS,
 	   COUNT(*) AS QTD_VAGAS 
 INTO #TMP_VAGAS
@@ -124,9 +124,9 @@ AND Teste_vaga = 0 -- -- nao eh uma vaga de teste (Não considerar no Cálculo)
 AND VagaModelo_vaga = 0 -- Vaga não é modelo              
 AND LEFT(Cargo_vaga,5) <> 'demo ' -- a vaga nao foi criada durante uma demonstracao    
 AND LEFT(Cargo_vaga,5) <> 'demo-' --     
-AND DtInicioWeb_vaga >= @ANO_REF 
+AND DtPrimInicioWeb_vaga >= @ANO_REF 
 AND A.Cod_Vaga <> 210366 -- Vaga com data pub. inconsistente  
-GROUP BY CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtInicioWeb_vaga,112)),
+GROUP BY CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtPrimInicioWeb_vaga,112)),
 		 B.Ident_Cli
 ORDER BY Cliente_VAGAS, Data_Publicacao
 
