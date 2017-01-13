@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE VIEW `vwOportunidadesComProdutos`
+CREATE OR REPLACE VIEW `vwOportunidadesComProdutos`
 AS
 select    `acc`.`name` AS `cntConta`
           ,`acc`.`account_type` AS `cntCategoria`
@@ -59,6 +59,10 @@ select    `acc`.`name` AS `cntConta`
 		  ,accs.cnae_subclasse_id_c
 		  ,accs.cnae_subclasse_descr_c
 		  ,CONVERT(usrposvenda.user_name USING Latin1) AS cntPosVenda
+		  ,offprop_cstm.num_posicoes_mes_c AS POSICOES_MES 
+          ,offprop_cstm.num_unidades_c AS TOTAL_UNIDADES
+          ,offprop_cstm.num_posicoes_unidade_mes_c AS POSICOES_POR_UNIDADE
+          ,off.clientcontact_id AS ID_CONTATO          
 from     ((((((((((((((((`opportunities` `opp`
           join `users` `usropp` on((`usropp`.`id` = `opp`.`assigned_user_id`)))
           join `accounts_opportunities` `accopp` on(((`accopp`.`opportunity_id` = `opp`.`id`) and (`accopp`.`deleted` = 0))))
@@ -82,6 +86,7 @@ from     ((((((((((((((((`opportunities` `opp`
 	  left join users usrcropp on usrcropp.id = opp.created_by
 	  left join users usrposvenda on usrposvenda.id = accs.user_id_c
           left join oqc_offering offprop on offprop.id = accs.oqc_offering_id_c
+	  left join oqc_offering_cstm offprop_cstm on offprop_cstm.id_c = offprop.id
           left join users usrmodaccount on usrmodaccount.id = acc.modified_user_id
           left join opportunities_cstm opp_cstm on opp_cstm.id_c = opp.id
           left join campaigns camp on camp.id = opp.campaign_id

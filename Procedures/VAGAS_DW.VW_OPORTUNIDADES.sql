@@ -64,7 +64,10 @@ SELECT ISNULL(Conta,'') AS cntConta,
 	   MOTIVO_PERDA_COMPLEMENTO,
 	   ISNULL(Campanha,'Sem Campanha') AS Campanha,
 	   SEGMENTO_COMERC,
-	   POSVENDA AS POSVENDA
+	   POSVENDA AS POSVENDA,
+	   CONTEM_CREDITO_OFFLINE,
+	   CNPJ,
+	   EMAIL_CONTATO
 	    /*,
 	   MEDIA_VALOR_REAL AS Media_Valor_Real,
 	   MAX_VALOR_REAL AS Max_Valor_Real,
