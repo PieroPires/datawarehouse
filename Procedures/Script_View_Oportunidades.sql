@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE VIEW `vwOportunidadesComProdutos`
 AS
 select    `acc`.`name` AS `cntConta`
@@ -41,8 +42,8 @@ select    `acc`.`name` AS `cntConta`
 		  ,usrcropp.user_name AS oppCriador
           ,usrmodaccount.user_name AS cntUsuarioAlteracao
           ,acc.date_modified AS DataAlteracaoConta
-          ,opp_cstm.motivo_da_perda_c AS MotivoPerda
-          ,opp_cstm.motivo_da_perda_complemento_c AS MotivoPerdaComplemento
+          #,opp_cstm.motivo_da_perda_c AS MotivoPerda
+          #,opp_cstm.motivo_da_perda_complemento_c AS MotivoPerdaComplemento
           ,camp.name AS campanha
           ,case when exists ( select * 
 							   from accounts 
@@ -62,7 +63,11 @@ select    `acc`.`name` AS `cntConta`
 		  ,offprop_cstm.num_posicoes_mes_c AS POSICOES_MES 
           ,offprop_cstm.num_unidades_c AS TOTAL_UNIDADES
           ,offprop_cstm.num_posicoes_unidade_mes_c AS POSICOES_POR_UNIDADE
-          ,off.clientcontact_id AS ID_CONTATO          
+          ,off.clientcontact_id AS ID_CONTATO
+          ,CONVERT(opp_cstm.motivo_do_fechamento_c USING Latin1) AS MOTIVO_FECHAMENTO
+	      ,CONVERT(opp_cstm.motivo_do_fechamento_detalhe_c USING Latin1) AS MOTIVO_FECHAMENTO_DETALHE
+          ,CONVERT(opp_cstm.concorrente_c USING Latin1) AS MOTIVO_CONCORRENTE
+          ,CONVERT(CAST(opp_cstm.perfis_especificos_c AS CHAR(200)) USING Latin1) AS MOTIVO_PERFIL_ESPECIFICO
 from     ((((((((((((((((`opportunities` `opp`
           join `users` `usropp` on((`usropp`.`id` = `opp`.`assigned_user_id`)))
           join `accounts_opportunities` `accopp` on(((`accopp`.`opportunity_id` = `opp`.`id`) and (`accopp`.`deleted` = 0))))
