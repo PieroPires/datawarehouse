@@ -46,8 +46,7 @@ SELECT	A.CodVaga_hist ,
 INTO	#TMP_MSG_UNICA
 FROM	[hrh-data].[dbo].[Historico] AS A
 WHERE	A.Tipo_hist IN (-120, -107)
-		AND A.Anotacao_hist LIKE '%foi%aprovado%'
-		AND A.ChaveSQL_hist >= 1322983768 
+		AND A.ChaveSQL_hist >= 1027590703 -- A PARTIR DE 2015 (ALTERADO EM 20170317) 
 		AND A.CodVaga_hist IS NOT NULL
 GROUP BY A.CodVaga_hist	;
 
