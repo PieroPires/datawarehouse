@@ -67,6 +67,10 @@ OUTER APPLY ( SELECT TOP 1 * FROM VAGAS_DW.OPORTUNIDADES
 			  ORDER BY DataFechamento DESC,DataCriacao DESC) ULT
 WHERE A.RECORRENTE = 1 -- apenas produtos recorrentes
 
+-- atualização "Grupo Votorantim" (segmentação de conta) [processo acordado com Tati Pires e Baraza]
+UPDATE VAGAS_DW.OPORTUNIDADES SET ULTIMO_VALOR = 10738.30
+FROM VAGAS_DW.OPORTUNIDADES 
+WHERE Oportunidade = 'Votorantim 04'
 
 -- var ÉRevFitRev 
 --UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO_COM_VALOR_ANTERIOR = CASE WHEN REVISAO_FIT = 1 
