@@ -47,7 +47,8 @@ BEGIN
 			 CONVERT(VARCHAR(8000),A.Descr_exp) AS DESCRICAO_EXPERIENCIA,
 			 CONVERT(VARCHAR(120),A.NacionalidadeEmp_exp) AS NACIONALIDADE,
 			 A.TipoEmp_exp AS TIPO_EMPRESA,
-			 UltCargoNormalizado_exp
+			 UltCargoNormalizado_exp,
+			 CHAVESQL_EXP
 	  FROM [hrh-data].dbo.[Cand-Experiencia] A
 	  LEFT OUTER JOIN [hrh-data].dbo.Cad_segmentos B ON B.Cod_Segmento = A.CodSegmento_exp
 	  LEFT OUTER JOIN [hrh-data].dbo.Cad_portes C ON C.Cod_Porte = A.CodPorte_exp
@@ -72,17 +73,15 @@ BEGIN
 			 CONVERT(VARCHAR(8000),A.Descr_exp) AS DESCRICAO_EXPERIENCIA,
 			 CONVERT(VARCHAR(120),A.NacionalidadeEmp_exp) AS NACIONALIDADE,
 			 A.TipoEmp_exp AS TIPO_EMPRESA,
-			 UltCargoNormalizado_exp
+			 UltCargoNormalizado_exp,
+			 CHAVESQL_EXP
 	  FROM [hrh-data].dbo.[Cand-Experiencia] A
 	  LEFT OUTER JOIN [hrh-data].dbo.Cad_segmentos B ON B.Cod_Segmento = A.CodSegmento_exp
 	  LEFT OUTER JOIN [hrh-data].dbo.Cad_portes C ON C.Cod_Porte = A.CodPorte_exp
 	  INNER JOIN [hrh-data].dbo.[Candidatos] D ON D.Cod_Cand = A.CodCand_exp
-	  WHERE D.EstadoReg_cand = 1
-		AND ISNULL(D.Ficticio_cand, 0) = 0 
-		--AND D.UltDtAtual_cand >= @DT_ATUALIZACAO_INICIO AND D.UltDtAtual_cand < @DT_ATUALIZACAO_FIM 
-		--AND D.Cod_cand = ( SELECT MAX(Cod_cand) 
-		--					FROM [hrh-data].DBO.candidatos
-		--					WHERE CPF_cand = D.CPF_cand ) -- MAIOR CÓDIGO CANDIDATO
+	  --WHERE D.EstadoReg_cand = 1
+	--	AND ISNULL(D.Ficticio_cand, 0) = 0 
+		
 
 END
 	  
