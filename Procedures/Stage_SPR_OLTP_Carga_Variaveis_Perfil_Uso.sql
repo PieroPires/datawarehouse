@@ -1,5 +1,5 @@
 -- select * from vagas_dw.vagas_dw.TMP_CLIENTES_PERFIL_USO
--- EXEC VAGAS_DW.SPR_OLTP_Carga_Variaveis_Perfil_Uso
+-- EXEC STAGE.VAGAS_DW.SPR_OLTP_Carga_Variaveis_Perfil_Uso
 USE STAGE
 GO
 
