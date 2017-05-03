@@ -917,7 +917,7 @@ AND CONTEM_FIT = 1
 AND EXISTS ( SELECT * 
 			 FROM VAGAS_DW.OPORTUNIDADES 
 			 WHERE CONTAID = A.CONTA_ID
-			 AND TIPO_CONTA = 'cliente_bloqueado_inadimplencia' )
+			 AND TIPO_CONTA IN ('cliente_bloqueado_inadimplencia','cliente_bloqueado') )
 
 
 -- Limpar dados da tabela fato
