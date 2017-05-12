@@ -35,7 +35,7 @@ CREATE TABLE #TMP_CANDIDATOS([Cod_Cand] [int] NOT NULL,[CodFormMax_cand] [smalli
 	[dtcriacao_cand] [datetime] NULL,[UltDtAtual_cand] [datetime] NOT NULL,[Email_cand] [nvarchar](60) NULL,
 	[FezAcessoIrrestrito_cand] [bit] NOT NULL,[DtUltSal_cand] [datetime] NULL,[UltSal_cand] [int] NULL,
 	[CodCidade_cand] [int] NULL,[CodEstadoCivil_cand] [smallint] NULL,[EstadoReg_cand] [tinyint] NOT NULL,
-	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL,LIBERACAO_CV_NOVO TINYINT ) 
+	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL,LIBERACAO_CV_NOVO TINYINT,Email varchar(120) ) 
 
 IF @DT_ATUALIZACAO_INICIO IS NOT NULL -- TESTA SE É CARGA FULL
 BEGIN 
@@ -60,7 +60,8 @@ BEGIN
 		   EstadoReg_cand,
 		   Ficticio_cand,
 		   CPF_Cand,
-		   liberacaocvnovo AS LIBERACAO_CV_NOVO
+		   liberacaocvnovo AS LIBERACAO_CV_NOVO,
+		   Email_Cand
 	FROM [hrh-data].dbo.Candidatos A
 	WHERE A.UltDtAtual_cand >= @DT_ATUALIZACAO_INICIO AND A.UltDtAtual_cand < @DT_ATUALIZACAO_FIM 
 	--AND A.Cod_cand = ( SELECT MAX(Cod_cand) FROM [hrh-data]..candidatos
@@ -90,9 +91,9 @@ BEGIN
 		   EstadoReg_cand,
 		   Ficticio_cand,
 		   CPF_Cand,
-		   liberacaocvnovo AS LIBERACAO_CV_NOVO
-	FROM [hrh-data].dbo.Candidatos A
-	
+		   liberacaocvnovo AS LIBERACAO_CV_NOVO,
+		   Email_Cand
+	FROM [hrh-data].dbo.Candidatos A	
 
 END
 
@@ -196,9 +197,9 @@ SELECT A.Cod_Cand,
 							FROM [hrh-data].dbo.EntradaHistorico
 							WHERE CodCand_hist = A.Cod_Cand AND Tipo_Hist = 0 ) 
 			  THEN 'Removido [BCE]'
-			  ELSE 'Não Completo [via BCE]' END
-		ELSE CASE WHEN EstadoReg_cand = 1 THEN 'Do VAGAS - BCC' ELSE 'Não Completo [via BCC]' END
-		     END AS ACESSO_RESTRITO,
+			  ELSE 'Desistência via Navex' END
+		ELSE CASE WHEN EstadoReg_cand = 1 THEN 'Curriculo - BCC' ELSE 'Cadastro - BCC ' END
+		     END AS TIPO_CADASTRO,
 	A.CodFormMax_cand, -- Campo será utilizado na carga do MAPA DE CARREIRAS
 	A.DtUltSal_cand, -- Campo será utilizado na carga do MAPA DE CARREIRAS
 	A.UltSal_cand,
@@ -210,14 +211,15 @@ SELECT A.Cod_Cand,
 	M.Descr_fonteCandidatura AS FONTE_CADASTRO,
 	A.LIBERACAO_CV_NOVO,
 	ISNULL(Q.regiao_estadoBR, '') AS REGIAO,
-	CONVERT(VARCHAR(100),I.Descr_setor) AS AREA_INTERESSE_1,
-	CONVERT(VARCHAR(100),I2.Descr_setor) AS AREA_INTERESSE_2,
-	CONVERT(VARCHAR(100),I3.Descr_setor) AS AREA_INTERESSE_3,
-	CONVERT(VARCHAR(100),I4.Descr_setor) AS AREA_INTERESSE_4,
-	CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5,
 	CASE WHEN ISNULL(O.Ident_cli,'VAGAS.com') = 'VAGAS.com' THEN 0 ELSE 1 END AS ORIGEM_TRABALHE_CONOSCO ,
 	CASE WHEN DATEDIFF(YEAR, A.DtNasc_Cand, CAST(GETDATE() AS DATE)) < 0 THEN NULL ELSE DATEDIFF(YEAR, A.DtNasc_Cand, CAST(GETDATE() AS DATE)) END AS IDADE_CAND ,
-	CASE WHEN R.CodCand_candREM IS NULL THEN 0 ELSE 1 END AS CAND_REMOVIDO
+	CASE WHEN R.CodCand_candREM IS NULL THEN 0 ELSE 1 END AS CAND_REMOVIDO,
+	A.Email_Cand,
+	CONVERT(VARCHAR(100),I.Descr_setor) AS AREA_INTERESSE_1, 
+    CONVERT(VARCHAR(100),I2.Descr_setor) AS AREA_INTERESSE_2, 
+    CONVERT(VARCHAR(100),I3.Descr_setor) AS AREA_INTERESSE_3, 
+    CONVERT(VARCHAR(100),I4.Descr_setor) AS AREA_INTERESSE_4, 
+    CONVERT(VARCHAR(100),I5.Descr_setor) AS AREA_INTERESSE_5
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
