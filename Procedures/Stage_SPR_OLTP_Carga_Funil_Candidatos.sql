@@ -59,12 +59,12 @@ CREATE NONCLUSTERED INDEX IDX_#Experiencia_profissional_Cod_cand_exp ON #Experie
 -- Base candidatos DW:
 -- DROP TABLE #Base_candidatos_DW ;
 SELECT	A.COD_CAND ,
-		A.ACESSO_RESTRITO ,
+		A.TIPO_CADASTRO ,
 		A.LIBERACAO_CV_NOVO
 INTO	#Base_candidatos_DW
 FROM	[VAGAS_DW].[VAGAS_DW].[CANDIDATOS] AS A		LEFT OUTER JOIN [hrh-data].[dbo].[Candidatos] AS B ON A.COD_CAND = B.Cod_cand
 WHERE	A.REMOVIDO_CAND = 0 -- Currículo não removido
-		AND A.ACESSO_RESTRITO IN ('Do VAGAS - BCC', 'Não Completo [via BCC]') ;
+		AND A.TIPO_CADASTRO IN ('Curriculo - BCC', 'Cadastro - BCC ') ;
 
 -- Performance:
 CREATE NONCLUSTERED INDEX IDX_#Base_candidatos_DW_Cod_cand ON #Base_candidatos_DW (Cod_cand) ;
@@ -90,7 +90,7 @@ SELECT	A.COD_CAND ,
 		CASE WHEN G.CodCand_idiomaCand IS NULL THEN 0 ELSE 1 END AS IDIOMA ,
 		CASE WHEN (A1.UltSal_cand IS NULL OR A1.UltBeneficios_cand IS NULL) THEN 0 ELSE 1 END AS ULTIMO_SALARIO ,
 		CASE WHEN (A1.InfoCompl_cand IS NULL) THEN 0 ELSE 1 END AS INF_COMPLEMENTARES ,
-		A.ACESSO_RESTRITO
+		A.TIPO_CADASTRO
 INTO	#Dados_Funil_candidatos
 FROM	#Base_candidatos_DW AS A	LEFT OUTER JOIN [hrh-data].[dbo].[Candidatos] AS A1 ON A.COD_CAND = A1.Cod_cand
 									LEFT OUTER JOIN [hrh-data].[dbo].[Cand-Doc] AS B ON A.Cod_cand = B.CodCand_candDoc
@@ -127,7 +127,7 @@ SELECT	DISTINCT COD_CAND ,
 		IDIOMA ,
 		ULTIMO_SALARIO ,
 		INF_COMPLEMENTARES ,
-		ACESSO_RESTRITO
+		TIPO_CADASTRO
 INTO	#Base_CVs_unicos
 FROM	#Dados_Funil_candidatos ;
 
@@ -176,8 +176,8 @@ WHERE	NOME = 1
 -- DROP TABLE #Pre_Cadastro_CV_Apto ;
 SELECT	COD_CAND ,
 		DATA_CADASTRO ,
-		CASE WHEN ACESSO_RESTRITO = 'Não Completo [via BCC]' THEN 'PRÉ - CADASTRO'
-			 WHEN ACESSO_RESTRITO = 'Do VAGAS - BCC' THEN 'Currículo Apto' END AS TIPO_CADASTRO ,
+		CASE WHEN TIPO_CADASTRO = 'Cadastro - BCC ' THEN 'PRÉ - CADASTRO'
+			 WHEN TIPO_CADASTRO = 'Curriculo - BCC' THEN 'Currículo Apto' END AS TIPO_CADASTRO ,
 		CURRICULO_NOVO ,
 		NOME ,
 		FOTO ,
