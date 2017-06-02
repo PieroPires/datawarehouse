@@ -31,7 +31,7 @@ SELECT A.Ident_Cli AS Cliente_VAGAS,
        QtdeMaxVagas_cliPerfUso, -- Máximo PerfilContratado RE (Recrutamento externo)
 	   QtdeMinVagasRI_cliPerfUso, -- Minimo PerfilContratado RI (Recrutamento interno)
 	   QtdeMaxVagasRI_cliPerfUso,  -- Máximo PerfilContratado RI (Recrutamento interno)
-	   CASE WHEN A.Cod_Cli = 40647 THEN NULL ELSE -- A TAM EXECUTIVA ESTÁ COM DATA INCONSISTENTE (30130503)
+	   CASE WHEN A.Cod_Cli IN (40647,65836) THEN NULL ELSE -- A TAM EXECUTIVA ESTÁ COM DATA INCONSISTENTE (30130503) e a PIRELLI Comercial 
 		   CASE WHEN restrito_cli = 0 AND sobdemanda_cli = 0 THEN CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DataContrato_cliPerfUso,112)) -- FIT
 				WHEN sobdemanda_cli = 1 THEN CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DtContratoServ_cli,112)) -- FLEX A | Créditos VAGAS
 				WHEN restrito_cli = 1 THEN CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DtContratoServ_cli,112)) -- FLEX C
