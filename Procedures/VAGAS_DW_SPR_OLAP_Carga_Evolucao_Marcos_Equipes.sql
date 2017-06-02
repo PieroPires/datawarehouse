@@ -75,8 +75,9 @@ AND ID_EQUIPE <> 4 -- A PLANILHA DESTA EQUIPE NÃO ESTA FUNCIONANDO (FE SANTANA E
 		-- Tratar erros ocorridos na rotina do Python	
 		IF EXISTS ( SELECT * FROM #TMP_LOG_ERRO WHERE CHARINDEX('ERROR_MESSAGE',ERRO) > 0 ) 
 		BEGIN 
+			SELECT * FROM #TMP_LOG_ERRO
 			SET @MSG = 'ERRO ocorrido na importação dos dados no ID_CONTROLE_SPREADSHEET :' + CONVERT(VARCHAR,@ID_CONTROLE_SPREADSHEET)
-			RAISERROR(@MSG , 16, 1) 
+			RAISERROR(@MSG , 16, 1) 			
 		END
 
 		-- Tratar diferenças na estrutura dos dados
