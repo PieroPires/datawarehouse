@@ -1,7 +1,8 @@
 ALTER VIEW VAGAS_DW.VW_OPORTUNIDADES
 AS
 
-SELECT ISNULL(Conta,'') AS cntConta,
+SELECT CONTAID AS CONTA_ID,
+	   ISNULL(Conta,'') AS cntConta,
 	   ISNULL(ID_HSYS,'') AS idhsys,	
 	   ISNULL(ID_VAGAS,'') AS ID_VAGAS,	
 	   ISNULL(Categoria,'') AS cntCategoria,
