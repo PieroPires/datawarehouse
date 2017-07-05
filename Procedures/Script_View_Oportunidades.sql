@@ -59,7 +59,6 @@ select    `acc`.`name` AS `cntConta`
 		  ,CONVERT(accs.segmento_c USING Latin1) AS segmento
 		  ,accs.cnae_subclasse_id_c
 		  ,accs.cnae_subclasse_descr_c
-		  ,CONVERT(usrposvenda.user_name USING Latin1) AS cntPosVenda
 		  ,offprop_cstm.num_posicoes_mes_c AS POSICOES_MES 
           ,offprop_cstm.num_unidades_c AS TOTAL_UNIDADES
           ,offprop_cstm.num_posicoes_unidade_mes_c AS POSICOES_POR_UNIDADE
@@ -89,7 +88,6 @@ from     ((((((((((((((((`opportunities` `opp`
           left join `oqc_product` `prod` on(((`prod`.`id` = `serv`.`product_id`) and (`prod`.`deleted` = 0))))
           left join users usraccount on usraccount.id = acc.assigned_user_id
 	  left join users usrcropp on usrcropp.id = opp.created_by
-	  left join users usrposvenda on usrposvenda.id = accs.user_id_c
           left join oqc_offering offprop on offprop.id = accs.oqc_offering_id_c
 	  left join oqc_offering_cstm offprop_cstm on offprop_cstm.id_c = offprop.id
           left join users usrmodaccount on usrmodaccount.id = acc.modified_user_id
