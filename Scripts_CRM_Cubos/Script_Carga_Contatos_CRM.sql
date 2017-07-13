@@ -8,54 +8,31 @@ USE sugarcrm ;
  
 -- Query: 
 SELECT  COD_CONTATO , 
-    CONVERT(NOME USING latin1) AS NOME , 
-    CONVERT(SOBRENOME USING latin1) AS SOBRENOME , 
+		CONVERT(NOME USING latin1) AS NOME , 
+		CONVERT(SOBRENOME USING latin1) AS SOBRENOME , 
         DATA_INCLUSAO , 
-    DATA_MODIFICACAO , 
+		DATA_MODIFICACAO , 
         CONVERT(CARGO USING latin1) AS CARGO , 
         CONVERT(DEPARTAMENTO USING latin1) AS DEPARTAMENTO , 
         CONVERT(TELEFONE_CELULAR USING latin1) AS TELEFONE_CELULAR , 
         CONVERT(TELEFONE_CONTATO USING latin1) AS TELEFONE_CONTATO , 
         CONVERT(TELEFONE_OUTRO USING latin1) AS TELEFONE_OUTRO , 
-    CONVERT(RUA USING latin1) AS RUA,        
+		CONVERT(RUA USING latin1) AS RUA,        
         CONVERT(CIDADE USING latin1) AS CIDADE , 
         CONVERT(ESTADO USING latin1) AS ESTADO , 
         CONVERT(PAÍS USING latin1) AS PAÍS  , 
         CONVERT(EMAIL USING latin1) AS EMAIL , 
         CONVERT(CLIENTE_VAGAS USING latin1) AS CLIENTE_VAGAS , 
         CONVERT(CONTA_CRM USING latin1) AS CONTA_CRM , 
-        CONVERT(COD_CONTA_CRM USING latin1) AS COD_CONTA_CRM 
+        CONVERT(COD_CONTA_CRM USING latin1) AS COD_CONTA_CRM ,
+		ADMIN ,
+        CONTATO_PRINCIPAL
 FROM  ( 
-  SELECT  A.id AS COD_CONTATO , 
-      CONCAT( 
-      CASE  
-        WHEN (A.first_name IS NULL OR A.first_name = '' OR A.first_name = ' ' ) 
-          THEN SUBSTRING(REPLACE(REPLACE(REPLACE(CONCAT(LTRIM(RTRIM(A.last_name)), ' '), CHAR(9), ' '), CHAR(10), ' '), CHAR(13), ' '), 1, LOCATE(' ', REPLACE(REPLACE(REPLACE(CONCAT(LTRIM(RTRIM(A.last_name)), ' '), CHAR(9), ' '), CHAR(10), ' '), CHAR(13), ' '))) 
-          WHEN LOCATE(CHAR(9), LTRIM(A.first_name)) > 0  
-            THEN REPLACE(SUBSTRING(LTRIM(A.first_name), 1, LOCATE(CHAR(9), LTRIM(A.first_name))), CHAR(9), '') 
-          WHEN LOCATE(CHAR(32), LTRIM(A.first_name)) > 0  
-            THEN REPLACE(SUBSTRING(LTRIM(A.first_name), 1, LOCATE(CHAR(32), LTRIM(A.first_name))), CHAR(32), '') 
-          WHEN LOCATE(CHAR(10), LTRIM(A.first_name)) > 0  
-            THEN REPLACE(SUBSTRING(LTRIM(A.first_name), 1, LOCATE(CHAR(10), LTRIM(A.first_name))), CHAR(10), '') 
-          ELSE LTRIM(A.first_name)  
-        END 
-            , ' ') AS NOME , 
-      CASE 
-        WHEN LOCATE(' ', LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(A.last_name, CHAR(9), ' '), CHAR(10), ' '), CHAR(32), ' ')))) = 0 
-          THEN '' 
-        ELSE 
-          CASE 
-            WHEN LOCATE(CHAR(9), REVERSE(RTRIM(LTRIM(A.last_name)))) > 0 
-              THEN REVERSE(SUBSTRING(CONCAT(REVERSE(LTRIM(RTRIM(TRIM(BOTH SUBSTRING(A.last_name, LOCATE('(', A.last_name), LOCATE(')', A.last_name)) FROM A.last_name)))), ' '), 1, LOCATE(CHAR(9), CONCAT(REVERSE(LTRIM(RTRIM(TRIM(BOTH SUBSTRING(A.last_name, LOCATE('(', A.last_name), LOCATE(')', A.last_name)) FROM A.last_name)))), ' ')))) 
-            WHEN LOCATE(CHAR(32), REVERSE(RTRIM(LTRIM(A.last_name)))) > 0 
-              THEN REVERSE(SUBSTRING(CONCAT(REVERSE(LTRIM(RTRIM(TRIM(BOTH SUBSTRING(A.last_name, LOCATE('(', A.last_name), LOCATE(')', A.last_name)) FROM A.last_name)))), ' '), 1, LOCATE(CHAR(32), CONCAT(REVERSE(LTRIM(RTRIM(TRIM(BOTH SUBSTRING(A.last_name, LOCATE('(', A.last_name), LOCATE(')', A.last_name)) FROM A.last_name)))), ' ')))) 
-            WHEN LOCATE(CHAR(10), REVERSE(RTRIM(LTRIM(A.last_name)))) > 0 
-              THEN REVERSE(SUBSTRING(CONCAT(REVERSE(LTRIM(RTRIM(TRIM(BOTH SUBSTRING(A.last_name, LOCATE('(', A.last_name), LOCATE(')', A.last_name)) FROM A.last_name)))), ' '), 1, LOCATE(CHAR(10), CONCAT(REVERSE(LTRIM(RTRIM(TRIM(BOTH SUBSTRING(A.last_name, LOCATE('(', A.last_name), LOCATE(')', A.last_name)) FROM A.last_name)))), ' ')))) 
-            ELSE RTRIM(LTRIM(A.last_name)) 
-          END 
-        END AS SOBRENOME , 
-      CAST(A.date_entered AS DATE) AS DATA_INCLUSAO , 
-      CAST(A.date_modified AS DATE) AS DATA_MODIFICACAO , 
+  SELECT	A.id AS COD_CONTATO , 
+			A.first_name AS NOME , 
+            LTRIM(RTRIM(REVERSE(SUBSTRING(LTRIM(RTRIM(REVERSE(A.last_name))), 1, LOCATE(' ', CONCAT(LTRIM(RTRIM(REVERSE(A.last_name))), ' ')))))) AS SOBRENOME ,
+			CAST(A.date_entered AS DATE) AS DATA_INCLUSAO , 
+			CAST(A.date_modified AS DATE) AS DATA_MODIFICACAO , 
             A.title AS CARGO , 
             A.department AS DEPARTAMENTO , 
             A.phone_mobile AS TELEFONE_CELULAR , 
@@ -67,16 +44,18 @@ FROM  (
             A.primary_address_country AS PAÍS  , 
             F.email_address AS EMAIL , 
             G.id_vagas_c AS CLIENTE_VAGAS , 
-      D.name AS CONTA_CRM , 
-            D.id AS COD_CONTA_CRM 
-    FROM  sugarcrm.contacts AS A    INNER JOIN sugarcrm.contacts_cstm AS B ON A.id = B.id_c 
-                      INNER JOIN sugarcrm.accounts_contacts AS C ON A.id = C.contact_id AND C.deleted = 0 
-                                            INNER JOIN sugarcrm.accounts AS D ON C.account_id = D.id AND D.deleted = 0 
-                                            LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS E ON A.id = E.bean_id AND E.deleted = 0 AND E.primary_address = '1' AND E.bean_module = 'Contacts'  
-                                            LEFT OUTER JOIN sugarcrm.email_addresses AS F ON F.id = E.email_address_id AND F.deleted = 0  
-                                            INNER JOIN sugarcrm.accounts_cstm AS G ON D.id = G.id_c 
+			D.name AS CONTA_CRM , 
+            D.id AS COD_CONTA_CRM ,
+			B.usuario_admin_c AS ADMIN,
+            B.contato_principal_c AS CONTATO_PRINCIPAL
+    FROM	sugarcrm.contacts AS A	INNER JOIN sugarcrm.contacts_cstm AS B ON A.id = B.id_c 
+									INNER JOIN sugarcrm.accounts_contacts AS C ON A.id = C.contact_id AND C.deleted = 0 
+									INNER JOIN sugarcrm.accounts AS D ON C.account_id = D.id AND D.deleted = 0 
+									LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS E ON A.id = E.bean_id AND E.deleted = 0 AND E.primary_address = '1' AND E.bean_module = 'Contacts'  
+									LEFT OUTER JOIN sugarcrm.email_addresses AS F ON F.id = E.email_address_id AND F.deleted = 0  
+									INNER JOIN sugarcrm.accounts_cstm AS G ON D.id = G.id_c 
     WHERE  A.deleted = 0  -- Contato não foi removido 
-    ) AS CONTATOS_CRM ; 
+    ) AS CONTATOS_CRM  ;
          
          
         
