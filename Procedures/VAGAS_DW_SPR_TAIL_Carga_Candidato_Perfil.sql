@@ -1,0 +1,47 @@
+USE VAGAS_DW
+GO
+
+-- EXEC VAGAS_DW.SPR_TAIL_Carga_Candidato_Perfil
+IF EXISTS ( SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_TAIL_Carga_Candidato_Perfil' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')
+DROP PROCEDURE VAGAS_DW.SPR_TAIL_Carga_Candidato_Perfil
+GO
+
+-- =============================================
+-- Author: Luiz Fernando Braz
+-- Create date: 09/08/2017
+-- Description: Procedure para alimentação do perfil do candidato (é professor ? é engenheiro ?etc) para possibilitar "onboarding" dos dados
+-- na DMP Tail (Publicidade)
+-- =============================================
+
+CREATE PROCEDURE VAGAS_DW.SPR_TAIL_Carga_Candidato_Perfil 
+
+AS
+SET NOCOUNT ON
+
+-- "É PROFESSOR?"
+-- tenha alguma experiência como professor e correlatos
+INSERT INTO VAGAS_DW.TAIL_CANDIDATO_PERFIL (COD_CAND,TIPO_PERFIL)
+SELECT DISTINCT A.COD_CAND,1 AS TIPO_PERFIL -- PROFESSOR
+FROM VAGAS_DW.EXPERIENCIAS_PROFISSIONAIS A
+INNER JOIN VAGAS_DW.CANDIDATOS B ON B.COD_CAND = A.COD_CAND
+WHERE ( A.DESCRICAO_EXPERIENCIA LIKE '%PROFESSOR%'
+	  OR A.ULTIMO_CARGO LIKE '%PROFESSOR%'
+	  OR A.ULTIMO_CARGO LIKE '%INSTRUTOR%' )
+AND B.FEZ_ACESSO_IRRESTRITO = 1
+AND NOT EXISTS ( SELECT * 
+				 FROM VAGAS_DW.TAIL_CANDIDATO_PERFIL
+				 WHERE COD_CAND = B.COD_CAND 
+				 AND TIPO_PERFIL = 1 )
+UNION
+
+SELECT DISTINCT A.COD_CAND,1 AS TIPO_PERFIL
+FROM VAGAS_DW.VAGAS_DW.CANDIDATOS_AREA_INTERESSE A
+INNER JOIN VAGAS_DW.CANDIDATOS B ON B.COD_CAND = A.COD_CAND
+WHERE A.AREA_INTERESSE IN ('Ensino Superior e Pesquisa','Ensino - Outros')
+AND B.FEZ_ACESSO_IRRESTRITO = 1
+AND NOT EXISTS ( SELECT * 
+				 FROM VAGAS_DW.TAIL_CANDIDATO_PERFIL
+				 WHERE COD_CAND = B.COD_CAND 
+				 AND TIPO_PERFIL = 1 )
+
+
