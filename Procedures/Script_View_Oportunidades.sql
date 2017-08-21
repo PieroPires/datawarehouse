@@ -1,4 +1,3 @@
-
 CREATE OR REPLACE VIEW `vwOportunidadesComProdutos`
 AS
 select    `acc`.`name` AS `cntConta`
@@ -29,8 +28,9 @@ select    `acc`.`name` AS `cntConta`
           ,`serv`.`discount_value` AS `prodDesconto`
           ,`serv`.`quantity` AS `prodQuantidade`
 		  ,accs.id_vagas_c AS Id_Vagas
-          ,round(((`serv`.`price` * (1 - (`serv`.`discount_value` / 100))) * `serv`.`quantity`),2) AS `prodValorFinal`
-		  ,acc.id AS contaid
+          #,round(((`serv`.`price` * (1 - (`serv`.`discount_value` / 100))) * `serv`.`quantity`),2) AS `prodValorFinal`
+		  ,round((case serv.discount_select when 'rel' then round(`serv`.`price` * (1 - `serv`.`discount_value` / 100) * `serv`.`quantity` ,2) else (`serv`.`price` - `serv`.`discount_value`) * `serv`.`quantity` end),2) AS `prodValorFinal`
+          ,acc.id AS contaid
 		  ,accs.valor_principal_c AS cntValorPrincipal
           ,offprop.name AS cntPropostaAprov
           ,offprop.grand_total AS cntValPropAprov
