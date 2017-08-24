@@ -965,6 +965,15 @@ UPDATE VAGAS_DW.TMP_CLIENTES SET CLUSTER = B.CLUSTER
 FROM VAGAS_DW.TMP_CLIENTES A
 INNER JOIN VAGAS_DW.CLUSTER_CLIENTES B ON B.COD_CLI = A.COD_CLI
 
+-- Remove clientes provindos do CRM, que passaram a existir após a atribuição do id da conta, a partir da última oportunidade:
+DELETE	FROM [VAGAS_DW].[TMP_CLIENTES]
+FROM	[VAGAS_DW].[TMP_CLIENTES] AS A
+WHERE	A.FONTE = 'CRM'
+		AND EXISTS (SELECT	1
+					FROM	[VAGAS_DW].[TMP_CLIENTES] AS A1
+					WHERE	A.CONTA_ID = A1.CONTA_ID
+							AND (A1.FONTE = 'MANUT' OR A1.FONTE IS NULL)) ;
+
 -- Limpar dados da tabela fato
 TRUNCATE TABLE VAGAS_DW.CLIENTES 
 
@@ -1050,14 +1059,6 @@ SET EX_CLIENTE = 1
 FROM [VAGAS_DW].[CLIENTES] AS A
 WHERE A.FONTE = 'CRM'
 
--- Remove da visão [VAGAS_DW].[CLIENTES] os clientes provindos do CRM, que passaram a existir na visão, após a atribuição da última oportunidade no campo CONTA_ID:
-DELETE	FROM [VAGAS_DW].[CLIENTES]
-FROM	[VAGAS_DW].[CLIENTES] AS A
-WHERE	A.FONTE = 'CRM'
-		AND EXISTS (SELECT	1
-					FROM	[VAGAS_DW].[CLIENTES] AS A1
-					WHERE	A.CONTA_ID = A1.CONTA_ID
-							AND (A1.FONTE = 'MANUT' OR A1.FONTE IS NULL)) ;
 
 -- CARTEIRA PROSPECÇÃO:
 UPDATE	[VAGAS_DW].[CLIENTES]
