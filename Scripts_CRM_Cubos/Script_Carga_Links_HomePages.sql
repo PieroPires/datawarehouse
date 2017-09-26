@@ -18,7 +18,9 @@ SELECT	CONVERT(ID_CONTA USING latin1) AS ID_CONTA ,
         DATA_ULT_TRANSICAO_STATUS AS DATA_ULT_TRANSICAO_STATUS , 
         QTD_STATUS_ALTERACAO ,
         DATA_ULT_ALTERACAO_STATUS AS DATA_ULT_ALTERACAO_STATUS ,
-        IFNULL(SUM(QTD_DIAS_APROVACAO), 0) AS QTD_DIAS_APROVACAO
+        IFNULL(SUM(QTD_DIAS_APROVACAO), 0) AS QTD_DIAS_APROVACAO ,
+        CONVERT(PROPRIETARIO USING Latin1) AS PROPRIETARIO ,
+        DATA_SOLICITACAO AS DATA_SOLICITACAO_LINK
 FROM	(
 		SELECT	DISTINCT D.id AS ID_CONTA ,
 				D.name AS CONTA ,
@@ -55,14 +57,18 @@ FROM	(
 								AND B.after_value_string = 'aprovacao'
 								AND A1.date_created > B.date_created
 						   ORDER BY A1.date_created
-						   LIMIT 1), B.date_created) AS QTD_DIAS_APROVACAO
+						   LIMIT 1), B.date_created) AS QTD_DIAS_APROVACAO ,
+				(SELECT	A1.user_name AS PROPRIETARIO
+				 FROM	sugarcrm.users AS A1
+                 WHERE	A.assigned_user_id = A1.id) AS PROPRIETARIO ,
+                 A.data_solicitacao AS DATA_SOLICITACAO
 		FROM	sugarcrm.lnk_links AS A		LEFT OUTER JOIN sugarcrm.lnk_links_audit AS B ON A.id = B.parent_id AND B.after_value_string = 'aprovacao' AND B.field_name = 'status'
 											LEFT OUTER JOIN sugarcrm.lnk_links_accounts_c AS C ON C.lnk_links_accountslnk_links_idb = A.id AND C.deleted = 0
 											LEFT OUTER JOIN sugarcrm.accounts AS D ON D.id = C.lnk_links_accountsaccounts_ida AND D.deleted = 0
 		WHERE	A.deleted = 0 # Link não removido
-				AND A.assigned_user_id = (SELECT A1.id AS ATRIBUIDO_A_PROPRIETARIO
-										  FROM	users AS A1
-										  WHERE	A1.user_name = 'homepages')
+				-- AND A.assigned_user_id = (SELECT A1.id AS ATRIBUIDO_A_PROPRIETARIO
+				-- 						  FROM	users AS A1
+				-- 						  WHERE	A1.user_name = 'homepages')
 	) AS SUB   
 GROUP BY
 		ID_LINK ,
@@ -74,4 +80,6 @@ GROUP BY
         QTD_TRANSICOES_LINK ,
         DATA_ULT_TRANSICAO_STATUS , 
         QTD_STATUS_ALTERACAO ,
-        DATA_ULT_ALTERACAO_STATUS ;
+        DATA_ULT_ALTERACAO_STATUS ,
+        PROPRIETARIO ,
+        DATA_SOLICITACAO ;
