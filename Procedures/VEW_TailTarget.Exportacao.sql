@@ -1,3 +1,6 @@
+USE export
+GO
+
 ALTER VIEW TailTarget.Exportacao    
 as    
     
@@ -39,10 +42,10 @@ with objetivo5 as
             , isnull(CG.descr_cursoGrad, '') ClassificaoCursoGraduacao    
             , isnull(instit_form, '') InstituicaoGraduacao    
             ,  case  codStatus_form    
-                     when -1 then '' -- Não preenchido    
+                     when -1 then '' -- Nï¿½o preenchido    
                      when 10 then 'Interrompido'    
                      when 20 then 'Cursando'    
-                     when 30 then 'Curso Concluído'    
+                     when 30 then 'Curso Concluï¿½do'    
                end SituacaoAtual    
             ,  case      
                      when isnull(DataStatus_Form, '') <> '' then convert(char(6), DataStatus_Form, 112)    
@@ -85,6 +88,7 @@ select 'hash' [email], 'id' id/*, 'nome' nome*/, 'data de cadastro' dtCadastro, 
   , 'data de saida da ultima empresa' dtSaidaUltEmpresa, 'nivel profissional na ultima empresa' NivelProfissionalUltEmpresa, 'cargo na ultima empresa' CargoUltEmpresa    
   , 'candidato sem experiencia' CandidatoSemExperiencia, 'mala direta' MalaDireta_cand, 'data da ultima candidatura' dtUltCandidatura,
   'professor' professor,'tecnologia' tecnologia,'engenharia' engenharia,'direito' direito,'marketing_comunicacao' marketing_comunicacao,'rh' rh,'administracao' administracao, 
+  'lideranca' lideranca,
   'OP' OP    
 union all    
 select     
@@ -107,7 +111,7 @@ select
          , isnull(cast(UltSal_cand as varchar), '') ultSalario    
          , isnull(cast(ValSalPret_cand as varchar), '') PretSalario    
              
-         -- Visão Objetivo    
+         -- Visï¿½o Objetivo    
          --, ExactTarget.RemoverCharEspecial(isnull(obj1, '')) objetivo1    
          --, ExactTarget.RemoverCharEspecial(isnull(obj2, '')) objetivo2    
          --, ExactTarget.RemoverCharEspecial(isnull(obj3, '')) objetivo3    
@@ -123,7 +127,7 @@ select
        
          , isnull(hrq, '') NivelProfissionalObjetivo    
              
-         -- Visão Idioma    
+         -- Visï¿½o Idioma    
          , isnull(idi1, '') idioma1    
          , isnull(idi2, '') idioma2    
          , isnull(idi3, '') idioma3    
@@ -131,15 +135,15 @@ select
          , isnull(flu2, '') fluencia2    
          , isnull(flu3, '') fluencia3    
              
-         -- Visão Formação    
-         , isnull(replicate('0', 2 - len(cod_formMax)) + cast(cod_formMax as varchar) + Descr_formMax, '') Formacao -- Formação Max      
-         , isnull(ClassificaoCursoGraduacao, '') ClassificaoCursoGraduacao -- Visão Grauação    
+         -- Visï¿½o Formaï¿½ï¿½o    
+         , isnull(replicate('0', 2 - len(cod_formMax)) + cast(cod_formMax as varchar) + Descr_formMax, '') Formacao -- Formaï¿½ï¿½o Max      
+         , isnull(ClassificaoCursoGraduacao, '') ClassificaoCursoGraduacao -- Visï¿½o Grauaï¿½ï¿½o    
          --, ExactTarget.RemoverCharEspecial(isnull(InstituicaoGraduacao, '')) InstituicaoGraduacao    
    , REPLACE(REPLACE(REPLACE(isnull(InstituicaoGraduacao, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') InstituicaoGraduacao    
          , isnull(SituacaoAtual, '') SituacaoAtual    
          , isnull(AnoMesConclusao, '') AnoMesConclusao    
              
-         -- Visão Experiência    
+         -- Visï¿½o Experiï¿½ncia    
          , isnull(E.PorteUltEmpresa, '') PorteUltEmpresa    
          --, ExactTarget.RemoverCharEspecial(isnull(E.SegmentoUltEmpresa, '')) SegmentoUltEmpresa    
    , REPLACE(REPLACE(REPLACE(isnull(E.SegmentoUltEmpresa, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') SegmentoUltEmpresa    
@@ -171,7 +175,8 @@ select
    ,CASE WHEN T5.TIPO_PERFIL = 5 THEN 'S' ELSE 'N' END AS marketing_comunicacao
    ,CASE WHEN T6.TIPO_PERFIL = 6 THEN 'S' ELSE 'N' END AS rh
    ,CASE WHEN T7.TIPO_PERFIL = 7 THEN 'S' ELSE 'N' END AS administracao
-   , 'UPS' OP -- Coluna obrigatória para UPDATE na TailTarget.    
+   ,CASE WHEN T8.TIPO_PERFIL = 8 THEN 'S' ELSE 'N' END AS lideranca
+   , 'UPS' OP -- Coluna obrigatï¿½ria para UPDATE na TailTarget.    
  from     Export.ExactTarget.ControleExportacao tc inner join [hrh-data].dbo.Candidatos C on tc.cod_cand = C.cod_cand     
              left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil    
              left outer join [hrh-data].dbo.Meridian_Cad_Cidades MCC on C.CodCidade_cand = MCC.Cod_cidadeMer    
@@ -196,6 +201,9 @@ select
                     AND T6.TIPO_PERFIL = 6 -- RH
 	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T7 ON T7.COD_CAND = C.COD_CAND  
                     AND T7.TIPO_PERFIL = 7 -- ADMINISTRACAO
+	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T8 ON T8.COD_CAND = C.COD_CAND  
+                    AND T8.TIPO_PERFIL = 8 -- LIDERANCA
 --where tc.MalaDireta_cand = 1   
 where  UltDtControle = cast(getdate() as date) -- 1o. arquivo, apenas com tc.MalaDireta_cand = 1  
+
   
