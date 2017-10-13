@@ -144,7 +144,7 @@ select
          , isnull(SituacaoAtual, '') SituacaoAtual    
          , isnull(AnoMesConclusao, '') AnoMesConclusao    
              
-         -- Vis�o Experi�ncia    
+         -- Visao Experiencia    
          , isnull(E.PorteUltEmpresa, '') PorteUltEmpresa    
          --, ExactTarget.RemoverCharEspecial(isnull(E.SegmentoUltEmpresa, '')) SegmentoUltEmpresa    
    , REPLACE(REPLACE(REPLACE(isnull(E.SegmentoUltEmpresa, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') SegmentoUltEmpresa    
@@ -177,10 +177,9 @@ select
    ,CASE WHEN T6.TIPO_PERFIL = 6 THEN 'S' ELSE 'N' END AS rh
    ,CASE WHEN T7.TIPO_PERFIL = 7 THEN 'S' ELSE 'N' END AS administracao
    ,CASE WHEN T8.TIPO_PERFIL = 8 THEN 'S' ELSE 'N' END AS lideranca
-   ,CASE WHEN T10.TIPO_PERFIL = 10 THEN 'Z' -- PALEATIVO PARA TESTARMOS O GRUPO COM BAIXA PROB. DE CONVERSÃO (REMOVER DEPOIS DO TESTE)   
-   	     WHEN T9.TIPO_PERFIL = 9 THEN 'S' 
+   ,CASE WHEN T9.TIPO_PERFIL = 9 THEN 'S' 
 		 ELSE 'N' END AS lookalike_rev
-   , 'UPS' OP -- Coluna obrigat�ria para UPDATE na TailTarget.    
+   , 'UPS' OP -- Coluna obrigatoria para UPDATE na TailTarget.    
  from     Export.ExactTarget.ControleExportacao tc inner join [hrh-data].dbo.Candidatos C on tc.cod_cand = C.cod_cand     
              left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil    
              left outer join [hrh-data].dbo.Meridian_Cad_Cidades MCC on C.CodCidade_cand = MCC.Cod_cidadeMer    
@@ -209,8 +208,6 @@ select
                     AND T8.TIPO_PERFIL = 8 -- LIDERANCA
 	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
                     AND T9.TIPO_PERFIL = 9 -- LOOKALIKE REVENDEDORES (BOTICARIO)
-	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T10 ON T10.COD_CAND = C.COD_CAND  
-                    AND T10.TIPO_PERFIL = 10 -- LOOKALIKE REVENDEDORES "base ruim" (BOTICARIO)
 --where tc.MalaDireta_cand = 1   
 where  UltDtControle = cast(getdate() as date) -- 1o. arquivo, apenas com tc.MalaDireta_cand = 1  
 
