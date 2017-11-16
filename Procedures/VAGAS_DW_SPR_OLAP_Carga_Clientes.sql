@@ -1054,24 +1054,38 @@ WHERE A.FONTE = 'CRM'
 UPDATE	[VAGAS_DW].[CLIENTES]
 SET		CARTEIRA = 'PROSPECÇÃO'
 FROM	[VAGAS_DW].[CLIENTES] AS A
-WHERE	A.EX_CLIENTE = 1
+WHERE	(A.EX_CLIENTE = 1
 		AND LEFT(A.CONTA_ID, 6) != 'No_opp'
 		AND NOT EXISTS (SELECT	1 
 						FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1 
 						WHERE	A.CONTA_ID = A1.CONTAID
-								AND A1.FASE IN ('proposta_comercial', 'prospeccao', 'avaliacao_interna', 'contrato'))
+								AND A1.FASE IN ('proposta_comercial', 'prospeccao', 'avaliacao_interna', 'contrato'))) -- Regra da carteira de prospecção
+		OR (A.EX_CLIENTE = 0
+			AND LEFT(A.CONTA_ID, 6) != 'No_opp'
+			AND A.CONTEM_FIT = 0
+			AND NOT EXISTS (SELECT	1 
+							FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1 
+							WHERE	A.CONTA_ID = A1.CONTAID
+									AND A1.FASE IN ('proposta_comercial', 'prospeccao', 'avaliacao_interna', 'contrato'))) ;
 
 
 -- CARTEIRA NEGOCIAÇÃO:
 UPDATE	[VAGAS_DW].[CLIENTES]
 SET		CARTEIRA = 'NEGOCIAÇÃO'
 FROM	[VAGAS_DW].[CLIENTES] AS A
-WHERE	A.EX_CLIENTE = 1
+WHERE	(A.EX_CLIENTE = 1
 		AND LEFT(A.CONTA_ID, 6) != 'No_opp'
 		AND EXISTS (SELECT	1
 					FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
 					WHERE	A.CONTA_ID = A1.CONTAID
-							AND A1.FASE IN ('proposta_comercial', 'prospeccao', 'avaliacao_interna', 'contrato'))
+							AND A1.FASE IN ('proposta_comercial', 'prospeccao', 'avaliacao_interna', 'contrato'))) -- Regra da carteira de Negociação
+		OR (A.EX_CLIENTE = 0
+			AND LEFT(A.CONTA_ID, 6) != 'No_opp'
+			AND A.CONTEM_FIT = 0
+			AND EXISTS (SELECT	1
+						FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
+						WHERE	A.CONTA_ID = A1.CONTAID
+								AND A1.FASE IN ('proposta_comercial', 'prospeccao', 'avaliacao_interna', 'contrato'))) ;
 
 
 -- CARTEIRA DE RELACIONAMENTO:
@@ -1082,13 +1096,13 @@ WHERE	A.EX_CLIENTE = 0
 		 AND LEFT(A.CONTA_ID, 6) != 'No_opp'
 		 AND A.CONTEM_FIT = 1 ;
 
--- CARTEIRA DE CRÉDITOS:
-UPDATE	[VAGAS_DW].[CLIENTES]
-SET		CARTEIRA = 'CRÉDITOS'
-FROM	[VAGAS_DW].[CLIENTES] AS A
-WHERE	A.EX_CLIENTE = 0
-		AND LEFT(A.CONTA_ID, 6) != 'No_opp'
-		AND A.CONTEM_FIT = 0 ;
+---- CARTEIRA DE CRÉDITOS:
+--UPDATE	[VAGAS_DW].[CLIENTES]
+--SET		CARTEIRA = 'CRÉDITOS'
+--FROM	[VAGAS_DW].[CLIENTES] AS A
+--WHERE	A.EX_CLIENTE = 0
+--		AND LEFT(A.CONTA_ID, 6) != 'No_opp'
+--		AND A.CONTEM_FIT = 0 ;
 
 -- Campo Mercado provindo do CRM:
 UPDATE	[VAGAS_DW].[CLIENTES]
