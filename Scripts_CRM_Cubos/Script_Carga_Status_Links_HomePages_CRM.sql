@@ -29,7 +29,7 @@ FROM	(
 	FROM	(
 		SELECT	B.id AS ID_LINK  ,
 				B.name AS NOME_LINK ,
-				CONVERT_TZ(A.date_created, @@session.time_zone, '-03:00') AS DATA_CRIACAO_ALTERACAO ,
+				CONVERT_TZ(A.date_created, @@session.time_zone, 'America/Sao_Paulo') AS DATA_CRIACAO_ALTERACAO ,
 				C.user_name AS USUARIO_ALTERACAO ,
 				A.before_value_string AS VALOR_ANTERIOR ,
 				A.after_value_string AS VALOR_POSTERIOR
