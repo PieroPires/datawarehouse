@@ -42,10 +42,10 @@ with objetivo5 as
             , isnull(CG.descr_cursoGrad, '') ClassificaoCursoGraduacao    
             , isnull(instit_form, '') InstituicaoGraduacao    
             ,  case  codStatus_form    
-                     when -1 then '' -- N�o preenchido    
+                     when -1 then '' -- Não preenchido    
                      when 10 then 'Interrompido'    
                      when 20 then 'Cursando'    
-                     when 30 then 'Curso Conclu�do'    
+                     when 30 then 'Curso Concluído'    
                end SituacaoAtual    
             ,  case      
                      when isnull(DataStatus_Form, '') <> '' then convert(char(6), DataStatus_Form, 112)    
@@ -90,6 +90,7 @@ select 'hash' [email], 'id' id/*, 'nome' nome*/, 'data de cadastro' dtCadastro, 
   'professor' professor,'tecnologia' tecnologia,'engenharia' engenharia,'direito' direito,'marketing_comunicacao' marketing_comunicacao,'rh' rh,'administracao' administracao, 
   'lideranca' lideranca,
   'lookalike_rev' lookalike_rev,
+  'lookalike_ingles' lookalike_ingles,
   'OP' OP    
 union all    
 select     
@@ -112,7 +113,7 @@ select
          , isnull(cast(UltSal_cand as varchar), '') ultSalario    
          , isnull(cast(ValSalPret_cand as varchar), '') PretSalario    
              
-         -- Vis�o Objetivo    
+         -- Visão Objetivo    
          --, ExactTarget.RemoverCharEspecial(isnull(obj1, '')) objetivo1    
          --, ExactTarget.RemoverCharEspecial(isnull(obj2, '')) objetivo2    
          --, ExactTarget.RemoverCharEspecial(isnull(obj3, '')) objetivo3    
@@ -128,7 +129,7 @@ select
        
          , isnull(hrq, '') NivelProfissionalObjetivo    
              
-         -- Vis�o Idioma    
+         -- Visão Idioma    
          , isnull(idi1, '') idioma1    
          , isnull(idi2, '') idioma2    
          , isnull(idi3, '') idioma3    
@@ -136,9 +137,9 @@ select
          , isnull(flu2, '') fluencia2    
          , isnull(flu3, '') fluencia3    
              
-         -- Vis�o Forma��o    
-         , isnull(replicate('0', 2 - len(cod_formMax)) + cast(cod_formMax as varchar) + Descr_formMax, '') Formacao -- Forma��o Max      
-         , isnull(ClassificaoCursoGraduacao, '') ClassificaoCursoGraduacao -- Vis�o Graua��o    
+         -- Visão Formação    
+         , isnull(replicate('0', 2 - len(cod_formMax)) + cast(cod_formMax as varchar) + Descr_formMax, '') Formacao -- Formação Max      
+         , isnull(ClassificaoCursoGraduacao, '') ClassificaoCursoGraduacao -- Visão Grauação    
          --, ExactTarget.RemoverCharEspecial(isnull(InstituicaoGraduacao, '')) InstituicaoGraduacao    
    , REPLACE(REPLACE(REPLACE(isnull(InstituicaoGraduacao, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') InstituicaoGraduacao    
          , isnull(SituacaoAtual, '') SituacaoAtual    
@@ -177,8 +178,10 @@ select
    ,CASE WHEN T6.TIPO_PERFIL = 6 THEN 'S' ELSE 'N' END AS rh
    ,CASE WHEN T7.TIPO_PERFIL = 7 THEN 'S' ELSE 'N' END AS administracao
    ,CASE WHEN T8.TIPO_PERFIL = 8 THEN 'S' ELSE 'N' END AS lideranca
-   ,CASE WHEN T9.TIPO_PERFIL = 9 THEN 'S' 
-		 ELSE 'N' END AS lookalike_rev
+   ,'' AS lookalike_rev
+   ,CASE WHEN T11.TIPO_PERFIL = 11 THEN '1' -- ALTA PROB. DE CONVERSAO
+         WHEN T12.TIPO_PERFIL = 12 THEN '2' -- BAIXA PROB. DE CONVERSAO
+         ELSE '0' END AS lookalike_ingles 
    , 'UPS' OP -- Coluna obrigatoria para UPDATE na TailTarget.    
  from     Export.ExactTarget.ControleExportacao tc inner join [hrh-data].dbo.Candidatos C on tc.cod_cand = C.cod_cand     
              left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil    
@@ -206,8 +209,13 @@ select
                     AND T7.TIPO_PERFIL = 7 -- ADMINISTRACAO
 	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T8 ON T8.COD_CAND = C.COD_CAND  
                     AND T8.TIPO_PERFIL = 8 -- LIDERANCA
-	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
-                    AND T9.TIPO_PERFIL = 9 -- LOOKALIKE REVENDEDORES (BOTICARIO)
+	-- lookalike revendedoras desabilitado
+      --LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
+      --              AND T9.TIPO_PERFIL = 9 -- LOOKALIKE REVENDEDORES (BOTICARIO)
+      LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T11 ON T11.COD_CAND = C.COD_CAND  
+                    AND T11.TIPO_PERFIL = 11 -- LOOKALIKE INGLES COM ALTA PROB. CONVERTER 
+      LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T12 ON T12.COD_CAND = C.COD_CAND  
+                    AND T12.TIPO_PERFIL = 12 -- LOOKALIKE INGLES COM BAIXA PROB. CONVERTER 
 --where tc.MalaDireta_cand = 1   
 where  UltDtControle = cast(getdate() as date) -- 1o. arquivo, apenas com tc.MalaDireta_cand = 1  
 
