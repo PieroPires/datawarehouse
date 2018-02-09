@@ -89,6 +89,7 @@ select 'hash' [email], 'id' id/*, 'nome' nome*/, 'data de cadastro' dtCadastro, 
   , 'candidato sem experiencia' CandidatoSemExperiencia, 'mala direta' MalaDireta_cand, 'data da ultima candidatura' dtUltCandidatura,
   'professor' professor,'tecnologia' tecnologia,'engenharia' engenharia,'direito' direito,'marketing_comunicacao' marketing_comunicacao,'rh' rh,'administracao' administracao, 
   'lideranca' lideranca,
+  'autonomo_empreendedor' autonomo_empreendedor,
   'lookalike_rev' lookalike_rev,
   'lookalike_ingles' lookalike_ingles,
   'lookalike_ingles_2' lookalike_ingles_2,
@@ -179,6 +180,8 @@ select
    ,CASE WHEN T6.TIPO_PERFIL = 6 THEN 'S' ELSE 'N' END AS rh
    ,CASE WHEN T7.TIPO_PERFIL = 7 THEN 'S' ELSE 'N' END AS administracao
    ,CASE WHEN T8.TIPO_PERFIL = 8 THEN 'S' ELSE 'N' END AS lideranca
+   ,CASE WHEN T9.TIPO_PERFIL = 14 THEN 'S' ELSE 'N' END AS autonomo_empreendedor 
+   
    ,'' AS lookalike_rev
    ,'' AS lookalike_ingles 
    ,CASE WHEN T13.TIPO_PERFIL = 13 THEN '3' -- GRUPO DE CONTROLE
@@ -212,6 +215,8 @@ select
                     AND T7.TIPO_PERFIL = 7 -- ADMINISTRACAO
 	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T8 ON T8.COD_CAND = C.COD_CAND  
                     AND T8.TIPO_PERFIL = 8 -- LIDERANCA
+	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
+                    AND T9.TIPO_PERFIL = 14 -- AUTONOMO_EMPREENDEDOR
 	-- lookalike revendedoras desabilitado
       --LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
       --              AND T9.TIPO_PERFIL = 9 -- LOOKALIKE REVENDEDORES (BOTICARIO)
