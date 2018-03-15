@@ -60,7 +60,7 @@ VAGA_VALIDADA,DATA_CADASTRAMENTO_SOURCE,DATA_CADASTRAMENTO,DATA_VALIDACAO_SOURCE
 ACEITA_CAND_OUTRO_NIVEL,ACEITA_CAND_OUTRA_AREA,DISPONIB_VIAGEM,DATA_EXPIRACAO_SOURCE,DATA_EXPIRACAO,DATA_ULT_TRIAGEM_SOURCE,
 DATA_ULT_TRIAGEM,SOLICITA_PREENCHIMENTO_FICHA,PCD,ANUNCIO_IDENTIFICADO,SEGMENTO,GRUPO_SEGMENTO,QTD_POSICOES,QTD_DIAS_ALERTADO,
 QTD_ALERTA_DISPARADO,PERC_RETORNO,QTD_PageViews,PAIS,DATA_ATUALIZACAO_SOURCE,DATA_ATUALIZACAO,VEICULACAO_SUSPENSA,CLIENTE_BLOQUEADO,
-ATINGIU_LIMITE_CANDIDATURAS,NAV_EXC,CAPTACAO_CONTINUA,EXIBE_VAGAS_COM,INVISIVEL,TIPO_PROCESSO,FLAG_VAGA_TESTE, CNAE_SECAO_ID, CNAE_SECAO, CNAE_DIVISAO_ID, CNAE_DIVISAO, CNAE_CLASSE_ID, CNAE_CLASSE, CNAE_FAIXA_FUNCIONARIOS,CNAE_SUBCLASSE_ID_C, CNAE_SUBCLASSE_DESCR_C,REGIAO, COD_FUNC )
+ATINGIU_LIMITE_CANDIDATURAS,NAV_EXC,CAPTACAO_CONTINUA,EXIBE_VAGAS_COM,INVISIVEL,TIPO_PROCESSO,FLAG_VAGA_TESTE, CNAE_SECAO_ID, CNAE_SECAO, CNAE_DIVISAO_ID, CNAE_DIVISAO, CNAE_CLASSE_ID, CNAE_CLASSE, CNAE_FAIXA_FUNCIONARIOS,CNAE_SUBCLASSE_ID_C, CNAE_SUBCLASSE_DESCR_C,REGIAO, COD_FUNC, DIVISAO )
 SELECT * FROM VAGAS_DW.TMP_VAGAS
 
 -- MARCAR VAGAS INATIVAS / ATIVAS
@@ -81,6 +81,79 @@ OR INVISIVEL = 'SIM'
 UPDATE VAGAS_DW.VAGAS SET VAGA_ATIVA = 'SIM'
 FROM VAGAS_DW.VAGAS 
 WHERE VAGA_ATIVA IS NULL 
+
+-- Limpeza dos campos referentes ao VAGAS FLIX:
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		FLAG_EMPRESA_VAGAS_FLIX = NULL ,
+		COD_CLI_VAGAS_FLIX = NULL ,
+		ULT_DT_RF_VAGASFLIX = NULL ;
+
+
+-- Atualização da FLAG_EMPRES_VAGAS_FLIX:
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		FLAG_EMPRESA_VAGAS_FLIX = (SELECT	1
+								   FROM		[hrh-data].[dbo].[FranqueadorxFranqueado] AS A1		INNER JOIN [hrh-data].[dbo].[Clientes] AS A2 ON A1.codclifranqueado_fcf = A2.Cod_cli
+																								INNER JOIN [hrh-data].[dbo].[Divisoes] AS A3 ON A1.coddivfranqueador_fcf = A3.Cod_div
+								   WHERE	A1.cod_fcf = A.codfranqueado_vaga
+											AND A1.codclifranqueador_fcf = 65561)
+FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_COD_VAGA ;
+
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		FLAG_EMPRESA_VAGAS_FLIX = 0
+FROM	[VAGAS_DW].[VAGAS] AS A
+WHERE	A.FLAG_EMPRESA_VAGAS_FLIX IS NULL ;
+
+
+
+-- Atualização do COD_CLI_VAGAS_FLIX:
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		COD_CLI_VAGAS_FLIX = (SELECT	A3.Cod_cli AS COD_CLI_VAGAS_FLIX
+							  FROM		[hrh-data].[dbo].[Vagas] AS A1	INNER JOIN [hrh-data].[dbo].[FranqueadorxFranqueado] AS A2 ON A1.codfranqueado_vaga = A2.cod_fcf
+																		INNER JOIN [hrh-data].[dbo].[Clientes] AS A3 ON A2.codclifranqueado_fcf = A3.cod_cli
+																		INNER JOIN [hrh-data].[dbo].[Divisoes] AS A4 ON A2.coddivfranqueador_fcf = A4.Cod_div
+							  WHERE	A2.codclifranqueador_fcf = 65561
+									AND A1.Cod_vaga = A.Cod_vaga)
+FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_Cod_Vaga ;
+
+
+-- Atualização do campo ULT_DT_RF_VAGASFLIX:
+DECLARE	@MAIOR_DATA_REF_CARGA_FLIX SMALLDATETIME ;
+SET		@MAIOR_DATA_REF_CARGA_FLIX = (SELECT MAX(A1.DATA_REFERENCIA) FROM [VAGAS_DW].[BASE_EMPRESAS_VAGAS_FLIX] AS A1) ;
+
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		ULT_DT_RF_VAGASFLIX = IIF(DATEPART(YEAR, A.DATA_CADASTRAMENTO) = DATEPART(YEAR, @MAIOR_DATA_REF_CARGA_FLIX)
+								  AND DATEPART(MONTH, A.DATA_CADASTRAMENTO) = DATEPART(MONTH, @MAIOR_DATA_REF_CARGA_FLIX), 1, 0)
+FROM	[VAGAS_DW].[VAGAS] AS A
+WHERE	A.FLAG_EMPRESA_VAGAS_FLIX = 1 ;
+
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		ULT_DT_RF_VAGASFLIX = 0
+FROM	[VAGAS_DW].[VAGAS] AS A
+WHERE	A.ULT_DT_RF_VAGASFLIX IS NULL ;
+
+-- Atualização do CNPJ dos clientes VAGAS FLIX:
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		CNPJ_VAGAS_FLIX = (SELECT	A3.CGC_cli AS CNPJ_VAGAS_FLIX
+						   FROM		[hrh-data].[dbo].[Vagas] AS A1	INNER JOIN [hrh-data].[dbo].[FranqueadorxFranqueado] AS A2 ON A1.codfranqueado_vaga = A2.cod_fcf
+																	INNER JOIN [hrh-data].[dbo].[Clientes] AS A3 ON A2.codclifranqueado_fcf = A3.cod_cli
+																	INNER JOIN [hrh-data].[dbo].[Divisoes] AS A4 ON A2.coddivfranqueador_fcf = A4.Cod_div
+				  		   WHERE	A2.codclifranqueador_fcf = 65561
+									AND A1.Cod_vaga = A.Cod_vaga)
+FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_Cod_Vaga
+WHERE	B.COD_CLI_VAGAS_FLIX IS NOT NULL ;
+
+
+-- Atualização do NOME_FANTASIA dos clientes VAGAS FLIX:
+UPDATE	[VAGAS_DW].[VAGAS]
+SET		NOME_FANTASIA_VAGASFLIX = (SELECT	A1.NOME_FANTASIA
+								   FROM		[VAGAS_DW].[BASE_EMPRESAS_VAGAS_FLIX] AS A1		INNER JOIN [hrh-data].[dbo].[Vagas] AS A2 ON A1.COD_CLI_VAGAS_EPARTNER = A2.CodCliente_vaga
+																							INNER JOIN [hrh-data].[dbo].[FranqueadorxFranqueado] AS A3 ON A2.codfranqueado_vaga = A3.cod_fcf
+																							INNER JOIN [hrh-data].[dbo].[Clientes] AS A4 ON A3.codclifranqueado_fcf = A4.cod_cli
+																							INNER JOIN [hrh-data].[dbo].[Divisoes] AS A5 ON A3.coddivfranqueador_fcf = A5.Cod_div
+				  				   WHERE	A3.codclifranqueador_fcf = 65561
+											AND A2.Cod_vaga = A.Cod_vaga)
+FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_COD_VAGA
+WHERE	B.COD_CLI_VAGAS_FLIX IS NOT NULL ;
 
 -- 13/10/2017: Tratamento de vagas da MagazineLuiza que excedem o volume de posições normalmente publicado pelas empresas:
 UPDATE	[VAGAS_DW].[VAGAS]
