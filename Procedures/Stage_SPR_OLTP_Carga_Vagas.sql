@@ -121,7 +121,8 @@ SELECT A.Cod_Vaga VAGAS_Cod_Vaga,
 		 ELSE 'NÃO CLASSIFICADO' END AS TIPO_PROCESSO,
 	CASE WHEN Teste_vaga = 0 THEN 'NÃO' ELSE 'SIM' END AS FLAG_VAGA_TESTE,
 	ISNULL(P.regiao_estadoBR, '') AS REGIAO ,
-	A.CodFunc_vaga AS COD_FUNC
+	A.CodFunc_vaga AS COD_FUNC ,
+	N.Nome_div AS DIVISAO
 
 FROM [hrh-data].dbo.VAGAS A
 INNER JOIN [hrh-data].dbo.Clientes B ON B.Cod_cli = A.CodCliente_vaga
