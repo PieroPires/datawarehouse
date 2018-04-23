@@ -20,6 +20,8 @@ with objetivo5 as
               left outer join [hrh-data].dbo.[Cad_setores] S5 ON S5.Cod_setor = oc.obj5    
               left outer join [hrh-data].dbo.cad_hierarquias ch on ch.Cod_hierarquia = oc.hrq    
    )    
+   /* query desativada em 20180423
+      substituida pelo nivel fluencia
    , Idioma3 as    
    (    
    select   IC.CodCand_idiomaCand    
@@ -35,7 +37,7 @@ with objetivo5 as
             left outer join [hrh-data].dbo.Cad_fluencias CF1 on CF1.Cod_fluencia = IC.conversacao1    
             left outer join [hrh-data].dbo.Cad_fluencias CF2 on CF2.Cod_fluencia = IC.conversacao2    
             left outer join [hrh-data].dbo.Cad_fluencias CF3 on CF3.Cod_fluencia = IC.conversacao3    
-   )    
+   ) */   
    , Graduado as    
    (    
    select   CodCand_form    
@@ -93,6 +95,9 @@ select 'hash' [email], 'id' id/*, 'nome' nome*/, 'data de cadastro' dtCadastro, 
   'lookalike_rev' lookalike_rev,
   'lookalike_ingles' lookalike_ingles,
   'lookalike_ingles_2' lookalike_ingles_2,
+  'nivel_ingles' nivel_ingles,
+  'nivel_espanhol' nivel_espanhol,
+  'primeiro_emprego' primeiro_emprego,
   'OP' OP    
 union all    
 select     
@@ -132,18 +137,26 @@ select
          , isnull(hrq, '') NivelProfissionalObjetivo    
              
          -- Visão Idioma    
+         /*
          , isnull(idi1, '') idioma1    
          , isnull(idi2, '') idioma2    
          , isnull(idi3, '') idioma3    
          , isnull(flu1, '') fluencia1    
          , isnull(flu2, '') fluencia2    
          , isnull(flu3, '') fluencia3    
-             
+         */
+         , '' idioma1    
+         , '' idioma2    
+         , '' idioma3    
+         , '' fluencia1    
+         , '' fluencia2    
+         , '' fluencia3    
+
          -- Visão Formação    
          , isnull(replicate('0', 2 - len(cod_formMax)) + cast(cod_formMax as varchar) + Descr_formMax, '') Formacao -- Formação Max      
          , isnull(ClassificaoCursoGraduacao, '') ClassificaoCursoGraduacao -- Visão Grauação    
          --, ExactTarget.RemoverCharEspecial(isnull(InstituicaoGraduacao, '')) InstituicaoGraduacao    
-   , REPLACE(REPLACE(REPLACE(isnull(InstituicaoGraduacao, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') InstituicaoGraduacao    
+         , REPLACE(REPLACE(REPLACE(isnull(InstituicaoGraduacao, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') InstituicaoGraduacao    
          , isnull(SituacaoAtual, '') SituacaoAtual    
          , isnull(AnoMesConclusao, '') AnoMesConclusao    
              
@@ -184,17 +197,35 @@ select
    
    ,'' AS lookalike_rev
    ,'' AS lookalike_ingles 
-   ,CASE WHEN T13.TIPO_PERFIL = 13 THEN '3' -- GRUPO DE CONTROLE
-         WHEN T11.TIPO_PERFIL = 11 THEN '1' -- ALTA PROB. DE CONVERSAO
-         WHEN T12.TIPO_PERFIL = 12 THEN '2' -- BAIXA PROB. DE CONVERSAO
-         ELSE '0' END AS lookalike_ingles_2 
+--    ,CASE WHEN T13.TIPO_PERFIL = 13 THEN '3' -- GRUPO DE CONTROLE
+--          WHEN T11.TIPO_PERFIL = 11 THEN '1' -- ALTA PROB. DE CONVERSAO
+--          WHEN T12.TIPO_PERFIL = 12 THEN '2' -- BAIXA PROB. DE CONVERSAO
+--          ELSE '0' END AS lookalike_ingles_2 
+   ,'' as lookalike_ingles_2
+   ,ISNULL(IDIOMA1.NIVEL_INGLES,'') AS NIVEL_INGLES
+   ,ISNULL(IDIOMA2.NIVEL_ESPANHOL,'') AS NIVEL_ESPANHOL
+   ,CASE WHEN T10.TIPO_PERFIL = 15 THEN 'S' ELSE 'N' END AS PRIMEIRO_EMPREGO
    , 'UPS' OP -- Coluna obrigatoria para UPDATE na TailTarget.    
  from     Export.ExactTarget.ControleExportacao tc inner join [hrh-data].dbo.Candidatos C on tc.cod_cand = C.cod_cand     
              left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil    
              left outer join [hrh-data].dbo.Meridian_Cad_Cidades MCC on C.CodCidade_cand = MCC.Cod_cidadeMer    
              left outer join [hrh-data].dbo.Meridian_Cad_Estados MEC on C.CodUF_cand = MEC.Cod_estadoMer    
              left outer join objetivo5 oc on oc.CodCand_cargo = C.Cod_cand    
-             left outer join Idioma3 idi on idi.CodCand_idiomaCand = C.Cod_cand    
+             --left outer join Idioma3 idi on idi.CodCand_idiomaCand = C.Cod_cand
+             OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'
+                                       ELSE C1.Nivel_fluencia END AS NIVEL_INGLES
+                              FROM [hrh-data].[dbo].[Cand-idiomas] A1
+                              INNER JOIN [hrh-data].[dbo].[Cad_idiomas] B1 ON B1.Cod_idioma = A1.Cod_idiomaCand 
+                              INNER JOIN [hrh-data].[dbo].[Cad_fluencias] C1 ON C1.Cod_fluencia = A1.Nconv_idiomaCand
+                              WHERE B1.descr_idioma = 'Inglês' 
+                              AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA1
+             OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'
+                                       ELSE C1.Nivel_fluencia END AS NIVEL_ESPANHOL
+                              FROM [hrh-data].[dbo].[Cand-idiomas] A1
+                              INNER JOIN [hrh-data].[dbo].[Cad_idiomas] B1 ON B1.Cod_idioma = A1.Cod_idiomaCand 
+                              INNER JOIN [hrh-data].[dbo].[Cad_fluencias] C1 ON C1.Cod_fluencia = A1.Nconv_idiomaCand
+                              WHERE B1.descr_idioma = 'Espanhol' 
+                              AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA2
              left outer join [hrh-data].dbo.Cad_formacaoMax FM on C.CodFormMax_Cand = FM.Cod_formMax     
              left outer join Graduado G on C.Cod_cand = G.CodCand_form    
              left outer join Experiencia E on C.Cod_cand = E.CodCand_exp    
@@ -217,15 +248,17 @@ select
                     AND T8.TIPO_PERFIL = 8 -- LIDERANCA
 	LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
                     AND T9.TIPO_PERFIL = 14 -- AUTONOMO_EMPREENDEDOR
+      LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T10 ON T10.COD_CAND = C.COD_CAND  
+                    AND T10.TIPO_PERFIL = 15 -- PRIMEIRO_EMPREGO
 	-- lookalike revendedoras desabilitado
       --LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T9 ON T9.COD_CAND = C.COD_CAND  
       --              AND T9.TIPO_PERFIL = 9 -- LOOKALIKE REVENDEDORES (BOTICARIO)
-      LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T11 ON T11.COD_CAND = C.COD_CAND  
-                    AND T11.TIPO_PERFIL = 11 -- LOOKALIKE INGLES COM ALTA PROB. CONVERTER 
-      LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T12 ON T12.COD_CAND = C.COD_CAND  
-                    AND T12.TIPO_PERFIL = 12 -- LOOKALIKE INGLES COM BAIXA PROB. CONVERTER 
-      LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T13 ON T13.COD_CAND = C.COD_CAND  
-                    AND T13.TIPO_PERFIL = 13 -- LOOKALIKE INGLES GRUPO DE CONTROLE
+      -- LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T11 ON T11.COD_CAND = C.COD_CAND  
+      --               AND T11.TIPO_PERFIL = 11 -- LOOKALIKE INGLES COM ALTA PROB. CONVERTER 
+      -- LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T12 ON T12.COD_CAND = C.COD_CAND  
+      --               AND T12.TIPO_PERFIL = 12 -- LOOKALIKE INGLES COM BAIXA PROB. CONVERTER 
+      -- LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T13 ON T13.COD_CAND = C.COD_CAND  
+      --               AND T13.TIPO_PERFIL = 13 -- LOOKALIKE INGLES GRUPO DE CONTROLE
 --where tc.MalaDireta_cand = 1   
 where  UltDtControle = cast(getdate() as date) -- 1o. arquivo, apenas com tc.MalaDireta_cand = 1  
 
