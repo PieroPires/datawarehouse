@@ -4,8 +4,9 @@ GO
 ALTER VIEW TailTarget.Exportacao    
 as    
     
-with objetivo5 as     
-   (    
+with /*objetivo5 as     
+    query desativada em 20180423
+      substituida pelo nivel fluencia(    
    select   oc.CodCand_cargo    
             , isnull(S1.Descr_setor, '') obj1      
             , isnull(S2.Descr_setor, '') obj2      
@@ -20,8 +21,7 @@ with objetivo5 as
               left outer join [hrh-data].dbo.[Cad_setores] S5 ON S5.Cod_setor = oc.obj5    
               left outer join [hrh-data].dbo.cad_hierarquias ch on ch.Cod_hierarquia = oc.hrq    
    )    
-   /* query desativada em 20180423
-      substituida pelo nivel fluencia
+   
    , Idioma3 as    
    (    
    select   IC.CodCand_idiomaCand    
@@ -37,8 +37,8 @@ with objetivo5 as
             left outer join [hrh-data].dbo.Cad_fluencias CF1 on CF1.Cod_fluencia = IC.conversacao1    
             left outer join [hrh-data].dbo.Cad_fluencias CF2 on CF2.Cod_fluencia = IC.conversacao2    
             left outer join [hrh-data].dbo.Cad_fluencias CF3 on CF3.Cod_fluencia = IC.conversacao3    
-   ) */   
-   , Graduado as    
+   )    
+   ,*/ Graduado as    
    (    
    select   CodCand_form    
             , isnull(CG.descr_cursoGrad, '') ClassificaoCursoGraduacao    
@@ -127,15 +127,20 @@ select
          --, ExactTarget.RemoverCharEspecial(isnull(obj4, '')) objetivo4    
          --, ExactTarget.RemoverCharEspecial(isnull(obj5, '')) objetivo5  
      
-   , REPLACE(REPLACE(REPLACE(isnull(obj1, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo1    
-         , REPLACE(REPLACE(REPLACE(isnull(obj2, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo2    
-         , REPLACE(REPLACE(REPLACE(isnull(obj3, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo3    
-         , REPLACE(REPLACE(REPLACE(isnull(obj4, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo4    
-         , REPLACE(REPLACE(REPLACE(isnull(obj5, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo5  
-     
+         --, REPLACE(REPLACE(REPLACE(isnull(obj1, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo1    
+         --, REPLACE(REPLACE(REPLACE(isnull(obj2, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo2    
+         --, REPLACE(REPLACE(REPLACE(isnull(obj3, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo3    
+         --, REPLACE(REPLACE(REPLACE(isnull(obj4, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo4    
+         --, REPLACE(REPLACE(REPLACE(isnull(obj5, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') objetivo5  
+         ,'' objetivo1
+         ,'' objetivo2
+         ,'' objetivo3
+         ,'' objetivo4
+         ,'' objetivo5
        
-         , isnull(hrq, '') NivelProfissionalObjetivo    
-             
+         --, isnull(hrq, '') NivelProfissionalObjetivo    
+         ,ISNULL(F.NivelProfissionalObjetivo,'') NivelProfissionalObjetivo    
+
          -- Visão Idioma    
          /*
          , isnull(idi1, '') idioma1    
@@ -210,7 +215,7 @@ select
              left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil    
              left outer join [hrh-data].dbo.Meridian_Cad_Cidades MCC on C.CodCidade_cand = MCC.Cod_cidadeMer    
              left outer join [hrh-data].dbo.Meridian_Cad_Estados MEC on C.CodUF_cand = MEC.Cod_estadoMer    
-             left outer join objetivo5 oc on oc.CodCand_cargo = C.Cod_cand    
+             --left outer join objetivo5 oc on oc.CodCand_cargo = C.Cod_cand    
              --left outer join Idioma3 idi on idi.CodCand_idiomaCand = C.Cod_cand
              OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'
                                        ELSE C1.Nivel_fluencia END AS NIVEL_INGLES
@@ -228,7 +233,12 @@ select
                               AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA2
              left outer join [hrh-data].dbo.Cad_formacaoMax FM on C.CodFormMax_Cand = FM.Cod_formMax     
              left outer join Graduado G on C.Cod_cand = G.CodCand_form    
-             left outer join Experiencia E on C.Cod_cand = E.CodCand_exp    
+             left outer join Experiencia E on C.Cod_cand = E.CodCand_exp
+             OUTER APPLY ( SELECT TOP 1 B1.Descr_hierarquia AS NivelProfissionalObjetivo
+                           FROM [hrh-data].dbo.[Cand-ExpOcupacoes] A1
+                           INNER JOIN [hrh-data].dbo.cad_hierarquias B1 ON B1.Cod_hierarquia = A1.CodHierarquia_ExpOcup
+                           WHERE CodCand_ExpOcup =  c.cod_Cand
+                           ORDER BY A1.AnoIni_ExpOcup DESC  ) F
              left outer join ExactTarget.UltimaCandidatura U on c.cod_Cand = U.cod_cand    
     LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T1 ON T1.COD_CAND = C.COD_CAND  
                     AND T1.TIPO_PERFIL = 1 -- PROFESSOR  
