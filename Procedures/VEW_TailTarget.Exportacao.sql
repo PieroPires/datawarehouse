@@ -74,13 +74,14 @@ with /*objetivo5 as
                end dtSaidaUltEmpresa      
             , isnull(CE.Descr_exp, '') ExperienciaUltEmpresa       
             , isnull(CE.UltCargo_exp, '') CargoUltEmpresa       
-   from     [hrh-data].dbo.[Cand-Experiencia] CE inner join Export.ExactTarget.Experiencia E on E.ChaveSQL_Exp = CE.ChaveSQL_Exp       
-             left outer join [hrh-data].dbo.[Cand-ExpOcupacoes] CO with(nolock)   on CO.cod_expOcup = E.cod_expOcup      
-             left outer join [hrh-data].dbo.cad_portes cp on ce.codporte_exp = cp.cod_porte      
-             left outer join [hrh-data].dbo.Cad_segmentos CS on CE.CodSegmento_exp = CS.cod_segmento      
-             left outer join [hrh-data].dbo.Cad_setores CT on CT.cod_setor = CO.CodSetor_expocup        
-             left outer join [hrh-data].dbo.cad_hierarquias CH on ch.Cod_hierarquia = CO.CodHierarquia_expocup      
-   )      
+   from     [hrh-data].dbo.[Cand-Experiencia] CE 
+   inner join Export.ExactTarget.Experiencia E on E.ChaveSQL_Exp = CE.ChaveSQL_Exp       
+   left outer join [hrh-data].dbo.[Cand-ExpOcupacoes] CO with(nolock)   on CO.cod_expOcup = E.cod_expOcup      
+   left outer join [hrh-data].dbo.cad_portes cp on ce.codporte_exp = cp.cod_porte      
+   left outer join [hrh-data].dbo.Cad_segmentos CS on CE.CodSegmento_exp = CS.cod_segmento      
+   left outer join [hrh-data].dbo.Cad_setores CT on CT.cod_setor = CO.CodSetor_expocup        
+   left outer join [hrh-data].dbo.cad_hierarquias CH on ch.Cod_hierarquia = CO.CodHierarquia_expocup      
+)      
 select 'hash' [email], 'id' id/*, 'nome' nome*/, 'data de cadastro' dtCadastro, 'data de atualizacao' dtUltAtualizacao, 'genero' genero, 'estado civil' estadoCivil      
   , 'qtd de filhos' qtdFilho, 'cidade' cidade, 'estado' estado, 'data de nascimento' DtNasc_cand, 'ultimo salario' ultSalario, 'pretensao salarial' PretSalario      
   , 'objetivo profissional 1' objetivo1, 'objetivo profissional 2' objetivo2, 'objetivo profissional 3' objetivo3, 'objetivo profissional 4' objetivo4      
@@ -171,7 +172,7 @@ select
 		 ,REPLACE(REPLACE(REPLACE(isnull(AnoMesConclusao, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') AnoMesConclusao
       
          -- Visao Experiencia      
-		 ,REPLACE(REPLACE(REPLACE(isnull(E.PorteUltEmpresa, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') PorteUltEmpresa  
+         ,REPLACE(REPLACE(REPLACE(isnull(F1.PorteUltEmpresa, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') PorteUltEmpresa  
 
          --, ExactTarget.RemoverCharEspecial(isnull(E.SegmentoUltEmpresa, '')) SegmentoUltEmpresa      
 		 ,REPLACE(REPLACE(REPLACE(isnull(E.SegmentoUltEmpresa, ''),CHAR(10),''),CHAR(13),''),CHAR(9),'') SegmentoUltEmpresa      
@@ -222,37 +223,42 @@ select
    ,ISNULL(cast(UltSal_cand as varchar), '') ULTIMO_SALARIO  
    , 'UPS' OP -- Coluna obrigatoria para UPDATE na TailTarget.      
  from     Export.ExactTarget.ControleExportacao tc inner join [hrh-data].dbo.Candidatos C on tc.cod_cand = C.cod_cand       
-             left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil      
-             left outer join [hrh-data].dbo.Meridian_Cad_Cidades MCC on C.CodCidade_cand = MCC.Cod_cidadeMer      
-             left outer join [hrh-data].dbo.Meridian_Cad_Estados MEC on C.CodUF_cand = MEC.Cod_estadoMer      
-             --left outer join objetivo5 oc on oc.CodCand_cargo = C.Cod_cand      
-             --left outer join Idioma3 idi on idi.CodCand_idiomaCand = C.Cod_cand  
-             OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'  
-                                       ELSE C1.Nivel_fluencia END AS NIVEL_INGLES  
-                              FROM [hrh-data].[dbo].[Cand-idiomas] A1  
-                              INNER JOIN [hrh-data].[dbo].[Cad_idiomas] B1 ON B1.Cod_idioma = A1.Cod_idiomaCand   
-                              INNER JOIN [hrh-data].[dbo].[Cad_fluencias] C1 ON C1.Cod_fluencia = A1.Nconv_idiomaCand  
-                              WHERE B1.descr_idioma = 'Inglês'   
-                              AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA1  
-             OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'  
-                                       ELSE C1.Nivel_fluencia END AS NIVEL_ESPANHOL  
-                              FROM [hrh-data].[dbo].[Cand-idiomas] A1  
-                              INNER JOIN [hrh-data].[dbo].[Cad_idiomas] B1 ON B1.Cod_idioma = A1.Cod_idiomaCand   
-                              INNER JOIN [hrh-data].[dbo].[Cad_fluencias] C1 ON C1.Cod_fluencia = A1.Nconv_idiomaCand  
-                              WHERE B1.descr_idioma = 'Espanhol'   
-                              AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA2  
-             left outer join [hrh-data].dbo.Cad_formacaoMax FM on C.CodFormMax_Cand = FM.Cod_formMax       
-             left outer join Graduado G on C.Cod_cand = G.CodCand_form      
-             left outer join Experiencia E on C.Cod_cand = E.CodCand_exp  
-             OUTER APPLY ( SELECT TOP 1 B1.Descr_hierarquia AS NivelProfissionalObjetivo  
-                           FROM [hrh-data].dbo.[Cand-ExpOcupacoes] A1  
-                           INNER JOIN [hrh-data].dbo.cad_hierarquias B1 ON B1.Cod_hierarquia = A1.CodHierarquia_ExpOcup  
-                           WHERE CodCand_ExpOcup =  c.cod_Cand  
-          ORDER BY A1.AnoIni_ExpOcup DESC  ) F  
-             left outer join ExactTarget.UltimaCandidatura U on c.cod_Cand = U.cod_cand      
-    LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T1 ON T1.COD_CAND = C.COD_CAND    
-                    AND T1.TIPO_PERFIL = 1 -- PROFESSOR    
- LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T2 ON T2.COD_CAND = C.COD_CAND    
+left outer join [hrh-data].dbo.Cad_estado_civil CEC on C.CodEstadoCivil_cand = CEC.Cod_estado_civil      
+left outer join [hrh-data].dbo.Meridian_Cad_Cidades MCC on C.CodCidade_cand = MCC.Cod_cidadeMer      
+left outer join [hrh-data].dbo.Meridian_Cad_Estados MEC on C.CodUF_cand = MEC.Cod_estadoMer      
+--left outer join objetivo5 oc on oc.CodCand_cargo = C.Cod_cand      
+--left outer join Idioma3 idi on idi.CodCand_idiomaCand = C.Cod_cand  
+OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'  
+                        ELSE C1.Nivel_fluencia END AS NIVEL_INGLES  
+            FROM [hrh-data].[dbo].[Cand-idiomas] A1  
+            INNER JOIN [hrh-data].[dbo].[Cad_idiomas] B1 ON B1.Cod_idioma = A1.Cod_idiomaCand   
+            INNER JOIN [hrh-data].[dbo].[Cad_fluencias] C1 ON C1.Cod_fluencia = A1.Nconv_idiomaCand  
+            WHERE B1.descr_idioma = 'Inglês'   
+            AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA1  
+OUTER APPLY ( SELECT TOP 1 CASE WHEN C1.Nivel_fluencia IN ('Avançada') THEN 'Fluente'  
+                        ELSE C1.Nivel_fluencia END AS NIVEL_ESPANHOL  
+            FROM [hrh-data].[dbo].[Cand-idiomas] A1  
+            INNER JOIN [hrh-data].[dbo].[Cad_idiomas] B1 ON B1.Cod_idioma = A1.Cod_idiomaCand   
+            INNER JOIN [hrh-data].[dbo].[Cad_fluencias] C1 ON C1.Cod_fluencia = A1.Nconv_idiomaCand  
+            WHERE B1.descr_idioma = 'Espanhol'   
+            AND A1.CodCand_idiomaCand = C.Cod_cand ) IDIOMA2  
+left outer join [hrh-data].dbo.Cad_formacaoMax FM on C.CodFormMax_Cand = FM.Cod_formMax       
+left outer join Graduado G on C.Cod_cand = G.CodCand_form      
+left outer join Experiencia E on C.Cod_cand = E.CodCand_exp  
+OUTER APPLY ( SELECT TOP 1 B1.Descr_hierarquia AS NivelProfissionalObjetivo  
+            FROM [hrh-data].dbo.[Cand-ExpOcupacoes] A1  
+            INNER JOIN [hrh-data].dbo.cad_hierarquias B1 ON B1.Cod_hierarquia = A1.CodHierarquia_ExpOcup  
+            WHERE CodCand_ExpOcup =  c.cod_Cand  
+ORDER BY A1.AnoIni_ExpOcup DESC  ) F
+OUTER APPLY ( SELECT TOP 1 isnull(CP.Descr_porte, '') PorteUltEmpresa
+              FROM [hrh-data].dbo.[Cand-Experiencia] CE 
+              LEFT OUTER JOIN [hrh-data].dbo.cad_portes CP on CP.cod_porte = CE.codporte_exp
+              WHERE CodCand_Exp =  c.cod_Cand
+              ORDER BY CE.Fim_exp DESC ) F1
+left outer join ExactTarget.UltimaCandidatura U on c.cod_Cand = U.cod_cand      
+LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T1 ON T1.COD_CAND = C.COD_CAND    
+      AND T1.TIPO_PERFIL = 1 -- PROFESSOR    
+LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T2 ON T2.COD_CAND = C.COD_CAND    
                     AND T2.TIPO_PERFIL = 2 -- TECNOLOGIA  
  LEFT OUTER JOIN VAGAS_DW.VAGAS_DW.TAIL_CANDIDATO_PERFIL T3 ON T3.COD_CAND = C.COD_CAND    
                     AND T3.TIPO_PERFIL = 3 -- ENGENHARIA  
