@@ -269,7 +269,7 @@ CREATE TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_IIS](
 	[cs-uri-stem] [varchar](500) NULL,
 	[cs-uri-query] [varchar](max) NULL,
 	[s-port] [varchar](max) NULL,
-	[cs-username] [varchar](100) NULL,
+	[cs-username] [varchar](200) NULL,
 	[c-ip] [varchar](100) NULL,
 	[cs(User-Agent)] [varchar](max) NULL,
 	[cs(Cookie)] [varchar](max) NULL,
