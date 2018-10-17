@@ -23,7 +23,7 @@ SET NOCOUNT ON
 
 	-- Carregar tabela baseado na Planilha do Google Drive 
 	SET @CMD = 'set PYTHONIOENCODING=cp437 & C:\Python27\python G:\Projetos\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
-				' "' + '208' + '" "TMP_CAC" "1"'
+				' "' + '220' + '" "TMP_CAC" "1"'
 
 	INSERT INTO #TMP_LOG_ERRO (ERRO)
 	EXEC MASTER.DBO.XP_CMDSHELL @CMD
