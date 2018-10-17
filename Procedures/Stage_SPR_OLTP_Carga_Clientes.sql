@@ -64,7 +64,124 @@ SELECT A.Ident_Cli AS Cliente_VAGAS,
 		WHERE	A.Cod_cli = A1.CodCli_log
 				AND A1.Op_log = 1
 				AND A1.CodUsuManut_log = 0
-				AND A1.Data_log >= DATEADD(DAY, -30, CAST(GETDATE() AS DATE))) AS QTD_LOGIN_ULT_30_DIAS
+				AND A1.Data_log >= DATEADD(DAY, -30, CAST(GETDATE() AS DATE))) AS QTD_LOGIN_ULT_30_DIAS ,
+
+		(	SELECT	COUNT(*) AS QTD_FUNC_LOGIN_ULT_30_DIAS
+			FROM	[hrh-data].[dbo].[Funcionarios] AS A1
+			WHERE	A.COD_CLI = A1.CodCli_func
+					AND A1.Removido_func = 0
+					AND EXISTS (SELECT	1
+								FROM	[hrh-data].[dbo].[Clientes-Login] AS AA1
+								WHERE	A1.Cod_func = AA1.CodFunc_Log
+										AND AA1.Op_Log = 1
+										AND ISNULL(AA1.CodUsuManut_log, -1) < 1
+										AND AA1.Data_Log >= DATEADD(DAY, -30, CAST(GETDATE() AS DATE))) ) AS QTD_FUNC_LOGIN_ULT_30_DIAS ,
+
+		(	SELECT	COUNT(*) AS QTD_FUNC_INATIVO
+			FROM	[hrh-data].[dbo].[Funcionarios] AS A1
+			WHERE	A.COD_CLI = A1.CodCli_func
+					AND A1.Removido_func = 0
+					AND EXISTS (SELECT	1
+								FROM	[hrh-data].[dbo].[Clientes-Login] AS AA1
+								WHERE	A1.Cod_func = AA1.CodFunc_Log
+										AND AA1.Op_log = 1
+										AND ISNULL(AA1.CodUsuManut_log, -1) < 1
+										AND ( AA1.Data_log >= DATEADD(YEAR, -1, CAST(GETDATE() AS DATE))
+											  AND AA1.Data_log < DATEADD(DAY, -30, CAST(GETDATE() AS DATE)))) )  AS QTD_FUNC_INATIVO ,
+
+		(	SELECT	COUNT(*) AS QTD_FUNC_ADMIN
+			FROM	[hrh-data].[dbo].[Funcionarios] AS A1
+			WHERE	A.COD_CLI = A1.CodCli_func
+					AND A1.Removido_func = 0
+					AND A1.Admin_func = 1
+					AND EXISTS (SELECT	1
+								FROM	[hrh-data].[dbo].[Clientes-Login] AS AA1
+								WHERE	A1.Cod_func = AA1.CodFunc_Log
+										AND AA1.Op_Log = 1
+										AND ISNULL(AA1.CodUsuManut_Log, -1) < 1
+										AND AA1.Data_Log >= DATEADD(YEAR, -1, CAST(GETDATE() AS DATE))) ) AS QTD_FUNC_ADMIN ,
+
+		(SELECT COUNT(*) AS QTD_PESQUISAS_BCC
+		 FROM	[hrh-data].[dbo].[Funcionarios] AS A1		INNER JOIN [hrh-data].[dbo].[DebugTriagem] AS A2 ON A1.Cod_func = A2.CodUsu_debTri
+		 WHERE	A.Cod_cli = A1.CodCli_func
+				AND A2.BCC_debTri = 1 -- triagem no BCC
+				AND A2.SenhaMestre_debTri = 0  -- não foi realizado por acesso Manut
+				AND A2.data_debTri >= DATEADD(YEAR, -1, CAST(GETDATE() AS DATE)) ) AS QTD_PESQUISAS_BCC ,
+
+		(SELECT	COUNT(*) AS QTD_PESQUISAS_BCE
+		 FROM	[hrh-data].[dbo].[Funcionarios] AS A1		INNER JOIN [hrh-data].[dbo].[DebugTriagem] AS A2 ON A1.Cod_func = A2.CodUsu_debTri
+		 WHERE	A.Cod_cli = A1.CodCli_func
+				AND A2.BCA_debTri  = 1 -- triagem no BCE
+				AND A2.SenhaMestre_debTri = 0 -- não foi realizado por acesso Manut
+				AND A2.data_debTri >= DATEADD(YEAR, -1, CAST(GETDATE() AS DATE)) ) AS QTD_PESQUISAS_BCE ,
+
+		(SELECT	COUNT(*) AS QTD_PESSOAS_CONTRATADAS
+		 FROM	[hrh-data].[dbo].[Candidatos_Contratados] AS A1		INNER JOIN [hrh-data].[dbo].[Vagas] AS A2 ON A1.codvaga_candcon = A2.Cod_vaga
+		 WHERE	A.Cod_cli = A2.CodCliente_vaga) AS QTD_PESSOAS_CONTRATADAS ,
+
+		(SELECT	COUNT(*) AS QTD_USUARIOS_CADASTRADOS
+		 FROM	[hrh-data].[dbo].[Funcionarios] AS A1
+		 WHERE	A.COD_CLI = A1.CodCli_func
+				AND A1.Removido_func = 0
+				AND EXISTS (SELECT	1
+							FROM	[hrh-data].[dbo].[Clientes-Login] AS AA1
+							WHERE	A1.Cod_func = AA1.CodFunc_Log
+									AND AA1.Op_log = 1
+									AND ISNULL(AA1.CodUsuManut_log, -1) < 1
+									AND AA1.Data_log >= DATEADD(YEAR, -1, CAST(GETDATE() AS DATE))) )AS QTD_USUARIOS_CADASTRADOS ,
+
+		(SELECT COUNT(*) AS QTD_FUNC_ADMIN_BLOQUEADO
+		 FROM	[hrh-data].[dbo].[Funcionarios] AS A1
+		 WHERE	A.COD_CLI = A1.CodCli_func
+				AND A1.Removido_func = 0
+				AND A1.Admin_func = 1
+				AND A1.StatusAcesso_func = 0
+				AND EXISTS (SELECT	1
+							FROM	[hrh-data].[dbo].[Clientes-Login] AS AA1
+							WHERE	A1.Cod_func = AA1.CodFunc_Log
+									AND AA1.Op_log = 1
+									AND ISNULL(AA1.CodUsuManut_log, -1) < 1
+									AND AA1.Data_log >= DATEADD(YEAR, -1, CAST(GETDATE() AS DATE)))) AS QTD_FUNC_ADMIN_BLOQUEADO ,
+
+		(SELECT	COUNT(*) AS QTD_FUNC_ULT_2_MESES
+		 FROM	[hrh-data].[dbo].[Funcionarios] AS A1		INNER JOIN [hrh-data].[dbo].[Clientes-Login] AS A2 ON A1.Cod_func = A2.CodFunc_Log
+		 WHERE	A.COD_CLI = A1.CodCli_func
+				AND A1.Removido_func = 0
+				AND A2.Op_Log = 1
+				AND ISNULL(A2.CodUsuManut_Log, -1) < 1
+				AND A2.Data_Log = (SELECT	MIN(AA1.Data_Log) AS PRM_DATA_LOGIN
+								   FROM		[hrh-data].[dbo].[Clientes-Login] AS AA1
+								   WHERE	A1.Cod_func = AA1.CodFunc_Log
+											AND AA1.Op_log = 1
+											AND ISNULL(AA1.CodUsuManut_Log, -1) < 1)
+				AND A2.Data_Log >= DATEADD(MONTH, -2, CAST(GETDATE() AS DATE)) ) AS QTD_FUNC_ULT_2_MESES ,
+
+		ISNULL( ( SELECT TOP 1 'NÃO' AS SLA_NAO_CONFIGURADO
+				  FROM	 [hrh-data].[dbo].[Clientes] AS A1	INNER JOIN [hrh-data].[dbo].[Divisoes] AS A2 ON A1.Cod_cli = A2.CodCli_div
+															INNER JOIN [hrh-data].[dbo].[SLA_Divisoes] AS A3 ON A2.Cod_div = A3.CodDiv_slaDiv
+				  WHERE	  A.COD_CLI = A1.Cod_cli ), 'SIM') AS SLA_NAO_CONFIGURADO ,
+		ISNULL( ( SELECT TOP 1 'SIM'
+				  FROM	[hrh-data].[dbo].[Fichas-DescrGeral] AS A1
+				  WHERE A.COD_CLI = A1.CodCli_fic
+						AND A1.Teste_fic != -1
+						AND A1.Ident_fic NOT LIKE '%VAGAS%' ), 'NÃO') AS TESTE_CUSTOMIZADO ,
+		ISNULL( ( SELECT	TOP 1 'NÃO' AS CONFIGUROU_POL_SENHA
+				  FROM	[hrh-data].[dbo].[Clientes_Politica_Senhas] AS A1
+				  WHERE	A.COD_CLI = CodCli_polSen
+						AND A1.QtdeMinCar_polSen = 8
+						AND A1.QtdeMaxCar_polSen = 20
+						AND A1.ObrigSenhaComplexa_polSen = 0
+						AND A1.DiasDuracaoMaxSenha_polSen = 90
+						AND A1.DiasTrocaSenhaExpirada_polSen = 90
+						AND A1.DiasDuracaoMinSenha_polSen = 1
+						AND A1.QtdeSenhasMemorizadas_polSen = 5
+						AND A1.QtdeTentativasBloqueio_polSen = 5
+						AND A1.MinutosResetQtdeTentativas_polSen = 15
+						AND A1.MinutosBloqueio_polSen = 15 ), 'SIM') AS CONFIGUROU_POL_SENHA ,
+		( SELECT	COUNT(*) AS QTD_FUNC_REMOVIDO
+		  FROM		[hrh-data].[dbo].[Funcionarios] AS A1
+		  WHERE		A.Cod-cli = A1.CodCli_func
+					AND A1.Removido_func = 1 ) AS QTD_FUNCIONARIOS_REMOVIDOS
 INTO #TMP_PERFIL_USO
 FROM [hrh-data].dbo.Clientes A
 LEFT OUTER JOIN MaxPerfilUso B ON B.CodCli_cliPerfUso = A.Cod_Cli
@@ -120,7 +237,19 @@ SELECT A.Cod_Cli,
 	   A.ULT_DATA_VAGAS_10_MAIS,
 	   A.QTD_UNIDADES_CADASTRADAS,
 	   A.QTD_UNIDADES_ATIVADAS ,
-	   A.QTD_LOGIN_ULT_30_DIAS
+	   A.QTD_LOGIN_ULT_30_DIAS ,
+	   A.QTD_FUNC_LOGIN_ULT_30_DIAS ,
+	   A.QTD_FUNC_INATIVO ,
+	   A.QTD_FUNC_ADMIN ,
+	   A.QTD_PESQUISAS_BCC ,
+	   A.QTD_PESQUISAS_BCE ,
+	   A.QTD_PESSOAS_CONTRATADAS ,
+	   A.QTD_USUARIOS_CADASTRADOS ,
+	   A.QTD_FUNC_ADMIN_BLOQUEADO ,
+	   A.QTD_FUNC_ULT_2_MESES ,
+	   A.SLA_NAO_CONFIGURADO ,
+	   A.TESTE_CUSTOMIZADO ,
+	   A.CONFIGUROU_POL_SENHA
 INTO #TMP_GERAL
 FROM #TMP_PERFIL_USO A
 LEFT OUTER JOIN #TMP_BCE B ON B.Cliente_VAGAS = A.Cliente_VAGAS
@@ -254,7 +383,7 @@ INSERT INTO VAGAS_DW.VAGAS_DW.TMP_CLIENTES (DATA_REFERENCIA,DATA_REFERENCIA_12_M
 											QTD_VAGAS_MES_5,QTD_VAGAS_MES_6,QTD_VAGAS_MES_7,QTD_VAGAS_MES_8,QTD_VAGAS_MES_9,QTD_VAGAS_MES_10,
 											QTD_VAGAS_MES_11,QTD_VAGAS_MES_12,QTD_VAGAS_30_DIAS,QTD_VAGAS_ULT_3_MESES,QTD_VAGAS_ULT_6_MESES,
 											QTD_VAGAS_ULT_9_MESES,QTD_VAGAS_ULT_12_MESES,CONTA_ID,UF,CIDADE,POSSUI_LOGO,
-											JA_FOI_VAGAS_10_MAIS,ULT_DATA_VAGAS_10_MAIS,UNIDADES_CADASTRADAS,UNIDADES_ATIVADAS, QTD_LOGIN_ULT_30_DIAS, FONTE)
+											JA_FOI_VAGAS_10_MAIS,ULT_DATA_VAGAS_10_MAIS,UNIDADES_CADASTRADAS,UNIDADES_ATIVADAS, QTD_LOGIN_ULT_30_DIAS, FONTE, QTD_FUNC_LOGIN_ULT_30_DIAS, QTD_FUNC_INATIVO, QTD_FUNC_ADMIN, QTD_PESQUISAS_BCC, QTD_PESQUISAS_BCE, QTD_PESSOAS_CONTRATADAS, QTD_USUARIOS_CADASTRADOS, QTD_FUNC_ADMIN_BLOQUEADO, QTD_FUNC_ULT_2_MESES, SLA_NAO_CONFIGURADO,TESTE_CUSTOMIZADO, CONFIGUROU_POL_SENHA,QTD_FUNCIONARIOS_REMOVIDOS)
 SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112)) AS DATA_REFERENCIA,
 	   @DATA_REFERENCIA_12_MESES, -- DATA REF. INICIO (12 MESES PRA TRÁS)
 	   DATEADD(MONTH,12,@DATA_REFERENCIA_12_MESES), -- DATA REF. FIM (INICIO DO MES ATUAL DE REF.)
@@ -297,7 +426,20 @@ SELECT CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112)) AS DATA_REFERENCIA,
 	   QTD_UNIDADES_CADASTRADAS,
 	   QTD_UNIDADES_ATIVADAS ,
 	   ISNULL(A.QTD_LOGIN_ULT_30_DIAS, 0) AS QTD_LOGIN_ULT_30_DIAS ,
-	   'MANUT' AS FONTE
+	   'MANUT' AS FONTE ,
+	   QTD_FUNC_LOGIN_ULT_30_DIAS ,
+	   QTD_FUNC_INATIVO ,
+	   QTD_FUNC_ADMIN ,
+	   QTD_PESQUISAS_BCC ,
+	   QTD_PESQUISAS_BCE ,
+	   QTD_PESSOAS_CONTRATADAS ,
+	   QTD_USUARIOS_CADASTRADOS ,
+	   QTD_FUNC_ADMIN_BLOQUEADO ,
+	   QTD_FUNC_ULT_2_MESES ,
+	   SLA_NAO_CONFIGURADO ,
+	   TESTE_CUSTOMIZADO ,
+	   CONFIGUROU_POL_SENHA ,
+	   QTD_FUNCIONARIOS_REMOVIDOS
 FROM #TMP_GERAL A 
 LEFT OUTER JOIN #TMP_VAGAS_MENSAL B ON B.Cliente_VAGAS = A.Cliente_VAGAS
 ORDER BY 5
