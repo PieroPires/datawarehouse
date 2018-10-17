@@ -1,0 +1,39 @@
+USE VAGAS_DW
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_OLAP_Carga_Clientes_Login' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')
+DROP PROCEDURE [VAGAS_DW].[SPR_OLAP_Carga_Clientes_Login]
+GO
+
+
+-- =============================================
+-- Author:      Fiama dos Santos Cristi
+-- Create date: 16/09/2016
+-- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
+-- =============================================
+CREATE PROCEDURE [VAGAS_DW].[SPR_OLAP_Carga_Clientes_Login]
+
+AS
+SET NOCOUNT ON
+
+
+-- LIMPAR TABELA FATO:
+TRUNCATE TABLE [VAGAS_DW].[CLIENTES_LOGIN] ;
+
+INSERT INTO [VAGAS_DW].[CLIENTES_LOGIN] (COD_LOGIN, COD_CLI, COD_FUNC, DATA_LOGIN, TIPO, USUARIO_ATIVO, USUARIO_ATIVO_REMOVIDO)
+SELECT	A.COD_LOGIN ,
+		A.COD_CLI ,
+		A.COD_FUNC ,
+		A.DATA_LOGIN ,
+		A.TIPO ,
+		A.USUARIO_ATIVO ,
+		A.USUARIO_ATIVO_REMOVIDO
+FROM	[STAGE].[VAGAS_DW].[TMP_CLIENTES_LOGIN] AS A ;
+
+
+-- DATA DE CADASTRO DO FUNCIONÁRIO:
+UPDATE	[VAGAS_DW].[CLIENTES_LOGIN]
+SET		DATA_CAD_FUNC = ( SELECT	MIN(A1.DATA_LOGIN)
+						  FROM		[VAGAS_DW].[CLIENTES_LOGIN] AS A1
+						  WHERE		A.COD_FUNC = A1.COD_FUNC)
+FROM	[VAGAS_DW].[CLIENTES_LOGIN] AS A ;
