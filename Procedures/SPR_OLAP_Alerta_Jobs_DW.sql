@@ -24,7 +24,7 @@ DECLARE	@PROFILE_NAME VARCHAR(256) ,
 
 SET	@PROFILE_NAME = N'SQL SERVER AGENT' ;
 SET	@RECIPIENTS = 'fiama.cristi@vagas.com.br' ;
-SET @COPY_RECIPIENTS = 'luiz.braz@vagas.com.br' ;
+-- SET @COPY_RECIPIENTS = 'luiz.braz@vagas.com.br' ;
 
 -- Envia um alerta para notificar erro no JOB 'PKG - Executar Carga DW - (D-1)':
 IF EXISTS (SELECT 1
@@ -239,6 +239,53 @@ BEGIN
 							 AND A.JOB_ID IN (SELECT JOB_ID
 											  FROM	[MSDB].[DBO].[SYSJOBS]
 											  WHERE	NAME = 'PKG - Executar Carga DW (SEMANAL)')
+							 AND RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112)) FOR XML PATH('')), 1, 1, ''))
+
+
+	EXEC [MSDB].[DBO].SP_SEND_DBMAIL
+		@PROFILE_NAME = @PROFILE_NAME ,
+		@RECIPIENTS = @RECIPIENTS ,
+		@COPY_RECIPIENTS = @COPY_RECIPIENTS ,
+		@BODY = @BODY ,
+		@SUBJECT = @SUBJECT
+END
+
+
+
+
+-- Envia um alerta para notificar erro no JOB 'PKG - Executar Carga DW (MENSAL)':
+IF EXISTS (SELECT 1
+		   FROM	 [MSDB].[DBO].[SYSJOBHISTORY] AS A
+		   WHERE A.RUN_STATUS = 0
+				 AND A.STEP_NAME != '(Job outcome)'
+				 AND A.JOB_ID =  (SELECT A1.JOB_ID
+								  FROM	[MSDB].[DBO].[SYSJOBS] AS A1
+								  WHERE	A1.NAME = 'PKG - Executar Carga DW (MENSAL)')
+				 AND A.RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112)))
+
+BEGIN
+	SET	@SUBJECT = (SELECT	TOP 1 '[Failed] SQL Server Job System: ' + B.NAME
+					FROM	[MSDB].[DBO].[SYSJOBHISTORY] AS A	INNER JOIN [MSDB].[DBO].[SYSJOBS] AS B ON A.JOB_ID = B.JOB_ID
+																INNER JOIN [MSDB].[DBO].[SYSJOBSTEPS] AS C ON B.JOB_ID = C.JOB_ID AND A.STEP_ID = C.STEP_ID
+					WHERE	A.RUN_STATUS = 0
+							AND A.STEP_NAME != '(Job outcome)'
+							AND A.JOB_ID = (SELECT	A1.JOB_ID
+											FROM	[MSDB].[DBO].[SYSJOBS] AS A1
+											WHERE	A1.NAME = 'PKG - Executar Carga DW (MENSAL)')
+							AND A.RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112))) ;
+		
+
+
+	SET @BODY = (SELECT STUFF(
+					(SELECT ' The step failed:' + ' ' + A.STEP_NAME + CHAR(10) , + 
+							'Message Error:' + ' ' + A.[MESSAGE]  + CHAR(10) + CHAR(10) AS [text()] 
+					 FROM	 [MSDB].[DBO].[SYSJOBHISTORY] AS A	INNER JOIN [MSDB].[DBO].[SYSJOBS] AS B ON A.JOB_ID = B.JOB_ID
+																INNER JOIN [MSDB].[DBO].[SYSJOBSTEPS] AS C ON B.JOB_ID = C.JOB_ID AND A.STEP_ID = C.STEP_ID
+					 WHERE	 A.RUN_STATUS = 0
+							 AND A.STEP_NAME != '(Job outcome)'
+							 AND A.JOB_ID IN (SELECT JOB_ID
+											  FROM	[MSDB].[DBO].[SYSJOBS]
+											  WHERE	NAME = 'PKG - Executar Carga DW (MENSAL)')
 							 AND RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112)) FOR XML PATH('')), 1, 1, ''))
 
 
