@@ -1,0 +1,27 @@
+-- =============================================
+-- Author: Fiama
+-- Create date: 23/10/2018
+-- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
+-- =============================================
+
+USE [VAGAS_DW] ;
+
+IF EXISTS ( SELECT	* FROM SYS.OBJECTS WHERE NAME = 'VAGAS_DW_SPR_OLAP_Carga_Vagas_Etalent_Lancamentos' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW' )
+DROP PROCEDURE [VAGAS_DW].[VAGAS_DW_SPR_OLAP_Carga_Vagas_Etalent_Lancamentos] ;
+GO
+
+CREATE PROCEDURE [VAGAS_DW].[VAGAS_DW_SPR_OLAP_Carga_Vagas_Etalent_Lancamentos] 
+AS
+SET NOCOUNT ON
+
+TRUNCATE TABLE [VAGAS_DW].[VAGAS_ETALENT_LANCAMENTOS] ;
+
+
+INSERT INTO [VAGAS_DW].[VAGAS_ETALENT_LANCAMENTOS] (COD_CLI,COD_VAGA,DATA_LANCAMENTO,TIPO_LANCAMENTO,TIPO_REL_COMP_REL,QTD_LANCAMENTOS)
+SELECT	A.COD_CLI ,
+		A.COD_VAGA ,
+		A.DATA_LANCAMENTO ,
+		A.TIPO_LANCAMENTO ,
+		A.TIPO_REL_COMP_REL ,
+		A.QTD_LANCAMENTOS
+FROM	[STAGE].[VAGAS_DW].[TMP_VAGAS_ETALENT_LANCAMENTOS] AS A ;
