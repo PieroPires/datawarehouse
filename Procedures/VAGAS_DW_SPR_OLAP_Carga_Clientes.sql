@@ -2030,6 +2030,22 @@ WHERE	( ISNULL(A.CNPJ, '') = '' -- CNPJ EM BRANCO
 		AND A.FONTE = 'MANUT' ;
 
 
+-- Cálculo do tempo de permanência do cliente na base:
+UPDATE	[VAGAS_DW].[CLIENTES]
+SET		TEMPO_PERMANENCIA_ANOS = DATEDIFF(YEAR, A.DATA_PRM_OPORTUNIDADE_CRM, CAST(GETDATE() AS DATE))
+FROM	[VAGAS_DW].[CLIENTES] AS A
+WHERE	A.EX_CLIENTE = 0 ;
+
+
+-- Atualização do campo QTD_FUNC_REMOVIDO:
+UPDATE	[VAGAS_DW].[CLIENTES]
+SET		QTD_FUNC_REMOVIDO = ( SELECT	COUNT(*) AS QTD_FUNC_REMOVIDO
+							  FROM		[hrh-data].[dbo].[Funcionarios] AS A1
+							  WHERE		A.COD_CLI = A1.CodCli_func
+										AND A1.Removido_func = 1 )
+FROM	[VAGAS_DW].[CLIENTES] AS A ;
+
+
 -- Inserir dados na base historica
 INSERT INTO VAGAS_DW.CLIENTES_HISTORICO 
 SELECT * FROM VAGAS_DW.CLIENTES 
