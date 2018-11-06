@@ -18,20 +18,42 @@ SET NOCOUNT ON
 
 TRUNCATE TABLE [VAGAS_DW].[TMP_AVALIACOES_CVS] ;
 
-INSERT INTO [VAGAS_DW].[TMP_AVALIACOES_CVS] (COD_VAGA, QTD_AVALIACOES_VAGA)
-SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(8), A.DtFase_candVaga, 112)) AS DATA_AVALIACAO ,
-		A.CodVaga_cvVisto AS COD_VAGA ,
-		COUNT(*) AS QTD_VISUALIZACOES
-FROM	[hrh-data].[dbo].[Curriculo_Visto] AS A
+INSERT INTO [VAGAS_DW].[TMP_AVALIACOES_CVS] (DATA_AVALIACAO, COD_VAGA, AVALIACAO, QTD_AVALIACOES_CVs)
+SELECT	CONVERT(DATE, A.DtFase_candVaga) AS DATA_AVALIACAO ,
+		A.CodVaga_candVaga AS COD_VAGA ,
+		CASE
+			WHEN A.CodAval_candVaga = -2
+				THEN 'Nenhum'
+			WHEN A.CodAval_candVaga = -1
+				THEN 'Ruim'
+			WHEN A.CodAval_candVaga = 0
+				THEN 'Não avaliado'
+			WHEN A.CodAval_candVaga = 1	
+				THEN 'Regular'
+			WHEN A.CodAval_candVaga = 2
+				THEN 'Bom'
+			WHEN A.CodAval_candVaga = 3	
+				THEN 'Excelente'
+		END AS AVALIACAO ,
+		COUNT(*) AS QTD_AVALIACOES_CVs
+FROM	[hrh-data].[dbo].[CandidatoxVagas] AS A
+WHERE	(A.CodAval_candVaga < 0 
+		 OR A.CodAval_candVaga > 0) 
+		 AND A.DtFase_candVaga IS NOT NULL 
 GROUP BY
-		CONVERT(SMALLDATETIME, CONVERT(CHAR(8), A.DtUltLeit_cvVisto, 112)) ,
-		A.CodVaga_cvVisto ;
-
-
-SELECT	TOP 1000 * FROM [hrh-data].[dbo].[CandidatoxVagas] 
-WHERE (CodAval_candVaga < 0 OR CodAval_candVaga > 0) AND DtFase_candVaga IS NOT NULL 
-ORDER BY Cod_candVaga DESC ;
-
-
-SELECT	TOP 10 * FROM [hrh-data]..[HistoricoFasesCand]
-SELECT	DISTINCT CodAval_faseCand FROM [hrh-data]..[HistoricoFasesCand]
+		CONVERT(DATE, A.DtFase_candVaga) ,
+		A.CodVaga_candVaga ,
+		CASE
+			WHEN A.CodAval_candVaga = -2
+				THEN 'Nenhum'
+			WHEN A.CodAval_candVaga = -1
+				THEN 'Ruim'
+			WHEN A.CodAval_candVaga = 0
+				THEN 'Não avaliado'
+			WHEN A.CodAval_candVaga = 1	
+				THEN 'Regular'
+			WHEN A.CodAval_candVaga = 2
+				THEN 'Bom'
+			WHEN A.CodAval_candVaga = 3	
+				THEN 'Excelente'
+		END ;
