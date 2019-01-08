@@ -18,21 +18,70 @@ SET NOCOUNT ON
 
 TRUNCATE TABLE [VAGAS_DW].[TMP_EXTRACOES_RELATORIOS_VEP] ;
 
-INSERT INTO [VAGAS_DW].[TMP_EXTRACOES_RELATORIOS_VEP]
-SELECT	SUBQUERY.DATA_EXTRACAO ,
-		SUBQUERY.COD_CLI ,
-		SUBQUERY.CONTEXTO_EXTRACAO ,
-		COUNT(*) AS QTD_EXTRACOES_RELATORIOS 
-FROM	
-	(
-		SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Dt_email, 112)) AS DATA_EXTRACAO ,
-				( SELECT	A1.CodCli_func AS COD_CLI
-				  FROM		[hrh-data].[dbo].[Funcionarios] AS A1
-				  WHERE		A.CodFunc_email = A1.Cod_func ) AS COD_CLI ,
-				IIF(A.CodVaga_email > 0, 'VAGA', 'OUTRO') AS CONTEXTO_EXTRACAO ,
-				A.CodPedido_email AS COD_PEDIDO
-		FROM	[hrh-data].[dbo].[Email] AS A ) AS SUBQUERY
+INSERT INTO [VAGAS_DW].[TMP_EXTRACOES_RELATORIOS_VEP](DATA_EXTRACAO,COD_CLI,CONTEXTO_EXTRACAO,TIPO_RELATORIO,FONTE_EXTRACAO,QTD_EXTRACOES_RELATORIOS,RELATORIO_PADRAO)
+SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Dt_email, 112)) AS DATA_EXTRACAO ,
+		B.CodCli_func AS COD_CLI ,
+		IIF(A.CodVaga_email > 0, 'VAGA', 'OUTRO') AS CONTEXTO_EXTRACAO ,
+		CASE
+			WHEN C.GeralVagas_rel = 1
+				THEN 'GERAL'
+			WHEN C.GeralVaga_rel = 1
+				THEN 'VAGA'
+			WHEN C.Marcados_rel = 1
+				THEN 'SERVIÇOS SOBRE MARCADOS'
+			ELSE NULL
+		END AS TIPO_RELATORIO ,
+		'E-MAIL' AS FONTE_EXTRACAO ,
+		COUNT(*) AS QTD_EXTRACOES_RELATORIOS ,
+		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') AS RELATORIO_PADRAO
+FROM	[hrh-data].[dbo].[Email] AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B	ON A.CodFunc_email = B.Cod_func
+											INNER JOIN [hrh-data].[dbo].[Clientes-Relatorios] AS C	ON A.AnexoFmt_email = C.CodFmt_rel
+																									   AND B.CodCli_func = C.CodCli_rel
 GROUP BY
-		SUBQUERY.DATA_EXTRACAO ,
-		SUBQUERY.COD_CLI ,
-		SUBQUERY.CONTEXTO_EXTRACAO ;
+		CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Dt_email, 112)) ,
+		B.CodCli_func ,
+		IIF(A.CodVaga_email > 0, 'VAGA', 'OUTRO') ,
+		CASE
+			WHEN C.GeralVagas_rel = 1
+				THEN 'GERAL'
+			WHEN C.GeralVaga_rel = 1
+				THEN 'VAGA'
+			WHEN C.Marcados_rel = 1
+				THEN 'SERVIÇOS SOBRE MARCADOS'
+			ELSE NULL
+		END ,
+		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO')
+UNION ALL
+SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Data_pedXls, 112)) AS DATA_EXTRACAO ,
+		B.CodCli_func AS COD_CLI ,
+		IIF(A.CodVaga_pedXls > 0, 'VAGA', 'OUTRO') AS CONTEXTO_EXTRACAO ,
+				CASE
+					WHEN C.GeralVagas_rel = 1
+						THEN 'GERAL'
+					WHEN C.GeralVaga_rel = 1
+						THEN 'VAGA'
+					WHEN C.Marcados_rel = 1
+						THEN 'SERVIÇOS SOBRE MARCADOS'
+					ELSE NULL
+				END AS TIPO_RELATORIO ,
+		'ON-LINE' AS FONTE_EXTRACAO ,
+		COUNT(*) AS QTD_EXTRACOES_RELATORIOS ,
+		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') AS RELATORIO_PADRAO
+FROM [hrh-data].[dbo].[Pedidos_Excel] AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.CodFunc_pedXls = B.Cod_func
+												INNER JOIN [hrh-data].[dbo].[Clientes-Relatorios] AS C ON A.CodFmt_pedXls = C.CodFmt_rel
+																											AND B.CodCli_func = C.CodCli_rel
+												
+GROUP BY
+		CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Data_pedXls, 112)) ,
+		B.CodCli_func ,
+		IIF(A.CodVaga_pedXls > 0, 'VAGA', 'OUTRO') ,
+				CASE
+					WHEN C.GeralVagas_rel = 1
+						THEN 'GERAL'
+					WHEN C.GeralVaga_rel = 1
+						THEN 'VAGA'
+					WHEN C.Marcados_rel = 1
+						THEN 'SERVIÇOS SOBRE MARCADOS'
+					ELSE NULL
+				END ,
+IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') ;
