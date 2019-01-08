@@ -186,7 +186,7 @@ OUTER APPLY ( SELECT MIN(DataVAlidacao_vagaval) DATA_VALIDACAO
 LEFT OUTER JOIN #TMP_ALERTAS I ON I.CodVaga_czMonitVaga = A.Cod_Vaga
 LEFT OUTER JOIN [hrh-data].dbo.cad_segmentos J ON J.cod_segmento = B.CodSegmento_cli
 LEFT OUTER JOIN [hrh-data].dbo.Cad_segmentos_grupos L ON L.Cod_segmentoGrp = J.CodGrupo_Segmento
-LEFT OUTER JOIN [hrh-data].dbo.Cad_Paises M ON M.Cod_pais = F.CodPais_estadoMer
+LEFT OUTER JOIN [hrh-data].dbo.Cad_Paises M ON M.Cod_pais = A.CodPais_vaga
 LEFT JOIN [hrh-data].dbo.Divisoes N ON N.Cod_div = A.CodDivVeic_vaga 
 LEFT JOIN [hrh-data].dbo.Cad_NavEx O ON O.Cod_navEx = N.CodNavEx_div
 LEFT OUTER JOIN [hrh-data].[dbo].[Cad_estadosBR] AS P ON F.Cod_estadoMer = P.Cod_estadoBR
@@ -203,4 +203,3 @@ AND VagaModelo_vaga = 0 -- Vaga não é modelo
 AND LEFT(Cargo_vaga,5) not in ('demo ', 'demo-') -- a vaga nao foi criada durante uma demonstracao  
 AND A.UltDtAtual_vaga  >= @DT_CARGA_INICIO AND A.UltDtAtual_vaga < @DT_CARGA_FIM 
 AND ISNULL(VagaComExt_vaga, 0) = 0 -- FILTRAR VAGAS DE COMUNID. EXTERNA [SUGESTÃO BETH]
-
