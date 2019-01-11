@@ -286,7 +286,7 @@ WHERE	 (A.VAGAS_COD_VAGA = 853804
 	SELECT	CodCzMonit_czMonitVagaCand ,
 			CodVaga_czMonitVagaCand
 	INTO	#TMP_EMAILS_RECOMENDACAO
-	FROM	[Recomendacao-Data].[dbo].[cruzamentoMonitxVagaXCand] AS A		INNER JOIN [Recomendacao-Data].[dbo].[cruzamentoMonit] AS B 
+	FROM	[SRV-SQLSERVER-RECOMENDACAO].[Recomendacao-Data].[dbo].[cruzamentoMonitxVagaXCand] AS A		INNER JOIN [SRV-SQLSERVER-RECOMENDACAO].[Recomendacao-Data].[dbo].[cruzamentoMonit] AS B 
 																			ON A.CodCzMonit_czMonitVagaCand = B.Cod_CzMonit
 	WHERE	A.CodCzMonit_czMonitVagaCand > ISNULL(@COD_ULT_CRUZAMENTO, 0) ;
 
