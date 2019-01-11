@@ -27,14 +27,16 @@ SET	@RECIPIENTS = 'fiama.cristi@vagas.com.br' ;
 SET @COPY_RECIPIENTS = 'diego.gatto@vagas.com.br' ;
 
 -- Envia um alerta para notificar erro no JOB 'PKG - Executar Carga DW - (D-1)':
-IF EXISTS (SELECT 1
+IF EXISTS (SELECT TOP 1 1
 		   FROM	 [MSDB].[DBO].[SYSJOBHISTORY] AS A
 		   WHERE A.RUN_STATUS = 0
 				 AND A.STEP_NAME != '(Job outcome)'
 				 AND A.JOB_ID =  (SELECT A1.JOB_ID
 								  FROM	[MSDB].[DBO].[SYSJOBS] AS A1
 								  WHERE	A1.NAME = 'PKG - Executar Carga DW - (D-1)')
-				 AND A.RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112)))
+				 AND A.RUN_DATE = (SELECT CONVERT(CHAR(8), DATEADD(DAY, -1, CAST(GETDATE() AS DATE)), 112))
+				 AND LEN(A.RUN_TIME) = 6
+				 AND LEFT(A.RUN_TIME, 2) >= 18)
 
 BEGIN
 	SET	@SUBJECT = (SELECT	TOP 1 '[Failed] SQL Server Job System: ' + B.NAME
@@ -45,7 +47,9 @@ BEGIN
 							AND A.JOB_ID = (SELECT	A1.JOB_ID
 											FROM	[MSDB].[DBO].[SYSJOBS] AS A1
 											WHERE	A1.NAME = 'PKG - Executar Carga DW - (D-1)')
-							AND A.RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112))) ;
+							AND A.RUN_DATE = (SELECT CONVERT(CHAR(8), DATEADD(DAY, -1, CAST(GETDATE() AS DATE)), 112))
+							AND LEN(A.RUN_TIME) = 6
+							AND LEFT(A.RUN_TIME, 2) >= 18) ;
 		
 
 
@@ -56,10 +60,12 @@ BEGIN
 																INNER JOIN [MSDB].[DBO].[SYSJOBSTEPS] AS C ON B.JOB_ID = C.JOB_ID AND A.STEP_ID = C.STEP_ID
 					 WHERE	 A.RUN_STATUS = 0
 							 AND A.STEP_NAME != '(Job outcome)'
+							 AND LEN(A.RUN_TIME) = 6
+							 AND LEFT(A.RUN_TIME, 2) >= 18
 							 AND A.JOB_ID IN (SELECT JOB_ID
 											  FROM	[MSDB].[DBO].[SYSJOBS]
 											  WHERE	NAME = 'PKG - Executar Carga DW - (D-1)')
-							 AND RUN_DATE = (SELECT CONVERT(CHAR(8), CAST(GETDATE() AS DATE), 112)) FOR XML PATH('')), 1, 1, ''))
+							 AND RUN_DATE = (SELECT CONVERT(CHAR(8), DATEADD(DAY, -1, CAST(GETDATE() AS DATE)), 112)) FOR XML PATH('')), 1, 1, ''))
 
 
 	EXEC [MSDB].[DBO].SP_SEND_DBMAIL
