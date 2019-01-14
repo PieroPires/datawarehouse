@@ -187,7 +187,7 @@ FROM [hrh-data].dbo.Clientes A
 LEFT OUTER JOIN MaxPerfilUso B ON B.CodCli_cliPerfUso = A.Cod_Cli
 LEFT OUTER JOIN [hrh-data].dbo.[Clientes-PerfilUso] C ON C.Cod_cliPerfUso = B.Maxcod_CliPerfUso
 OUTER APPLY ( SELECT SUM(Credito_Credv) AS Creditos_Total,
-					 SUM(Usados_Credv) AS Creditos_Disponivel,
+					 SUM(Credito_Credv) - SUM(Usados_Credv) AS Creditos_Disponivel,
 					 SUM(Custo_CredV) AS Creditos_Valor
 			  FROM [hrh-data].dbo.Creditos_VAGAS
 			  WHERE CodCli_CredV = A.Cod_Cli
