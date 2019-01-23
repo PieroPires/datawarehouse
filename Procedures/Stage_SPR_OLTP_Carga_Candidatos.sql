@@ -35,7 +35,8 @@ CREATE TABLE #TMP_CANDIDATOS([Cod_Cand] [int] NOT NULL,[CodFormMax_cand] [smalli
 	[dtcriacao_cand] [datetime] NULL,[UltDtAtual_cand] [datetime] NOT NULL,[Email_cand] [nvarchar](60) NULL,
 	[FezAcessoIrrestrito_cand] [bit] NOT NULL,[DtUltSal_cand] [datetime] NULL,[UltSal_cand] [int] NULL,
 	[CodCidade_cand] [int] NULL,[CodEstadoCivil_cand] [smallint] NULL,[EstadoReg_cand] [tinyint] NOT NULL,
-	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL,LIBERACAO_CV_NOVO TINYINT,Email varchar(120) ) 
+	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL,LIBERACAO_CV_NOVO TINYINT,Email varchar(120), 
+	[MalaDiretaSite_cand] [bit], [MalaDireta_cand] [bit]) 
 
 IF @DT_ATUALIZACAO_INICIO IS NOT NULL -- TESTA SE É CARGA FULL
 BEGIN 
@@ -61,7 +62,9 @@ BEGIN
 		   Ficticio_cand,
 		   CPF_Cand,
 		   liberacaocvnovo AS LIBERACAO_CV_NOVO,
-		   Email_Cand
+		   Email_Cand,
+		   MalaDiretaSite_cand,
+		   MalaDireta_cand
 	FROM [hrh-data].dbo.Candidatos A
 	WHERE A.UltDtAtual_cand >= @DT_ATUALIZACAO_INICIO AND A.UltDtAtual_cand < @DT_ATUALIZACAO_FIM 
 	--AND A.Cod_cand = ( SELECT MAX(Cod_cand) FROM [hrh-data]..candidatos
@@ -92,7 +95,9 @@ BEGIN
 		   Ficticio_cand,
 		   CPF_Cand,
 		   liberacaocvnovo AS LIBERACAO_CV_NOVO,
-		   Email_Cand
+		   Email_Cand,
+		   MalaDiretaSite_cand,
+		   MalaDireta_cand
 	FROM [hrh-data].dbo.Candidatos A	
 
 END
@@ -226,7 +231,9 @@ SELECT A.Cod_Cand,
 	NULL AS DATA_REMOCAO ,
 	NULL AS TEMPO_PERMANENCIA_ANOS ,
 	NULL AS CV_REMOVIDO_RETORNOU ,
-	NULL AS TEMPO_PERMANENCIA_MESES
+	NULL AS TEMPO_PERMANENCIA_MESES ,
+	A.MalaDiretaSite_cand AS ACEITA_MAILING_VAGAS,
+	A.MalaDireta_cand AS ACEITA_MAILING_PARCEIROS
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
