@@ -239,7 +239,7 @@ OUTER APPLY ( SELECT TOP 1 B1.*,C1.*
 			  INNER JOIN [hrh-data].dbo.Cad_hierarquias B1 ON B1.Cod_Hierarquia = A1.CodHierarquia_ExpOcup
 			  INNER JOIN [hrh-data].dbo.Cad_setores C1 ON C1.Cod_setor = A1.CodSetor_ExpOcup
 			  WHERE A1.CodCand_ExpOcup = A.Cod_Cand
-			  ORDER BY AnoIni_ExpOcup DESC ) D
+			  ORDER BY AnoIni_ExpOcup DESC, ISNULL(AnoFim_ExpOcup,DATEPART(year,GETDATE())) DESC, Cod_hierarquia DESC ) D
 LEFT OUTER JOIN [hrh-data].dbo.Meridian_Cad_cidades E ON E.Cod_CidadeMer = A.CodCidade_cand			  
 LEFT OUTER JOIN [hrh-data].dbo.Meridian_Cad_estados F ON F.Cod_EstadoMer = E.CodUF_cidadeMer
 LEFT OUTER JOIN [hrh-data].dbo.Cad_paises G ON G.Cod_pais = F.CodPais_estadoMer
