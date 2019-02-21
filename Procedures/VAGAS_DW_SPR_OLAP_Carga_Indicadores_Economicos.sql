@@ -165,6 +165,21 @@ SELECT	CONVERT(SMALLDATETIME, CONVERT(VARCHAR, '20181101', 112)) AS DATA ,
 FROM	[VAGAS_DW].[TMP_INDICADORES_IGPM] AS A
 WHERE	A.MES_ANO = 'Nov/2018' ;
 
+-- Solução paleativa: Inserido dos valores de Dez/18 manualmente: 
+-- https://www.ibge.gov.br/estatisticas-novoportal/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html?edicao=22909&t=downloads 
+-- Download: ipca_SerieHist.zip 
+INSERT INTO [VAGAS_DW].[INDICADORES_ECONOMICOS_MENSAL] (DATA,INDICE_MES_IPCA,INDICE_ACUM_ANO_IPCA,INDICE_ACUM_12_MESES_IPCA,INDICE_MES_IGPM,INDICE_ACUM_ANO_IGPM,INDICE_ACUM_12_MESES_IGPM) 
+SELECT	CONVERT(SMALLDATETIME, CONVERT(VARCHAR, '20181201', 112)) AS DATA ,  
+		CONVERT(FLOAT,REPLACE(REPLACE(0.15,',','.'),'- ','-')) / 100 AS INDICE_MES_IPCA, --> "NO MES" 
+		CONVERT(FLOAT,REPLACE(REPLACE(3.75,',','.'),'- ','-')) / 100 AS INDICE_ACUM_ANO_IPCA, --> "NO ANO" 
+		CONVERT(FLOAT,REPLACE(REPLACE(3.75,',','.'),'- ','-')) / 100 AS INDICE_ACUM_12_MESES_IPCA, --> 12 MESES" 
+		CONVERT(FLOAT,REPLACE(REPLACE(REPLACE(REPLACE(indice_mes,',','.'),'- ','-'),'&nbsp;',''),' ','')) / 100 AS INDICE_MES_IGPM, 
+		CONVERT(FLOAT,REPLACE(REPLACE(indice_acumulado_ano,',','.'),'- ','-')) / 100 AS INDICE_ACUMULADO_ANO_IGPM, 
+		CONVERT(FLOAT,REPLACE(REPLACE(indice_acumulado_12_meses,',','.'),'- ','-')) / 100 AS INDICE_ACUMULADO_12_MESES_IGPM 
+FROM	[VAGAS_DW].[TMP_INDICADORES_IGPM] AS A 
+WHERE	A.MES_ANO = 'Dez/2018' ; 
+ 
+
 -- Apagar registros duplicados inseridos paleativamente:
 WHILE ( SELECT	TOP 1 1
 		FROM	[VAGAS_DW].[INDICADORES_ECONOMICOS_MENSAL] AS A

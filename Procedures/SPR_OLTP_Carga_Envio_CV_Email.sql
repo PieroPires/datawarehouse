@@ -17,7 +17,7 @@ SET NOCOUNT ON
 
 TRUNCATE TABLE [VAGAS_DW].[TMP_ENVIO_CV_EMAIL] ;
 
-INSERT INTO [VAGAS_DW].[TMP_ENVIO_CV_EMAIL](COD_CLI,FORMATO_ENVIO_CV,COD_VAGA,DATA_ENVIO,QTD_ENVIOS_CVs)
+INSERT INTO [VAGAS_DW].[TMP_ENVIO_CV_EMAIL](COD_CLI,FORMATO_ENVIO_CV,COD_VAGA,DATA_ENVIO,QTD_ENVIOS_CVs,QTD_CVS_ENVIADO)
 SELECT	B.CodCli_func AS COD_CLI ,
 		CASE
 			WHEN A.AnexoFmt_email = 0
@@ -29,7 +29,8 @@ SELECT	B.CodCli_func AS COD_CLI ,
 		END AS FORMATO_ENVIO_CV ,
 		A.CodVaga_email AS COD_VAGA ,
 		CONVERT(DATE, A.Dt_email) AS DATA_ENVIO ,
-		COUNT(*) AS QTD_ENVIOS_CVs
+		COUNT(*) AS QTD_ENVIOS_CVs ,
+		SUM(CONVERT(INT, SUBSTRING(LTRIM(RTRIM(AnexoLista_email)), 1, CHARINDEX(' ', LTRIM(RTRIM(AnexoLista_email))) -1))) AS QTD_CVS_ENVIADO
 FROM	[hrh-data].[dbo].[Email] AS A		LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.CodFunc_email = B.Cod_func
 											LEFT OUTER JOIN	[hrh-data].[dbo].[Clientes-Relatorios] AS C ON A.AnexoFmt_email = C.CodFmt_rel 
 																										   AND B.CodCli_func = C.CodCli_rel

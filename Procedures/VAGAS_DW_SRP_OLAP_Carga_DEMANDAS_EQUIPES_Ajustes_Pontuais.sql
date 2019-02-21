@@ -153,3 +153,12 @@ FROM	[VAGAS_DW].[DEMANDAS_EQUIPES] AS A
 WHERE	A.EQUIPE_PROJETO = 'Inteligência de Negócios'
 		AND A.NUMERO_DEMANDA = 3136
 		AND A.CICLO = '#Ciclo12' ;
+
+		
+
+-- 14/01/2019 Ajuste do Ano do Fechamento do Release:
+UPDATE	[VAGAS_DW].[DEMANDAS_EQUIPES]
+SET		NOME_RELEASE = 'Semana 6 - Janeiro de 2019 - #Ciclo13'
+FROM	[VAGAS_DW].[DEMANDAS_EQUIPES] AS A
+WHERE	A.EQUIPE_PROJETO = 'Inteligência de Negócios'
+		AND A.NOME_RELEASE = 'Semana 6 - Janeiro de 2018 - #Ciclo13' ;
