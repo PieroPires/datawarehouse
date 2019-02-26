@@ -44,7 +44,8 @@ BEGIN
 			 A.Estimado_exp AS ESTIMADO,
 			 A.CodPorte_exp AS PORTE_EMPRESA_ID,
 			 CONVERT(VARCHAR(100),C.Descr_Porte) AS PORTE,
-			 CONVERT(VARCHAR(8000),A.Descr_exp) AS DESCRICAO_EXPERIENCIA,
+			 NULL AS DESCRICAO_EXPERIENCIA,
+			 --CONVERT(VARCHAR(8000),A.Descr_exp) AS DESCRICAO_EXPERIENCIA,
 			 CONVERT(VARCHAR(120),A.NacionalidadeEmp_exp) AS NACIONALIDADE,
 			 A.TipoEmp_exp AS TIPO_EMPRESA,
 			 UltCargoNormalizado_exp,
@@ -70,7 +71,8 @@ BEGIN
 			 A.Estimado_exp AS ESTIMADO,
 			 A.CodPorte_exp AS PORTE_EMPRESA_ID,
 			 CONVERT(VARCHAR(100),C.Descr_Porte) AS PORTE,
-			 CONVERT(VARCHAR(8000),A.Descr_exp) AS DESCRICAO_EXPERIENCIA,
+			 NULL AS DESCRICAO_EXPERIENCIA,
+			 --CONVERT(VARCHAR(8000),A.Descr_exp) AS DESCRICAO_EXPERIENCIA,
 			 CONVERT(VARCHAR(120),A.NacionalidadeEmp_exp) AS NACIONALIDADE,
 			 A.TipoEmp_exp AS TIPO_EMPRESA,
 			 UltCargoNormalizado_exp,
@@ -78,11 +80,6 @@ BEGIN
 	  FROM [hrh-data].dbo.[Cand-Experiencia] A
 	  LEFT OUTER JOIN [hrh-data].dbo.Cad_segmentos B ON B.Cod_Segmento = A.CodSegmento_exp
 	  LEFT OUTER JOIN [hrh-data].dbo.Cad_portes C ON C.Cod_Porte = A.CodPorte_exp
-	  INNER JOIN [hrh-data].dbo.[Candidatos] D ON D.Cod_Cand = A.CodCand_exp
-	  --WHERE D.EstadoReg_cand = 1
-	--	AND ISNULL(D.Ficticio_cand, 0) = 0 
-		
-
 END
 	  
 	  
