@@ -56,3 +56,11 @@ UPDATE	[VAGAS_DW].[LEADS]
 SET		LEAD_TIME = CONVERT(FLOAT, DATEDIFF(SECOND, DATA_INCLUSAO, DATA_CONCLUSAO))/60/60/24
 FROM	[VAGAS_DW].[LEADS] AS A
 WHERE	A.DATA_CONCLUSAO IS NOT NULL ;
+
+
+-------------------------------------------------------------------------
+-- Tratamento do campo CONTA, para evitar duplicidade de registros no DW:
+-------------------------------------------------------------------------
+UPDATE	[VAGAS_DW].[VAGAS_DW].[LEADS]
+SET		CONTA = REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(ISNULL(A.CONTA, ''))), CHAR(9), ''), CHAR(10), ''), CHAR(10), '')
+FROM	[VAGAS_DW].[LEADS] AS A ;
