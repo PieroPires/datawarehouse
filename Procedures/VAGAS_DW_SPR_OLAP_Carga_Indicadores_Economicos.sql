@@ -24,15 +24,15 @@ TRUNCATE TABLE VAGAS_DW.TMP_INDICADORES_DOLAR
 DECLARE @CMD VARCHAR(8000)
 
 -- Processar dados do IPCA (buscar do portalbrasil)
-SET @CMD = 'C:\Python27\python G:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "IPCA"'
+SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Busca_Indicadores_Economicos.py "IPCA"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 -- Processar dados do IGP-M (buscar do portalbrasil)
-SET @CMD = 'C:\Python27\python G:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "IGPM"'
+SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Busca_Indicadores_Economicos.py "IGPM"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 -- Processar dados do dólar (buscar do cotacoes.economia.uol.com.br)
-SET @CMD = 'C:\Python27\python G:\Projetos\Scripts_Python\Busca_Indicadores_Economicos.py "DOLAR"'
+SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Busca_Indicadores_Economicos.py "DOLAR"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 
@@ -116,7 +116,7 @@ INNER JOIN #TMP_INDICADORES_IGPM B ON B.DATA = A.DATA
 -- Limpar registros inconsistentes
 DELETE #TMP_INDICADORES_ECONOMICOS_MENSAL 
 FROM #TMP_INDICADORES_ECONOMICOS_MENSAL 
-WHERE INDICE_MES_IPCA IS NULL
+WHERE INDICE_MES_IPCA IS NULL AND INDICE_MES_IGPM IS NULL
 
 -- Os dados mensais são sempre atualizados na sua totalidade
 TRUNCATE TABLE VAGAS_DW.INDICADORES_ECONOMICOS_MENSAL

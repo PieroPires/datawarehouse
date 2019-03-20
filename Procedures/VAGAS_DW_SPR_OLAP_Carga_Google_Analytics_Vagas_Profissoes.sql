@@ -31,7 +31,7 @@ ELSE
 	SET @DT_PROCESSAMENTO_GOOGLE_FIM = SUBSTRING(CONVERT(VARCHAR,@DT_CARGA_FIM,20),1,10)
 
 --SET @CMD = 'C:\"Program Files"\R\R-3.2.3\bin\x64\Rscript.exe "M:\Projetos\Scripts_R\Dados_VAGAS_PROFISSOES.R" 2014-08-12 2016-01-28'
-SET @CMD = 'C:\"Program Files"\R\R-3.2.3\bin\x64\Rscript.exe "G:\Projetos\Scripts_R\Dados_VAGAS_PROFISSOES.R" ' 
+SET @CMD = 'C:\"Program Files"\R\R-3.2.3\bin\x64\Rscript.exe " Z:\Scripts\Scripts_R\Dados_VAGAS_PROFISSOES.R" ' 
 															+ @DT_PROCESSAMENTO_GOOGLE_INICIO + ' ' + @DT_PROCESSAMENTO_GOOGLE_FIM
 																				 
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
