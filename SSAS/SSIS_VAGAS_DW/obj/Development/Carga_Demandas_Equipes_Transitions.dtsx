@@ -1,0 +1,1894 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="5/24/2018 10:39:15 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLMIRROR05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{F0A65B93-B6AB-4328-A1EF-E39382AA6F14}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.1000.169"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Demandas_Equipes_Transitions"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="25"
+  DTS:VersionGUID="{D9241BDA-2583-4746-B52D-6F128F7787D9}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar VAGAS_DW_DEMANDAS_EQUIPES_TRANSITIONS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A4774AA0-DFBF-44F7-A639-208AE667DF61}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar VAGAS_DW_DEMANDAS_EQUIPES_TRANSITIONS"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_DEMANDAS_EQUIPES_TRANSITIONS] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL - SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{8AB67C00-4480-475A-8CDA-719D2122B2BF}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL - SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL - SQL Server\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[STATUS_ANTERIOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="STATUS_ANTERIOR"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[TRANSICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="TRANSICAO"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TRANSICAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[STATUS_DEMANDA]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="STATUS_DEMANDA"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_STATUS_ANTERIOR]"
+                      name="Convert_STATUS_ANTERIOR"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_TRANSICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_TRANSICAO]"
+                      name="Convert_TRANSICAO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TRANSICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_STATUS_DEMANDA]"
+                      name="Convert_STATUS_DEMANDA"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL - SQL Server\Data Conversion_GC"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion_GC"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\MySQL - SQL Server\Data Conversion_GC.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion_GC.Inputs[Data Conversion Input].Columns[STATUS_ANTERIOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="STATUS_ANTERIOR"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion_GC.Inputs[Data Conversion Input].Columns[TRANSICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="TRANSICAO"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[TRANSICAO]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\MySQL - SQL Server\Data Conversion_GC.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output].Columns[Convert_STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output].Columns[Convert_STATUS_ANTERIOR]"
+                      name="Convert_STATUS_ANTERIOR"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output].Columns[Convert_TRANSICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output].Columns[Convert_TRANSICAO]"
+                      name="Convert_TRANSICAO"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[TRANSICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\MySQL - SQL Server\Data Conversion_GC.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL - SQL Server\MySQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="MySQL"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	LTRIM(RTRIM(SUBQUERY_2.ID_DEMANDA)) AS ID_DEMANDA ,
+		LTRIM(RTRIM(SUBQUERY_2.NUMERO_DEMANDA)) AS NUMERO_DEMANDA ,
+		LTRIM(RTRIM(CONVERT(SUBQUERY_2.EQUIPE_PROJETO USING Latin1))) AS EQUIPE_PROJETO ,
+        CONVERT(SUBQUERY_2.VALOR_ANTERIOR USING Latin1) AS STATUS_ANTERIOR ,
+        CONVERT(SUBQUERY_2.VALOR_ATUAL USING Latin1) AS STATUS_DEMANDA ,
+		CONVERT(CONCAT(SUBQUERY_2.VALOR_ANTERIOR, ' -&gt; ', SUBQUERY_2.VALOR_ATUAL) USING Latin1) AS TRANSICAO ,
+        SUM(SUBQUERY_2.QTD_DIAS_TRANSICAO) AS QTD_DIAS ,
+        COUNT(*) AS QTD_TRANSICOES ,
+        CONVERT(SUBQUERY_2.ULT_RESPONSAVEL USING Latin1) AS ULT_RESPONSAVEL ,
+        SUBQUERY_2.ULT_DATA_TRANSICAO AS ULT_DATA_TRANSICAO ,
+        SUBQUERY_2.DATA_CRIACAO AS DATA_CRIACAO
+FROM	(
+	SELECT	SUBQUERY.ID_DEMANDA ,
+			SUBQUERY.VALOR_ANTERIOR ,
+			SUBQUERY.VALOR_ATUAL ,
+			SUBQUERY.RESPONSAVEL ,
+			SUBQUERY.DATA_ANT_TRANSICAO ,
+			SUBQUERY.DATA_TRANSICAO ,
+			DATEDIFF(SUBQUERY.DATA_TRANSICAO, SUBQUERY.DATA_ANT_TRANSICAO) AS QTD_DIAS_TRANSICAO ,
+			SUBQUERY.EQUIPE_PROJETO ,
+			SUBQUERY.ULT_DATA_TRANSICAO ,
+			SUBQUERY.ULT_RESPONSAVEL ,
+            SUBQUERY.NUMERO_DEMANDA ,
+            SUBQUERY.DATA_CRIACAO
+	FROM	(
+				SELECT	B.issueid AS ID_DEMANDA ,
+						A.oldstring AS VALOR_ANTERIOR , 
+						A.newstring AS VALOR_ATUAL , 
+						B.author AS RESPONSAVEL , 
+						B.created AS DATA_TRANSICAO ,
+						IFNULL( ( SELECT	A2.created AS DATA_ANT_TRANSICAO
+								  FROM		jiradb.changeitem AS A1		INNER JOIN jiradb.changegroup AS A2 ON A1.groupid = A2.id
+								  WHERE		A1.field = 'status'
+											AND A2.issueid = B.issueid
+											AND A2.created &lt; B.created
+								  ORDER BY A2.created DESC
+								  LIMIT 1 ), C.CREATED) AS DATA_ANT_TRANSICAO ,
+						(SELECT	A2.author AS ULT_RESPONSAVEL
+						 FROM	jiradb.changeitem AS A1		INNER JOIN jiradb.changegroup AS A2 ON A1.groupid = A2.id
+						 WHERE	A1.field = 'status'
+								AND A2.issueid = B.issueid
+								AND CONCAT(A.oldstring, ' - ', A.newstring) = CONCAT(A1.oldstring, ' - ', A1.newstring)
+						 ORDER BY
+								A2.created DESC
+						 LIMIT 1 ) AS ULT_RESPONSAVEL ,
+						(SELECT	A2.created AS ULT_DATA_TRANSICAO
+						 FROM	jiradb.changeitem AS A1		INNER JOIN jiradb.changegroup AS A2 ON A1.groupid = A2.id
+						 WHERE	A1.field = 'status'
+								AND A2.issueid = B.issueid
+								AND CONCAT(A.oldstring, ' - ', A.newstring) = CONCAT(A1.oldstring, ' - ', A1.newstring)
+						 ORDER BY
+								A2.created DESC
+						 LIMIT 1 ) AS ULT_DATA_TRANSICAO ,
+						  D.pname AS EQUIPE_PROJETO ,
+                          C.issuenum AS NUMERO_DEMANDA ,
+                          C.CREATED AS DATA_CRIACAO
+				FROM	jiradb.changeitem AS A		INNER JOIN jiradb.changegroup AS B ON A.groupid = B.id
+													INNER JOIN jiradb.jiraissue AS C ON C.id = B.issueid
+													INNER JOIN jiradb.project AS D ON D.id = C.project
+				WHERE	EXISTS (SELECT	1
+								FROM	jiradb.jiraissue AS A1
+								WHERE	B.issueid = A1.id
+										AND A1.project IN (12303 , 	 # Mercado de Trabalho - Candidatos - Web
+														   13700 , 	 # Mercado de Trabalho - Candidatos - App
+                                                           17102 ,   # Mercado de Trabalho - Projeto Unificado
+														   13900 , 	 # SEO
+														   15800 ) ) # Simplifica
+						AND A.field = 'status'
+                        AND (C.CREATED &gt; '2017-10-30'
+                             OR C.UPDATED &gt; '2017-10-30'
+                             OR C.RESOLUTIONDATE &gt; '2017-10-30') ) AS SUBQUERY) AS SUBQUERY_2
+GROUP BY
+		LTRIM(RTRIM(SUBQUERY_2.ID_DEMANDA)) ,
+		LTRIM(RTRIM(SUBQUERY_2.NUMERO_DEMANDA)) ,
+		LTRIM(RTRIM(CONVERT(SUBQUERY_2.EQUIPE_PROJETO USING Latin1))) ,
+        CONVERT(SUBQUERY_2.VALOR_ANTERIOR USING Latin1) ,
+		CONVERT(CONCAT(SUBQUERY_2.VALOR_ANTERIOR, ' -&gt; ', SUBQUERY_2.VALOR_ATUAL) USING Latin1) ,
+        CONVERT(SUBQUERY_2.ULT_RESPONSAVEL USING Latin1) ,
+        SUBQUERY_2.ULT_DATA_TRANSICAO ,
+        SUBQUERY_2.DATA_CRIACAO ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL - SQL Server\MySQL.Connections[ODBCConnection]"
+                  connectionManagerID="{A44C293A-7874-4ED9-8DEC-D4D4C2FF9298}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção JIRA]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_DEMANDA]"
+                      name="ID_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
+                      name="NUMERO_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[EQUIPE_PROJETO]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[EQUIPE_PROJETO]"
+                      name="EQUIPE_PROJETO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]"
+                      name="STATUS_ANTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]"
+                      name="STATUS_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TRANSICAO]"
+                      name="TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[QTD_DIAS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[QTD_DIAS]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[QTD_DIAS]"
+                      name="QTD_DIAS"
+                      precision="32" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[QTD_TRANSICOES]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[QTD_TRANSICOES]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[QTD_TRANSICOES]"
+                      name="QTD_TRANSICOES" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ULT_RESPONSAVEL]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ULT_RESPONSAVEL]"
+                      name="ULT_RESPONSAVEL" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ULT_DATA_TRANSICAO]"
+                      name="ULT_DATA_TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]"
+                      name="DATA_CRIACAO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_DEMANDA]"
+                      dataType="wstr"
+                      length="19"
+                      name="ID_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      dataType="wstr"
+                      length="19"
+                      name="NUMERO_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EQUIPE_PROJETO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="text"
+                      name="STATUS_ANTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="text"
+                      name="STATUS_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[QTD_DIAS]"
+                      dataType="numeric"
+                      name="QTD_DIAS"
+                      precision="32" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[QTD_TRANSICOES]"
+                      dataType="i8"
+                      name="QTD_TRANSICOES" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ULT_RESPONSAVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      name="ULT_DATA_TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_DEMANDA]"
+                      name="ID_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
+                      name="NUMERO_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[EQUIPE_PROJETO]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[EQUIPE_PROJETO]"
+                      name="EQUIPE_PROJETO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS_ANTERIOR]"
+                      name="STATUS_ANTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS_DEMANDA]"
+                      name="STATUS_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TRANSICAO]"
+                      name="TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[QTD_DIAS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[QTD_DIAS]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[QTD_DIAS]"
+                      name="QTD_DIAS"
+                      precision="32" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[QTD_TRANSICOES]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[QTD_TRANSICOES]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[QTD_TRANSICOES]"
+                      name="QTD_TRANSICOES" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ULT_RESPONSAVEL]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ULT_RESPONSAVEL]"
+                      name="ULT_RESPONSAVEL" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ULT_DATA_TRANSICAO]"
+                      name="ULT_DATA_TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO]"
+                      name="DATA_CRIACAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL - SQL Server\MySQL_GC"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="MySQL_GC"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT  ID_DEMANDA ,
+        NUMERO_DEMANDA ,
+        EQUIPE_PROJETO ,
+        STATUS_ANTERIOR ,
+        SUBQUERY_3.TRANSICAO ,
+        REPLACE(SUBSTRING(CAST(ROUND(SUBQUERY_3.QTD_DIAS,1) AS CHAR), 1, LOCATE('.', CAST(ROUND(SUBQUERY_3.QTD_DIAS,1) AS CHAR))), '.', '') AS QTD_DIAS ,
+        QTD_TRANSICOES ,
+        ULT_RESPONSAVEL ,
+        ULT_DATA_TRANSICAO ,
+        DATA_CRIACAO ,
+        STATUS_DEMANDA
+FROM    (
+    SELECT	LTRIM(RTRIM(SUBQUERY_2.ID_DEMANDA)) AS ID_DEMANDA ,
+            LTRIM(RTRIM(SUBQUERY_2.NUMERO_DEMANDA)) AS NUMERO_DEMANDA ,
+            LTRIM(RTRIM(CONVERT(SUBQUERY_2.EQUIPE_PROJETO USING Latin1))) AS EQUIPE_PROJETO ,
+            CONVERT(SUBQUERY_2.VALOR_ANTERIOR USING Latin1) AS STATUS_ANTERIOR ,
+            CONVERT(CONCAT(SUBQUERY_2.VALOR_ANTERIOR, ' -&gt; ', SUBQUERY_2.VALOR_ATUAL) USING Latin1) AS TRANSICAO ,
+            SUM(SUBQUERY_2.QTD_DIAS_TRANSICAO) AS QTD_DIAS ,
+            COUNT(*) AS QTD_TRANSICOES ,
+            CONVERT(SUBQUERY_2.ULT_RESPONSAVEL USING Latin1) AS ULT_RESPONSAVEL ,
+            SUBQUERY_2.ULT_DATA_TRANSICAO AS ULT_DATA_TRANSICAO ,
+            SUBQUERY_2.DATA_CRIACAO AS DATA_CRIACAO ,
+            CONVERT(SUBQUERY_2.STATUS_DEMANDA USING Latin1) AS STATUS_DEMANDA
+    FROM	(
+        SELECT	SUBQUERY.ID_DEMANDA ,
+                SUBQUERY.VALOR_ANTERIOR ,
+                SUBQUERY.VALOR_ATUAL ,
+                SUBQUERY.RESPONSAVEL ,
+                SUBQUERY.DATA_ANT_TRANSICAO ,
+                SUBQUERY.DATA_TRANSICAO ,
+                ((TIMESTAMPDIFF(SECOND, SUBQUERY.DATA_ANT_TRANSICAO, SUBQUERY.DATA_TRANSICAO))/3600)/24 AS QTD_DIAS_TRANSICAO ,
+                SUBQUERY.EQUIPE_PROJETO ,
+                SUBQUERY.ULT_DATA_TRANSICAO ,
+                SUBQUERY.ULT_RESPONSAVEL ,
+                SUBQUERY.NUMERO_DEMANDA ,
+                SUBQUERY.DATA_CRIACAO ,
+                SUBQUERY.STATUS_DEMANDA
+        FROM	(
+                    SELECT	B.issueid AS ID_DEMANDA ,
+                            A.oldstring AS VALOR_ANTERIOR , 
+                            A.newstring AS VALOR_ATUAL , 
+                            B.author AS RESPONSAVEL , 
+                            B.created AS DATA_TRANSICAO ,
+                            IFNULL( ( SELECT	A2.created AS DATA_ANT_TRANSICAO
+                                      FROM		jiradb.changeitem AS A1		INNER JOIN jiradb.changegroup AS A2 ON A1.groupid = A2.id
+                                      WHERE		A1.field = 'status'
+                                                AND A2.issueid = B.issueid
+                                                AND A2.created &lt; B.created
+                                      ORDER BY A2.created DESC
+                                      LIMIT 1 ), C.CREATED) AS DATA_ANT_TRANSICAO ,
+                            (SELECT	A2.author AS ULT_RESPONSAVEL
+                             FROM	jiradb.changeitem AS A1		INNER JOIN jiradb.changegroup AS A2 ON A1.groupid = A2.id
+                             WHERE	A1.field = 'status'
+                                    AND A2.issueid = B.issueid
+                                    AND CONCAT(A.oldstring, ' - ', A.newstring) = CONCAT(A1.oldstring, ' - ', A1.newstring)
+                             ORDER BY
+                                    A2.created DESC
+                             LIMIT 1 ) AS ULT_RESPONSAVEL ,
+                            (SELECT	A2.created AS ULT_DATA_TRANSICAO
+                             FROM	jiradb.changeitem AS A1		INNER JOIN jiradb.changegroup AS A2 ON A1.groupid = A2.id
+                             WHERE	A1.field = 'status'
+                                    AND A2.issueid = B.issueid
+                                    AND CONCAT(A.oldstring, ' - ', A.newstring) = CONCAT(A1.oldstring, ' - ', A1.newstring)
+                             ORDER BY
+                                    A2.created DESC
+                             LIMIT 1 ) AS ULT_DATA_TRANSICAO ,
+                              D.pname AS EQUIPE_PROJETO ,
+                              C.issuenum AS NUMERO_DEMANDA ,
+                              C.CREATED AS DATA_CRIACAO ,
+                              E.pname AS STATUS_DEMANDA
+                    FROM	jiradb.changeitem AS A		INNER JOIN jiradb.changegroup AS B ON A.groupid = B.id
+                                                        INNER JOIN jiradb.jiraissue AS C ON C.id = B.issueid
+                                                        INNER JOIN jiradb.project AS D ON D.id = C.project
+                                                        INNER JOIN jiradb.issuestatus AS E ON C.issuestatus = E.id
+                    WHERE	EXISTS (SELECT	1
+                                    FROM	jiradb.jiraissue AS A1
+                                    WHERE	B.issueid = A1.id
+                                            AND A1.project IN (14200 ) ) # Gestão de contratos
+                            AND A.field = 'status') AS SUBQUERY) AS SUBQUERY_2
+    GROUP BY
+            LTRIM(RTRIM(SUBQUERY_2.ID_DEMANDA)) ,
+            LTRIM(RTRIM(SUBQUERY_2.NUMERO_DEMANDA)) ,
+            LTRIM(RTRIM(CONVERT(SUBQUERY_2.EQUIPE_PROJETO USING Latin1))) ,
+            CONVERT(SUBQUERY_2.VALOR_ANTERIOR USING Latin1) ,
+            CONVERT(CONCAT(SUBQUERY_2.VALOR_ANTERIOR, ' -&gt; ', SUBQUERY_2.VALOR_ATUAL) USING Latin1) ,
+            CONVERT(SUBQUERY_2.ULT_RESPONSAVEL USING Latin1) ,
+            SUBQUERY_2.ULT_DATA_TRANSICAO ,
+            SUBQUERY_2.DATA_CRIACAO ,
+            SUBQUERY_2.STATUS_DEMANDA ) AS SUBQUERY_3 ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL - SQL Server\MySQL_GC.Connections[ODBCConnection]"
+                  connectionManagerID="{A44C293A-7874-4ED9-8DEC-D4D4C2FF9298}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção JIRA]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ID_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ID_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ID_DEMANDA]"
+                      name="ID_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
+                      name="NUMERO_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[EQUIPE_PROJETO]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[EQUIPE_PROJETO]"
+                      name="EQUIPE_PROJETO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[STATUS_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_ANTERIOR]"
+                      name="STATUS_ANTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[TRANSICAO]"
+                      name="TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[QTD_DIAS]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[QTD_DIAS]"
+                      length="138"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[QTD_DIAS]"
+                      name="QTD_DIAS" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[QTD_TRANSICOES]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[QTD_TRANSICOES]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[QTD_TRANSICOES]"
+                      name="QTD_TRANSICOES" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ULT_RESPONSAVEL]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ULT_RESPONSAVEL]"
+                      name="ULT_RESPONSAVEL" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ULT_DATA_TRANSICAO]"
+                      name="ULT_DATA_TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]"
+                      name="DATA_CRIACAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[STATUS_DEMANDA]"
+                      length="60"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]"
+                      name="STATUS_DEMANDA" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ID_DEMANDA]"
+                      dataType="wstr"
+                      length="19"
+                      name="ID_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      dataType="wstr"
+                      length="19"
+                      name="NUMERO_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EQUIPE_PROJETO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="text"
+                      name="STATUS_ANTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[QTD_DIAS]"
+                      dataType="wstr"
+                      length="138"
+                      name="QTD_DIAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[QTD_TRANSICOES]"
+                      dataType="i8"
+                      name="QTD_TRANSICOES" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ULT_RESPONSAVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      name="ULT_DATA_TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="STATUS_DEMANDA" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ID_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ID_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ID_DEMANDA]"
+                      name="ID_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      length="19"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
+                      name="NUMERO_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[EQUIPE_PROJETO]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[EQUIPE_PROJETO]"
+                      name="EQUIPE_PROJETO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[STATUS_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[STATUS_ANTERIOR]"
+                      name="STATUS_ANTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[TRANSICAO]"
+                      name="TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[QTD_DIAS]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[QTD_DIAS]"
+                      length="138"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[QTD_DIAS]"
+                      name="QTD_DIAS" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[QTD_TRANSICOES]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[QTD_TRANSICOES]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[QTD_TRANSICOES]"
+                      name="QTD_TRANSICOES" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ULT_RESPONSAVEL]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ULT_RESPONSAVEL]"
+                      name="ULT_RESPONSAVEL" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ULT_DATA_TRANSICAO]"
+                      name="ULT_DATA_TRANSICAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO]"
+                      name="DATA_CRIACAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].ExternalColumns[STATUS_DEMANDA]"
+                      length="60"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[STATUS_DEMANDA]"
+                      name="STATUS_DEMANDA" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL - SQL Server\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_DEMANDAS_EQUIPES_TRANSITIONS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL - SQL Server\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[ID_DEMANDA]"
+                      cachedDataType="wstr"
+                      cachedLength="19"
+                      cachedName="ID_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_DEMANDA]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[NUMERO_DEMANDA]"
+                      cachedDataType="wstr"
+                      cachedLength="19"
+                      cachedName="NUMERO_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[EQUIPE_PROJETO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="EQUIPE_PROJETO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[EQUIPE_PROJETO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[EQUIPE_PROJETO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[QTD_DIAS]"
+                      cachedDataType="numeric"
+                      cachedName="QTD_DIAS"
+                      cachedPrecision="32"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[QTD_DIAS]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[QTD_DIAS]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[QTD_TRANSICOES]"
+                      cachedDataType="i8"
+                      cachedName="QTD_TRANSICOES"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[QTD_TRANSICOES]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[QTD_TRANSICOES]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[ULT_RESPONSAVEL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="ULT_RESPONSAVEL"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ULT_RESPONSAVEL]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ULT_RESPONSAVEL]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[ULT_DATA_TRANSICAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="ULT_DATA_TRANSICAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ULT_DATA_TRANSICAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[Convert_STATUS_ANTERIOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Convert_STATUS_ANTERIOR"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_STATUS_ANTERIOR]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[Convert_TRANSICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Convert_TRANSICAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_TRANSICAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_CRIACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CRIACAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[Convert_STATUS_DEMANDA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Convert_STATUS_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Convert_STATUS_DEMANDA]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_DEMANDA]"
+                      dataType="i4"
+                      name="ID_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
+                      dataType="i4"
+                      name="NUMERO_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="EQUIPE_PROJETO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_ANTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[QTD_DIAS]"
+                      dataType="i2"
+                      name="QTD_DIAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[QTD_TRANSICOES]"
+                      dataType="ui1"
+                      name="QTD_TRANSICOES" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ULT_RESPONSAVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      name="ULT_DATA_TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_DEMANDA" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\SQL Server.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL - SQL Server\SQL Server_GC"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server_GC"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_DEMANDAS_EQUIPES_TRANSITIONS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL - SQL Server\SQL Server_GC.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[ID_DEMANDA]"
+                      cachedDataType="wstr"
+                      cachedLength="19"
+                      cachedName="ID_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[ID_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ID_DEMANDA]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[NUMERO_DEMANDA]"
+                      cachedDataType="wstr"
+                      cachedLength="19"
+                      cachedName="NUMERO_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[EQUIPE_PROJETO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="EQUIPE_PROJETO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[EQUIPE_PROJETO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[EQUIPE_PROJETO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[QTD_DIAS]"
+                      cachedDataType="wstr"
+                      cachedLength="138"
+                      cachedName="QTD_DIAS"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[QTD_DIAS]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[QTD_DIAS]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[QTD_TRANSICOES]"
+                      cachedDataType="i8"
+                      cachedName="QTD_TRANSICOES"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[QTD_TRANSICOES]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[QTD_TRANSICOES]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[ULT_RESPONSAVEL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="ULT_RESPONSAVEL"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[ULT_RESPONSAVEL]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ULT_RESPONSAVEL]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[ULT_DATA_TRANSICAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="ULT_DATA_TRANSICAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[ULT_DATA_TRANSICAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[Convert_STATUS_ANTERIOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Convert_STATUS_ANTERIOR"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output].Columns[Convert_STATUS_ANTERIOR]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[Convert_TRANSICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Convert_TRANSICAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[TRANSICAO]"
+                      lineageId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output].Columns[Convert_TRANSICAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[DATA_CRIACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CRIACAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].Columns[STATUS_DEMANDA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="STATUS_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_DEMANDA]"
+                      lineageId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output].Columns[STATUS_DEMANDA]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[ID_DEMANDA]"
+                      dataType="i4"
+                      name="ID_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
+                      dataType="i4"
+                      name="NUMERO_DEMANDA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[EQUIPE_PROJETO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="EQUIPE_PROJETO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_ANTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[TRANSICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[QTD_DIAS]"
+                      dataType="i2"
+                      name="QTD_DIAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[QTD_TRANSICOES]"
+                      dataType="ui1"
+                      name="QTD_TRANSICOES" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[ULT_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ULT_RESPONSAVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[ULT_DATA_TRANSICAO]"
+                      dataType="dbTimeStamp"
+                      name="ULT_DATA_TRANSICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_DEMANDA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_DEMANDA" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\SQL Server_GC.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\SQL Server_GC.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server_GC.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\SQL Server_GC.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL - SQL Server.Paths[Data Conversion Output]"
+              endId="Package\MySQL - SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\MySQL - SQL Server\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\MySQL - SQL Server.Paths[Data Conversion Output1]"
+              endId="Package\MySQL - SQL Server\SQL Server_GC.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\MySQL - SQL Server\Data Conversion_GC.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\MySQL - SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL - SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL - SQL Server\MySQL.Outputs[ODBC Source Output]" />
+            <path
+              refId="Package\MySQL - SQL Server.Paths[ODBC Source Output1]"
+              endId="Package\MySQL - SQL Server\Data Conversion_GC.Inputs[Data Conversion Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL - SQL Server\MySQL_GC.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{6A4F2A4C-5F92-4EC9-A46C-ADAFBDAA108C}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;DEMANDAS_EQUIPES_TRST - ULT_DATA_TRST&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;DEMANDAS_EQUIPES_TRST&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;DEMANDAS_EQUIPES_TRST - DATA_CRIACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_Demandas_Equipes_Transitions"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{2DD8D0A1-6F5C-4AC1-9C92-970561532145}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_Demandas_Equipes_Transitions"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Demandas_Equipes_Transitions] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{C8BE4FE3-4C76-41C4-89E0-9E6993C1D3E9}"
+      DTS:From="Package\Limpar VAGAS_DW_DEMANDAS_EQUIPES_TRANSITIONS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\MySQL - SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{0393E35E-C260-433C-8443-EEBC36FCE544}"
+      DTS:From="Package\MySQL - SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_Demandas_Equipes_Transitions" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{EB1078F1-86D3-42D5-9171-FD4BAA5F0A76}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_Demandas_Equipes_Transitions"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="351,42"
+          Id="Package\Limpar VAGAS_DW_DEMANDAS_EQUIPES_TRANSITIONS"
+          TopLeft="354,74" />
+        <NodeLayout
+          Size="174,42"
+          Id="Package\MySQL - SQL Server"
+          TopLeft="436,168" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="445,334" />
+        <NodeLayout
+          Size="377,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_Demandas_Equipes_Transitions"
+          TopLeft="332,256" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="526.25,116">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52"
+              Start="0,0"
+              End="0,44.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="521.75,210">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="521.5,298">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36"
+              Start="0,0"
+              End="0,28.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL - SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\MySQL - SQL Server\MySQL_GC"
+          TopLeft="618,70" />
+        <NodeLayout
+          Size="131,42"
+          Id="Package\MySQL - SQL Server\SQL Server"
+          TopLeft="388,257" />
+        <NodeLayout
+          Size="151,42"
+          Id="Package\MySQL - SQL Server\SQL Server_GC"
+          TopLeft="604,257" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\MySQL - SQL Server\Data Conversion_GC"
+          TopLeft="591,155" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\MySQL - SQL Server\Data Conversion"
+          TopLeft="375,155" />
+        <NodeLayout
+          Size="111,42"
+          Id="Package\MySQL - SQL Server\MySQL"
+          TopLeft="402,70" />
+        <EdgeLayout
+          Id="Package\MySQL - SQL Server.Paths[ODBC Source Output1]"
+          TopLeft="681.25,112">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MySQL - SQL Server.Paths[ODBC Source Output]"
+          TopLeft="455.25,112">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MySQL - SQL Server.Paths[Data Conversion Output1]"
+          TopLeft="679.25,197">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MySQL - SQL Server.Paths[Data Conversion Output]"
+          TopLeft="453.25,197">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL - SQL Server\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL - SQL Server\SQL Server_GC">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

@@ -1,0 +1,2309 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/10/2016 3:58:36 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DTSID="{D3D3D5EA-F7C4-4ED7-AD29-C024F20A2138}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.1000.169"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Clientes"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="204"
+  DTS:VersionGUID="{C54691FE-9E03-4956-9B29-1274C252218B}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SRV-SQLERP01.DB_TOTVS_P12_PROD]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{6CFEAF88-44E3-4FD8-946A-75FF5B41BD05}"
+      DTS:ObjectName="SRV-SQLERP01.DB_TOTVS_P12_PROD">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=SRV-SQLERP01;User ID=userDW;Initial Catalog=DB_TOTVS_P12_PROD;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;">
+          <EncryptedData
+            Type="http://www.w3.org/2001/04/xmlenc#Element"
+            Salt="licfVlGLhA=="
+            IV="j+5qlIIeB3g=" xmlns="http://www.w3.org/2001/04/xmlenc#">
+            <EncryptionMethod
+              Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc" />
+            <CipherData>
+              <CipherValue>j+5qlIIeB3gfMlenv0TMREDY5SdJdT/61l/jESdvMoq1uzm7VhAVX8BBsGBWAs4lCCsgZcJKxW6jOVdkpADc5C7/qP5W9u9563Ses7XsO718EQx5tcEmzVEmlHzyUeXuULMbabgKzAUtXfvWPXo9l5+M2rMObTSty6NgN6zbRsz0hiBzwclBHA==</CipherValue>
+            </CipherData>
+          </EncryptedData>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Carga - TMP_CLIENTES_INTENSIDADE_INATIVO"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{00694B79-93AA-4314-BF58-E046F5F4E908}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga - TMP_CLIENTES_INTENSIDADE_INATIVO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Clientes_Intensidade] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga CONTAS CRM"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{7E4BAC61-C06C-45D1-B7D5-642602EC8813}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga CONTAS CRM"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>Carga_Contas_CRM.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga CRM - TMP_CLIENTES"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{77061F86-8F41-48F2-985F-3DE06E1D6193}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga CRM - TMP_CLIENTES"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="CONTAS_CRM"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT	CONVERT(SMALLDATETIME, CONVERT(VARCHAR, GETDATE(), 112)) AS DATA_REFERENCIA ,
+		A.CONTA_ID ,
+		A.CONTA_CRM ,
+		A.CNPJ ,
+		'CRM' AS FONTE
+FROM	[VAGAS_DW].[CONTAS_CRM] AS A
+WHERE	NOT EXISTS (SELECT	1
+					FROM	[VAGAS_DW].[CLIENTES_HISTORICO] AS A1
+					WHERE	A.CONTA_ID = A1.CONTA_ID
+							AND (A1.FONTE = 'MANUT'
+								 OR A1.FONTE IS NULL)
+							AND A1.DATA_REFERENCIA = (SELECT MAX(A2.DATA_REFERENCIA) 
+													  FROM [VAGAS_DW].[CLIENTES_HISTORICO] AS A2))
+UNION ALL
+SELECT	CONVERT(SMALLDATETIME, CONVERT(VARCHAR, GETDATE(), 112)) AS DATA_REFERENCIA ,
+		A.CONTA_ID ,
+		A.CONTA_CRM ,
+		A.CNPJ ,
+		'CRM' AS FONTE
+FROM	[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A
+WHERE	NOT EXISTS (SELECT	1
+					FROM	[VAGAS_DW].[CLIENTES_HISTORICO] AS A1
+					WHERE	A.CONTA_ID = A1.CONTA_ID
+							AND (A1.FONTE = 'MANUT'
+								 OR A1.FONTE IS NULL)
+							AND A1.DATA_REFERENCIA = (SELECT MAX(A2.DATA_REFERENCIA) 
+													  FROM [VAGAS_DW].[CLIENTES_HISTORICO] AS A2))</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CONTA_ID]"
+                      name="CONTA_ID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[CONTA_CRM]"
+                      length="150"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CONTA_CRM]"
+                      name="CONTA_CRM"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[CNPJ]"
+                      length="36"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CNPJ]"
+                      name="CNPJ"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[FONTE]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[FONTE]"
+                      length="3"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[FONTE]"
+                      name="FONTE"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[DATA_REFERENCIA]"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[DATA_REFERENCIA]"
+                      name="DATA_REFERENCIA"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[FONTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="FONTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].ExternalColumns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[DATA_REFERENCIA]"
+                      name="DATA_REFERENCIA" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[CONTA_CRM]"
+                      name="CONTA_CRM" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[CNPJ]"
+                      name="CNPJ" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[FONTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[FONTE]"
+                      name="FONTE" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="TMP_CLIENTES"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CLIENTES]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].Columns[CONTA_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CONTA_ID]" />
+                    <inputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].Columns[CNPJ]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CNPJ"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CNPJ]" />
+                    <inputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].Columns[FONTE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="FONTE"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FONTE]"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[FONTE]" />
+                    <inputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].Columns[CONTA_CRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA_CRM"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE_CRM]"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[CONTA_CRM]" />
+                    <inputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].Columns[DATA_REFERENCIA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_REFERENCIA"
+                      externalMetadataColumnId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA]"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output].Columns[DATA_REFERENCIA]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA_12_MESES_INICIO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA_12_MESES_INICIO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA_12_MESES_FIM]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA_12_MESES_FIM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI]"
+                      dataType="i4"
+                      name="COD_CLI" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CLIENTE_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_CLIENTE_MANUT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TIPO_CLIENTE_MANUT" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TIPO_CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="55"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CLIENTE_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[SEGMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SEGMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[GR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="GR" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONTRATO_MANUT]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CONTRATO_MANUT" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONTRATO_CRM]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CONTRATO_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_PRM_OPORTUNIDADE_CRM]"
+                      dataType="dbTimeStamp"
+                      name="DATA_PRM_OPORTUNIDADE_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_CLIENTE_NOVO]"
+                      dataType="bool"
+                      name="FLAG_CLIENTE_NOVO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_CONTRATO_VIGENTE]"
+                      dataType="bool"
+                      name="FLAG_CONTRATO_VIGENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_ATIVO_SEM_VAGAS]"
+                      dataType="bool"
+                      name="FLAG_ATIVO_SEM_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CAPACIDADE_BCE]"
+                      dataType="i4"
+                      name="CAPACIDADE_BCE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_BCE]"
+                      dataType="i4"
+                      name="QTD_BCE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_EXTRACOES_BCC]"
+                      dataType="i4"
+                      name="QTD_EXTRACOES_BCC" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_EXTRACOES_BCC_3_MESES]"
+                      dataType="i4"
+                      name="QTD_EXTRACOES_BCC_3_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_EXTRACOES_BCC_6_MESES]"
+                      dataType="i4"
+                      name="QTD_EXTRACOES_BCC_6_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CREDITO_BCC]"
+                      dataType="r8"
+                      name="CREDITO_BCC" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_MIN_VAGAS]"
+                      dataType="i4"
+                      name="QTD_MIN_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_MAX_VAGAS]"
+                      dataType="i4"
+                      name="QTD_MAX_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_MIN_RI_VAGAS]"
+                      dataType="i4"
+                      name="QTD_MIN_RI_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_MAX_RI_VAGAS]"
+                      dataType="i4"
+                      name="QTD_MAX_RI_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_PRM_VAGA_PUBLICADA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_PRM_VAGA_PUBLICADA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ULT_VAGA_PUBLICADA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ULT_VAGA_PUBLICADA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DIAS_ATRASO_ULT_FATURA]"
+                      dataType="i2"
+                      name="DIAS_ATRASO_ULT_FATURA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_ULT_FATURA]"
+                      dataType="cy"
+                      name="VALOR_ULT_FATURA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ULT_FATURA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ULT_FATURA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_PAGO]"
+                      dataType="bool"
+                      name="FLAG_PAGO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_FIT]"
+                      dataType="bool"
+                      name="CONTEM_FIT" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_FIT]"
+                      dataType="cy"
+                      name="VALOR_FIT" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_REDES]"
+                      dataType="bool"
+                      name="CONTEM_REDES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_REDES]"
+                      dataType="cy"
+                      name="VALOR_REDES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_FLEX_A]"
+                      dataType="bool"
+                      name="CONTEM_FLEX_A" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_FLEX_A]"
+                      dataType="cy"
+                      name="VALOR_FLEX_A" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_FLEX_C]"
+                      dataType="bool"
+                      name="CONTEM_FLEX_C" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_FLEX_C]"
+                      dataType="cy"
+                      name="VALOR_FLEX_C" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_CREDITOS_VAGAS]"
+                      dataType="bool"
+                      name="CONTEM_CREDITOS_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_CREDITOS_VAGAS]"
+                      dataType="cy"
+                      name="VALOR_CREDITOS_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CREDITOS_TOTAL]"
+                      dataType="i2"
+                      name="QTD_CREDITOS_TOTAL" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CREDITOS_DISPONIVEL]"
+                      dataType="wstr"
+                      length="10"
+                      name="QTD_CREDITOS_DISPONIVEL" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_MENSALIDADE]"
+                      dataType="cy"
+                      name="VALOR_MENSALIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[PERFIL_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="PERFIL_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TAMANHO_MENSALIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="TAMANHO_MENSALIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_PRC]"
+                      dataType="bool"
+                      name="CONTEM_PRC" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_PRC]"
+                      dataType="cy"
+                      name="VALOR_PRC" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_SMS]"
+                      dataType="bool"
+                      name="CONTEM_SMS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_SMS]"
+                      dataType="cy"
+                      name="VALOR_SMS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_PET]"
+                      dataType="bool"
+                      name="CONTEM_PET" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_PET]"
+                      dataType="cy"
+                      name="VALOR_PET" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_VET]"
+                      dataType="bool"
+                      name="CONTEM_VET" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_VET]"
+                      dataType="cy"
+                      name="VALOR_VET" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_CUSTOMIZACAO]"
+                      dataType="bool"
+                      name="CONTEM_CUSTOMIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CUSTOMIZACAO]"
+                      dataType="i2"
+                      name="QTD_CUSTOMIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_TOTAL_CUSTOMIZACAO]"
+                      dataType="cy"
+                      name="VALOR_TOTAL_CUSTOMIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ULT_CUSTOMIZACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ULT_CUSTOMIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RESCISAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RESCISAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[EX_CLIENTE]"
+                      dataType="bool"
+                      name="EX_CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_1]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_1" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_2]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_2" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_3]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_3" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_4]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_4" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_5]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_5" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_6]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_6" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_7]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_7" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_8]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_8" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_9]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_9" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_10]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_10" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_11]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_11" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_MES_12]"
+                      dataType="i4"
+                      name="QTD_VAGAS_MES_12" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_30_DIAS]"
+                      dataType="i4"
+                      name="QTD_VAGAS_30_DIAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_ULT_3_MESES]"
+                      dataType="i4"
+                      name="QTD_VAGAS_ULT_3_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_ULT_6_MESES]"
+                      dataType="i4"
+                      name="QTD_VAGAS_ULT_6_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_ULT_9_MESES]"
+                      dataType="i4"
+                      name="QTD_VAGAS_ULT_9_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_ULT_12_MESES]"
+                      dataType="i4"
+                      name="QTD_VAGAS_ULT_12_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_PUBLICADAS]"
+                      dataType="i4"
+                      name="QTD_VAGAS_PUBLICADAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_Vagas_ULT_3_Meses]"
+                      dataType="r8"
+                      name="MEDIA_Vagas_ULT_3_Meses" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_Vagas_ULT_6_Meses]"
+                      dataType="r8"
+                      name="MEDIA_Vagas_ULT_6_Meses" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_Vagas_ULT_9_Meses]"
+                      dataType="r8"
+                      name="MEDIA_Vagas_ULT_9_Meses" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_Vagas_ULT_12_Meses]"
+                      dataType="r8"
+                      name="MEDIA_Vagas_ULT_12_Meses" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_Vagas_PROJECAO]"
+                      dataType="r8"
+                      name="MEDIA_Vagas_PROJECAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_VAGAS_PONDERADO]"
+                      dataType="r8"
+                      name="MEDIA_VAGAS_PONDERADO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_POSSUI_CONTRATO]"
+                      dataType="bool"
+                      name="FLAG_POSSUI_CONTRATO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_SECAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SECAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_DIVISAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_DIVISAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_CLASSE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_CLASSE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="2"
+                      name="UF" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[JA_FOI_VAGAS_10_MAIS]"
+                      dataType="bool"
+                      name="JA_FOI_VAGAS_10_MAIS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[ULT_DATA_VAGAS_10_MAIS]"
+                      dataType="dbTimeStamp"
+                      name="ULT_DATA_VAGAS_10_MAIS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_LOGO]"
+                      dataType="bool"
+                      name="POSSUI_LOGO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[RECEBEU_GUIA_BOAS_PRATICAS]"
+                      dataType="bool"
+                      name="RECEBEU_GUIA_BOAS_PRATICAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DIAS_ULT_GUIA]"
+                      dataType="i2"
+                      name="DIAS_ULT_GUIA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_VAGAS_COM_ERRO_POS_GUIA]"
+                      dataType="i4"
+                      name="QTD_VAGAS_COM_ERRO_POS_GUIA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RECEBIMENTO_GUIA_BOAS_PRATICAS]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RECEBIMENTO_GUIA_BOAS_PRATICAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[PERFIL_BCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="PERFIL_BCE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_BCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="15"
+                      name="STATUS_BCE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_VAGAS_RE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="15"
+                      name="STATUS_VAGAS_RE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_VAGAS_RI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="15"
+                      name="STATUS_VAGAS_RI" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[SALDO_BCE]"
+                      dataType="r8"
+                      name="SALDO_BCE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_VAGAS_ULT_6_MESES_RE]"
+                      dataType="r8"
+                      name="MEDIA_VAGAS_ULT_6_MESES_RE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_VAGAS_ULT_6_MESES_RI]"
+                      dataType="r8"
+                      name="MEDIA_VAGAS_ULT_6_MESES_RI" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MEDIA_POSICOES_ULT_6_MESES_REDES]"
+                      dataType="r8"
+                      name="MEDIA_POSICOES_ULT_6_MESES_REDES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="STATUS_CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[POSICOES_MES]"
+                      dataType="i2"
+                      name="POSICOES_MES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TOTAL_UNIDADES]"
+                      dataType="i2"
+                      name="TOTAL_UNIDADES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[POSICOES_POR_UNIDADE]"
+                      dataType="numeric"
+                      name="POSICOES_POR_UNIDADE"
+                      precision="4"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[UNIDADES_CADASTRADAS]"
+                      dataType="i2"
+                      name="UNIDADES_CADASTRADAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[UNIDADES_ATIVADAS]"
+                      dataType="i2"
+                      name="UNIDADES_ATIVADAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_POSICOES_REDES]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="STATUS_POSICOES_REDES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_UNIDADES_REDES]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="STATUS_UNIDADES_REDES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_REDES]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="STATUS_REDES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO_INATIVIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="25"
+                      name="TEMPO_INATIVIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO_ASSINATURA_CONTRATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TEMPO_ASSINATURA_CONTRATO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_LOGIN_ULT_30_DIAS]"
+                      dataType="i2"
+                      name="QTD_LOGIN_ULT_30_DIAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CLUSTER]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="CLUSTER" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CARTEIRA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="CARTEIRA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FONTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="FONTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MERCADO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[HIERARQUIA_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="HIERARQUIA_CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TEVE_ATIVIDADE_SUPERA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="TEVE_ATIVIDADE_SUPERA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INICIO_CONTRATO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_INICIO_CONTRATO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_FIM_CONTRATO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_FIM_CONTRATO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_VIA_FISICA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_VIA_FISICA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_RENOVACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO_RENOVACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[ABORDAR_RENOV_EM]"
+                      dataType="dbTimeStamp"
+                      name="ABORDAR_RENOV_EM" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TREINAMENTO_IMPLANTACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="TREINAMENTO_IMPLANTACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REALIZACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REALIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_PARTICIPANTES]"
+                      dataType="ui1"
+                      name="QTD_PARTICIPANTES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_IMPLANTACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_IMPLANTACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONC_IMPLANTACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CONC_IMPLANTACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[NUM_PD_NA_NF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="NUM_PD_NA_NF" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_SOFT_M]"
+                      dataType="cy"
+                      name="VALOR_SOFT_M" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_COMPL_M]"
+                      dataType="cy"
+                      name="VALOR_COMPL_M" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_SOFT_P]"
+                      dataType="cy"
+                      name="VALOR_SOFT_P" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_COMPL_P]"
+                      dataType="cy"
+                      name="VALOR_COMPL_P" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_SERV_P]"
+                      dataType="cy"
+                      name="VALOR_SERV_P" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[INTENSIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="INTENSIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VAL_OPP_SOFT_M]"
+                      dataType="cy"
+                      name="VAL_OPP_SOFT_M" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VAL_OPP_COMPL_M]"
+                      dataType="cy"
+                      name="VAL_OPP_COMPL_M" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VAL_OPP_SOFT_P]"
+                      dataType="cy"
+                      name="VAL_OPP_SOFT_P" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VAL_OPP_COMPL_P]"
+                      dataType="cy"
+                      name="VAL_OPP_COMPL_P" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VAL_OPP_SERV_P]"
+                      dataType="cy"
+                      name="VAL_OPP_SERV_P" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTATO_PRINCIPAL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONTATO_PRINCIPAL" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[REQUISICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="REQUISICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FICHA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="FICHA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[RI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="RI" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[PORTAL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="PORTAL" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VET]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="VET" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNC_LOGIN_ULT_30_DIAS]"
+                      dataType="i2"
+                      name="QTD_FUNC_LOGIN_ULT_30_DIAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNC_INATIVO]"
+                      dataType="i2"
+                      name="QTD_FUNC_INATIVO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNC_ADMIN]"
+                      dataType="i2"
+                      name="QTD_FUNC_ADMIN" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_PESQUISAS_BCC]"
+                      dataType="i4"
+                      name="QTD_PESQUISAS_BCC" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_PESQUISAS_BCE]"
+                      dataType="i4"
+                      name="QTD_PESQUISAS_BCE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_PESSOAS_CONTRATADAS]"
+                      dataType="i2"
+                      name="QTD_PESSOAS_CONTRATADAS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_USUARIOS_CADASTRADOS]"
+                      dataType="i2"
+                      name="QTD_USUARIOS_CADASTRADOS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNC_ADMIN_BLOQUEADO]"
+                      dataType="i2"
+                      name="QTD_FUNC_ADMIN_BLOQUEADO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNC_ULT_2_MESES]"
+                      dataType="i2"
+                      name="QTD_FUNC_ULT_2_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[SLA_NAO_CONFIGURADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="SLA_NAO_CONFIGURADO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[FATURAMENTO_ACUMULADO_ANO]"
+                      dataType="cy"
+                      name="FATURAMENTO_ACUMULADO_ANO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[HORAS_TOTAIS_ANO]"
+                      dataType="i4"
+                      name="HORAS_TOTAIS_ANO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[MINUTOS_TOTAIS_ANO]"
+                      dataType="i4"
+                      name="MINUTOS_TOTAIS_ANO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TESTE_CUSTOMIZADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="TESTE_CUSTOMIZADO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONFIGUROU_POL_SENHA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="CONFIGUROU_POL_SENHA" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNCIONARIOS_REMOVIDOS]"
+                      dataType="i2"
+                      name="QTD_FUNCIONARIOS_REMOVIDOS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO_PERMANENCIA_ANOS]"
+                      dataType="i2"
+                      name="TEMPO_PERMANENCIA_ANOS" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_FUNC_REMOVIDO]"
+                      dataType="i2"
+                      name="QTD_FUNC_REMOVIDO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CANDIDATURAS_ULT_12_MESES]"
+                      dataType="i4"
+                      name="QTD_CANDIDATURAS_ULT_12_MESES" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CONTEM_RECRUTADOR]"
+                      dataType="bool"
+                      name="CONTEM_RECRUTADOR" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_RECRUTADOR]"
+                      dataType="cy"
+                      name="VALOR_RECRUTADOR" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Carga CRM - TMP_CLIENTES.Paths[OLE DB Source Output]"
+              endId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga Mirror -TMP_CLIENTES"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9b3a00fd-1ab5-4616-886b-8c2e5b0ecbd8}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga Mirror -TMP_CLIENTES"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="EXEC VAGAS_DW.SPR_OLTP_Carga_Clientes" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga NUM_PEDIDO ERP"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{250B06C4-0A45-43D2-84B7-B7CC49CFFEF1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga NUM_PEDIDO ERP"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLTP_Carga_Clientes_Codigo_Faturamento_ERP] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga VAGAS_DW - Clientes"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{5d1a4616-9eec-41cc-94f2-bc780e53d98e}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga VAGAS_DW - Clientes"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="exec VAGAS_DW.SPR_OLAP_Carga_Clientes" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DELETE FROM TMP_NUM_PED_FAT"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9FC9C13D-0C1F-4010-A749-D839613930E9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DELETE FROM TMP_NUM_PED_FAT"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="DELETE FROM [VAGAS_DW].[TMP_NUM_PED_FAT]&#xA;WHERE  CONTA_ID NOT IN (SELECT&#x9;A1.CONTA_ID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   FROM&#x9;&#x9;[VAGAS_DW].[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   WHERE&#x9;A1.EX_CLIENTE = 0&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CARTEIRA = 'RELACIONAMENTO')" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ERP -&gt; DW"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{F6A14EC3-91C0-467B-8509-E3BDD5BDA472}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ERP -&gt; DW"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\ERP -&gt; DW\ERP"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="ERP"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CANDIDATURAS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT	SA1.A1_X_CCRMF	AS CONTA_ID ,
+		CASE SA1.A1_XPCNF 
+			WHEN 1 THEN 'SIM' 
+			ELSE 			'NAO' 
+		END 				AS NUM_PD_NA_NF --Número de Pedido na Nota	
+FROM	[SA1010] AS SA1	WITH(NOLOCK)
+WHERE	SA1.D_E_L_E_T_ = ' '</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ERP -&gt; DW\ERP.Connections[OleDbConnection]"
+                  connectionManagerID="{446F384C-1AE6-418A-A976-38FA1ECAC7F9}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - SRV-SQLERP01 DB_TOTVS_P12_PROD]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].Columns[CONTA_ID]"
+                      name="CONTA_ID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].Columns[NUM_PD_NA_NF]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].ExternalColumns[NUM_PD_NA_NF]"
+                      length="3"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].Columns[NUM_PD_NA_NF]"
+                      name="NUM_PD_NA_NF"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].ExternalColumns[NUM_PD_NA_NF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="NUM_PD_NA_NF" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[NUM_PD_NA_NF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[NUM_PD_NA_NF]"
+                      name="NUM_PD_NA_NF" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\ERP -&gt; DW\VagasDW - TMP"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="VagasDW - TMP"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_NUM_PED_FAT]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ERP -&gt; DW\VagasDW - TMP.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[CONTA_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].Columns[CONTA_ID]" />
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[NUM_PD_NA_NF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="NUM_PD_NA_NF"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[NUM_PD_NA_NF]"
+                      lineageId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output].Columns[NUM_PD_NA_NF]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[NUM_PD_NA_NF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="NUM_PD_NA_NF" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\ERP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\ERP -&gt; DW.Paths[OLE DB Source Output]"
+              endId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar Tabela TMP DW"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{c4029d53-e25f-4dc4-b337-ca3486fab00a}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar Tabela TMP DW"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.VAGAS_DW.TMP_CLIENTES" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{ca5488f3-adf4-4743-acda-a1fd9aff0b52}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA MANUT&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA REF FIM&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA_INIC_CONTRAT&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DAT PRM VAGA PUB&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA ULT FATURA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA PRIM OPORT&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA REF&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA_FIM_CONTRAT&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA RESCISAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA CONTRATO CRM&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA ULT VAGA PUB&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA ULT CUSTOMIZACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CLIENTES - DATA REF INIC&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar Extrações do BCC"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{51ed01a4-7f4b-4103-921a-d6877903b1e1}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar Extrações do BCC"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>Carga_Extracoes_BCC.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Truncate TMP_NUM_PED_FAT"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{416E030C-483A-4798-BA6B-F7C96A53AC49}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Truncate TMP_NUM_PED_FAT"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_NUM_PED_FAT] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{0E2D81D3-5C9D-43CB-A70B-0B1037BD40CD}"
+      DTS:From="Package\Limpar Tabela TMP DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Carga Mirror -TMP_CLIENTES" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{64AD71D8-9D79-4434-8E7D-B9CD9A94124F}"
+      DTS:From="Package\Carga Mirror -TMP_CLIENTES"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Carga CONTAS CRM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{CADCDB8A-368C-4ECA-A5DC-E41CCB0D180A}"
+      DTS:From="Package\Carga CRM - TMP_CLIENTES"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Processar Extrações do BCC" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{6D96A45D-C3AC-4D3A-9F38-D8421876939B}"
+      DTS:From="Package\Carga VAGAS_DW - Clientes"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{8B8EAA21-3C48-48F8-99EC-D5870423A4C0}"
+      DTS:From="Package\Processar Extrações do BCC"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Truncate TMP_NUM_PED_FAT" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{8F5FDB37-D1F1-4470-BC85-C3E4D3ABDBF1}"
+      DTS:From="Package\Carga CONTAS CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
+      DTS:To="Package\Carga CRM - TMP_CLIENTES" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{0CF9A836-343C-4DB6-87DF-73B7B569FDC5}"
+      DTS:From="Package\DELETE FROM TMP_NUM_PED_FAT"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 6"
+      DTS:To="Package\Carga - TMP_CLIENTES_INTENSIDADE_INATIVO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 7]"
+      DTS:CreationName=""
+      DTS:DTSID="{19CC9016-A13B-4158-B46A-B935B552DF5B}"
+      DTS:From="Package\Carga - TMP_CLIENTES_INTENSIDADE_INATIVO"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 7"
+      DTS:To="Package\Carga VAGAS_DW - Clientes" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 8]"
+      DTS:CreationName=""
+      DTS:DTSID="{EFF8DBD5-AD54-476D-9ADA-4D35FED6DA1B}"
+      DTS:From="Package\Truncate TMP_NUM_PED_FAT"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 8"
+      DTS:To="Package\ERP -&gt; DW" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
+      DTS:CreationName=""
+      DTS:DTSID="{0DF6B026-1ADE-47A7-A696-0FA299D473EE}"
+      DTS:From="Package\ERP -&gt; DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 9"
+      DTS:To="Package\DELETE FROM TMP_NUM_PED_FAT" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib">
+        <NodeLayout
+          Size="310,42"
+          Id="Package\Carga - TMP_CLIENTES_INTENSIDADE_INATIVO"
+          TopLeft="218,575" />
+        <NodeLayout
+          Size="174,42"
+          Id="Package\Carga CONTAS CRM"
+          TopLeft="578,118" />
+        <NodeLayout
+          Size="215,42"
+          Id="Package\Carga CRM - TMP_CLIENTES"
+          TopLeft="260,154" />
+        <NodeLayout
+          Size="248,42"
+          Id="Package\Carga Mirror -TMP_CLIENTES"
+          TopLeft="248.5,85.5" />
+        <NodeLayout
+          Size="198,42"
+          Id="Package\Carga NUM_PEDIDO ERP"
+          TopLeft="268,408" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Carga VAGAS_DW - Clientes"
+          TopLeft="268,649" />
+        <NodeLayout
+          Size="190,42"
+          Id="Package\Limpar Tabela TMP DW"
+          TopLeft="271,12" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="297,732" />
+        <NodeLayout
+          Size="210,42"
+          Id="Package\Processar Extrações do BCC"
+          TopLeft="261,242" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="369.25,54">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.5"
+              Start="0,0"
+              End="0,24">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="496.5,106.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="81.5,32.5"
+              Start="0,0"
+              End="74,32.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="36.75,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="36.75,0"
+                    Point2="40.75,0"
+                    Point3="40.75,4" />
+                  <mssgle:LineSegment
+                    End="40.75,28.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="40.75,28.5"
+                    Point2="40.75,32.5"
+                    Point3="44.75,32.5" />
+                  <mssgle:LineSegment
+                    End="74,32.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="366.75,196">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="374.25,691">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41"
+              Start="0,0"
+              End="0,33.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="578,144.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-103,30.3333333333333"
+              Start="0,0"
+              End="-95.5,30.3333333333333">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-39.4678899082569,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-39.4678899082569,0"
+                    Point2="-43.4678899082569,0"
+                    Point3="-43.4678899082569,4" />
+                  <mssgle:LineSegment
+                    End="-43.4678899082569,26.3333333333333" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-43.4678899082569,26.3333333333333"
+                    Point2="-43.4678899082569,30.3333333333333"
+                    Point3="-47.4678899082569,30.3333333333333" />
+                  <mssgle:LineSegment
+                    End="-95.5,30.3333333333333" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 7]"
+          TopLeft="373.5,617">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32"
+              Start="0,0"
+              End="0,24.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="133,42"
+          Id="Package\ERP -&gt; DW"
+          TopLeft="38.5,119.5" />
+        <NodeLayout
+          Size="221,42"
+          Id="Package\Truncate TMP_NUM_PED_FAT"
+          TopLeft="8.5,5.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 8]"
+          TopLeft="119,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-14,72"
+              Start="0,0"
+              End="-14,64.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,32"
+                    Point2="0,36"
+                    Point3="-4,36" />
+                  <mssgle:LineSegment
+                    End="-10,36" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-10,36"
+                    Point2="-14,36"
+                    Point3="-14,40" />
+                  <mssgle:LineSegment
+                    End="-14,64.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="248,42"
+          Id="Package\DELETE FROM TMP_NUM_PED_FAT"
+          TopLeft="5.5,224.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="105,161.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="24.5,63"
+              Start="0,0"
+              End="24.5,55.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,27.5"
+                    Point2="0,31.5"
+                    Point3="4,31.5" />
+                  <mssgle:LineSegment
+                    End="20.5,31.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="20.5,31.5"
+                    Point2="24.5,31.5"
+                    Point3="24.5,35.5" />
+                  <mssgle:LineSegment
+                    End="24.5,55.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <GroupLayout
+          Text="Carga NUM_PEDIDO ERP -SOLUÇÃO CONTORNO  POR PROBLEMAS DE AUTENTICAÇÃO NO ERP"
+          ParentId="Package"
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="493,322"
+          Size="493,365"
+          Id="bc1bde3e-1a00-4b10-8949-99fc883a01e2"
+          TopLeft="650.5,237.5">
+          <GroupLayout.ChildrenIds>
+            <s:String>Package\ERP -&gt; DW</s:String>
+            <s:String>Package\Truncate TMP_NUM_PED_FAT</s:String>
+            <s:String>Package.PrecedenceConstraints[Constraint 8]</s:String>
+            <s:String>Package\DELETE FROM TMP_NUM_PED_FAT</s:String>
+            <s:String>Package.PrecedenceConstraints[Constraint 9]</s:String>
+          </GroupLayout.ChildrenIds>
+        </GroupLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="471,263">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="187,45"
+              Start="0,0"
+              End="179.5,45">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="89.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="89.5,0"
+                    Point2="93.5,0"
+                    Point3="93.5,4" />
+                  <mssgle:LineSegment
+                    End="93.5,41" />
+                  <mssgle:CubicBezierSegment
+                    Point1="93.5,41"
+                    Point2="93.5,45"
+                    Point3="97.5,45" />
+                  <mssgle:LineSegment
+                    End="179.5,45" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 6]"
+          TopLeft="780,547">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-407,28"
+              Start="0,0"
+              End="-407,20.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10"
+                    Point2="0,14"
+                    Point3="-4,14" />
+                  <mssgle:LineSegment
+                    End="-403,14" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-403,14"
+                    Point2="-407,14"
+                    Point3="-407,18" />
+                  <mssgle:LineSegment
+                    End="-407,20.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Carga CRM - TMP_CLIENTES">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES"
+          TopLeft="337,179" />
+        <NodeLayout
+          Size="146,42"
+          Id="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM"
+          TopLeft="340.5,70.5" />
+        <EdgeLayout
+          Id="Package\Carga CRM - TMP_CLIENTES.Paths[OLE DB Source Output]"
+          TopLeft="413.25,112.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,66.5"
+              Start="0,0"
+              End="0,59">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,59" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Carga CRM - TMP_CLIENTES\CONTAS_CRM">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\ERP -&gt; DW">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="155,42"
+          Id="Package\ERP -&gt; DW\VagasDW - TMP"
+          TopLeft="485,376" />
+        <NodeLayout
+          Size="97,42"
+          Id="Package\ERP -&gt; DW\ERP"
+          TopLeft="516,202" />
+        <EdgeLayout
+          Id="Package\ERP -&gt; DW.Paths[OLE DB Source Output]"
+          TopLeft="563.5,244">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,132"
+              Start="0,0"
+              End="0,124.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,124.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\ERP -&gt; DW\VagasDW - TMP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\ERP -&gt; DW\ERP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

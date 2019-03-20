@@ -1,0 +1,993 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="6/29/2018 6:27:03 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLMIRROR05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{6B01FF60-8341-40F0-8724-6205424FE94D}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.1100.123"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Snapshot_Intensidade_cliente"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="14"
+  DTS:VersionGUID="{2ED03457-A534-4617-8FBF-9CD3C2AA40CE}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpeza CLIENTES_INTENSIDADE"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A13423C8-BFA0-49F3-91D7-B911476ACEB8}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpeza CLIENTES_INTENSIDADE"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[CLIENTES_INTENSIDADE] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{BB78AF74-5589-406D-AE08-8BED0271C53F}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[CONTA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[INTENSIDADE_RELACIONAMENTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="INTENSIDADE_RELACIONAMENTO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[INTENSIDADE_RELACIONAMENTO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[CRITERIO_SUCESSO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="CRITERIO_SUCESSO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[RISCO_RESCISAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="RISCO_RESCISAO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[RISCO_RESCISAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[PRINCIPAL_MOTIVO_RISCO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="PRINCIPAL_MOTIVO_RISCO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[PRINCIPAL_MOTIVO_RISCO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[OBS_DET_RISCO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="OBS_DET_RISCO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[OBS_DET_RISCO]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTA_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTA_Conv]"
+                      name="CONTA_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[INTENSIDADE_RELACIONAMENTO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[INTENSIDADE_RELACIONAMENTO_Conv]"
+                      name="INTENSIDADE_RELACIONAMENTO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[INTENSIDADE_RELACIONAMENTO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CRITERIO_SUCESSO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="300"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CRITERIO_SUCESSO_Conv]"
+                      name="CRITERIO_SUCESSO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[RISCO_RESCISAO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[RISCO_RESCISAO_Conv]"
+                      name="RISCO_RESCISAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[RISCO_RESCISAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[PRINCIPAL_MOTIVO_RISCO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[PRINCIPAL_MOTIVO_RISCO_Conv]"
+                      name="PRINCIPAL_MOTIVO_RISCO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[PRINCIPAL_MOTIVO_RISCO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[OBS_DET_RISCO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[OBS_DET_RISCO_Conv]"
+                      name="OBS_DET_RISCO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[OBS_DET_RISCO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\MySQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT  acc.id AS CONTA_ID ,
+        CONVERT(acc.name USING Latin1) AS CONTA ,
+        CONVERT(accs.intensidade_rel_c USING Latin1) AS INTENSIDADE_RELACIONAMENTO ,
+        CONVERT(accs.criterio_de_sucesso_c USING Latin1) AS CRITERIO_SUCESSO ,
+        CONVERT(accs.risco_de_rescisao_c USING Latin1) AS RISCO_RESCISAO ,
+        CONVERT(accs.principal_motivo_do_risco_c USING Latin1) AS PRINCIPAL_MOTIVO_RISCO ,
+        CONVERT(accs.obs_ou_detalhes_do_risco_c USING Latin1) AS OBS_DET_RISCO
+from accounts acc
+inner join accounts_cstm accs on accs.id_c = acc.id and accs.intensidade_rel_c &lt;&gt; ''
+where acc.deleted = 0 ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\MySQL.Connections[ODBCConnection]"
+                  connectionManagerID="{85D523B7-CBEA-4308-BABD-BE0191B264D8}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA]"
+                      name="CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[INTENSIDADE_RELACIONAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[INTENSIDADE_RELACIONAMENTO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[INTENSIDADE_RELACIONAMENTO]"
+                      name="INTENSIDADE_RELACIONAMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_SUCESSO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]"
+                      name="CRITERIO_SUCESSO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[RISCO_RESCISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[RISCO_RESCISAO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[RISCO_RESCISAO]"
+                      name="RISCO_RESCISAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[PRINCIPAL_MOTIVO_RISCO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[PRINCIPAL_MOTIVO_RISCO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[PRINCIPAL_MOTIVO_RISCO]"
+                      name="PRINCIPAL_MOTIVO_RISCO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[OBS_DET_RISCO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[OBS_DET_RISCO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[OBS_DET_RISCO]"
+                      name="OBS_DET_RISCO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      dataType="wstr"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[INTENSIDADE_RELACIONAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="INTENSIDADE_RELACIONAMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="CRITERIO_SUCESSO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[RISCO_RESCISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="RISCO_RESCISAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[PRINCIPAL_MOTIVO_RISCO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PRINCIPAL_MOTIVO_RISCO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[OBS_DET_RISCO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="OBS_DET_RISCO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTA]"
+                      name="CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[INTENSIDADE_RELACIONAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[INTENSIDADE_RELACIONAMENTO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[INTENSIDADE_RELACIONAMENTO]"
+                      name="INTENSIDADE_RELACIONAMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_SUCESSO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CRITERIO_SUCESSO]"
+                      name="CRITERIO_SUCESSO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[RISCO_RESCISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[RISCO_RESCISAO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[RISCO_RESCISAO]"
+                      name="RISCO_RESCISAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[PRINCIPAL_MOTIVO_RISCO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[PRINCIPAL_MOTIVO_RISCO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[PRINCIPAL_MOTIVO_RISCO]"
+                      name="PRINCIPAL_MOTIVO_RISCO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[OBS_DET_RISCO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[OBS_DET_RISCO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[OBS_DET_RISCO]"
+                      name="OBS_DET_RISCO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[CLIENTES_INTENSIDADE]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[CONTA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_CRM]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[CRITERIO_SUCESSO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="300"
+                      cachedName="CRITERIO_SUCESSO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CRITERIO_SUCESSO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CRITERIO_SUCESSO_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[INTENSIDADE_RELACIONAMENTO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="INTENSIDADE_RELACIONAMENTO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[INTENSIDADE]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[INTENSIDADE_RELACIONAMENTO_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[RISCO_RESCISAO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="RISCO_RESCISAO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[RISCO_RESCISAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[RISCO_RESCISAO_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[PRINCIPAL_MOTIVO_RISCO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="PRINCIPAL_MOTIVO_RISCO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PRINCIPAL_MOTIVO_RISCO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[PRINCIPAL_MOTIVO_RISCO_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[OBS_DET_RISCO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="OBS_DET_RISCO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[OBS_DET_RISCO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[OBS_DET_RISCO_Conv]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONTA_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[INTENSIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="INTENSIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[RISCO_RESCISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="RISCO_RESCISAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PRINCIPAL_MOTIVO_RISCO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PRINCIPAL_MOTIVO_RISCO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[OBS_DET_RISCO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="OBS_DET_RISCO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="CRITERIO_SUCESSO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+              endId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{0344BB5D-5604-4524-9DB3-EA1827F5FF6C}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;SNP_INTENSIDADE - DATA_CARGA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;SNAPSHOT_CLIENTES_INTENSIDADE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_SNAPSHOT_CLIENTES_INTENSIDADE"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{19703344-91BC-4495-8DBF-9A94E1229338}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_SNAPSHOT_CLIENTES_INTENSIDADE"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_SNAPSHOT_CLIENTES_INTENSIDADE] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{4D22ECA0-3D54-43BD-9B9F-1125ABEDC368}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_SNAPSHOT_CLIENTES_INTENSIDADE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{19FA03D7-9FD4-43A4-AA82-D72888FC68A2}"
+      DTS:From="Package\MySQL -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_SNAPSHOT_CLIENTES_INTENSIDADE" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{BDD887B8-96F2-4E4D-AE67-1B4E4E593567}"
+      DTS:From="Package\Limpeza CLIENTES_INTENSIDADE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\MySQL -&gt; SQL Server" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="241,42"
+          Id="Package\Limpeza CLIENTES_INTENSIDADE"
+          TopLeft="437,17" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\MySQL -&gt; SQL Server"
+          TopLeft="465,87" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="482,236" />
+        <NodeLayout
+          Size="406,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_SNAPSHOT_CLIENTES_INTENSIDADE"
+          TopLeft="360,166" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="561.25,208">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,28"
+              Start="0,0"
+              End="0,20.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="559.5,129">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37"
+              Start="0,0"
+              End="0,29.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="556.75,59">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,28"
+              Start="0,0"
+              End="0,20.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="111,42"
+          Id="Package\MySQL -&gt; SQL Server\MySQL"
+          TopLeft="662,134" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\MySQL -&gt; SQL Server\Data Conversion"
+          TopLeft="644,210" />
+        <NodeLayout
+          Size="131,42"
+          Id="Package\MySQL -&gt; SQL Server\SQL Server"
+          TopLeft="648,302" />
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="719.75,176">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,34"
+              Start="0,0"
+              End="0,26.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+          TopLeft="722,252">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8.5,50"
+              Start="0,0"
+              End="-8.5,42.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21"
+                    Point2="0,25"
+                    Point3="-4,25" />
+                  <mssgle:LineSegment
+                    End="-4.5,25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4.5,25"
+                    Point2="-8.5,25"
+                    Point3="-8.5,29" />
+                  <mssgle:LineSegment
+                    End="-8.5,42.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\MySQL">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

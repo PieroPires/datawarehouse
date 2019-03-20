@@ -1,0 +1,982 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/17/2016 1:32:37 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DTSID="{6B22B8F6-29D3-47F2-9363-565DC05332E5}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.1100.123"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Telefonia_Callbox"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="147"
+  DTS:VersionGUID="{6741C965-490E-490D-A488-6E0B23CB8AB4}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2AA4F342-0E00-4DFC-A8AA-1ACED4E8B53C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_LIGACAO">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar  VAGAS_DW_TMP_LIGACOES"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{CE8CB59E-C7D7-4B8E-B2C7-A856192019B9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar  VAGAS_DW_TMP_LIGACOES"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_LIGACOES" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DelayValidation="True"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{323A052A-6C55-43AD-AA3C-9CB1352521E9}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[MySQL callbox].[SqlCommand]">"SELECT A.uniqueid AS ID,
+       A.calldate AS DATA_LIGACAO,
+       A.clid AS NOME_ORIGEM,
+       A.SRC AS ORIGEM,
+       A.DST AS DESTINO,
+       A.duration AS DURACAO_TOTAL,
+       A.billsec AS DURACAO_ATENDIMENTO,
+       A.disposition STATUS,
+       CASE WHEN A.amaflags = 1 THEN \"NÃO REGISTRAR\"
+                  WHEN A.amaflags = 2 THEN \"TARIFAR\"
+            WHEN A.amaflags = 3 THEN \"REGISTRAR\" END AS TIPO_TARIFACAO,
+       B.nome_tar AS CENTRO_CUSTO_TARIFACAO,
+       C.valor AS VALOR 
+ FROM cdr A 
+LEFT OUTER JOIN tarifacao B ON B.id = A.accountcode
+LEFT OUTER JOIN billingCdr C ON C.uid = A.uniqueid
+WHERE  A.calldate &gt;= "   +  @[User::DATA_LIGACAO]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\MySQL callbox"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL callbox"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT A.uniqueid AS ID,
+       A.calldate AS DATA_LIGACAO,
+       A.clid AS NOME_ORIGEM,
+       A.SRC AS ORIGEM,
+       A.DST AS DESTINO,
+       A.duration AS DURACAO_TOTAL,
+       A.billsec AS DURACAO_ATENDIMENTO,
+       A.disposition STATUS,
+       CASE WHEN A.amaflags = 1 THEN "NÃO REGISTRAR"
+                  WHEN A.amaflags = 2 THEN "TARIFAR"
+            WHEN A.amaflags = 3 THEN "REGISTRAR" END AS TIPO_TARIFACAO,
+       B.nome_tar AS CENTRO_CUSTO_TARIFACAO,
+       C.valor AS VALOR 
+ FROM cdr A 
+LEFT OUTER JOIN tarifacao B ON B.id = A.accountcode
+LEFT OUTER JOIN billingCdr C ON C.uid = A.uniqueid
+WHERE  A.calldate &gt;= </property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Connections[ODBCConnection]"
+                  connectionManagerID="{B38BBCB0-EAA8-4EE4-9E57-57AFEC5369D1}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Callbox]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[ID]"
+                      length="32"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[ID]"
+                      name="ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DATA_LIGACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DATA_LIGACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DATA_LIGACAO]"
+                      name="DATA_LIGACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[NOME_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[NOME_ORIGEM]"
+                      length="80"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[NOME_ORIGEM]"
+                      name="NOME_ORIGEM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[ORIGEM]"
+                      length="80"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[ORIGEM]"
+                      name="ORIGEM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DESTINO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DESTINO]"
+                      length="80"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DESTINO]"
+                      name="DESTINO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DURACAO_TOTAL]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DURACAO_TOTAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DURACAO_TOTAL]"
+                      name="DURACAO_TOTAL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DURACAO_ATENDIMENTO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DURACAO_ATENDIMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DURACAO_ATENDIMENTO]"
+                      name="DURACAO_ATENDIMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="45"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[TIPO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[TIPO_TARIFACAO]"
+                      length="13"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[TIPO_TARIFACAO]"
+                      name="TIPO_TARIFACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[CENTRO_CUSTO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[CENTRO_CUSTO_TARIFACAO]"
+                      length="50"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[CENTRO_CUSTO_TARIFACAO]"
+                      name="CENTRO_CUSTO_TARIFACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[VALOR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[VALOR]"
+                      length="32"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[VALOR]"
+                      name="VALOR" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="32"
+                      name="ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DATA_LIGACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_LIGACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[NOME_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="80"
+                      name="NOME_ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="80"
+                      name="ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DESTINO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="80"
+                      name="DESTINO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DURACAO_TOTAL]"
+                      dataType="i4"
+                      name="DURACAO_TOTAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DURACAO_ATENDIMENTO]"
+                      dataType="i4"
+                      name="DURACAO_ATENDIMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="45"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[TIPO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="13"
+                      name="TIPO_TARIFACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[CENTRO_CUSTO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CENTRO_CUSTO_TARIFACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[VALOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="32"
+                      name="VALOR" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[ID]"
+                      length="32"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ID]"
+                      name="ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DATA_LIGACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DATA_LIGACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DATA_LIGACAO]"
+                      name="DATA_LIGACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[NOME_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[NOME_ORIGEM]"
+                      length="80"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[NOME_ORIGEM]"
+                      name="NOME_ORIGEM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[ORIGEM]"
+                      length="80"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ORIGEM]"
+                      name="ORIGEM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DESTINO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DESTINO]"
+                      length="80"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DESTINO]"
+                      name="DESTINO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DURACAO_TOTAL]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DURACAO_TOTAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DURACAO_TOTAL]"
+                      name="DURACAO_TOTAL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DURACAO_ATENDIMENTO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[DURACAO_ATENDIMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[DURACAO_ATENDIMENTO]"
+                      name="DURACAO_ATENDIMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="45"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[TIPO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[TIPO_TARIFACAO]"
+                      length="13"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[TIPO_TARIFACAO]"
+                      name="TIPO_TARIFACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[CENTRO_CUSTO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[CENTRO_CUSTO_TARIFACAO]"
+                      length="50"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[CENTRO_CUSTO_TARIFACAO]"
+                      name="CENTRO_CUSTO_TARIFACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[VALOR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].ExternalColumns[VALOR]"
+                      length="32"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[VALOR]"
+                      name="VALOR" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_LIGACOES]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="32"
+                      cachedName="ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_LIGACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_LIGACAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_LIGACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DATA_LIGACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[NOME_ORIGEM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="80"
+                      cachedName="NOME_ORIGEM"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[NOME_ORIGEM]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[NOME_ORIGEM]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[ORIGEM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="80"
+                      cachedName="ORIGEM"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ORIGEM]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[ORIGEM]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DESTINO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="80"
+                      cachedName="DESTINO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DESTINO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DESTINO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DURACAO_TOTAL]"
+                      cachedDataType="i4"
+                      cachedName="DURACAO_TOTAL"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DURACAO_TOTAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DURACAO_TOTAL]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DURACAO_ATENDIMENTO]"
+                      cachedDataType="i4"
+                      cachedName="DURACAO_ATENDIMENTO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DURACAO_ATENDIMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[DURACAO_ATENDIMENTO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[STATUS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="45"
+                      cachedName="STATUS"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[STATUS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[TIPO_TARIFACAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="13"
+                      cachedName="TIPO_TARIFACAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_TARIFACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[TIPO_TARIFACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[CENTRO_CUSTO_TARIFACAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="CENTRO_CUSTO_TARIFACAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CENTRO_CUSTO_TARIFACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[CENTRO_CUSTO_TARIFACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[VALOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="32"
+                      cachedName="VALOR"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[VALOR]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output].Columns[VALOR]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="32"
+                      name="ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_LIGACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_LIGACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[NOME_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="80"
+                      name="NOME_ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="80"
+                      name="ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DESTINO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="80"
+                      name="DESTINO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DURACAO_TOTAL]"
+                      dataType="i4"
+                      name="DURACAO_TOTAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DURACAO_ATENDIMENTO]"
+                      dataType="i4"
+                      name="DURACAO_ATENDIMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="45"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="TIPO_TARIFACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CENTRO_CUSTO_TARIFACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CENTRO_CUSTO_TARIFACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[NOME_EQUIPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="NOME_EQUIPE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[VALOR]"
+                      dataType="numeric"
+                      name="VALOR"
+                      precision="4"
+                      scale="2" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL -&gt; SQL Server\MySQL callbox.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Pegar Última Data Alteração"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{19396EA5-94AF-4830-820E-84F1B08E748E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pegar Última Data Alteração"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="SELECT CONVERT(VARCHAR,DATEADD(DAY,-1,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,ISNULL(MAX(DATA_LIGACAO),'19010101'),112))) ,112) AS DATA_LIGACAO&#xA;FROM VAGAS_DW.LIGACOES&#xA;&#xA;--SELECT '19010101' AS DATA_LIGACAO"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="DATA_LIGACAO"
+            SQLTask:DtsVariableName="User::DATA_LIGACAO" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{D5BD877F-6B5E-4C46-99C2-7BB61049458D}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LIGACOES - DATA LIGACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LIGACOES&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_Ligacoes"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{BC99E8E1-2860-4C21-A877-42904A4D3458}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_Ligacoes"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC VAGAS_DW.SPR_OLAP_Carga_Ligacoes" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{5795CD9D-330F-44C5-AC74-D75778358769}"
+      DTS:From="Package\Pegar Última Data Alteração"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Limpar  VAGAS_DW_TMP_LIGACOES" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{5BC9D0AE-CA43-4A95-AD13-AF3EC2EDC57B}"
+      DTS:From="Package\Limpar  VAGAS_DW_TMP_LIGACOES"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\MySQL -&gt; SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{CEF8EF80-55AC-41BF-B73F-EB9C72BD46C0}"
+      DTS:From="Package\MySQL -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_Ligacoes" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{A8696904-68C9-4173-8FA5-9528E81BCEA4}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_Ligacoes"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="253,42"
+          Id="Package\Limpar  VAGAS_DW_TMP_LIGACOES"
+          TopLeft="60,120" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\MySQL -&gt; SQL Server"
+          TopLeft="92,188" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Pegar Última Data Alteração"
+          TopLeft="77,44" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="92,332" />
+        <NodeLayout
+          Size="268,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_Ligacoes"
+          TopLeft="45,256" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="184.75,86">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,34"
+              Start="0,0"
+              End="0,26.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="184.75,162">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,26"
+              Start="0,0"
+              End="0,18.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="181,230">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,26"
+              Start="0,0"
+              End="0,18.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="179,298">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-9.5,34"
+              Start="0,0"
+              End="-9.5,26.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13"
+                    Point2="0,17"
+                    Point3="-4,17" />
+                  <mssgle:LineSegment
+                    End="-5.5,17" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-5.5,17"
+                    Point2="-9.5,17"
+                    Point3="-9.5,21" />
+                  <mssgle:LineSegment
+                    End="-9.5,26.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\MySQL -&gt; SQL Server\SQL Server"
+          TopLeft="158,164" />
+        <NodeLayout
+          Size="147,42"
+          Id="Package\MySQL -&gt; SQL Server\MySQL callbox"
+          TopLeft="99,56" />
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="172.5,98">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="51,66"
+              Start="0,0"
+              End="51,58.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29"
+                    Point2="0,33"
+                    Point3="4,33" />
+                  <mssgle:LineSegment
+                    End="47,33" />
+                  <mssgle:CubicBezierSegment
+                    Point1="47,33"
+                    Point2="51,33"
+                    Point3="51,37" />
+                  <mssgle:LineSegment
+                    End="51,58.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

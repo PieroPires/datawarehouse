@@ -1,0 +1,2427 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="5/30/2017 3:40:58 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{CB3CCC51-8A0E-4A58-815B-42AFC5479647}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.1100.123"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Carga_Contas_CRM"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="50"
+  DTS:VersionGUID="{3D803AE8-45B2-4D81-8662-C4F461DFD8B5}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar VAGAS_DW_CONTAS_CRM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{BB91FC0B-14E4-4A98-8EB0-C965D2204AC1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar VAGAS_DW_CONTAS_CRM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[CONTAS_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar VAGAS_DW_CONTAS_MEMBRO_CRM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{E4ABC9A1-69BD-48BB-8718-01EE5D7A3FE8}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar VAGAS_DW_CONTAS_MEMBRO_CRM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[CONTAS_MEMBRO_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL -&gt; SQL Server (Contas Membro)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{D8A218AD-784D-4E78-B777-1CBEDA40B41F}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL -&gt; SQL Server (Contas Membro)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL - Contas Membro CRM"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	CONVERT(A.id USING Latin1) AS CONTA_ID ,
+		CONVERT(A.name USING Latin1) AS CONTA_CRM ,
+		CONVERT(A.parent_id USING Latin1) AS CONTA_ID_PAI ,
+		CONVERT(B.cnpj_c USING Latin1) AS CNPJ ,
+		CONVERT(B.tipo_c USING Latin1) AS TIPO ,
+        CONVERT(A.account_type USING Latin1) AS CATEGORIA ,
+        A.date_entered AS DATA_ENTRADA ,
+        B.porcentual_rateio_c AS PORCENTUAL_RATEIO ,
+        CONVERT(B.mercado_c USING Latin1) AS MERCADO ,
+        (SELECT	CONVERT(A1.user_name USING Latin1) AS PROPRIETARIO_CONTA
+		 FROM	sugarcrm.users AS A1
+         WHERE	A.assigned_user_id = A1.id) AS PROPRIETARIO_CONTA ,
+        CONVERT(B.id_vagas_c USING Latin1) AS ID_VAGAS ,
+		CONVERT(C.user_name USING Latin1) AS CRIADO_POR ,
+		CONVERT(CASE WHEN (SELECT COUNT(*) AS QTD_OPORTUNIDADES
+						   FROM   sugarcrm.accounts_opportunities AS A1
+						   WHERE  A1.deleted = 0
+								  AND A.id = A1.account_id) &gt; 0 THEN 'SIM' ELSE 'NÃO' END USING Latin1) AS POSSUI_OPORTUNIDADE ,
+         CONVERT(B.cnae_secao_id_c USING Latin1) AS CNAE_SECAO_ID ,
+         CONVERT(B.cnae_secao_descr_c USING Latin1) AS CNAE_SECAO ,
+         CONVERT(B.cnae_divisao_id_c USING Latin1) AS CNAE_DIVISAO_ID ,
+         CONVERT(B.cnae_divisao_descr_c USING Latin1) AS CNAE_DIVISAO ,
+         CONVERT(B.cnae_classe_id_c USING Latin1) AS CNAE_CLASSE_ID ,
+         CONVERT(B.cnae_classe_descr_c USING Latin1) AS CNAE_CLASSE ,
+         CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
+         CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
+         CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C
+FROM	sugarcrm.accounts AS A		LEFT OUTER JOIN sugarcrm.accounts_cstm AS B ON A.id = B.id_c
+									LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
+WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
+		AND A.deleted = 0 ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Connections[ODBCConnection]"
+                  connectionManagerID="{D8B49F88-60AF-4C25-A849-3E7F55926C5F}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção SUGAR user_dw]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_CRM]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_CRM]"
+                      name="CONTA_CRM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_ID_PAI]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID_PAI]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_ID_PAI]"
+                      name="CONTA_ID_PAI" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNPJ]"
+                      length="30"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNPJ]"
+                      name="CNPJ" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[TIPO]"
+                      name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CATEGORIA]"
+                      name="CATEGORIA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[DATA_ENTRADA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[DATA_ENTRADA]"
+                      name="DATA_ENTRADA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PORCENTUAL_RATEIO]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PORCENTUAL_RATEIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PORCENTUAL_RATEIO]"
+                      name="PORCENTUAL_RATEIO"
+                      precision="5"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[MERCADO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[MERCADO]"
+                      name="MERCADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PROPRIETARIO_CONTA]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PROPRIETARIO_CONTA]"
+                      name="PROPRIETARIO_CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[ID_VAGAS]"
+                      length="40"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[ID_VAGAS]"
+                      name="ID_VAGAS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CRIADO_POR]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CRIADO_POR]"
+                      name="CRIADO_POR" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[POSSUI_OPORTUNIDADE]"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO_ID]"
+                      name="CNAE_SECAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO]"
+                      name="CNAE_SECAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO_ID]"
+                      name="CNAE_DIVISAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO]"
+                      name="CNAE_DIVISAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE_ID]"
+                      name="CNAE_CLASSE_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE]"
+                      name="CNAE_CLASSE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      length="8"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID_PAI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID_PAI" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CATEGORIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENTRADA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PORCENTUAL_RATEIO]"
+                      dataType="numeric"
+                      name="PORCENTUAL_RATEIO"
+                      precision="5"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MERCADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="PROPRIETARIO_CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="ID_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="CRIADO_POR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_SECAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SECAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_DIVISAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_DIVISAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_CLASSE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_CLASSE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_CRM]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONTA_CRM]"
+                      name="CONTA_CRM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONTA_ID_PAI]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID_PAI]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONTA_ID_PAI]"
+                      name="CONTA_ID_PAI" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNPJ]"
+                      length="30"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNPJ]"
+                      name="CNPJ" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[TIPO]"
+                      name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CATEGORIA]"
+                      name="CATEGORIA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[DATA_ENTRADA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[DATA_ENTRADA]"
+                      name="DATA_ENTRADA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[PORCENTUAL_RATEIO]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PORCENTUAL_RATEIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[PORCENTUAL_RATEIO]"
+                      name="PORCENTUAL_RATEIO"
+                      precision="5"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[MERCADO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[MERCADO]"
+                      name="MERCADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PROPRIETARIO_CONTA]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[PROPRIETARIO_CONTA]"
+                      name="PROPRIETARIO_CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[ID_VAGAS]"
+                      length="40"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ID_VAGAS]"
+                      name="ID_VAGAS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CRIADO_POR]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CRIADO_POR]"
+                      name="CRIADO_POR" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[POSSUI_OPORTUNIDADE]"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO_ID]"
+                      name="CNAE_SECAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO]"
+                      name="CNAE_SECAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO_ID]"
+                      name="CNAE_DIVISAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO]"
+                      name="CNAE_DIVISAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE_ID]"
+                      name="CNAE_CLASSE_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE]"
+                      name="CNAE_CLASSE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      length="8"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[CONTAS_MEMBRO_CRM]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONTA_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNPJ]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="CNPJ"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNPJ]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[PORCENTUAL_RATEIO]"
+                      cachedDataType="numeric"
+                      cachedName="PORCENTUAL_RATEIO"
+                      cachedPrecision="5"
+                      cachedScale="2"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PORCENTUAL_RATEIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PORCENTUAL_RATEIO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONTA_ID_PAI]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID_PAI"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID_PAI]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_ID_PAI]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_ENTRADA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_ENTRADA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENTRADA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[DATA_ENTRADA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONTA_CRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA_CRM"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_CRM]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONTA_CRM]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[TIPO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="TIPO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[TIPO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CATEGORIA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="CATEGORIA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CATEGORIA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CATEGORIA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[PROPRIETARIO_CONTA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="PROPRIETARIO_CONTA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PROPRIETARIO_CONTA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PROPRIETARIO_CONTA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[MERCADO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="MERCADO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MERCADO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[MERCADO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[ID_VAGAS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="40"
+                      cachedName="ID_VAGAS"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_VAGAS]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[ID_VAGAS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CRIADO_POR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="CRIADO_POR"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CRIADO_POR]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CRIADO_POR]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[POSSUI_OPORTUNIDADE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="POSSUI_OPORTUNIDADE"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[POSSUI_OPORTUNIDADE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SECAO_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="CNAE_SECAO_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SECAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_SECAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_DIVISAO_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="CNAE_DIVISAO_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_DIVISAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_DIVISAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_CLASSE_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="CNAE_CLASSE_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_CLASSE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_CLASSE"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_FAIXA_FUNCIONARIOS"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_FAIXA_FUNCIONARIOS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SUBCLASSE_ID_C]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="CNAE_SUBCLASSE_ID_C"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_ID_C]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_SUBCLASSE_DESCR_C"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PORCENTUAL_RATEIO]"
+                      dataType="r8"
+                      name="PORCENTUAL_RATEIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID_PAI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID_PAI" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENTRADA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CATEGORIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="PROPRIETARIO_CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MERCADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="ID_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CRIADO_POR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_SECAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SECAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_DIVISAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_DIVISAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_CLASSE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_CLASSE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL -&gt; SQL Server (Contas Membro).Paths[ODBC Source Output]"
+              endId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL -&gt; SQL Server (Contas Pai)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{809131F1-643C-45C9-BE60-8B0218F24126}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL -&gt; SQL Server (Contas Pai)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL - Contas Pai CRM"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	CONVERT(A.id USING Latin1) AS CONTA_ID ,
+		CONVERT(A.name USING Latin1) AS CONTA_CRM ,
+		CONVERT(B.cnpj_c USING Latin1) AS CNPJ ,
+        CONVERT(CASE WHEN B.num_membros_c &gt; 0 THEN 'SIM' ELSE 'NÃO' END USING Latin1) AS POSSUI_CONTA_MEMBRO ,
+		CONVERT(CASE WHEN    (SELECT COUNT(*) AS QTD_OPORTUNIDADES
+							  FROM   sugarcrm.accounts_opportunities AS A1
+							  WHERE  A1.deleted = 0
+									 AND A.id = A1.account_id) &gt; 0 THEN 'SIM' ELSE 'NÃO' END USING Latin1) AS POSSUI_OPORTUNIDADE ,
+		CONVERT(B.tipo_c USING Latin1) AS TIPO ,
+        CONVERT(A.account_type USING Latin1) AS CATEGORIA ,
+		A.date_entered AS DATA_ENTRADA ,
+        B.porcentual_rateio_c AS PORCENTUAL_RATEIO ,
+        B.valor_principal_c AS VALOR_PRINCIPAL ,
+        CONVERT(B.mercado_c USING Latin1) AS MERCADO ,
+        (SELECT	CONVERT(A1.user_name USING Latin1) AS PROPRIETARIO_CONTA
+		 FROM	sugarcrm.users AS A1
+         WHERE	A.assigned_user_id = A1.id) AS PROPRIETARIO_CONTA ,
+         CONVERT(B.id_vagas_c USING Latin1) AS ID_VAGAS ,
+         CONVERT(C.user_name USING Latin1) AS CRIADO_POR ,
+         CONVERT(B.cnae_secao_id_c USING Latin1) AS CNAE_SECAO_ID ,
+         CONVERT(B.cnae_secao_descr_c USING Latin1) AS CNAE_SECAO ,
+         CONVERT(B.cnae_divisao_id_c USING Latin1) AS CNAE_DIVISAO_ID ,
+         CONVERT(B.cnae_divisao_descr_c USING Latin1) AS CNAE_DIVISAO ,
+         CONVERT(B.cnae_classe_id_c USING Latin1) AS CNAE_CLASSE_ID ,
+         CONVERT(B.cnae_classe_descr_c USING Latin1) AS CNAE_CLASSE ,
+         CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
+         CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
+         CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C
+FROM	sugarcrm.accounts AS A	LEFT OUTER JOIN sugarcrm.accounts_cstm AS B ON A.id = B.id_c
+								LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
+WHERE	A.deleted = 0 
+		AND IFNULL(A.parent_id, '') = '' ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Connections[ODBCConnection]"
+                  connectionManagerID="{D8B49F88-60AF-4C25-A849-3E7F55926C5F}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção SUGAR user_dw]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_CRM]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONTA_CRM]"
+                      name="CONTA_CRM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNPJ]"
+                      length="30"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNPJ]"
+                      name="CNPJ" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[POSSUI_CONTA_MEMBRO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_CONTA_MEMBRO]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[POSSUI_CONTA_MEMBRO]"
+                      name="POSSUI_CONTA_MEMBRO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[POSSUI_OPORTUNIDADE]"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[TIPO]"
+                      name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CATEGORIA]"
+                      name="CATEGORIA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[DATA_ENTRADA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[DATA_ENTRADA]"
+                      name="DATA_ENTRADA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PORCENTUAL_RATEIO]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PORCENTUAL_RATEIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PORCENTUAL_RATEIO]"
+                      name="PORCENTUAL_RATEIO"
+                      precision="5"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[VALOR_PRINCIPAL]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_PRINCIPAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[VALOR_PRINCIPAL]"
+                      name="VALOR_PRINCIPAL"
+                      precision="26"
+                      scale="6" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[MERCADO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[MERCADO]"
+                      name="MERCADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PROPRIETARIO_CONTA]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PROPRIETARIO_CONTA]"
+                      name="PROPRIETARIO_CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[ID_VAGAS]"
+                      length="40"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[ID_VAGAS]"
+                      name="ID_VAGAS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CRIADO_POR]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CRIADO_POR]"
+                      name="CRIADO_POR" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO_ID]"
+                      name="CNAE_SECAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO]"
+                      name="CNAE_SECAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO_ID]"
+                      name="CNAE_DIVISAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO]"
+                      name="CNAE_DIVISAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE_ID]"
+                      name="CNAE_CLASSE_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE]"
+                      name="CNAE_CLASSE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      length="8"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_CONTA_MEMBRO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_CONTA_MEMBRO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CATEGORIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENTRADA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PORCENTUAL_RATEIO]"
+                      dataType="numeric"
+                      name="PORCENTUAL_RATEIO"
+                      precision="5"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_PRINCIPAL]"
+                      dataType="numeric"
+                      name="VALOR_PRINCIPAL"
+                      precision="26"
+                      scale="6" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MERCADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="PROPRIETARIO_CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="ID_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="CRIADO_POR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_SECAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SECAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_DIVISAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_DIVISAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_CLASSE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_CLASSE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONTA_CRM]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONTA_CRM]"
+                      name="CONTA_CRM" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNPJ]"
+                      length="30"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNPJ]"
+                      name="CNPJ" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[POSSUI_CONTA_MEMBRO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_CONTA_MEMBRO]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[POSSUI_CONTA_MEMBRO]"
+                      name="POSSUI_CONTA_MEMBRO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[POSSUI_OPORTUNIDADE]"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[TIPO]"
+                      name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CATEGORIA]"
+                      name="CATEGORIA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[DATA_ENTRADA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[DATA_ENTRADA]"
+                      name="DATA_ENTRADA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[PORCENTUAL_RATEIO]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PORCENTUAL_RATEIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[PORCENTUAL_RATEIO]"
+                      name="PORCENTUAL_RATEIO"
+                      precision="5"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[VALOR_PRINCIPAL]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_PRINCIPAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[VALOR_PRINCIPAL]"
+                      name="VALOR_PRINCIPAL"
+                      precision="26"
+                      scale="6" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[MERCADO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[MERCADO]"
+                      name="MERCADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PROPRIETARIO_CONTA]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[PROPRIETARIO_CONTA]"
+                      name="PROPRIETARIO_CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[ID_VAGAS]"
+                      length="40"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ID_VAGAS]"
+                      name="ID_VAGAS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CRIADO_POR]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CRIADO_POR]"
+                      name="CRIADO_POR" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO_ID]"
+                      name="CNAE_SECAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SECAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SECAO]"
+                      name="CNAE_SECAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO_ID]"
+                      name="CNAE_DIVISAO_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_DIVISAO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_DIVISAO]"
+                      name="CNAE_DIVISAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE_ID]"
+                      length="6"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE_ID]"
+                      name="CNAE_CLASSE_ID" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_CLASSE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_CLASSE]"
+                      name="CNAE_CLASSE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      length="8"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_ID_C]"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[CONTAS_CRM]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONTA_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONTA_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNPJ]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="CNPJ"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNPJ]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[POSSUI_CONTA_MEMBRO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="POSSUI_CONTA_MEMBRO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_CONTA_MEMBRO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[POSSUI_CONTA_MEMBRO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[POSSUI_OPORTUNIDADE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="POSSUI_OPORTUNIDADE"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[POSSUI_OPORTUNIDADE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[DATA_ENTRADA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_ENTRADA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENTRADA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[DATA_ENTRADA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[PORCENTUAL_RATEIO]"
+                      cachedDataType="numeric"
+                      cachedName="PORCENTUAL_RATEIO"
+                      cachedPrecision="5"
+                      cachedScale="2"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PORCENTUAL_RATEIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PORCENTUAL_RATEIO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[VALOR_PRINCIPAL]"
+                      cachedDataType="numeric"
+                      cachedName="VALOR_PRINCIPAL"
+                      cachedPrecision="26"
+                      cachedScale="6"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_PRINCIPAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[VALOR_PRINCIPAL]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONTA_CRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA_CRM"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_CRM]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONTA_CRM]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[TIPO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="TIPO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[TIPO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CATEGORIA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="CATEGORIA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CATEGORIA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CATEGORIA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[PROPRIETARIO_CONTA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="PROPRIETARIO_CONTA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PROPRIETARIO_CONTA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PROPRIETARIO_CONTA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[MERCADO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="MERCADO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MERCADO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[MERCADO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[ID_VAGAS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="40"
+                      cachedName="ID_VAGAS"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_VAGAS]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[ID_VAGAS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CRIADO_POR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="CRIADO_POR"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CRIADO_POR]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CRIADO_POR]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SECAO_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="CNAE_SECAO_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SECAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_SECAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SECAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_DIVISAO_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="CNAE_DIVISAO_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_DIVISAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_DIVISAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_DIVISAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_CLASSE_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="CNAE_CLASSE_ID"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE_ID]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE_ID]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_CLASSE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_CLASSE"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_CLASSE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_FAIXA_FUNCIONARIOS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_FAIXA_FUNCIONARIOS"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_FAIXA_FUNCIONARIOS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SUBCLASSE_ID_C]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="CNAE_SUBCLASSE_ID_C"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_ID_C]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CNAE_SUBCLASSE_DESCR_C]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CNAE_SUBCLASSE_DESCR_C"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_CONTA_MEMBRO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_CONTA_MEMBRO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[POSSUI_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="POSSUI_OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENTRADA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENTRADA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PORCENTUAL_RATEIO]"
+                      dataType="r8"
+                      name="PORCENTUAL_RATEIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_PRINCIPAL]"
+                      dataType="cy"
+                      name="VALOR_PRINCIPAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CATEGORIA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CATEGORIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MERCADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MERCADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PROPRIETARIO_CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="PROPRIETARIO_CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="ID_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CRIADO_POR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CRIADO_POR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_SECAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SECAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SECAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_DIVISAO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_DIVISAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_DIVISAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="CNAE_CLASSE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_CLASSE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_CLASSE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_FAIXA_FUNCIONARIOS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_FAIXA_FUNCIONARIOS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_ID_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="CNAE_SUBCLASSE_ID_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CNAE_SUBCLASSE_DESCR_C" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL -&gt; SQL Server (Contas Pai).Paths[ODBC Source Output]"
+              endId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{63DF7150-663E-4E9E-A9C4-64DE21DCF600}"
+      DTS:From="Package\Limpar VAGAS_DW_CONTAS_CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Limpar VAGAS_DW_CONTAS_MEMBRO_CRM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{FBE40CC0-E3F9-4E85-A13D-CF23D6C7A705}"
+      DTS:From="Package\Limpar VAGAS_DW_CONTAS_MEMBRO_CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\MySQL -&gt; SQL Server (Contas Pai)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{7F7C8BC0-357B-4D44-8C11-84B167104139}"
+      DTS:From="Package\MySQL -&gt; SQL Server (Contas Pai)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\MySQL -&gt; SQL Server (Contas Membro)" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="242,42"
+          Id="Package\Limpar VAGAS_DW_CONTAS_CRM"
+          TopLeft="382,59" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Limpar VAGAS_DW_CONTAS_MEMBRO_CRM"
+          TopLeft="361,139" />
+        <NodeLayout
+          Size="267,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Membro)"
+          TopLeft="375.5,304.5" />
+        <NodeLayout
+          Size="243,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Pai)"
+          TopLeft="392,226" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="504.75,101">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38"
+              Start="0,0"
+              End="0,30.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="510,181">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45"
+              Start="0,0"
+              End="0,37.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="511.25,268">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.5"
+              Start="0,0"
+              End="0,29">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL -&gt; SQL Server (Contas Membro)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="220,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM"
+          TopLeft="389.5,74.5" />
+        <NodeLayout
+          Size="131,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server"
+          TopLeft="432,162" />
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server (Contas Membro).Paths[ODBC Source Output]"
+          TopLeft="498.5,116.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.5"
+              Start="0,0"
+              End="0,38">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\MySQL -&gt; SQL Server (Contas Pai)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server"
+          TopLeft="437,168" />
+        <NodeLayout
+          Size="196,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM"
+          TopLeft="404,80" />
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server (Contas Pai).Paths[ODBC Source Output]"
+          TopLeft="502.25,122">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
