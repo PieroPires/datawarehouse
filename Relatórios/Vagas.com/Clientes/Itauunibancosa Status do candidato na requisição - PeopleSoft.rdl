@@ -1,0 +1,2915 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="VAGAS_PROD">
+      <DataSourceReference>VAGAS-PROD</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>046cba20-c192-48bc-92c7-2b6a6c2d06e5</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DATASET_Status_do_candidato_na_requisição_PeopleSoft">
+      <Query>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@Cod_cand">
+            <Value>=Parameters!Cod_cand.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@CPF_cand">
+            <Value>=Parameters!CPF_cand.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Cod_ItauReq">
+            <Value>=Parameters!Cod_ItauReq.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@CodReq_vagas">
+            <Value>=Parameters!CodReq_vagas.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Cod_vaga">
+            <Value>=Parameters!Cod_vaga.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>	-- Query:
+	SELECT	  A.Cod_ItauReq					AS [Requisi��o Ita�]
+			, A2.Cod_rvw					AS [Requisi��o VAGAS]
+			, C.CodVaga_candVaga			AS [C�digo da vaga]
+			, A.Requisitante_Nome_ItauReq	AS [Nome do Requisitante]
+			, D.Nome_func					AS [Nicho]
+			, E.[Status_Vaga]				AS [Status da Vaga]
+			, parc01.Nome_ItauParc			AS [1�Parceira]
+			, parc02.Nome_ItauParc			AS [2�Parceira]
+			, parc03.Nome_ItauParc			AS [3�Parceira]
+			, parc04.Nome_ItauParc			AS [4�Parceira]
+			, parc05.Nome_ItauParc			AS [5�Parceira]
+			, parc06.Nome_ItauParc			AS [6�Parceira]
+			, C.Cod_cand					AS [C�digo do candidato]
+			, C.Nome_cand					AS [Nome]
+			, C.CPF_cand					AS [CPF]
+			, C.CEP_cand					AS [CEP]
+			, G.[Status_Global_Candidato]	AS [Status Global Candidato]
+			, G.[Cliente_Status_Global]		AS [Coment�rio Status Global]
+			, H.Nome_fase					AS [Fase]
+			, ISNULL( FORMAT(CONVERT(DATETIME, A.CtrlDt_ItauReq), 'dd/MM/yyyy HH:mm:ss', 'pt-BR'), 'N�O REALIZADO')		AS [Data Importa��o Requisi��o]
+			, CASE WHEN A.CtrlDt_ItauReq IS NULL THEN 0 ELSE 1 END AS [Val_DataImportReq]
+			, ISNULL( FORMAT(CONVERT(DATETIME, A2.Data_rvw), 'dd/MM/yyyy HH:mm:ss', 'pt-BR'), 'N�O REALIZADO')			AS [Data Abertura Requisi��o (VAGAS)]
+			, CASE WHEN A2.Data_rvw IS NULL THEN 0 ELSE 1 END AS [Val_AbertReqVAGAS]
+			, ISNULL( FORMAT(CONVERT(DATETIME, F.DtCriacao_vaga), 'dd/MM/yyyy HH:mm:ss', 'pt-BR'), 'N�O REALIZADO')		AS [Data cria��o Vaga]
+			, CASE WHEN F.dtCriacao_vaga IS NULL THEN 0 ELSE 1 END AS [Val_DataCriacaoVaga]
+			, ISNULL( FORMAT(CONVERT(DATETIME, E.[Data_Status_Vaga]),'dd/MM/yyyy HH:mm:ss', 'pt-BR') , 'N�O REALIZADO') AS [Data Status Vaga]
+			, CASE WHEN E.[Data_Status_Vaga] IS NULL THEN 0 ELSE 1 END AS [Val_DataStatusVaga]
+			, ISNULL( FORMAT(CONVERT(DATETIME, C.[FonteData_candVaga]), 'dd/MM/yyyy HH:mm:ss', 'pt-BR') , 'N�O REALIZADO')	AS [Data Candidatura]
+			, CASE WHEN C.FonteData_candVaga IS NULL THEN 0 ELSE 1 END AS [Val_FonteData]
+			, ISNULL( FORMAT(CONVERT(DATETIME, L.Data_respCab), 'dd/MM/yyyy HH:mm:ss', 'pt-BR') , 'N�O REALIZADO')			AS [Data resposta ficha complementar]
+			, CASE WHEN L.Data_respCab IS NULL THEN 0 ELSE 1 END AS [Val_DatarespCab]
+			, ISNULL( FORMAT(CONVERT(DATETIME, I.DtEntrada_faseCand), 'dd/MM/yyyy HH:mm:ss', 'pt-BR') , 'N�O REALIZADO')		AS [Data Movimenta��o Fase]
+			, CASE WHEN I.DtEntrada_faseCand IS NULL THEN 0 ELSE 1 END AS [Val_DataMovimentFase]
+			, ISNULL( FORMAT(CONVERT(DATETIME, J.CtrlIntDt_ItauPret), 'dd/MM/yyyy HH:mm:ss', 'pt-BR') , 'N�O REALIZADO')	AS [Data Exporta��o Pretendente]
+			, CASE WHEN J.CtrlIntDt_ItauPret IS NULL THEN 0 ELSE 1 END AS [Val_DataExportPretendent]
+			, ISNULL( FORMAT(CONVERT(DATETIME,K.CtrlIntDt_ItauPretReq), 'dd/MM/yyyy HH:mm:ss', 'pt-BR'), 'N�O REALIZADO')	AS [Data Exporta��o Pretendente Requisi��o] 
+			, CASE WHEN K.CtrlIntDt_ItauPretReq IS NULL THEN 0 ELSE 1 END AS [Val_DataExportPretendentReq]
+	FROM	[hrh-data].[dbo].[ITAUUNIBANCO_Requisicao]  AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[ZZZ_Cliente52932-Ficha312337-Resp] AS A1 WITH(NOLOCK) ON A1.CodPerg_resp = 1956915 
+																AND A1.TxtLim_resp = A.Cod_ItauReq
+			LEFT OUTER JOIN [hrh-data].[dbo].[ReqVaga-Workflow] AS A2 WITH(NOLOCK) ON A2.CodRespCabFic_rvw = A1.CodCab_resp
+			LEFT OUTER JOIN [hrh-data].[dbo].[ReqVaga-Controle]	AS A3 WITH(NOLOCK) ON A3.Cod_rvc = A2.CodRVC_rvw
+			LEFT OUTER JOIN [hrh-data].[dbo].[ReqVaga-Gestores]	AS A4 WITH(NOLOCK) ON A4.Cod_rv = A3.CodRV_rvc
+
+																OUTER APPLY ( SELECT A.*, B.Cod_Cand, B.Nome_Cand, B.CPF_cand, B.CEP_cand FROM [hrh-data].[dbo].[CandidatoxVagas] AS A	WITH(NOLOCK)																         INNER JOIN [hrh-data].[dbo].[Candidatos] AS B WITH(NOLOCK) ON A.CodCand_CandVaga = B.Cod_cand
+																			  WHERE	A2.CodVaga_rvw = A.CodVaga_candVaga ) AS C
+
+																OUTER APPLY ( SELECT A1.* FROM [hrh-data].[dbo].[Funcionarios] AS A1 WITH(NOLOCK)
+																			  WHERE A2.CodFuncResp_rvw = A1.Cod_func ) AS D 
+			LEFT OUTER JOIN [hrh-data].[dbo].[Vagas] AS F WITH(NOLOCK) ON A2.CodVaga_rvw = F.Cod_vaga
+																OUTER APPLY ( SELECT TOP 1 	A1.TxtOpcResp_resp AS [Status_Vaga] , A2.Data_resp AS [Data_Status_Vaga]
+																			  FROM [hrh-data].[dbo].[ZZZ_Cliente52932-Ficha312343-Resp] AS A1 WITH(NOLOCK)
+																					INNER JOIN [hrh-data].[dbo].[ZZZ_Cliente52932-Ficha312343-Resp] AS A2 WITH(NOLOCK)
+																					ON  A1.CodCab_resp = A2.CodCab_resp
+																					AND A1.IdxSubFicha_resp = A2.IdxSubFicha_resp
+																					AND A1.CodVaga_resp = A2.CodVaga_resp
+																					AND A1.CodCand_resp = A2.CodCand_resp
+																			  WHERE	A1.CodVaga_resp = F.Cod_vaga 
+																					AND A1.CodSubPerg_resp = 1956971
+																					AND A2.CodSubPerg_resp = 1956972	
+																			  ORDER BY A1.IdxSubFicha_resp DESC) AS E
+				LEFT OUTER JOIN [hrh-data].[dbo].ITAUUNIBANCO_Parceira Parc01 WITH(NOLOCK) ON F.CodSubdivCompart_vaga = Parc01.CodSubDivisaoVAGAS_ItauParc
+				LEFT OUTER JOIN [hrh-data].[dbo].ITAUUNIBANCO_Parceira Parc02 WITH(NOLOCK) ON F.CodSubdivCompart2_vaga = Parc02.CodSubDivisaoVAGAS_ItauParc
+				LEFT OUTER JOIN [hrh-data].[dbo].ITAUUNIBANCO_Parceira Parc03 WITH(NOLOCK) ON F.CodSubdivCompart3_vaga = Parc03.CodSubDivisaoVAGAS_ItauParc
+				LEFT OUTER JOIN [hrh-data].[dbo].ITAUUNIBANCO_Parceira Parc04 WITH(NOLOCK) ON F.CodSubdivCompart4_vaga = Parc04.CodSubDivisaoVAGAS_ItauParc
+				LEFT OUTER JOIN [hrh-data].[dbo].ITAUUNIBANCO_Parceira Parc05 WITH(NOLOCK) ON F.CodSubdivCompart5_vaga = Parc05.CodSubDivisaoVAGAS_ItauParc
+				LEFT OUTER JOIN [hrh-data].[dbo].ITAUUNIBANCO_Parceira Parc06 WITH(NOLOCK) ON F.CodSubdivCompart6_vaga = Parc06.CodSubDivisaoVAGAS_ItauParc														
+															OUTER APPLY ( SELECT A2.Descr_stGCand AS [Status_Global_Candidato]
+																				, A1.TxtStatus_candCli AS [Cliente_Status_Global]
+																		  FROM	[hrh-data].[dbo].[CandidatoxCliente] AS A1 WITH(NOLOCK)
+																		  LEFT OUTER JOIN [hrh-data].[dbo].[Cad_stGlobalCand] AS A2 WITH(NOLOCK) ON A2.CodCli_stGCand = A1.CodCliente_candCli																	  AND A1.CodStatus_candCli = A2.Cod_stGCand 
+																		  WHERE C.CodCli_candVaga = A1.CodCliente_candCli  
+																				AND C.codcand_candvaga = A1.CodCand_candCli ) AS G
+				LEFT OUTER JOIN [hrh-data].[dbo].[Cad_fases] AS H WITH(NOLOCK) ON C.CodFase_candVaga = H.Cod_fase
+															OUTER APPLY ( SELECT * FROM [hrh-data].[dbo].[HistoricoFasesCand] AS A1 WITH(NOLOCK)
+																		  WHERE A1.CodCand_faseCand = C.CodCand_candVaga 
+																				AND A1.CodVaga_faseCand = C.CodVaga_CandVaga 
+																				AND A1.CodFase_faseCand = H.Cod_fase ) AS I
+				LEFT OUTER JOIN [hrh-data].[dbo].[ITAUUNIBANCO_Pretendente] AS J WITH(NOLOCK) ON C.CPF_Cand = J.CPF_ItauPret
+				LEFT OUTER JOIN [hrh-data].[dbo].[ITAUUNIBANCO_PretendenteRequisicao] AS K WITH(NOLOCK) ON J.CPF_ItauPret = K.CPFPret_ItauPretReq AND K.CodReq_ItauPretReq = A.Cod_ItauReq
+				LEFT OUTER JOIN [hrh-data].[dbo].[ZZZ_Cliente52932-Fichas-RespCab] AS L WITH(NOLOCK) ON C.Cod_cand = L.CodCand_respCab 
+				AND L.CodFicha_respCab = 315166 AND L.MaisRecente_respCab = 1
+	WHERE	CAST(A.CtrlDt_ItauReq AS DATE) &gt; '20141218' -- Requisi��o v�lida ( n�o � teste )	
+			AND (
+					( C.Cod_cand = @Cod_cand
+					  AND C.CPF_cand = ISNULL(@CPF_cand, C.CPF_cand) )
+
+				OR ( C.CPF_cand = @CPF_cand
+					 AND C.Cod_cand = ISNULL(@Cod_cand, C.Cod_cand) ) )
+
+
+			AND (
+					(  A.Cod_ItauReq = @Cod_ItauReq
+					   AND A2.Cod_rvw = ISNULL(@CodReq_vagas, A2.Cod_rvw) )
+
+					OR ( A2.Cod_rvw = @CodReq_vagas
+						 AND A.Cod_ItauReq = ISNULL(@Cod_ItauReq, A.Cod_ItauReq) )
+						 
+					OR ( F.Cod_vaga = @Cod_vaga ) )</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Requisi__o_Ita_">
+          <DataField>Requisi��o Ita�</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Requisi__o_VAGAS">
+          <DataField>Requisi��o VAGAS</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="C_digo_da_vaga">
+          <DataField>C�digo da vaga</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Nome_do_Requisitante">
+          <DataField>Nome do Requisitante</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Nicho">
+          <DataField>Nicho</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Status_da_Vaga">
+          <DataField>Status da Vaga</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ID1_Parceira">
+          <DataField>1�Parceira</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ID2_Parceira">
+          <DataField>2�Parceira</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ID3_Parceira">
+          <DataField>3�Parceira</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ID4_Parceira">
+          <DataField>4�Parceira</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ID5_Parceira">
+          <DataField>5�Parceira</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ID6_Parceira">
+          <DataField>6�Parceira</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="C_digo_do_candidato">
+          <DataField>C�digo do candidato</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Nome">
+          <DataField>Nome</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CPF">
+          <DataField>CPF</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CEP">
+          <DataField>CEP</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Status_Global_Candidato">
+          <DataField>Status Global Candidato</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Coment_rio_Status_Global">
+          <DataField>Coment�rio Status Global</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Fase">
+          <DataField>Fase</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Data_Importa__o_Requisi__o">
+          <DataField>Data Importa��o Requisi��o</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DataImportReq">
+          <DataField>Val_DataImportReq</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_Abertura_Requisi__o__VAGAS_">
+          <DataField>Data Abertura Requisi��o (VAGAS)</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_AbertReqVAGAS">
+          <DataField>Val_AbertReqVAGAS</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_cria__o_Vaga">
+          <DataField>Data cria��o Vaga</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DataCriacaoVaga">
+          <DataField>Val_DataCriacaoVaga</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_Status_Vaga">
+          <DataField>Data Status Vaga</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DataStatusVaga">
+          <DataField>Val_DataStatusVaga</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_Candidatura">
+          <DataField>Data Candidatura</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_FonteData">
+          <DataField>Val_FonteData</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_resposta_ficha_complementar">
+          <DataField>Data resposta ficha complementar</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DatarespCab">
+          <DataField>Val_DatarespCab</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_Movimenta__o_Fase">
+          <DataField>Data Movimenta��o Fase</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DataMovimentFase">
+          <DataField>Val_DataMovimentFase</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_Exporta__o_Pretendente">
+          <DataField>Data Exporta��o Pretendente</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DataExportPretendent">
+          <DataField>Val_DataExportPretendent</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Data_Exporta__o_Pretendente_Requisi__o">
+          <DataField>Data Exporta��o Pretendente Requisi��o</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Val_DataExportPretendentReq">
+          <DataField>Val_DataExportPretendentReq</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DATASET_Result_set_vaga">
+      <Query>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@Cod_vaga">
+            <Value>=Parameters!Cod_vaga.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>IF NOT EXISTS (SELECT	*
+			   FROM		[hrh-data].[dbo].[Vagas] AS A WITH(NOLOCK)
+			   WHERE	@Cod_vaga IS NULL
+						OR (A.Cod_vaga = @Cod_vaga 
+							AND A.CodCliente_vaga = 52932))
+BEGIN
+	SELECT	'NÃO FOI CRIADA' AS FIELD_RESULT_SET
+	END
+ELSE
+	SELECT	'' AS FIELD_RESULT_SET ;</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="FIELD_RESULT_SET">
+          <DataField>FIELD_RESULT_SET</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DATASET_Result_set_req_Itau">
+      <Query>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@Cod_ItauReq">
+            <Value>=Parameters!Cod_ItauReq.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>IF NOT EXISTS (SELECT	*
+			   FROM		[hrh-data].[dbo].[ITAUUNIBANCO_Requisicao]  AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[ZZZ_Cliente52932-Ficha312337-Resp] AS B WITH(NOLOCK) 
+																							ON B.CodPerg_resp = 1956915
+																							AND B.TxtLim_resp = A.Cod_ItauReq
+																							AND (@Cod_ItauReq IS NULL
+																								 OR A.Cod_ItauReq = @Cod_ItauReq)
+			   WHERE	CAST(A.CtrlDt_ItauReq AS DATE) &gt; '20141218')
+
+BEGIN
+	SELECT	'NÃO FOI CRIADA' AS FIELD_RESULT_SET
+END
+	ELSE
+		SELECT	'' AS FIELD_RESULT_SET ;</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="FIELD_RESULT_SET">
+          <DataField>FIELD_RESULT_SET</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DATASET_Requisição_VAGAS">
+      <Query>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@CodReq_vagas">
+            <Value>=Parameters!CodReq_vagas.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>IF NOT EXISTS (SELECT	*
+			   FROM		[hrh-data].[dbo].[ReqVaga-Workflow]  AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[ZZZ_Cliente52932-Ficha312337-Resp] AS B WITH(NOLOCK) 
+																					ON B.CodPerg_resp = 1956915
+																					AND A.CodRespCabFic_rvw = B.CodCab_resp
+																					AND (@CodReq_vagas IS NULL
+																						 OR A.Cod_rvw = @CodReq_vagas)
+			   WHERE	CAST(A.Data_rvw AS DATE) &gt; '20141218')
+
+BEGIN
+	SELECT	'NÃO FOI CRIADA' AS FIELD_RESULT_SET
+END
+	ELSE
+		SELECT	'' AS FIELD_RESULT_SET ;</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="FIELD_RESULT_SET">
+          <DataField>FIELD_RESULT_SET</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="table1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.44472in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.19792in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.38883in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.203in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.60417in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>5in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.11458in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.55209in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.64583in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.3333in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.71749in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.47384in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.47384in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.47383in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.97384in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.95301in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.88009in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.98425in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.828in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.98425in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>1.02082in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox18">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox18</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Requisição Itaú</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox2</rd:DefaultName>
+                          <ToolTip>Código da requisição Itaú</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Requisição VAGAS</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox3</rd:DefaultName>
+                          <ToolTip>Código da requisição aberta no Vagas</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox36">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Vaga</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox36</rd:DefaultName>
+                          <ToolTip>Código da vaga aberta</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Código do candidato</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox4</rd:DefaultName>
+                          <ToolTip>Código do candidato que efetuou candidatura na vaga</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox5">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Nome</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox5</rd:DefaultName>
+                          <ToolTip>Nome do candidato</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CPF</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox6</rd:DefaultName>
+                          <ToolTip>CPF do candidato</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Status Global Candidato</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox7</rd:DefaultName>
+                          <ToolTip>Status global do candidato definido pela empresa</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox8">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Comentário Status Global</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox8</rd:DefaultName>
+                          <ToolTip>Comentário da empresa no Status Global</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox9">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Fase</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox9</rd:DefaultName>
+                          <ToolTip>Fase em que o candidato se encontra</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox37">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Requisição VAGAS</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox37</rd:DefaultName>
+                          <ToolTip>Informa se a requisição foi aberta no Vagas</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox40">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Vaga criada</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox40</rd:DefaultName>
+                          <ToolTip>Informa se vaga foi criada</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox42">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Status Vaga</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox42</rd:DefaultName>
+                          <ToolTip>Informa se houve alteração no status da vaga</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox44">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Candidatura</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox44</rd:DefaultName>
+                          <ToolTip>Informa se houve candidatura</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox46">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ficha Complementar</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox46</rd:DefaultName>
+                          <ToolTip>Informa se o candidato preencheu a "Ficha complementar"</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox48">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Movimentação Fase</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox48</rd:DefaultName>
+                          <ToolTip>Informa se o houve movimentação de fase</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox50">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Exportação Pretendente</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox50</rd:DefaultName>
+                          <ToolTip>Informa se houve exportação do pretendente</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Data Exportação Pretendente</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox52">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Exportação PretendenteRequisição</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox52</rd:DefaultName>
+                          <ToolTip>Informa se houve exportação do pretendente na requisição</ToolTip>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox11">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Data Exportação Pretendente Requisição</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox11</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.28504in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox19">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=RowNumber("DATASET_Status_do_candidato_na_requisição_PeopleSoft")</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox19</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Requisi__o_Ita_">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Requisi__o_Ita_.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Requisi__o_Ita_</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Requisi__o_VAGAS">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Requisi__o_VAGAS.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Requisi__o_VAGAS</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="C_digo_da_vaga">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!C_digo_da_vaga.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>C_digo_da_vaga</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="C_digo_do_candidato">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!C_digo_do_candidato.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>C_digo_do_candidato</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Nome">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Nome.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Nome</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="CPF">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!CPF.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>CPF</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Status_Global_Candidato">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Status_Global_Candidato.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Status_Global_Candidato</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Coment_rio_Status_Global">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Coment_rio_Status_Global.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Coment_rio_Status_Global</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Fase">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Fase.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Fase</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle5">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle1">
+                              <ReportItems>
+                                <Image Name="RequisicaoVAGAS_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_AbertReqVAGAS.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_Abertura_Requisi__o__VAGAS_.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Data_Abertura_Requisição_VAGAS_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_AbertReqVAGAS.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.06227cm</Top>
+                              <Left>0.56606cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle8">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle2">
+                              <ReportItems>
+                                <Image Name="Vaga_Criada_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataCriacaoVaga.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_cria__o_Vaga.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Vaga_Criada_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataCriacaoVaga.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.06227cm</Top>
+                              <Left>0.25176cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle9">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle3">
+                              <ReportItems>
+                                <Image Name="Status_Vaga_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataStatusVaga.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_Status_Vaga.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Status_Vaga_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataStatusVaga.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.0658cm</Top>
+                              <Left>0.254cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle10">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle4">
+                              <ReportItems>
+                                <Image Name="Data_candidatura_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_FonteData.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_Candidatura.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Candidatura_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_FonteData.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.10168cm</Top>
+                              <Left>0.2654cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle11">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle6">
+                              <ReportItems>
+                                <Image Name="Data_resposta_ficha_complementar_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DatarespCab.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_resposta_ficha_complementar.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Ficha_complementar_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DatarespCab.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.10168cm</Top>
+                              <Left>0.90041cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle12">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle7">
+                              <ReportItems>
+                                <Image Name="Movimentação_Fase_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataMovimentFase.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_Movimenta__o_Fase.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Movimentação_Fase_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataMovimentFase.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.10168cm</Top>
+                              <Left>0.87396cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle13">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle16">
+                              <ReportItems>
+                                <Image Name="Data_exportação_pretendente_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataExportPretendent.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_Exporta__o_Pretendente.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Exportação_Pretendente_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataExportPretendent.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.10168cm</Top>
+                              <Left>0.78135cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Data_Exporta__o_Pretendente">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Data_Exporta__o_Pretendente.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Format>dd/MM/yyyy HH:mm:ss</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Data_Exporta__o_Pretendente</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Rectangle Name="Rectangle14">
+                          <ReportItems>
+                            <Rectangle Name="Rectangle17">
+                              <ReportItems>
+                                <Image Name="Data_exportação_pretendente_requisição_OK">
+                                  <Source>Embedded</Source>
+                                  <Value>OK</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataExportPretendentReq.Value = 0, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>=Fields!Data_Exporta__o_Pretendente_Requisi__o.Value</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                                <Image Name="Exportação_Pretendente_Requisicao_NAO">
+                                  <Source>Embedded</Source>
+                                  <Value>NÃO</Value>
+                                  <Sizing>FitProportional</Sizing>
+                                  <Height>0.57354cm</Height>
+                                  <Width>0.67273cm</Width>
+                                  <ZIndex>1</ZIndex>
+                                  <Visibility>
+                                    <Hidden>=IIF(Fields!Val_DataExportPretendentReq.Value = 1, True, False)</Hidden>
+                                  </Visibility>
+                                  <ToolTip>="Não realizado"</ToolTip>
+                                  <Style>
+                                    <Border>
+                                      <Style>None</Style>
+                                    </Border>
+                                  </Style>
+                                </Image>
+                              </ReportItems>
+                              <KeepTogether>true</KeepTogether>
+                              <Top>0.10168cm</Top>
+                              <Left>0.7152cm</Left>
+                              <Height>0.57354cm</Height>
+                              <Width>0.67273cm</Width>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                              </Style>
+                            </Rectangle>
+                          </ReportItems>
+                          <KeepTogether>true</KeepTogether>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Rectangle>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Data_Exporta__o_Pretendente_Requisi__o">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Data_Exporta__o_Pretendente_Requisi__o.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Format>dd/MM/yyyy HH:mm:ss</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Data_Exporta__o_Pretendente_Requisi__o</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="table1_Details_Group">
+                    <DataElementName>Detail</DataElementName>
+                  </Group>
+                  <TablixMembers>
+                    <TablixMember />
+                  </TablixMembers>
+                  <DataElementName>Detail_Collection</DataElementName>
+                  <DataElementOutput>Output</DataElementOutput>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DATASET_Status_do_candidato_na_requisição_PeopleSoft</DataSetName>
+            <PageBreak>
+              <BreakLocation>End</BreakLocation>
+            </PageBreak>
+            <Top>1.905cm</Top>
+            <Left>0.6528cm</Left>
+            <Height>1.30586in</Height>
+            <Width>24.22688in</Width>
+            <Style>
+              <Border>
+                <Color>LightGrey</Color>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+          <Textbox Name="Textbox12">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="STATUS VAGA:  " + First(Fields!FIELD_RESULT_SET.Value, "DATASET_Result_set_vaga")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                      <Color>=IIf(First(Fields!FIELD_RESULT_SET.Value, "DATASET_Result_set_vaga") = "", "White", "Red")</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox12</rd:DefaultName>
+            <Top>0.17639cm</Top>
+            <Left>0.65276cm</Left>
+            <Height>0.50455cm</Height>
+            <Width>10.59128cm</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Color>=IIf(First(Fields!FIELD_RESULT_SET.Value, "DATASET_Result_set_vaga") = "", "White", "Red")</Color>
+                <Style>Solid</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox13">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="STATUS REQUISIÇÃO ITAÚ:  " + First(Fields!FIELD_RESULT_SET.Value, "DATASET_Result_set_req_Itau")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                      <Color>=IIf(First(Fields!FIELD_RESULT_SET.Value, "DATASET_Result_set_req_Itau") = "", "White", "Red")</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox12</rd:DefaultName>
+            <Top>0.7438cm</Top>
+            <Left>0.65279cm</Left>
+            <Height>0.52592cm</Height>
+            <Width>10.59128cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Color>=IIf(First(Fields!FIELD_RESULT_SET.Value, "DATASET_Result_set_req_Itau") = "", "White", "Red")</Color>
+                <Style>Solid</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox14">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>="STATUS REQUISIÇÃO VAGAS:  " + First(Fields!FIELD_RESULT_SET.Value, "DATASET_Requisição_VAGAS")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                      <Color>=IIf(First(Fields!FIELD_RESULT_SET.Value, "DATASET_Requisição_VAGAS") = "", "White", "Red")</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox12</rd:DefaultName>
+            <Top>1.3244cm</Top>
+            <Left>0.65276cm</Left>
+            <Height>0.46771cm</Height>
+            <Width>10.59128cm</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Color>=IIf(First(Fields!FIELD_RESULT_SET.Value, "DATASET_Requisição_VAGAS") = "", "White", "Red")</Color>
+                <Style>Solid</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+        </ReportItems>
+        <Height>6.03327cm</Height>
+        <Style />
+      </Body>
+      <Width>62.18908cm</Width>
+      <Page>
+        <PageHeader>
+          <Height>1.30674cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox28">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Itauunibancosa status do candidato na requisição - PeopleSoft</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>15pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>* IMPORTANTE: </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontWeight>Normal</FontWeight>
+                        <TextDecoration>None</TextDecoration>
+                        <Color>Red</Color>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>Relatório conectado ao ambiente de PRODUÇÃO | Informar um parâmetro por vez ao relatório , o mesmo foi implementado desta forma para evitarmos lentidão no ambiente de PRODUÇÃO.</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontWeight>Normal</FontWeight>
+                        <TextDecoration>None</TextDecoration>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox28</rd:DefaultName>
+              <Left>0.65279cm</Left>
+              <Height>0.51394in</Height>
+              <Width>15.37842in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Rectangle Name="Rectangle15">
+              <ReportItems>
+                <Textbox Name="Textbox4">
+                  <CanGrow>true</CanGrow>
+                  <KeepTogether>true</KeepTogether>
+                  <Paragraphs>
+                    <Paragraph>
+                      <TextRuns>
+                        <TextRun>
+                          <Value>Realizado</Value>
+                          <Style>
+                            <FontFamily>Trebuchet MS</FontFamily>
+                            <FontSize>8pt</FontSize>
+                          </Style>
+                        </TextRun>
+                      </TextRuns>
+                      <Style>
+                        <TextAlign>Center</TextAlign>
+                      </Style>
+                    </Paragraph>
+                  </Paragraphs>
+                  <rd:DefaultName>Textbox4</rd:DefaultName>
+                  <Left>0.67273cm</Left>
+                  <Height>0.57354cm</Height>
+                  <Width>2.33314cm</Width>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
+                    <PaddingLeft>2pt</PaddingLeft>
+                    <PaddingRight>2pt</PaddingRight>
+                    <PaddingTop>2pt</PaddingTop>
+                    <PaddingBottom>2pt</PaddingBottom>
+                  </Style>
+                </Textbox>
+                <Textbox Name="Textbox6">
+                  <CanGrow>true</CanGrow>
+                  <KeepTogether>true</KeepTogether>
+                  <Paragraphs>
+                    <Paragraph>
+                      <TextRuns>
+                        <TextRun>
+                          <Value>Não realizado</Value>
+                          <Style>
+                            <FontFamily>Trebuchet MS</FontFamily>
+                            <FontSize>8pt</FontSize>
+                          </Style>
+                        </TextRun>
+                      </TextRuns>
+                      <Style>
+                        <TextAlign>Center</TextAlign>
+                      </Style>
+                    </Paragraph>
+                  </Paragraphs>
+                  <rd:DefaultName>Textbox4</rd:DefaultName>
+                  <Top>0.6441cm</Top>
+                  <Left>0.67273cm</Left>
+                  <Height>0.57354cm</Height>
+                  <Width>2.33314cm</Width>
+                  <ZIndex>1</ZIndex>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
+                    <PaddingLeft>2pt</PaddingLeft>
+                    <PaddingRight>2pt</PaddingRight>
+                    <PaddingTop>2pt</PaddingTop>
+                    <PaddingBottom>2pt</PaddingBottom>
+                  </Style>
+                </Textbox>
+                <Image Name="Image4">
+                  <Source>Embedded</Source>
+                  <Value>NÃO</Value>
+                  <Sizing>FitProportional</Sizing>
+                  <Top>0.6441cm</Top>
+                  <Height>0.57354cm</Height>
+                  <Width>0.67273cm</Width>
+                  <ZIndex>2</ZIndex>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
+                  </Style>
+                </Image>
+                <Image Name="Image6">
+                  <Source>Embedded</Source>
+                  <Value>OK</Value>
+                  <Sizing>FitProportional</Sizing>
+                  <Height>0.57354cm</Height>
+                  <Width>0.67273cm</Width>
+                  <ZIndex>3</ZIndex>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
+                  </Style>
+                </Image>
+              </ReportItems>
+              <KeepTogether>true</KeepTogether>
+              <Top>0.05383cm</Top>
+              <Left>42.54337cm</Left>
+              <Height>1.25291cm</Height>
+              <Width>3.00587cm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Color>LightGrey</Color>
+                  <Style>Solid</Style>
+                </Border>
+              </Style>
+            </Rectangle>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageHeader>
+        <PageFooter>
+          <Height>1.6316cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox29">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Página </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!PageNumber</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value> de </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!TotalPages</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Executado em: </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                        <Format>dd/MM/yyyy HH:mm:ss</Format>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox29</rd:DefaultName>
+              <Top>0.14111cm</Top>
+              <Left>0.65276cm</Left>
+              <Height>1.33174cm</Height>
+              <Width>3.51042in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <PageHeight>21.0058cm</PageHeight>
+        <PageWidth>58.05949cm</PageWidth>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
+        <TopMargin>1cm</TopMargin>
+        <BottomMargin>1cm</BottomMargin>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="Cod_cand">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>Código candidato:</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="CPF_cand">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>CPF candidato:</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Cod_ItauReq">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>Código Requisição Itaú:</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="CodReq_vagas">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>Código Requisição VAGAS:</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Cod_vaga">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>Código da vaga:</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>3</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Cod_cand</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>CPF_cand</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>Cod_ItauReq</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>CodReq_vagas</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>Cod_vaga</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <EmbeddedImages>
+    <EmbeddedImage Name="OK">
+      <MIMEType>image/jpeg</MIMEType>
+      <ImageData>/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAAfACYDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD96PEmvQ+GdKkup9xCkKiLy8rscKijgZJIA5HuQM1+X37d/wDwWin0LxffeG/AMVjrUlhIYLnUJ5HbTYmGVaOCNGU3GOAZZGKEg7Y9vNfUn/BXH4v3vwl/Zg8SXmnSvFdRaVII5EJDRSXE8FmJFI6MsdxMQexxivwj1rTb+wW0
+M9ndwi/UPal4mH2lSeCmR82Seo9a/MOPeI8bhZxweAum9W0vuR+N+J3FeY4KcMuyy6cleUktV0SXa59D6R/wVg+K2ia3Fdf8Uve87fKGiRWxfPYSW/lSg/Rx+NfpN+w3/wAFLLn4hQaVpnj3S9V8M3Wo20dzEmrKwlSF38pLmOUgGe1aQbDIfmickOSvzD5F+EHwG8B/8EvP2btP+NHxf0u08R/EjxNFu8I+FLlgVhJAYSyrzkhSrEkELuUcOw2fKesf8FAvH/7R37YXhzxZ4w1iW+WfUV05dOh/d2dpZXDCKW3ijHAXY/fLMQCSW5rHJ8fi8qUP7SrOdSpb3N7J9Wc/D2Z47JVTWb4hzqVbfu9+VPq+x/SFgL/LmivM/wBjr4gXXxN/Zk8G6vfyvc30lgLa4nc7muJIHaB5Ce5Zoix/3qK/Uua2x+2LVXOA/wCCk/wU/wCFwfA+5iMEV1AYms5opc+VlpIZoWkI52CeCFWPZZGPQV8//swfHn4Kf8FBDoXgXx74RsvAvxA+E1wl7FpE2xInS1yZUR3B3RDDF42O7bltxG4j9A9QsYdUs5ba6iimt7hGilikXckqMMMrA8EEH9a+Fv20f+CPVt8XvEZ8ReEp0j1Py3iBN61jqEMRRlaJbjZKlwhVtuydAwH/AC1PSvNxuEqe1Vaik+jT6ryfc8TMMDVlVVeglLpKL6rpr0Z+Tf8AwU0/bPvP2zv2rfEHicyy/wBiWch03Qrdsr5NjGx2cfws+S7dfmc446cL+yB8Nr/4i/GjTb2CznvLTQLmG8kSNebicOPs9uvYvLKFUD03HtX2no//AAb0+PNQ19Yp9G1lbdjgyXmuadbQH0LPCZ5MZzwsROPyP6GfsI/8EsfDf7I0NjqeoHT9R1uwy9lb2cbrp+luw2tIm8mSecr8pml5xwqoCc/EYLhTF18e8bj9Fe+9z88y/gnH4nNHmOaWtzXte7fZHun7L/wnm+Cf7PnhHwtdSiW90jTY
+o7yQdJLhhvmYexkZzRXeIpIor9KcYvc/XryWh//Z</ImageData>
+    </EmbeddedImage>
+    <EmbeddedImage Name="NÃO">
+      <MIMEType>image/jpeg</MIMEType>
+      <ImageData>/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAAiACMDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD97tZ1eDQbGS6unEcEQBJwSSScAADkkkgADkkgCvM/GXxW1y4v4LDS4Jo7y8DfZLGzSKW9kVMbpGeUiCMLkZyGAyvJJArQ+KXiA3HjSOy3ERaZbLc4B+9LKXRT9VVH/wC/n0rzi+8aL4P+NPgXVpGCWk9/JoVy56It6oSL/vq6
+itk/4HX4txd4p08u4swXClLSVZpzl/Knsl5vuejQwTnQlXfQu678RviH8N5refW/ttpbXcq28M94lleWXmMcLG5t1ikjLHABPykkDduIU+h/Cb46WfxIvJdMuohp2uwRmR7XfuSeMEAyxMQNyjK5GAVJ5GCpPn37c/ivE3gHwzG/77VdYfVp19LWxiLFv/AmazH/AAKvDPiR46vPBlmniPS3xqnhuQajackeaUyWjbH8Mi742/2XasM98UI5Jxph+Gq756daKu+sJPb5MKeCdTDOsuh96A4FFUPDfiC18V+HrDVLJt9nqVtHdQMVxujdQyn8iKK/bTzjyD44yP4f+Ku+Ti31nTozCcfekhkcSDP+7LFj6n0rxv4+Xtpf/DPWo7vVYtGU25eLUZHEf2GdSGhnBP8AEkojYepVa+qvix8L7X4q+FzYzSNa3UD/AGiyu0Te1pMAQGwcZBDMrLkZViMg4I+NvjfZeLvg1r+l3us6HcQz+GtSj1Sy1FLOW+0W8MeR+9eIZiHzEjzNrq4DANtG7+YPFzwhx2bcT4TiPL5OycFUtrKKi9JJdfM9nA42MKMqMjFu/wBoqf8AaO+KcniHVNOfw/fWGg22nQaRcOPNTc7SXV0q9fKldoUU85Fup6muU+O3iuSy8Baitupnv75PslnCvWe4kIjijA7lnYL/AMCq98U/2zdS/ap8T6Av/CPWs114ellls9P8Li61u7uZZYzETJILdDHEQSdnlkZCsz4QV7R+yZ+xRr2p+ONP8efEmyTTZNKbz9E8PF1le1lIwLi5ZSyb1H3Y1JCk7ichQvNifCTMM38QVnuIm5YeHLJykrNtLSMV27stY+EMJ7Nbs+ofhV4QbwH8L/DehyPvk0bS7axZh/EYolQn/wAdordHA7/lRX9VXPDH01hlh79aKKYCL0/4F/WnDpRRQAtFFFAH/9k=</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>pt-BR</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>db3657e5-af2f-47e1-8d60-bbd06a3bff95</rd:ReportID>
+</Report>

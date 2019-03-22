@@ -1,0 +1,880 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="Financeiro">
+      <DataSourceReference>Financeiro</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>58cd24ec-870c-4e9e-89c7-1aefaf51fe89</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DATASET_Contas_Receber">
+      <Query>
+        <DataSourceName>Financeiro</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@DATA_EMISSAO_INICIO">
+            <Value>=Parameters!DATA_EMISSAO_INICIO.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DATA_EMISSAO_FIM">
+            <Value>=Parameters!DATA_EMISSOA_FIM.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>-- Consulta Contas a Receber (Faturamento)
+SELECT CONVERT(SMALLDATETIME,E1_EMISSAO,103) as EMISSAO, 
+	   CONVERT(SMALLDATETIME,E1_VENCREA,103) as VENCIMENTO, 
+	   'U-' + E1_NFELETR AS NF,
+	   A1_CGC, 
+	   RTRIM(UPPER(A1_NREDUZ)) as A1_NREDUZ, 
+	   E1_VALOR, 
+	   'P' + E1_PEDIDO AS PEDIDO 
+FROM SE1010
+INNER JOIN SA1010 ON E1_CLIENTE = A1_COD
+WHERE SE1010.D_E_L_E_T_ &lt;&gt; '*' 
+AND SA1010.D_E_L_E_T_ &lt;&gt; '*' 
+AND E1_TIPO = 'NF' 
+AND E1_NFELETR &lt;&gt; '         '  
+AND E1_EMISSAO &gt;= @DATA_EMISSAO_INICIO
+AND E1_EMISSAO &lt;= @DATA_EMISSAO_FIM
+ORDER BY 1 ASC</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="EMISSAO">
+          <DataField>EMISSAO</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="VENCIMENTO">
+          <DataField>VENCIMENTO</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="NF">
+          <DataField>NF</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="A1_CGC">
+          <DataField>A1_CGC</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="A1_NREDUZ">
+          <DataField>A1_NREDUZ</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="E1_VALOR">
+          <DataField>E1_VALOR</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="PEDIDO">
+          <DataField>PEDIDO</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>4.06104cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.42118cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.5cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.74354cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>7.92396cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>4.96063cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.73812cm</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>VENCIMENTO</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>EMISSÃO</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox13">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>NF</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox13</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox11">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>PEDIDO</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox11</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CLIENTE</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox9">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>CNPJ</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox9</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>VALOR</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.57354cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="VENCIMENTO1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!VENCIMENTO.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Format>dd-MM-yy</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>VENCIMENTO1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber(nothing) mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="EMISSAO">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!EMISSAO.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Format>dd-MM-yy</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>EMISSAO</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber("Tablix1") mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="NF">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!NF.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>NF</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber("Tablix1") mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="PEDIDO1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!PEDIDO.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>PEDIDO1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber("Tablix1") mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="A1_NREDUZ">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!A1_NREDUZ.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>A1_NREDUZ</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber("Tablix1") mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="A1_CGC">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!A1_CGC.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Format>'R$' #,0.00;('R$' #,0.00);'-'</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>A1_CGC</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber("Tablix1") mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <rd:FormatSymbolCulture>pt-BR</rd:FormatSymbolCulture>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="E1_VALOR1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!E1_VALOR.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Format>'R$' #,0.00;('R$' #,0.00);'-'</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>E1_VALOR1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>=IIf((RowNumber("Tablix1") mod 2), "Gainsboro", "White")</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                            <rd:FormatSymbolCulture>pt-BR</rd:FormatSymbolCulture>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Details" />
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <RepeatColumnHeaders>true</RepeatColumnHeaders>
+            <RepeatRowHeaders>true</RepeatRowHeaders>
+            <FixedColumnHeaders>true</FixedColumnHeaders>
+            <FixedRowHeaders>true</FixedRowHeaders>
+            <KeepTogether>true</KeepTogether>
+            <DataSetName>DATASET_Contas_Receber</DataSetName>
+            <Top>0.17639cm</Top>
+            <Left>0.65279cm</Left>
+            <Height>1.17354cm</Height>
+            <Width>29.34847cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>1.97639cm</Height>
+        <Style />
+      </Body>
+      <Width>30.23938cm</Width>
+      <Page>
+        <PageHeader>
+          <Height>1.61078cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox1">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Contas a Receber (Faturamento)</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>15pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value />
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontWeight>Normal</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>0.25in</Top>
+              <Left>0.65279cm</Left>
+              <Height>0.31602in</Height>
+              <Width>3.93001in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Image Name="Image1">
+              <Source>Embedded</Source>
+              <Value>Logo_Vagas</Value>
+              <Top>0.19086cm</Top>
+              <Left>26.72041cm</Left>
+              <Height>0.48958in</Height>
+              <Width>1.29167in</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+            </Image>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageHeader>
+        <PageFooter>
+          <Height>1.84327cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox5">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Página </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!PageNumber</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value> de </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!TotalPages</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Consulta realizada em: </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                        <Format>dd/MM/yyyy HH:mm:ss</Format>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox5</rd:DefaultName>
+              <Top>0.14111cm</Top>
+              <Left>0.65276cm</Left>
+              <Height>1.33174cm</Height>
+              <Width>3.13543in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <PageHeight>21.0058cm</PageHeight>
+        <PageWidth>23.18383cm</PageWidth>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
+        <TopMargin>1cm</TopMargin>
+        <BottomMargin>1cm</BottomMargin>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="DATA_EMISSAO_INICIO">
+      <DataType>DateTime</DataType>
+      <Prompt>Data Emissão Inicio :</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="DATA_EMISSOA_FIM">
+      <DataType>DateTime</DataType>
+      <Prompt>Data Emissão Fim :</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <EmbeddedImages>
+    <EmbeddedImage Name="Logo_Vagas">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>iVBORw0KGgoAAAANSUhEUgAAAHwAAAAvCAYAAAAhBK7nAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAdeSURBVHhe7Vt5bBVFHMb7PmM84n3f8YxHNN7+oyYeUWOiMWo0ajSccigiclMuOYSARUAIoiAoiNATCrSUVihHb1qgQCmFtrSlBz1eGeeb94bOm/727e57j7Zm50u+pN05dna+mfkdu68HM/AUjOAegxHcYzCCewxGcI/BCO4xGME9BiO4x2AE9xiM4B5D2IKn76lmg1fuZE9PzWBXfruG9ei52jCKxJxibjHHmOtowZXgbcePs/mZB9hdozeQgzQ8ecSc/5JZKjSIBI4FLzhUzx6ZuJEcjGHnERpAi3DhSPCVOYfZuV8lkAMw7HxCC2gSDmwF/2vHIXZqrzjyxoZdR2gCbdwipOBb9teys/rGkzc07HpCG2jkBpaCN7W2sdtHridvZNh9CI2glVNYCj42cRd5A51n9IljFw9MYhf0TyTL7Yi2oG42Tuvt7xfE32qZHc/jNu6OUevZ/TFplrybe72XDkoi21vxlF7t48VzU3WseHa/eHbL8HXkWMA7R7kfjyS0cgpScKyYy75OJjvXecXgZFZ7rJUda2ljNw5LIetY8aWZm8X9cg7WsdM1UccoDzFsdVFQmRUfm5TO0nZXMzeRS0lVI+u9LF+ISfWp8v0FOwKtGPstq4yso/OF6ZliTL42Z4Mqqmhgb8/dSvZlRWjldJeTgv+xrZzs2Ir9/swX7ZZsPUiWUzyzTzwrDIQXmBS1DLuzxXecHWloYZX1LeJhbua7Q62j85rv1rKGZp/oL6Ggkg1cUcg++jWbfbBwB8leS/PY1HUlrKaxVbT5eFE22a/kJXz3HTraLITbXdko2ujj1nlfTKqoj2f5aeM+9uWSXHIs4Ke/57Af1u4RGwex9m0uzSk0cwJS8A/5AKhOraiK99SU
+DLKOzr6BRQJPUy9LKqwUZZ/xSYBowOq8ig71VCIjBSz49wBZbkWMF7Drf/qGvaLelJQS9sTkTeJvxMN4dqo+GJO0W9QbsLyALKc4dFWRaGO3AHVCMycgBb9njPtMmjyet5bW2oZxlwfMAHbuTcOCd+4787aJfjL31oh+cNRu2HVEXHvj56yguioX89MFeDV2C1keijgZtpUeJcvAB8eliV13sLaJXTjA76vMTt8v7oeFpteXnJdRKuq8Fms9bp3P/5jJUoqq2Jtz3B3r0MwJSMHDDcVW5fqTAZ8syiHLJWel7RP1YKfV65jMAzVNwgY/PKE9qwcHq5UfjfurjwmHTG0jmciPceCZqc5OGJUvz9rMnp1Gt8OiyyipEX2/O3/7ietwsCrqm1lji49d/z3tu4xP9u/w0QnOHOBICM2cgBSc6tAJESLAXsHWyZ2gEx4pBC3ju+X8/sHiTeI2DMDxqV4HpSeKY1IvA7ErgHAED0UsXmDNzqoOZbC9wPLsjmYJhBMpgczYyPhi9s3fhcJJpIj+nuM73G0EIOkEURUcnLjGL9o4C2HWFfuFgcerXseRBAfncF2zcJDUMhDpRHjU2OnUyxs7wSfwceGIteIMYpHB+63ijqPVPWFu5PPglNDLQZgYmDk32FXZIJxQqr9QdIKoC37RwESxw7HTEXeqZQg3gE0l1UFhEP5ODdhpfSGofIVPKoDdpodRdoJjsYQCvHW9TexGv50OlZPAQsCz7uH9n9PP+n0Dym7gR78V4dG/yL1+6bBOW99xAdrRCaJqwyXhYQKqB44HlpOuv3WT8S2cotdnZwknx4oyGlDtKbg2giMdYuuC4ziG6Wn2tYl7UWORTA6INDyuOKiPe8eminI3CRU4sQAWMFVuxYhseDheuko4OlmBHK+MVYf84w+bcHyqdWV86xZYHDhNZD9LA3FoOF46TIkqODJ7bo9hAIvj1hHtp9rMVL9zCi9fXrMjFgcAR5Eqt2JEXrrbOJyi
+jFWzy+qEF4vQp67Jx67Svo6R8e3cTaVidzqh9BOQOJH9jOC7C1i42VkGTFI6Vvnl9SeufbEkV1zD8Urdn2LPpXmiTXx+ezwv4/DPF+eeuGbHt3g4Bizb7i75FVEc7jbTZsVFW8pEf/t4OAUMWlEYVP7Q+Pb4Vt2tdoQXm1deJ3bmA4Hdg6NQphdh4+ENI3GjZrMkMTn9lxewySklIrQCpJMpU8X6bnVC+Y4aouH/xwOLCU4fvhRCRhL31seD5BLK5vBFL58Bpk3vPxQjyrThpk5z6aGopjuLKxqCfAOr+NYpZYYM33tJBw6xNBIoboBnxUTLDzwgDKDbYyfESYa4HPkCGXK+x5/NzmFUAefPbZYt4lw64PRtmR3xMR68UN1xwcsS6aHqHrdTXssXFNrrL16wSx+dmE4evZL4QBAeNt5iqW2vG+rvM9xYGPdGe71fLIYnuZmjxgLiNLh6iPtQDIz4bRmAFWPeh3d/Ru19OICvKfSVath9CBMZtS9eJJA2tHsZYtj5hCZR/6ZNAt6n1UsLw87nSf1qVcJ8l9492CnfpUuYX550HTHnmPtO++WJDvPbspPLbvHbMoP/P4zgHoMR3GMwgnsMRnCPwQjuMRjBPQYjuKfA2H8Q4KWz1RC8PAAAAABJRU5ErkJggg==</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>b0db7444-d9e0-4760-9374-0f090325428a</rd:ReportID>
+</Report>

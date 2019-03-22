@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Body>
+    <ReportItems>
+      <Tablix Name="table1">
+        <TablixBody>
+          <TablixColumns>
+            <TablixColumn>
+              <Width>0.50051in</Width>
+            </TablixColumn>
+          </TablixColumns>
+          <TablixRows>
+            <TablixRow>
+              <Height>0.21in</Height>
+              <TablixCells>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Horas">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!Horas.Value</Value>
+                              <Style>
+                                <FontFamily>Trebuchet MS</FontFamily>
+                                <FontSize>9pt</FontSize>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Left</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Horas</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Style>None</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+              </TablixCells>
+            </TablixRow>
+          </TablixRows>
+        </TablixBody>
+        <TablixColumnHierarchy>
+          <TablixMembers>
+            <TablixMember />
+          </TablixMembers>
+        </TablixColumnHierarchy>
+        <TablixRowHierarchy>
+          <TablixMembers>
+            <TablixMember>
+              <Group Name="table1_Details_Group">
+                <DataElementName>Detail</DataElementName>
+              </Group>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+              <DataElementName>Detail_Collection</DataElementName>
+              <DataElementOutput>Output</DataElementOutput>
+              <KeepTogether>true</KeepTogether>
+            </TablixMember>
+          </TablixMembers>
+        </TablixRowHierarchy>
+        <DataSetName>DATASET_Horas</DataSetName>
+        <Height>0.21in</Height>
+        <Width>0.50051in</Width>
+        <Style />
+      </Tablix>
+    </ReportItems>
+    <Height>0.21in</Height>
+    <Style />
+  </Body>
+  <Width>0.50051in</Width>
+  <Page>
+    <LeftMargin>1in</LeftMargin>
+    <RightMargin>1in</RightMargin>
+    <TopMargin>1in</TopMargin>
+    <BottomMargin>1in</BottomMargin>
+    <Style />
+  </Page>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="SQLMirror">
+      <DataSourceReference>SQLMirror</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>892a8388-3973-48fb-afa4-6eebff477c74</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DATASET_Horas">
+      <Query>
+        <DataSourceName>SQLMirror</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@Ano">
+            <Value>=Parameters!Ano.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Mes">
+            <Value>=Parameters!Mes.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT	AVG(ISNULL(DATEDIFF(HOUR, DataEntrada_vagaVal, DataValidacao_vagaVal),0)) AS Horas
+FROM	[hrh-data].[dbo].[vagas-validacao]	WITH(NOLOCK)
+		INNER JOIN [hrh-data].[dbo].[vagas] WITH(NOLOCK)
+		ON CodVaga_vagaVal = cod_vaga
+		INNER JOIN [hrh-data].[dbo].[Clientes] with(nolock)
+		ON CodCliente_vaga = Cod_cli
+WHERE DataValidacao_vagaVal IS NOT NULL
+		AND validada_vaga = 1	AND NOT (VagaModelo_vaga = 1 OR ColetaCur_vaga = 1 OR VeiculacaoSuspensa_vaga = 1 OR Teste_vaga = 1)	
+		AND DATEPART(YEAR, DataValidacao_vagaVal) =@Ano
+		AND DATEPART(MONTH, DataValidacao_vagaVal) IN (@Mes)</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="Horas">
+          <DataField>Horas</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="Ano">
+      <DataType>String</DataType>
+      <Prompt>Ano</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Mes">
+      <DataType>String</DataType>
+      <Prompt>Mes</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>13d3f0b6-f8b3-48bd-803b-30042d0d6a20</rd:ReportID>
+</Report>

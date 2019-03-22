@@ -1,0 +1,1654 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="SERVER_MIRROR">
+      <DataSourceReference>SERVER_MIRROR</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>3644b0dc-3847-4594-af87-a8b582b5c544</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DATASET_Informações_da_vaga">
+      <Query>
+        <DataSourceName>SERVER_MIRROR</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@Cod_vaga">
+            <Value>=Parameters!Cod_vaga.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>with Candidaturas   as (
+	select   CodVaga_histCand
+		   , count(*) as Qtd 
+		   , COUNT(CASE WHEN B.Masc_cand = 1 THEN B.Cod_cand ELSE NULL END) AS QTD_CANDIDATURAS_MASCULINO 
+		   , COUNT(CASE WHEN B.Masc_cand = 0 THEN B.Cod_cand ELSE NULL END) AS QTD_CANDIDATURAS_FEMININO
+	from     [hrh-data].[dbo].[HistoricoCandidaturas] AS A		LEFT OUTER JOIN [hrh-data].[dbo].[Candidatos] AS B ON A.CodCand_histCand = B.Cod_cand
+	where	CodVaga_histCand = @Cod_vaga
+	group by CodVaga_histCand 
+), Validacao_vaga	as (
+	select	  CodVaga_vagaVal
+			, max(DataValidacao_vagaVal) as Data_Validacao
+	from	[hrh-data].[dbo].[Vagas-Validacao]
+	where	CodVaga_vagaVal = @Cod_vaga
+	group by CodVaga_vagaVal
+)
+select 
+		  Vagas.Cod_vaga      as Vaga
+		, Vagas.Cargo_vaga    as Cargo
+		, case when Vagas.Deficiente_vaga   = 1 then 'Sim' else 'Não' end as PCD
+		, case when Vagas.PesquisaPET_vaga  = 1 then 'Sim' else 'Não' end as PET
+		, Formacoes.Descr_formMax  as [Formação mínima]
+		, Niveis.Descr_hierarquia  as [Nível]
+		, Vagas.DescrReg_vaga	   as [Local]
+		, Clientes.Nome_cli		   as [Cliente]
+		, Envio_Alerta.Emails_enviados as [Emails_enviados]
+		, Candidaturas.Qtd		   as Candidaturas
+		, Candidaturas.QTD_CANDIDATURAS_MASCULINO
+		, Candidaturas.QTD_CANDIDATURAS_FEMININO
+		, Vagas.PageViews_vaga as [Visualizações]
+		, (CONVERT(FLOAT, Candidaturas.Qtd) / Vagas.PageViews_vaga) * 100 as TaxaConversao
+		, convert(char, Vagas.DtInicioWeb_vaga, 103)     as Abertura
+		, convert(char, Vagas.DtExpiracaoWeb_vaga, 103) as Expiração
+		, convert(char, Validacao_vaga.Data_Validacao, 103) as Validação
+		, convert(varchar(10),datediff(d, convert(date, Vagas.DtInicioWeb_vaga), convert(date, Vagas.DtExpiracaoWeb_vaga)))+' '+'dias' as Duração	
+from	  [hrh-data].[dbo].[Vagas]				   as Vagas	   with(nolock)
+		  inner join [hrh-data].[dbo].[Clientes]	   as Clientes with(nolock) 
+		  on Vagas.CodCliente_vaga = Clientes.Cod_cli
+		  left join [Candidaturas]			   with(nolock) 
+		  on Vagas.Cod_vaga = Candidaturas.CodVaga_histCand
+		  left join [hrh-data].[dbo].[Cad_formacaoMax] as Formacoes	with(nolock) 
+		  on Formacoes.Cod_formMax = Vagas.CodFormacaoMin_vaga
+		  left join [hrh-data].[dbo].[Cad_hierarquias] as Niveis
+		  on Niveis.Cod_hierarquia = Vagas.CodHierarquiaMin_vaga
+		  left join (SELECT	A.CodVaga_czMonitVagaCand AS COD_VAGA ,
+							COUNT(*) AS Emails_enviados
+					 FROM	[Recomendacao-Data].[dbo].[cruzamentoMonitxVagaXCand] AS A	
+					 INNER JOIN [Recomendacao-Data].[dbo].[cruzamentoMonit] AS B ON A.CodCzMonit_czMonitVagaCand = B.Cod_CzMonit
+					 WHERE	A.CodVaga_czMonitVagaCand = @Cod_vaga
+					 GROUP BY
+							A.CodVaga_czMonitVagaCand) AS Envio_Alerta
+		  on Vagas.Cod_vaga = Envio_Alerta.Cod_vaga
+		  left join Validacao_vaga
+		  on Vagas.Cod_vaga = Validacao_vaga.CodVaga_vagaVal
+where	  ISNULL(Vagas.Cod_vaga, NULL) = ISNULL(@Cod_vaga, NULL)</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="Vaga">
+          <DataField>Vaga</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Cargo">
+          <DataField>Cargo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PCD">
+          <DataField>PCD</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PET">
+          <DataField>PET</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Formação_mínima">
+          <DataField>Formação mínima</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Nível">
+          <DataField>Nível</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Local">
+          <DataField>Local</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Cliente">
+          <DataField>Cliente</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Emails_enviados">
+          <DataField>Emails_enviados</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Candidaturas">
+          <DataField>Candidaturas</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="QTD_CANDIDATURAS_MASCULINO">
+          <DataField>QTD_CANDIDATURAS_MASCULINO</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="QTD_CANDIDATURAS_FEMININO">
+          <DataField>QTD_CANDIDATURAS_FEMININO</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Visualizações">
+          <DataField>Visualizações</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="TaxaConversao">
+          <DataField>TaxaConversao</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="Abertura">
+          <DataField>Abertura</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Expiração">
+          <DataField>Expiração</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Validação">
+          <DataField>Validação</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Duração">
+          <DataField>Duração</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Rectangle Name="Rectangle2">
+            <ReportItems>
+              <Textbox Name="Textbox45">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Vaga</Label>
+                        <Value>=First(Fields!Vaga.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox21</rd:DefaultName>
+                <Left>4.73603cm</Left>
+                <Height>0.57354cm</Height>
+                <Width>15.94811cm</Width>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox44">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Vaga</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox20</rd:DefaultName>
+                <Left>0.03638cm</Left>
+                <Height>0.57354cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>1</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox20">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Cargo</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox20</rd:DefaultName>
+                <Top>1.4449cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.57354cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>2</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox21">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Cargo</Label>
+                        <Value>=First(Fields!Cargo.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox21</rd:DefaultName>
+                <Top>1.4449cm</Top>
+                <Left>4.73603cm</Left>
+                <Height>0.57354cm</Height>
+                <Width>15.94811cm</Width>
+                <ZIndex>3</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox22">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Formação mínima</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>3.5883cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.57354cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>4</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox23">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Formação mínima</Label>
+                        <Value>=First(Fields!Formação_mínima.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>3.5883cm</Top>
+                <Left>4.73603cm</Left>
+                <Height>0.57354cm</Height>
+                <Width>15.94811cm</Width>
+                <ZIndex>5</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox24">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Nível</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>4.33443cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>6</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox25">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Nível</Label>
+                        <Value>=First(Fields!Nível.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>4.33443cm</Top>
+                <Left>4.73603cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.94811cm</Width>
+                <ZIndex>7</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox26">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>PET</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>2.88627cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>8</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox27">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>PET</Label>
+                        <Value>=First(Fields!PET.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>2.88627cm</Top>
+                <Left>4.73603cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.94811cm</Width>
+                <ZIndex>9</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox29">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>PCD</Label>
+                        <Value>=First(Fields!PCD.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>2.16836cm</Top>
+                <Left>4.74596cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>10</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox28">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>PCD</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>2.16836cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>11</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox30">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Local</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>5.04173cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>12</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox31">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Local</Label>
+                        <Value>=First(Fields!Local.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>5.04173cm</Top>
+                <Left>4.73603cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.94811cm</Width>
+                <ZIndex>13</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox32">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Cliente</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>0.73607cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>14</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox33">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Cliente</Label>
+                        <Value>=First(Fields!Cliente.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>0.73607cm</Top>
+                <Left>4.74596cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>15</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox34">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Candidaturas</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>6.49869cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>16</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox35">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Candidaturas</Label>
+                        <Value>=First(Fields!Candidaturas.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>6.49869cm</Top>
+                <Left>4.74596cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>17</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox36">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Visualizações</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>8.70028cm</Top>
+                <Left>0.0044cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>18</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox37">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Visualizações</Label>
+                        <Value>=First(Fields!Visualizações.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>8.70028cm</Top>
+                <Left>4.71398cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>19</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox38">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Abertura</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>10.17665cm</Top>
+                <Left>0.0044cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>20</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox39">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Abertura</Label>
+                        <Value>=First(Fields!Abertura.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <Format>dd/MM/yyyy HH:mm:ss</Format>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>10.17665cm</Top>
+                <Left>4.71398cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>21</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox40">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Expiração</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>10.89102cm</Top>
+                <Left>0.0044cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>22</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox41">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Expiração</Label>
+                        <Value>=First(Fields!Expiração.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <Format>dd/MM/yyyy HH:mm:ss</Format>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>10.89102cm</Top>
+                <Left>4.71398cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>23</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox42">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Validação</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>11.60539cm</Top>
+                <Left>0.0044cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>24</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox43">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Validação</Label>
+                        <Value>=First(Fields!Validação.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>11.60539cm</Top>
+                <Left>4.69412cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.95804cm</Width>
+                <ZIndex>25</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox47">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>E-mails enviados</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>5.77855cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>26</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox48">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Envio_Emails</Label>
+                        <Value>=First(Fields!Emails_enviados.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>5.77855cm</Top>
+                <Left>4.7261cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.95804cm</Width>
+                <ZIndex>27</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox49">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Taxa de conversão</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>9.49905cm</Top>
+                <Left>0.71445cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.11971cm</Width>
+                <ZIndex>28</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox50">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Taxa_Conversao</Label>
+                        <Value>=First(Fields!TaxaConversao.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>9.4038cm</Top>
+                <Left>4.69412cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.95804cm</Width>
+                <ZIndex>29</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox51">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Duração</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>12.31687cm</Top>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>30</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox52">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Duração</Label>
+                        <Value>=First(Fields!Duração.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>12.31687cm</Top>
+                <Left>4.68972cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.96244cm</Width>
+                <ZIndex>31</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Image Name="Explicacao_Taxa_Conversao">
+                <Source>Embedded</Source>
+                <Value>INTERROGAÇÃO</Value>
+                <Sizing>FitProportional</Sizing>
+                <Top>9.49756cm</Top>
+                <Height>0.53798cm</Height>
+                <Width>0.67917cm</Width>
+                <ZIndex>32</ZIndex>
+                <ToolTip>Cálculo: Candidaturas/Visualizações.</ToolTip>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                </Style>
+              </Image>
+              <Textbox Name="Textbox53">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Candidaturas FEMININO</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>7.99274cm</Top>
+                <Left>0.03618cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>3.83416cm</Width>
+                <ZIndex>33</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox54">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>Candidaturas MASCULINO</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                          <FontWeight>Bold</FontWeight>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox22</rd:DefaultName>
+                <Top>7.25368cm</Top>
+                <Left>0.03638cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>4.1252cm</Width>
+                <ZIndex>34</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox55">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Candidaturas_Masculino</Label>
+                        <Value>=Sum(Fields!QTD_CANDIDATURAS_MASCULINO.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>7.27485cm</Top>
+                <Left>4.75423cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>35</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+              <Textbox Name="Textbox56">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Label>Candidaturas_Feminino</Label>
+                        <Value>=Sum(Fields!QTD_CANDIDATURAS_FEMININO.Value, "DATASET_Informações_da_vaga")</Value>
+                        <Style>
+                          <FontFamily>Trebuchet MS</FontFamily>
+                          <FontSize>9pt</FontSize>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
+                  </Paragraph>
+                </Paragraphs>
+                <rd:DefaultName>Textbox23</rd:DefaultName>
+                <Top>7.97335cm</Top>
+                <Left>4.72661cm</Left>
+                <Height>0.53798cm</Height>
+                <Width>15.93818cm</Width>
+                <ZIndex>36</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+            </ReportItems>
+            <KeepTogether>true</KeepTogether>
+            <Top>0.30523cm</Top>
+            <Left>0.64836cm</Left>
+            <Height>13.56367cm</Height>
+            <Width>20.75591cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Rectangle>
+        </ReportItems>
+        <Height>13.8689cm</Height>
+        <Style />
+      </Body>
+      <Width>21.40427cm</Width>
+      <Page>
+        <PageHeader>
+          <Height>1.30541cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="textbox1">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Informações da vaga</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>15pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Informações da vaga a partir do código informado na consulta.</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>textbox1</rd:DefaultName>
+              <Left>0.65279cm</Left>
+              <Height>0.51394in</Height>
+              <Width>4.88356in</Width>
+              <Style>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageHeader>
+        <PageFooter>
+          <Height>1.92264cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox46">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Executado em :</Value>
+                      <Style>
+                        <FontStyle>Normal</FontStyle>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Format>dd/MM/yyyy hh:mm:ss tt</Format>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value xml:space="preserve"> </Value>
+                      <Style>
+                        <FontStyle>Normal</FontStyle>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                        <FontWeight>Normal</FontWeight>
+                        <Format>dd/MM/yyyy hh:mm:ss tt</Format>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style>
+                        <FontStyle>Normal</FontStyle>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                        <FontWeight>Normal</FontWeight>
+                        <Format>dd/MM/yyyy HH:mm:ss </Format>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox46</rd:DefaultName>
+              <Top>0.14111cm</Top>
+              <Left>0.65276cm</Left>
+              <Height>1.33174cm</Height>
+              <Width>2.50074in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <PageHeight>21.0058cm</PageHeight>
+        <PageWidth>24.08404cm</PageWidth>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
+        <TopMargin>1cm</TopMargin>
+        <BottomMargin>1cm</BottomMargin>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="Cod_vaga">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
+        </Values>
+      </DefaultValue>
+      <Prompt>Código da vaga:</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>1</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Cod_vaga</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <EmbeddedImages>
+    <EmbeddedImage Name="INTERROGAÇÃO">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>iVBORw0KGgoAAAANSUhEUgAAACwAAAAiCAIAAACr7KwmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAWiSURBVFhHzZc/SCNbFIe3tEyZNmXKLS0NWLhgEcFCIYWIxRJSLGGLJdg8goWIhUgKkRTCNAtjsTAWwmyzMBbCWAizxcK1sJjCYootprDI+849k0n0TTJJ94bLMtnczP3md37njx9G/4Prw7IMyd9R+Cd179LzH0nvKmkPZHWHSf97cnmb+o9pnCz7yNESEOZl5N3L2c7PNHhMTTwCSK5XuYme5duT6xSg85s0eloCZSEIzvAf0subhH9LXxRWKLsXIkzpZiUth+CNeah3N3li8Fv02D+LG99M/SBiNb6a/VNzch2jkD6XX51cS5iIXakmJRDmWQg4VR+E4O1BXNsz4xXV9qJay66dqLoTsqDx7jJf8Fv252SzaOZBqAb6KvHLCOvVD/LjubFn5xDCEVa3ZdV2gv7QxC/yQywMx3w9ZkLgg1wDTPdWALN7GqMKZHpxw8fdIyNiCEdQbfr7x1H0JBzOLRkU55v/q8dMCDyID/SAaYKPHcN5s4QlEPW9sNoEIqhs+vtHYRzL5v5VfH4dLxcOHE4uqLeJwpQJTO4PycwkCR5i/z5Jp6hwgEBsCkRlw+tdRDwkek4RJhx76x1NsRK8K0qoE6d9QHXS3ycviffLrHZMrWWqLSwZOT+zr4Brn0aVMUR1w3N/iQYo0b8yhWIUQOAGMlBleGcF51ea/k3j5zh6jFY7GDMjAIKlUUeeyx9AIIMoUVl3dw8D/t88p1uHWXTKlcDJWJJ9KD8dCO4//RNvHZnuIELbdwT4kUBwgej8CDOIdYGorDn+g4jRPYvcnwXOKFCCpNLMRo93ENnHlkSB/FQBNCM+fZXYEyZE6g8yQ4gSa+7KmtMfyrfOjdGbciU4mwrBRU2cDRGpFXIC8ebryPwx
+wV3Q+DyOhQ1HZd3Z/eaLtI+JhqYcAvdpZ6IYv4co0qB7EWt2xHEc3oecl7lhw6tuuHY5q3uubHhJGwfeQhC0Zt1HU5CCOCnSk1zINYBAN2PY8CEn8Cu4QSE2BaK26cim11F92968vQo8IRCvYwgpzOqAAh/QJjKCNMUKYw0sgUAIQU2WU2+OIfSmFILWNwmHNie7xibIfKDpoE8zT6bRCWwUhGDFJgUyCEHThaDxWaJAODQu5RCUSJoFFy/6hmDKidIgmqE+i8LQH4bTBCtiRgsBwTbLaR+JHymvu18X8wTDiHYHapw0xiwPJ7mgrbLSzHyOH9vHVgarAQQrawKBDBB83JF1/l0y8/I66g0Wyw7mRKY0AacL2BEhW5w9btYQsLYOo61vVIigvjOJghIgQ71pCVqywkfxb/vId28XqxMUbIYzephGRN97srIOKeWIXtAbmu5Z2Oj4ooHUJamPkg6WYLXlYoLembx99JRsdVxTNPEVNzAmVa3ctGYmFJkP8jVu00CwQeq0DYf4QAjc6vobgsaB69/bBnYV9gfyk4WMaamtGLYE8K5MKNKdt4OaXfajDwQE1GmqZPuYcLiakxoFBOB4lroh+pPsfnEDG5RFIcREt5kzyCvaFafWtu3aGd80PSF4MlSI7rE/saENgRB8dvsXoQ55vTP/ZFhgSQWaOVmJM4byJ4YVJm0fhwqBB+3y3q7Mg/Z4j+MpDBCY50Te53u4f+jGs+f/eYMuPZ3qSVPlQbxQ/yqqt+Tsj62pteet6uJsOd77xPrikY2qgXNDJXWpEIWBKFFCvyZLmWuYVPWjdxd3T0OFeHN2frwVID8SDSDw74oHqhyr/I8fqweTWcycqD8Lfye8KJlJs5D37nj7h35vEPLSfKV7cCI+IArzNVhICd3E3Eb1xJ78y5Q2R1hroIRsJBdw4hwfTD+kXIl8N7My1Yk5kSnt8sYwoUjU6bev4hjSD3moiVQk6oGWyAWvJSAyVeKUOZEp
+jRkJJ9KcaJIkBZ2JvkBVLqyJ82mWhljw5Zba9i/KANqkHAvLKwAAAABJRU5ErkJggg==</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>6b12d86d-6da1-45c5-8fc5-93bfc05824c9</rd:ReportID>
+</Report>

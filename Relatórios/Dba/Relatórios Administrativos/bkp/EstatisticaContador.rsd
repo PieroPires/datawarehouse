@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition">
+  <DataSet Name="">
+    <Query>
+      <DataSourceReference>SQLBI01</DataSourceReference>
+      <CommandText>select   minimo.idContador, minimo.contador, minimo.data, minimo.hora
+         , minimo.estatistica minimoEstatistica
+         , media.estatistica mediaEstatistica
+         , maximo.atual maximoAtual
+         , media.atual mediaAtual
+from     OlapPerfCounter.Analise.RetornarEstatisticaContadorGrafico(6, 'Mínimo', getdate(), default, default) minimo 
+         inner join 
+         OlapPerfCounter.Analise.RetornarEstatisticaContadorGrafico(6, 'Média', getdate(), default, default) media on minimo.hora = media.hora
+         inner join 
+         OlapPerfCounter.Analise.RetornarEstatisticaContadorGrafico(6, 'Máximo', getdate(), default, default) maximo on minimo.hora = maximo.hora</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="idContador">
+        <DataField>idContador</DataField>
+        <rd:TypeName>System.Byte</rd:TypeName>
+      </Field>
+      <Field Name="contador">
+        <DataField>contador</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="data">
+        <DataField>data</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Hora">
+        <DataField>hora</DataField>
+        <rd:TypeName>System.Byte</rd:TypeName>
+      </Field>
+      <Field Name="minimoEstatistica">
+        <DataField>minimoEstatistica</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="mediaEstatistica">
+        <DataField>mediaEstatistica</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="mediaAtual">
+        <DataField>mediaAtual</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="maximoAtual">
+        <DataField>maximoAtual</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition">
+  <DataSet Name="">
+    <Query>
+      <DataSourceReference>SQLBI01</DataSourceReference>
+      <CommandText>SELECT        CASE WHEN Media &lt;= 100 THEN Media ELSE 100 END AS Media, CASE WHEN Hoje &lt;= 100 THEN Hoje ELSE 100 END AS Atual, 
+                         CASE WHEN Media * 3 &lt; 20 THEN 20 WHEN Media * 3 &gt; 60 THEN 60 ELSE Media * 3 END AS MinRange
+FROM            OlapPerfCounter.Analise.RetornarMediaContadorGrafico(91, GETDATE(), DEFAULT, DEFAULT) AS RetornarMediaContadorGrafico_1
+WHERE        (Hora = CASE WHEN DATEPART(minute, GETDATE()) &gt; 6 THEN DATEPART(hh, GETDATE()) ELSE DATEPART(hh, GETDATE()) - 1 END)</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Media">
+        <DataField>Media</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="Atual">
+        <DataField>Atual</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="MinRange">
+        <DataField>MinRange</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

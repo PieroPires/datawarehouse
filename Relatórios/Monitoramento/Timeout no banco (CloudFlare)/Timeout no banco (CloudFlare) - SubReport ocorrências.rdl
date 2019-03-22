@@ -1,0 +1,410 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+  <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DBA">
+      <DataSourceReference>DBA</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>d5f24432-4b22-4380-95ba-7875da80b3f3</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Query>
+        <DataSourceName>DBA</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@DELAY_START_TIME">
+            <Value>=Parameters!DELAY_START_TIME.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DELAY_SPID">
+            <Value>=Parameters!DELAY_SPID.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DELAY_TOTAL_TIME">
+            <Value>=Parameters!DELAY_TOTAL_TIME.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>with ocorrenciasUnicas as (
+	select	StartTime, SPID, max(TOtalTime) as TotalTime
+	from	dba.dbo.[Delay]
+	Where NOT ( 
+		ProgramName LIKE 'DatabaseMail%'
+		OR ProgramName LIKE 'SQLAgent%'
+		OR ProgramName like 'Microsoft SQL Server Management Studio%'
+		OR DBName IN ( 'Relatorio', 'MSDB' )
+		OR TypeCMD IN ( 'DBCC', 'WAITFOR', 'UPDATE STATISTICS', 'BACKUP DATABASE')
+	)
+	AND convert(time,StartTime) between '08:00:00' and '18:00:00'
+	group by StartTime, SPID
+)
+select 	[delay].BatchText as [Comando]
+from ocorrenciasUnicas [UDelays]
+	INNER JOIN dba.dbo.[Delay] [Delay] ON [UDelays].StartTime = [Delay].StartTime AND [UDelays].SPID = [Delay].SPID AND [UDelays].TotalTime = [Delay].TOtalTime
+where CONVERT(SMALLDATETIME, [Delay].StartTime) = @DELAY_START_TIME
+	AND [Delay].SPID = @DELAY_SPID
+	AND [Delay].TOtalTime = @DELAY_TOTAL_TIME
+order by [UDelays].StartTime</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="Comando">
+          <DataField>Comando</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="table1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>9.32292in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.22in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>COMANDO</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.21in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Comando">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Comando.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Comando</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="table1_Details_Group">
+                    <DataElementName>Detail</DataElementName>
+                  </Group>
+                  <TablixMembers>
+                    <TablixMember />
+                  </TablixMembers>
+                  <DataElementName>Detail_Collection</DataElementName>
+                  <DataElementOutput>Output</DataElementOutput>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet1</DataSetName>
+            <Top>0.1175in</Top>
+            <Left>0.47792in</Left>
+            <Height>0.43in</Height>
+            <Width>9.32292in</Width>
+            <Style />
+          </Tablix>
+        </ReportItems>
+        <Height>0.66208in</Height>
+        <Style />
+      </Body>
+      <Width>11.20833in</Width>
+      <Page>
+        <PageHeader>
+          <Height>1in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="ReportName">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Globals!ReportName</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>15pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>ReportName</rd:DefaultName>
+              <Top>0.20708in</Top>
+              <Left>0.47792in</Left>
+              <Height>0.32292in</Height>
+              <Width>8.845in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Image Name="Image5">
+              <Source>Embedded</Source>
+              <Value>VOLTAR1</Value>
+              <Sizing>FitProportional</Sizing>
+              <ActionInfo>
+                <Actions>
+                  <Action>
+                    <Hyperlink>javascript:history.back(1)</Hyperlink>
+                  </Action>
+                </Actions>
+              </ActionInfo>
+              <Top>0.26958in</Top>
+              <Left>9.71875in</Left>
+              <Height>0.26042in</Height>
+              <Width>0.5in</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+            </Image>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageHeader>
+        <PageFooter>
+          <Height>0.92708in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox5">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Página </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!PageNumber</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value> de </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!TotalPages</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Consulta realizada em: </Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style>
+                        <FontFamily>Trebuchet MS</FontFamily>
+                        <FontSize>9pt</FontSize>
+                        <Format>dd/MM/yyyy HH:mm:ss</Format>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox5</rd:DefaultName>
+              <Top>0.60413cm</Top>
+              <Left>1.21391cm</Left>
+              <Height>1.33174cm</Height>
+              <Width>3.13543in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <LeftMargin>1in</LeftMargin>
+        <RightMargin>1in</RightMargin>
+        <TopMargin>1in</TopMargin>
+        <BottomMargin>1in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="DELAY_START_TIME">
+      <DataType>DateTime</DataType>
+      <Prompt>DELAY_START_TIME:</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="DELAY_SPID">
+      <DataType>String</DataType>
+      <Prompt>DELAY_SPID:</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="DELAY_TOTAL_TIME">
+      <DataType>String</DataType>
+      <Prompt>DELAY_TOTAL_TIME:</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>DELAY_START_TIME</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>DELAY_SPID</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>DELAY_TOTAL_TIME</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <EmbeddedImages>
+    <EmbeddedImage Name="VOLTAR1">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>iVBORw0KGgoAAAANSUhEUgAAAJQAAABVCAYAAACviM3FAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAL4SURBVHhe7dy9ahRRFMDx66qBRYzBSCCFH4UIQqo0gpoXUJu8gI1iY5VCfAQbEexNYyeIySukMNqYwsYigprgVzARN1mju8aYM9zAEoQku2dmzpn7/zX3Y9o/s7e4Owc2twRASS2OgAqCgiqCgiqCgiqCgiqCgiqCgiqCgiqCgiqCgiqCgirXQc29WQy37z0J8x+W4g7K5jaol6/fhYn7T7eiWggzc/NxF2VzGZTEdPfhdGi1/8QdWOEuqM6YarWDcRdWuAqqM6Z6/2CoDwzFJ7DCTVA7Y+ofOhOfwBIXQRGTH+aDIiZfTAdFTP6YDYqYfDIZFDH5ZS4oYvLNVFDE5J+ZoIipGkz8c7jbmNZWPoXmyudwdWwkXLk8Enexm9HzJ+NMX+lB9fJm2g4K+zN84lh49uBWXOkqNahef+Y22r9CY2khrrAXrfXVbHzx+E42aistKM5M5fj69lU25hVUKYdyYqquwoMipmorNChiqr7CgiKmNBQSFDGlI/egiCktuQZFTOnJLShiSlMuQRFTutSDIqa0qQZFTFALipgg1IKanJ7NYuqrHyWmhKkFNTZ6NhvlesR6YzmbIz1qQV2/diHcGL+YzRtL74kqUaqH8pvjl4gqcapBCaJKm3pQgqjSlUtQgqjSlFtQgqjSk2tQgqjSkntQgqjSUUhQgqjSUFhQgqiqr9CgBFFVW+FBCaKqrlK/bfBo6nmYnJrN5nJDQa697Mfm342w+m0xbLRbcQe7qey3Dbb1ElXz+5ewtvwxrrBXfYcPhZnJibjSVXpQotuo+D5UdwYHjoTTw8fjSpeJoEQ3UW0HJecxOZehfKUcyv+Hg3o1mAlKEJV/poISROWbuaAEUfllMihBVD6ZDUoQlT+mgxJE
+5Yv5oARR+eEiKEFUPrgJSuyMqtX8kc1hh6ugRGdU7d8/sxF2uAtKdEYFW1wGJTqjOndqKBtRPjO3DVANbt9QsImgoIqgoIqgoIqgoIqgoIqgoIqgoIqgoIqgoIqgoCiEf45cFzNsRDEOAAAAAElFTkSuQmCC</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>478dae97-910e-4ad4-8f37-000de79b685c</rd:ReportID>
+</Report>

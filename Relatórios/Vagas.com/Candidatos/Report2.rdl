@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2005/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="VAGAS-PROD">
+      <rd:DataSourceID>97cc8fe7-bbb3-4008-95ba-7b622eadc08f</rd:DataSourceID>
+      <DataSourceReference>VAGAS-PROD</DataSourceReference>
+    </DataSource>
+  </DataSources>
+  <rd:ReportID>3b24e6fd-d403-472f-93f7-3513fcd41c88</rd:ReportID>
+  <Width>5in</Width>
+  <Body>
+    <Height>0.43in</Height>
+    <ColumnSpacing>0.5in</ColumnSpacing>
+    <ReportItems>
+      <Textbox Name="textbox1">
+        <Style>
+          <FontFamily>Segoe UI Light</FontFamily>
+          <FontSize>24pt</FontSize>
+          <FontWeight>Bold</FontWeight>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <rd:DefaultName>textbox1</rd:DefaultName>
+        <Value>Report2</Value>
+        <CanGrow>true</CanGrow>
+        <Height>0.43in</Height>
+      </Textbox>
+      <Table Name="table1">
+        <Top>0.43in</Top>
+        <Style />
+        <Header>
+          <RepeatOnNewPage>true</RepeatOnNewPage>
+          <TableRows>
+            <TableRow>
+              <TableCells />
+              <Height>0in</Height>
+            </TableRow>
+          </TableRows>
+        </Header>
+        <Details>
+          <TableRows>
+            <TableRow>
+              <TableCells />
+              <Height>0in</Height>
+            </TableRow>
+          </TableRows>
+        </Details>
+        <TableColumns />
+        <DataSetName>DataSet1</DataSetName>
+      </Table>
+    </ReportItems>
+  </Body>
+  <Language>en-US</Language>
+  <LeftMargin>1in</LeftMargin>
+  <RightMargin>1in</RightMargin>
+  <TopMargin>1in</TopMargin>
+  <BottomMargin>1in</BottomMargin>
+  <PageWidth>8.5in</PageWidth>
+  <PageHeight>11in</PageHeight>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields />
+      <Query>
+        <DataSourceName>VAGAS-PROD</DataSourceName>
+        <CommandType>Text</CommandType>
+        <CommandText>BEGIN DECLARE @CodCand INT DECLARE @CodFic INT DECLARE @CodCli INT DECLARE @identCli nvarchar(300) DECLARE @TesteGlobal_fic BIT DECLARE @cpf_cand nvarchar(300) DECLARE @email_cand nvarchar(300)
+ DECLARE @Sql nvarchar(max) DECLARE @FonteData_candVaga datetime DECLARE @CodRespCab INT DECLARE @ident_cand varchar(255) DECLARE @codcand_opcional INT = NULL 
+DECLARE @codvaga INT DECLARE @identfic varchar(255) DECLARE @ident_cli varchar(255) = NULL IF @codcand_opcional IS NULL BEGIN SELECT        @CodCand = cod_cand
+                                                                                                                                                                                                                                                                                                                 FROM            candidatos(nolock)
+                                                                                                                                                                                                                                                                                                                 WHERE        ident_cand = isnull(@ident_cand, ident_cand) END ELSE
+SET                @CodCand = @codcand_opcional IF @ident_cand IS NULL BEGIN
+                             SELECT        @ident_cand = ident_cand
+                              FROM            candidatos(nolock)
+                              WHERE        cod_cand = @CodCand END IF isnull(@codvaga, - 1) = - 1 BEGIN
+                                                           SELECT        @CodCli = cod_cli
+                                                            FROM            clientes(nolock)
+                                                            WHERE        ident_cli = @ident_cli END ELSE BEGIN
+                                                                                         SELECT        @CodCli = codcliente_vaga
+                                                                                          FROM            vagas(nolock)
+                                                                                          WHERE        cod_vaga = @codvaga END IF @CodFic IS NULL BEGIN
+                                                                                                                       SELECT        @CodFic = cod_fic, @TesteGlobal_fic = TesteGlobal_fic
+                                                                                                                        FROM            [Fichas-DescrGeral](nolock)
+                                                                                                                        WHERE        ident_fic = @identfic AND (CodCli_fic = - 1 OR
+                                                                                                                                                 CodCli_fic = @CodCli) END
+                                                                                                                                                     SELECT        @FonteData_candVaga = FonteData_candVaga
+                                                                                                                                                      FROM            CandidatoxVagas(nolock)
+                                                                                                                                                      WHERE        CodCand_candVaga = @CodCand AND CodVaga_candVaga = @CodVaga
+                                                                                                                                                                                   SELECT        @identCli = ident_cli
+                                                                                                                                                                                    FROM            clientes(nolock)
+                                                                                                                                                                                    WHERE        cod_cli = @CodCli
+                                                                                                                                                                                                                 SELECT        QtdeTotalPergGrpTst_perg, QtdePergGrpTst_perg, Ordem_perg
+                                                                                                                                                                                                                  INTO               #DadosTeste
+                                                                                                                                                                                                                  FROM            [Fichas-DescrPerg]
+                                                                                                                                                                                                                  WHERE        CodFicha_perg = @CodFic
+                                                                                                                                                                                                                  ORDER BY ordem_perg CREATE TABLE #dadosSorteio(Total INT, Sorteio INT, Contador INT, Ordem INT, Grupo INT) 
+                                                                                                                                                                                                                                           DECLARE @Total INT DECLARE @Sorteio INT DECLARE @Ordem INT DECLARE @Contador INT DECLARE @Grupo
+                                                                                                                                                                                                                                            INT = 0 DECLARE Nomedocursor CURSOR FOR
+                                                                                                                                                                                                                                               SELECT        QtdeTotalPergGrpTst_perg, QtdePergGrpTst_perg, Ordem_perg
+                                                                                                                                                                                                                                                FROM            #DadosTeste WITH (NOLOCK) OPEN Nomedocursor FETCH next
+FROM            Nomedocursor
+INTO              @Total, @Sorteio, @Ordem WHILE @@FETCH_STATUS = 0 BEGIN IF @Total IS NOT NULL BEGIN
+SET                @Contador = 1
+SET                @Grupo = @Grupo + 1 END ELSE BEGIN
+SET                @Contador = @Contador + 1 END
+                             INSERT        
+                              INTO               #dadosSorteio
+VALUES        (@Total,@Sorteio,@Contador,@Ordem,@Grupo) FETCH next
+FROM            Nomedocursor
+INTO              @Total, @Sorteio, @Ordem END CLOSE Nomedocursor DEALLOCATE Nomedocursor DECLARE @DtExpiracaoWeb_vaga varchar(255), @PermiteRecand_vaga BIT, @FichasVaga varchar(max)
+                             SELECT        @DtExpiracaoWeb_vaga = CONVERT(varchar, DtExpiracaoWeb_vaga, 103), @PermiteRecand_vaga = PermiteRecand_vaga, @FichasVaga = isnull
+                                                           ((SELECT        'Ficha1: ' + Ident_fic + CASE WHEN ObrigFicha3_vaga = 1 THEN '(obrig)' ELSE '(não-obrig)' END + '; '
+                                                               FROM            [Fichas-DescrGeral](nolock)
+                                                               WHERE        cod_fic = CodFicha1_vaga), '') + isnull
+                                                           ((SELECT        'Ficha2: ' + Ident_fic + CASE WHEN ObrigFicha3_vaga = 1 THEN '(obrig)' ELSE '(não-obrig)' END + '; '
+                                                               FROM            [Fichas-DescrGeral](nolock)
+                                                               WHERE        cod_fic = CodFicha2_vaga), '') + isnull
+                                                           ((SELECT        'Ficha3: ' + Ident_fic + CASE WHEN ObrigFicha3_vaga = 1 THEN '(obrig)' ELSE '(não-obrig)' END + '; '
+                                                               FROM            [Fichas-DescrGeral](nolock)
+                                                               WHERE        cod_fic = CodFicha3_vaga), '') + isnull
+                                                           ((SELECT        'Ficha4: ' + Ident_fic + CASE WHEN ObrigFicha3_vaga = 1 THEN '(obrig)' ELSE '(não-obrig)' END + '; '
+                                                               FROM            [Fichas-DescrGeral](nolock)
+                                                               WHERE        cod_fic = CodFicha4_vaga), '')
+                              FROM            vagas(nolock)
+                              WHERE        cod_vaga = @codvaga DECLARE @DiasPreench INT
+                                                           SELECT        @DiasPreench = datediff(dd, Data_respCab, getdate())
+                                                            FROM            [fichas-respcab](nolock)
+                                                            WHERE        (CodFicha_respCab = @CodFic OR
+                                                                                     CodFicha_respCab = - @CodFic) AND CodCand_respCab = @CodCand DECLARE @QtdePerguntasSorteadas INT, @DiasSubstFIcha INT, @NotaMaxima REAL, 
+                                                                                     @Expiracao VARCHAR(255)
+                                                                                         SELECT        @QtdePerguntasSorteadas = str(sum(QtdePergGrpTst_perg)), @NotaMaxima = max(NotaMaxima_fic), @DiasSubstFIcha = max(DiasSubst_fic), 
+                                                                                                                   @Expiracao = max(CASE WHEN DiasSubst_fic IS NOT NULL THEN CASE WHEN @DiasPreench &gt; DiasSubst_fic THEN 'Expiracao:' + str(@DiasPreench) 
+                                                                                                                   ELSE 'Não Expirado:' + str(@DiasPreench) END ELSE NULL END)
+                                                                                          FROM            [Fichas-DescrPerg](nolock) INNER JOIN
+                                                                                                                   [Fichas-DescrGeral](nolock) ON cod_fic = CodFicha_perg
+                                                                                          WHERE        CodFicha_perg = @CodFic AND QtdePergGrpTst_perg IS NOT NULL DECLARE @NumeroSorteadas INT
+                                                                                                                       SELECT        @NumeroSorteadas = sum(QtdePergGrpTst_perg)
+                                                                                                                        FROM            [Fichas-DescrPerg](nolock) INNER JOIN
+                                                                                                                                                 [Fichas-DescrGeral](nolock) ON cod_fic = CodFicha_perg
+                                                                                                                        WHERE        CodFicha_perg = @CodFic AND QtdePergGrpTst_perg IS NOT NULL DECLARE @TesteIniciadoContador INT, @TesteIniciadoUltPerg INT
+                                                                                                                                                     SELECT        @TesteIniciadoContador = Contador_tstIni, @TesteIniciadoUltPerg = UltPergNro_tstIni
+                                                                                                                                                      FROM            [Fichas-TesteIniciado](nolock) LEFT JOIN
+                                                                                                                                                                               [fichas-descrgeral](nolock) ON cod_fic = CodFicha_tstIni
+                                                                                                                                                      WHERE        CodCand_tstIni IN (@CodCand) AND CodFicha_tstIni = @CodFic DECLARE @Pendencia BIT, @DataPend Datetime, @DataLimit Datetime, 
+                                                                                                                                                                               @FuncPend VARCHAR(255)
+                                                                                                                                                                                   SELECT        TOP 1 @Pendencia = Pendente_ficPend, @DataPend = DataPed_ficPend, @DataLimit = DataLim_ficPend, 
+                                                                                                                                                                                                             @FuncPend = nome_func
+                                                                                                                                                                                    FROM            [Cand-FichasPend](nolock) LEFT JOIN
+                                                                                                                                                                                                             vagas(nolock) ON cod_vaga = CodVagaCtxt_ficPend LEFT JOIN
+                                                                                                                                                                                                             funcionarios(nolock) ON cod_func = CodFunc_ficPend
+                                                                                                                                                                                    WHERE        1 = 1 AND CodCand_ficPend = @CodCand AND (CodVaga_ficPend = - 1 OR
+                                                                                                                                                                                                             CodVaga_ficPend = @CodVaga) AND CodFicha_ficPend = isnull(@CodFic, CodFicha_ficPend)
+                                                                                                                                                                                                                 SELECT        @CodRespCab = Cod_respCab
+                                                                                                                                                                                                                  FROM            [fichas-respcab](nolock)
+                                                                                                                                                                                                                  WHERE        (CodFicha_respCab = @CodFic OR
+                                                                                                                                                                                                                                           CodFicha_respCab = - @CodFic) AND CodCand_respCab = @CodCand DECLARE @VagaResp INT, 
+                                                                                                                                                                                                                                           @DtResp datetime, @tempoResp INT, @NotaResp REAL DECLARE @VagaRespResult INT, 
+                                                                                                                                                                                                                                           @DtRespResult datetime, @tempoRespResult INT, @NotaRespResult REAL
+                                                                                                                                                                                                                                               SELECT        @VagaResp = CodVaga_respCab, @DtResp = Data_respCab, 
+                                                                                                                                                                                                                                                                         @tempoResp = TempoTotalPreench_respCab, @NotaResp = NotaTeste_respCab
+                                                                                                                                                                                                                                                FROM            [fichas-respcab](nolock)
+                                                                                                                                                                                                                                                WHERE        (CodFicha_respCab = @CodFic OR
+                                                                                                                                                                                                                                                                         CodFicha_respCab = - @CodFic) AND 
+                                                                                                                                                                                                                                                                         CodCand_respCab = @CodCand DECLARE @CodFicResultado INT IF @TesteGlobal_fic = 1 BEGIN
+                                                                                                                                                                                                                                                                             SELECT        @CodFicResultado = CodFichaResp_cliFicG
+                                                                                                                                                                                                                                                                              FROM            [ClientexFichasGlobais] WITH (NOLOCK)
+                                                                                                                                                                                                                                                                              WHERE        CodCli_cliFicG = @CodCli AND CodFicha_cliFicG = @CodFic
+                                                                                                                                                                                                                                                                                                           SELECT        @VagaRespResult = CodVaga_respCab, 
+                                                                                                                                                                                                                                                                                                                                     @DtRespResult = Data_respCab, 
+                                                                                                                                                                                                                                                                                                                                     @tempoRespResult = TempoTotalPreench_respCab, 
+                                                                                                                                                                                                                                                                                                                                     @NotaRespResult = NotaTeste_respCab
+                                                                                                                                                                                                                                                                                                            FROM            [fichas-respcab](nolock)
+                                                                                                                                                                                                                                                                                                            WHERE        (CodFicha_respCab = @CodFicResultado) AND 
+                                                                                                                                                                                                                                                                                                                                     CodCand_respCab = @CodCand AND (CodVaga_respCab = @codvaga OR
+                                                                                                                                                                                                                                                                                                                                     CodVaga_respCab = - 1) 
+                                                                                                                                                                                                                                                                                                                                     END CREATE TABLE #Preenchimento(CodCab_resp INT, 
+                                                                                                                                                                                                                                                                                                                                     Codcand_resp INT, Codvaga_resp INT, CodPerg_resp INT, 
+                                                                                                                                                                                                                                                                                                                                     Tempo_resp INT, TempoPreench_perg INT, Num_resp INT, 
+                                                                                                                                                                                                                                                                                                                                     NumRespCorreta_perg INT, NotaRespCorreta_perg REAL, 
+                                                                                                                                                                                                                                                                                                                                     txtOpcresp_resp VARCHAR(max), Ident_perg VARCHAR(300), 
+                                                                                                                                                                                                                                                                                                                                     ordem_perg INT, txt_perg VARCHAR(MAX), ajuda_perg VARCHAR(MAX)) 
+                                                                                                                                                                                                                                                                                                                                     IF @TesteGlobal_fic = 1 BEGIN
+                                                                                                                                                                                                                                                                                                                                         INSERT        
+                                                                                                                                                                                                                                                                                                                                          INTO               #Preenchimento
+                                                                                                                                                                                                                                                                                                                                                                       SELECT        CodCab_resp, Codcand_resp, 
+                                                                                                                                                                                                                                                                                                                                                                                                 Codvaga_resp, CodPerg_resp, Tempo_resp, 
+                                                                                                                                                                                                                                                                                                                                                                                                 TempoPreench_perg, Num_resp, 
+                                                                                                                                                                                                                                                                                                                                                                                                 NumRespCorreta_perg, 
+                                                                                                                                                                                                                                                                                                                                                                                                 NotaRespCorreta_perg, txtOpcresp_resp, 
+                                                                                                                                                                                                                                                                                                                                                                                                 Ident_perg, ordem_perg, txt_perg, 
+                                                                                                                                                                                                                                                                                                                                                                                                 ajuda_perg
+                                                                                                                                                                                                                                                                                                                                                                        FROM            [Fichas-resp](nolock) INNER JOIN
+                                                                                                                                                                                                                                                                                                                                                                                                 [fichas-respcab](nolock) ON 
+                                                                                                                                                                                                                                                                                                                                                                                                 CodCab_resp = Cod_respCab AND 
+                                                                                                                                                                                                                                                                                                                                                                                                 CodCand_resp = CodCand_respCab AND 
+                                                                                                                                                                                                                                                                                                                                                                                                 CodVaga_resp = CodVaga_respCab INNER JOIN
+                                                                                                                                                                                                                                                                                                                                                                                                 [fichas-descrperg](nolock) ON 
+                                                                                                                                                                                                                                                                                                                                                                                                 Cod_perg = CodPerg_resp LEFT JOIN
+                                                                                                                                                                                                                                                                                                                                                                                                 #dadosSorteio ON 
+                                                                                                                                                                                                                                                                                                                                                                                                 ordem_perg = Ordem
+                                                                                                                                                                                                                                                                                                                                                                        WHERE        codcand_resp = @CodCand AND 
+                                                                                                                                                                                                                                                                                                                                                                                                 (CodFicha_respCab = @CodFic OR
+                                                                                                                                                                                                                                                                                                                                                                                                 CodFicha_respCab = - @CodFic)
+                                                                                                                                                                                                                                                                                                                                                                        ORDER BY ordem_perg END ELSE BEGIN IF isnull(@CodFic,
+                                                                                                                                                                                                                                                                                                                                                                                                  '-1') 
+                                                                                                                                                                                                                                                                                                                                                                                                 &lt;&gt; '-1' BEGIN IF OBJECT_ID(N'[ZZZ_Cliente' +
+                                                                                                                                                                                                                                                                                                                                                                                                  CONVERT(nvarchar, @CodCli) 
+                                                                                                                                                                                                                                                                                                                                                                                                 + '-Ficha' + CONVERT(nvarchar, @CodFic) 
+                                                                                                                                                                                                                                                                                                                                                                                                 + '-Resp]', N'U') IS NOT NULL BEGIN
+SET                @Sql = '
+				INSERT INTO #Preenchimento
+				select   CodCab_resp, Codcand_resp, Codvaga_resp, CodPerg_resp,  Tempo_resp, TempoPreench_perg,  Num_resp, NumRespCorreta_perg, NotaRespCorreta_perg, txtOpcresp_resp, Ident_perg, ordem_perg, 5 txt_perg, ajuda_perg
+				from [ZZZ_Cliente'
+                          + CONVERT(nvarchar, @CodCli) + '-Ficha' + CONVERT(nvarchar, @CodFic) 
+                         + '-Resp] (nolock)
+				inner join [fichas-descrperg](nolock) on cod_perg = codperg_resp
+				left join #dadosSorteio on ordem_perg = Ordem
+				where codcand_resp = ' + CONVERT(nvarchar, @CodCand) 
+                         + ' 
+				--and TempoPreench_perg &lt;&gt; -1
+				order by ordem_perg' EXEC (@Sql) END ELSE BEGIN
+                             SELECT        'Tabela de cabeçalho do cliente nao foi criada.' END END END DECLARE @QtdePergPreenchidas INT, @QtdePergNaoEscolhidas INT
+                                                           SELECT        @QtdePergPreenchidas = count(Num_resp), @QtdePergNaoEscolhidas = sum(CASE WHEN num_resp = - 1 OR
+                                                                                     num_resp IS NULL THEN 1 ELSE 0 END)
+                                                            FROM            #Preenchimento DECLARE @DataLimpezaSistemaGlobal DATETIME
+                                                                                         SELECT        @DataLimpezaSistemaGlobal = max(DataLimpeza)
+                                                                                          FROM            dbo.Testes_Globais_Removidos
+                                                                                          WHERE        CodCand = @CodCand AND CodFicha = @CodFic DECLARE @DataLimpezaSistemaNormal DATETIME
+                                                                                                                       SELECT        @DataLimpezaSistemaNormal = max(DataLimpeza)
+                                                                                                                        FROM            Testes_Preenchimentos_Removidos
+                                                                                                                        WHERE        CodCand = @CodCand AND CodFicha = @CodFic
+                                                                                                                                                     SELECT        @CodCand AS Cand, @ident_cand AS ident_cand, @CodVaga AS Vaga, @identCli AS identCli, CASE WHEN isnull(@CodFic, '-1') 
+                                                                                                                                                                               = '-1' THEN 'Nome de ficha inexistente' ELSE str(@CodFic) END AS Ficha, char(10) + isnull(CONVERT(varchar, @FonteData_candVaga, 103) 
+                                                                                                                                                                               + ' ' + CONVERT(varchar, @FonteData_candVaga, 8), 'Não entrou na vaga') AS Candidatura, @DtExpiracaoWeb_vaga AS [Data Expira Vaga], 
+                                                                                                                                                                               @PermiteRecand_vaga AS [Permite Recand.], @QtdePerguntasSorteadas AS [Qtde Perguntas Sorteadas], 
+                                                                                                                                                                               @QtdePergPreenchidas AS [Qtde Perguntas Visualizadas], @QtdePergNaoEscolhidas AS [Qtde Perguntas P
+erdidas], 
+                                                                                                                                                                               @VagaResp AS [Vaga / Contexto], @FichasVaga AS [Fichas da Vaga], @DtResp AS [Dt Preench], @tempoResp AS [Tempo Preench], 
+                                                                                                                                                                               @NotaResp AS [Nota Preench], @NotaMaxima AS [Nota Maxima], @DiasSubstFIcha AS [Dias Subst - Vigencia], @Expiracao AS [Expiracao], 
+                                                                                                                                                                               @TesteIniciadoContador AS [Teste Iniciado - Contador], @TesteIniciadoUltPerg AS [Teste Iniciado - Ult Perg], 
+                                                                                                                                                                               @Pendencia AS [Ficha Pendente?], @DataPend AS [Dt Pendencia], @DataLimit AS [Dt Limite], @FuncPend AS [Func Pendencia], 
+                                                                                                                                                                               @VagaRespResult AS [Result: Vaga / Contexto], @DtRespResult AS [Result: Dt Preench], @tempoRespResult AS [Result: Tempo Preench], 
+                                                                                                                                                                               @NotaRespResult AS [Result: Nota Preench], isnull(@DataLimpezaSistemaGlobal, @DataLimpezaSistemaNormal) 
+                                                                                                                                                                               AS [Dt Limpeza Preench]
+                                                                                                                                                                                   SELECT        *
+                                                                                                                                                                                    FROM            #Preenchimento END</CommandText>
+        <Timeout>0</Timeout>
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition">
+  <Description />
+  <DataSet Name="MinMax_DiscoN">
+    <Query>
+      <DataSourceReference>SQLBI01</DataSourceReference>
+      <CommandText>SELECT        CASE WHEN Hoje &lt;= 100 THEN Hoje ELSE 100 END AS Atual
+FROM            OlapPerfCounter.Analise.RetornarMediaContadorGrafico(50, GETDATE(), DEFAULT, DEFAULT) AS RetornarMediaContadorGrafico_1
+WHERE        (Hora = CASE WHEN DATEPART(minute, GETDATE()) &gt; 6 THEN DATEPART(hh, GETDATE()) ELSE DATEPART(hh, GETDATE()) - 1 END)</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Atual">
+        <DataField>Atual</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>
