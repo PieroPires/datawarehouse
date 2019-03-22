@@ -60,7 +60,7 @@ WHILE @ID_CONTROLE_SPREADSHEET IN (SELECT ID_CONTROLE_SPREADSHEET FROM [VAGAS_DW
 BEGIN
 		
 		-- Carregar tabela baseado na Planilha do Google Drive
-		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 				' "' + CONVERT(VARCHAR(3), @ID_CONTROLE_SPREADSHEET) + '" "TMP_BASE_EMPRESAS_VAGAS_FLIX" "1"'
 
 

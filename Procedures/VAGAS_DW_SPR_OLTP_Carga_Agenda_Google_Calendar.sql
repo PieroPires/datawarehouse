@@ -28,7 +28,7 @@ CREATE TABLE #TMP_LOG_ERRO (ID_LOG_ERRO SMALLINT IDENTITY PRIMARY KEY,
 							ERRO VARCHAR(8000) )	
 
 -- Importar dados do Google Calendar diretamente para o BD 
-SET @CMD = 'set PYTHONIOENCODING=cp1252 & Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Google_Calendar\Importacao_Google_Calendar.py ' + 
+SET @CMD = 'set PYTHONIOENCODING=cp1252 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Google_Calendar\Importacao_Google_Calendar.py ' + 
 			' "' + @ID_AGENDA + '" "' + CONVERT(VARCHAR,@QUANTIDADE_REGISTROS) + '" "' + CONVERT(VARCHAR,@DIAS ) + '"'
 	
 INSERT INTO #TMP_LOG_ERRO (ERRO)

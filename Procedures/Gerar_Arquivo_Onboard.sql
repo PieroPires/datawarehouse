@@ -2,7 +2,7 @@ declare  @SQL nvarchar(1000),
          @ArqExporta Varchar(100),
          @NomeProcedure varchar(100)
 
-set @ArqExporta = 'G:\TMP\Tail\Export\TailTarget_'  + convert(char(8), getdate(), 112) + '.csv'
+set @ArqExporta = 'Z:\Scripts\TMP\Tail\Export\TailTarget_'  + convert(char(8), getdate(), 112) + '.csv'
 set @SQL =  'bcp "select * from Export.TailTarget.Exportacao" queryout "' + @ArqExporta 
             + '" -S ' + 'SRV-SQLMIRROR05' + ' -T -c -C ACP'
 --select @SQL
@@ -30,7 +30,7 @@ EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 DECLARE @CMD VARCHAR(8000)
 
-SET @CMD = 'xcopy G:\TMP\Tail\Export\*.csv t: /d'
+SET @CMD = 'xcopy Z:\Scripts\TMP\Tail\Export\*.csv t: /d'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 DECLARE @CMD VARCHAR(8000)

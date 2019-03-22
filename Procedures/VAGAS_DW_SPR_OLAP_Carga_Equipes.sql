@@ -24,11 +24,11 @@ CREATE TABLE #TMP_ARQUIVO (ID_ARQUIVO SMALLINT IDENTITY PRIMARY KEY,
 DECLARE @CMD VARCHAR(8000)
 
 -- Transformar Planilha do Google Drive em arquivo .csv
-SET @CMD = 'set PYTHONIOENCODING=cp437 & C:\Python27\python G:\Projetos\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py "1" "G:\\TMP\\Google_SpreadSheets_CSV\\"'
+SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py "1" "Z:\\Scripts\\TMP\\Google_SpreadSheets_CSV\\"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 -- Buscar arquivos relacionados à planilha 
-SET @CMD = 'dir G:\TMP\Google_SpreadSheets_CSV\"1_gspread_sheet_Equipes_csv_gspread_"*.* /B'
+SET @CMD = 'dir Z:\Scripts\TMP\Google_SpreadSheets_CSV\"1_gspread_sheet_Equipes_csv_gspread_"*.* /B'
 
 INSERT INTO #TMP_ARQUIVO
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
@@ -52,7 +52,7 @@ WHERE (NOME_ARQUIVO <> @NOME_ARQUIVO)
 OR (NOME_ARQUIVO IS NULL)
 
 SET @CMD = ' BULK INSERT VAGAS_DW.TMP_EQUIPES 
-			 FROM ''G:\\TMP\\Google_SpreadSheets_CSV\\' + @NOME_ARQUIVO + '''' +
+			 FROM ''Z:\\Scripts\\TMP\\Google_SpreadSheets_CSV\\' + @NOME_ARQUIVO + '''' +
 		   ' WITH
 			(
 				FIELDTERMINATOR = ''|'',
@@ -137,7 +137,7 @@ AND NOT EXISTS ( SELECT * FROM VAGAS_DW.TMP_EQUIPES
 					AND REPLACE(TIPO,'"','') = REPLACE(A.TIPO,'"','') )
 
 -- Buscar arquivos relacionados à planilha 
-SET @CMD = 'del G:\TMP\Google_SpreadSheets_CSV\"1_gspread_sheet_Equipes_csv_gspread_*.*'
+SET @CMD = 'del Z:\Scripts\TMP\Google_SpreadSheets_CSV\"1_gspread_sheet_Equipes_csv_gspread_*.*'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 DECLARE @QTD_COLUNAS TINYINT -- CASO A ESTRUTURA DA PLANILHA SEJA ALTERADO ESTE VALOR DEVE SER ALTERADO PARA TODAS AS PLANILHAS 

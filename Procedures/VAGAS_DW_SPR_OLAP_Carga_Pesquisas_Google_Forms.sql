@@ -59,7 +59,7 @@ DECLARE	@CMD VARCHAR(8000) ,
 	BEGIN
 		
 		-- Carregar tabela baseado na Planilha do Google Drive
-		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 				' "' + CONVERT(VARCHAR(3), @ID_CONTROLE_SPREADSHEET) + '" "TMP_PESQUISAS_GOOGLE_FORMS" "1"'
 
 

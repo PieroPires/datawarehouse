@@ -62,7 +62,7 @@ SET NOCOUNT ON
 	BEGIN
 		
 		-- Carregar tabela baseado na Planilha do Google Drive
-		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 				' "' + CONVERT(VARCHAR(3), @ID_CONTROLE_SPREADSHEET) + '" "TMP_CANAL_RECLAME_AQUI" "1"'
 
 		INSERT INTO #TMP_LOG_ERRO (ERRO)
@@ -70,7 +70,7 @@ SET NOCOUNT ON
 		print @CMD
 
 		INSERT INTO #TMP_AUXILIAR_RECLAME_AQUI
-		SELECT	[2],[3],[4],[5],[6],[7],[8],[9],[10],[11], @SHEET_NAME, [8]
+		SELECT	[3],[4],[5],[6],[7],[8],[9],[10],[11],[12], @SHEET_NAME, [9]
 		FROM	[VAGAS_DW].[TMP_CANAL_RECLAME_AQUI]
 		WHERE	[index] > 0 ;
 
