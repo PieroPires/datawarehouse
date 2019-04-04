@@ -31,7 +31,7 @@
 					,MAX(DtEntrada_faseCand) AS DT_FASE
 			FROM	[hrh-data].[dbo].[HistoricoFasesCand] AS A
 				LEFT JOIN [hrh-data].[dbo].[Cad_fases] AS B ON A.CodFase_faseCand = B.Cod_fase
-			WHERE CodFase_faseCand = 340882 and (codvaga_fasecand = @Cod_Vaga OR @Cod_Vaga IS NULL)
+			WHERE CodFase_faseCand = 340882 and  (codvaga_fasecand = @Cod_Vaga OR @Cod_Vaga IS NULL)
 			GROUP BY CodVaga_faseCand, CAST(DtEntrada_faseCand AS DATE)
 		) AS X
 ),
@@ -131,6 +131,7 @@ SELECT
 	A.TITULO_VAGA
 	,A.DT_DIVULGACAO AS DT_REQUISICAO
 	,A.DT_DIVULGACAO
+	,LAG(A.DT_CAPTACAO) OVER (PARTITION BY A.TITULO_VAGA ORDER BY A.DT_CAPTACAO) AS PREV_DT_CAPTACAO
 	,A.DT_CAPTACAO
 	,A.[CANDIDATURA] AS [CANDIDATURA]
 	,B.[CANDIDATURA] AS [CANDIDATURA_QTD_CVS]
@@ -177,6 +178,10 @@ FROM PIVOTED_DT_FASE AS A
         </Field>
         <Field Name="DT_DIVULGACAO">
           <DataField>DT_DIVULGACAO</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="PREV_DT_CAPTACAO">
+          <DataField>PREV_DT_CAPTACAO</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
         <Field Name="DT_CAPTACAO">
@@ -3172,7 +3177,7 @@ FROM PIVOTED_DT_FASE AS A
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value>=Sum(DateDiff("d", Fields!DT_DIVULGACAO.Value, Fields!DT_CAPTACAO.Value))</Value>
+                                                    <Value>=Sum(DateDiff("d", IIF( IsNothing(Fields!PREV_DT_CAPTACAO.Value), Fields!DT_DIVULGACAO.Value, Fields!PREV_DT_CAPTACAO.Value), Fields!DT_CAPTACAO.Value))</Value>
                                                     <Style>
                                                       <FontFamily />
                                                       <Color>#333333</Color>
@@ -3198,6 +3203,7 @@ FROM PIVOTED_DT_FASE AS A
                                               <PaddingBottom>2pt</PaddingBottom>
                                             </Style>
                                           </Textbox>
+                                          <rd:Selected>true</rd:Selected>
                                         </CellContents>
                                       </TablixCell>
                                       <TablixCell>
