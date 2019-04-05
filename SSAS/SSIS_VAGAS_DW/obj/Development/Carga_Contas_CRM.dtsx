@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\fiama.cristi"
   DTS:DTSID="{CB3CCC51-8A0E-4A58-815B-42AFC5479647}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.1000.169"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1046"
   DTS:ObjectName="Carga_Contas_CRM"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="50"
-  DTS:VersionGUID="{3D803AE8-45B2-4D81-8662-C4F461DFD8B5}">
+  DTS:VersionBuild="53"
+  DTS:VersionGUID="{6E311B7E-B671-4868-976D-68FBC4848BDD}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -109,7 +109,9 @@
          CONVERT(B.cnae_classe_descr_c USING Latin1) AS CNAE_CLASSE ,
          CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
          CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
-         CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C
+         CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C ,
+        CONVERT(B.segmento_c USING Latin1) AS PLANO ,
+         CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH
 FROM	sugarcrm.accounts AS A		LEFT OUTER JOIN sugarcrm.accounts_cstm AS B ON A.id = B.id_c
 									LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
 WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
@@ -352,6 +354,22 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PLANO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PLANO]"
+                      name="PLANO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONSULTORIA_RH]"
+                      length="4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]"
+                      name="CONSULTORIA_RH" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -485,6 +503,18 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       dataType="str"
                       length="255"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PLANO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="CONSULTORIA_RH" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -666,6 +696,22 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[PLANO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[PLANO]"
+                      name="PLANO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[CONSULTORIA_RH]"
+                      length="4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONSULTORIA_RH]"
+                      name="CONSULTORIA_RH" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -929,6 +975,22 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       cachedName="CNAE_SUBCLASSE_DESCR_C"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[PLANO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="PLANO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PLANO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PLANO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONSULTORIA_RH]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="CONSULTORIA_RH"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONSULTORIA_RH]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1060,6 +1122,18 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       dataType="str"
                       length="255"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PLANO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONSULTORIA_RH" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1157,7 +1231,9 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
          CONVERT(B.cnae_classe_descr_c USING Latin1) AS CNAE_CLASSE ,
          CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
          CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
-         CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C
+         CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C ,
+         CONVERT(B.segmento_c USING Latin1) AS PLANO ,
+         CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH
 FROM	sugarcrm.accounts AS A	LEFT OUTER JOIN sugarcrm.accounts_cstm AS B ON A.id = B.id_c
 								LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
 WHERE	A.deleted = 0 
@@ -1408,6 +1484,22 @@ WHERE	A.deleted = 0
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PLANO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PLANO]"
+                      name="PLANO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONSULTORIA_RH]"
+                      length="4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]"
+                      name="CONSULTORIA_RH" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1547,6 +1639,18 @@ WHERE	A.deleted = 0
                       dataType="str"
                       length="255"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PLANO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="CONSULTORIA_RH" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1736,6 +1840,22 @@ WHERE	A.deleted = 0
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CNAE_SUBCLASSE_DESCR_C]"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[PLANO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[PLANO]"
+                      name="PLANO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[CONSULTORIA_RH]"
+                      length="4"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONSULTORIA_RH]"
+                      name="CONSULTORIA_RH" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -2007,6 +2127,22 @@ WHERE	A.deleted = 0
                       cachedName="CNAE_SUBCLASSE_DESCR_C"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CNAE_SUBCLASSE_DESCR_C]"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CNAE_SUBCLASSE_DESCR_C]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[PLANO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="PLANO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PLANO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PLANO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[CONSULTORIA_RH]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="CONSULTORIA_RH"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONSULTORIA_RH]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2142,6 +2278,18 @@ WHERE	A.deleted = 0
                       dataType="str"
                       length="255"
                       name="CNAE_SUBCLASSE_DESCR_C" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[PLANO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PLANO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CONSULTORIA_RH]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONSULTORIA_RH" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
