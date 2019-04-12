@@ -1,0 +1,1284 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="9/29/2016 4:51:30 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{A5AEA583-3707-45BC-A425-BCBF4EC17C15}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Carga_Treinamento_Participantes"
+  DTS:PackageType="5"
+  DTS:VersionBuild="46"
+  DTS:VersionGUID="{B758A83F-3550-4EDB-9324-00939354F5D8}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar VAGAS_DW_TREINAMENTOS_PARTICIPANTES_CRM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D188F970-16F4-4A4D-B18C-C5935C27472B}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar VAGAS_DW_TREINAMENTOS_PARTICIPANTES_CRM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[VAGAS_DW].[TMP_TREINAMENTOS_PARTICIPANTES_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{F4066A78-9752-42FB-923A-923E7808F3E1}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[ID_PARTICIPANTE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="ID_PARTICIPANTE"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_PARTICIPANTE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[DATA_CRIACAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="19"
+                      cachedName="DATA_CRIACAO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[DATA_MODIFICACAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="19"
+                      cachedName="DATA_MODIFICACAO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_MODIFICACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[USUARIO_CRIOU]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="61"
+                      cachedName="USUARIO_CRIOU"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_CRIOU]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[USUARIO_MODIFICOU]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="61"
+                      cachedName="USUARIO_MODIFICOU"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_MODIFICOU]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[DESCRICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="DESCRICAO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DESCRICAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[STATUS_PARTICIPANTE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="STATUS_PARTICIPANTE"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[STATUS_PARTICIPANTE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[CONTATO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="201"
+                      cachedName="CONTATO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTATO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[NOME_TREINAMENTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="NOME_TREINAMENTO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_TREINAMENTO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[CONTA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[ID_TREINAMENTO]"
+                      cachedDataType="wstr"
+                      cachedLength="36"
+                      cachedName="ID_TREINAMENTO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_TREINAMENTO]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_PARTICIPANTE_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_PARTICIPANTE_Conv]"
+                      name="ID_PARTICIPANTE_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_PARTICIPANTE]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DATA_CRIACAO_Conv]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DATA_CRIACAO_Conv]"
+                      name="DATA_CRIACAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DATA_MODIFICACAO_Conv]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DATA_MODIFICACAO_Conv]"
+                      name="DATA_MODIFICACAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_MODIFICACAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[USUARIO_CRIOU_Convert]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[USUARIO_CRIOU_Convert]"
+                      name="USUARIO_CRIOU_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_CRIOU]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[USUARIO_MODIFICOU_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[USUARIO_MODIFICOU_Conv]"
+                      name="USUARIO_MODIFICOU_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_MODIFICOU]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DESCRICAO_Convert]"
+                      codePage="1252"
+                      dataType="text"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DESCRICAO_Convert]"
+                      name="DESCRICAO_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DESCRICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[STATUS_PARTICIPANTE_Convert]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[STATUS_PARTICIPANTE_Convert]"
+                      name="STATUS_PARTICIPANTE_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[STATUS_PARTICIPANTE]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTATO_Convert]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="200"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTATO_Convert]"
+                      name="CONTATO_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTATO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[NOME_TREINAMENTO_Convert]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[NOME_TREINAMENTO_Convert]"
+                      name="NOME_TREINAMENTO_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_TREINAMENTO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTA_Convert]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTA_Convert]"
+                      name="CONTA_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_TREINAMENTO_Convert]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_TREINAMENTO_Convert]"
+                      name="ID_TREINAMENTO_Convert"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_TREINAMENTO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL - SugarCRM"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT CONVERT(A.name USING Latin1) AS ID_PARTICIPANTE ,
+	CONVERT(A.date_entered USING Latin1) AS DATA_CRIACAO ,
+    CONVERT(A.date_modified USING Latin1) AS DATA_MODIFICACAO  ,
+	CONVERT(CONCAT(C.first_name, ' ', C.last_name) USING Latin1) AS USUARIO_CRIOU ,
+    CONVERT(CONCAT(B.first_name ,' ', B.last_name) USING LAtin1) AS USUARIO_MODIFICOU ,
+    CONVERT(A.description USING Latin1) AS DESCRICAO ,
+    CONVERT(UPPER(A.status) USING Latin1) AS STATUS_PARTICIPANTE ,
+    CONVERT(CONCAT(D.first_name, ' ', D.last_name) USING Latin1) AS CONTATO ,
+    CONVERT(F.name USING Latin1) AS NOME_TREINAMENTO, 
+    CONVERT(G.name USING Latin1) AS CONTA ,
+    F.ID AS ID_TREINAMENTO
+FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.modified_user_id = B.id
+										LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
+                                        LEFT OUTER JOIN sugarcrm.contacts AS D ON A.contact_id_c = D.id
+                                        LEFT OUTER JOIN sugarcrm.trn_treinamentos_trn_participantes_c AS E ON A.id = E.trn_treinamentos_trn_participantestrn_participantes_idb
+                                        LEFT OUTER JOIN sugarcrm.trn_treinamentos AS F ON E.trn_treinamentos_trn_participantestrn_treinamentos_ida = F.id
+                                        LEFT OUTER JOIN sugarcrm.accounts AS G ON A.account_id_c = G.id</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Connections[ODBCConnection]"
+                  connectionManagerID="{85D523B7-CBEA-4308-BABD-BE0191B264D8}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_PARTICIPANTE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_PARTICIPANTE]"
+                      name="ID_PARTICIPANTE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      length="19"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO]"
+                      name="DATA_CRIACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_MODIFICACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_MODIFICACAO]"
+                      length="19"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_MODIFICACAO]"
+                      name="DATA_MODIFICACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_CRIOU]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[USUARIO_CRIOU]"
+                      length="61"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_CRIOU]"
+                      name="USUARIO_CRIOU" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_MODIFICOU]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[USUARIO_MODIFICOU]"
+                      length="61"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[USUARIO_MODIFICOU]"
+                      name="USUARIO_MODIFICOU" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DESCRICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DESCRICAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DESCRICAO]"
+                      name="DESCRICAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[STATUS_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[STATUS_PARTICIPANTE]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[STATUS_PARTICIPANTE]"
+                      name="STATUS_PARTICIPANTE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[CONTATO]"
+                      length="201"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTATO]"
+                      name="CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[NOME_TREINAMENTO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_TREINAMENTO]"
+                      name="NOME_TREINAMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[CONTA]"
+                      name="CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_TREINAMENTO]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_TREINAMENTO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_TREINAMENTO]"
+                      name="ID_TREINAMENTO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ID_PARTICIPANTE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="DATA_CRIACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_MODIFICACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="DATA_MODIFICACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[USUARIO_CRIOU]"
+                      codePage="1252"
+                      dataType="str"
+                      length="61"
+                      name="USUARIO_CRIOU" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[USUARIO_MODIFICOU]"
+                      codePage="1252"
+                      dataType="str"
+                      length="61"
+                      name="USUARIO_MODIFICOU" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DESCRICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="DESCRICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[STATUS_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_PARTICIPANTE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="201"
+                      name="CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[NOME_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="NOME_TREINAMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_TREINAMENTO]"
+                      dataType="wstr"
+                      length="36"
+                      name="ID_TREINAMENTO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_PARTICIPANTE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_PARTICIPANTE]"
+                      name="ID_PARTICIPANTE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO]"
+                      length="19"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO]"
+                      name="DATA_CRIACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DATA_MODIFICACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_MODIFICACAO]"
+                      length="19"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DATA_MODIFICACAO]"
+                      name="DATA_MODIFICACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[USUARIO_CRIOU]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[USUARIO_CRIOU]"
+                      length="61"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[USUARIO_CRIOU]"
+                      name="USUARIO_CRIOU" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[USUARIO_MODIFICOU]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[USUARIO_MODIFICOU]"
+                      length="61"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[USUARIO_MODIFICOU]"
+                      name="USUARIO_MODIFICOU" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DESCRICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DESCRICAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DESCRICAO]"
+                      name="DESCRICAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[STATUS_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[STATUS_PARTICIPANTE]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[STATUS_PARTICIPANTE]"
+                      name="STATUS_PARTICIPANTE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[CONTATO]"
+                      length="201"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[CONTATO]"
+                      name="CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[NOME_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[NOME_TREINAMENTO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[NOME_TREINAMENTO]"
+                      name="NOME_TREINAMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      length="150"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[CONTA]"
+                      name="CONTA" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_TREINAMENTO]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_TREINAMENTO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_TREINAMENTO]"
+                      name="ID_TREINAMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\SQL Server - DW"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server - DW"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TREINAMENTOS_PARTICIPANTES_CRM]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ID_PARTICIPANTE_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="ID_PARTICIPANTE_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_PARTICIPANTE]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_PARTICIPANTE_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[DATA_CRIACAO_Conv]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CRIACAO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DATA_CRIACAO_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[DATA_MODIFICACAO_Conv]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_MODIFICACAO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_MODIFICACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DATA_MODIFICACAO_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[USUARIO_CRIOU_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="USUARIO_CRIOU_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_CRIOU]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[USUARIO_CRIOU_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[USUARIO_MODIFICOU_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="USUARIO_MODIFICOU_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_MODIFICOU]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[USUARIO_MODIFICOU_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[DESCRICAO_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="DESCRICAO_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DESCRICAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[DESCRICAO_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[STATUS_PARTICIPANTE_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="STATUS_PARTICIPANTE_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_PARTICIPANTE]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[STATUS_PARTICIPANTE_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[CONTATO_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="CONTATO_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTATO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTATO_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[NOME_TREINAMENTO_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="NOME_TREINAMENTO_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[NOME_TREINAMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[NOME_TREINAMENTO_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[CONTA_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="CONTA_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[CONTA_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ID_TREINAMENTO_Convert]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="ID_TREINAMENTO_Convert"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_TREINAMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_TREINAMENTO_Convert]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ID_PARTICIPANTE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_MODIFICACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_MODIFICACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_CRIOU]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_CRIOU" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_MODIFICOU]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_MODIFICOU" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DESCRICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="DESCRICAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_PARTICIPANTE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[NOME_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="NOME_TREINAMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_TREINAMENTO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+              endId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{744EE74A-F784-42AD-834B-C8C5B2F471EB}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TRN_PARTICIPANTES - DATA_MODIFICACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TRN_PARTICIPANTES - DATA_CRIACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TREINAMENTOS_PARTICIPANTES_CRM&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TRN_PARTICIPANTES - DATA_REFERENCIA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_TREINAMENTOS_PARTICIPANTES_CRM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{68DDCC6B-D5B9-43F3-960A-A45EF7ED750E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_TREINAMENTOS_PARTICIPANTES_CRM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Treinamentos_Participantes_CRM]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{94B62650-9D51-480D-8AC0-E80CC1076ABF}"
+      DTS:From="Package\Limpar VAGAS_DW_TREINAMENTOS_PARTICIPANTES_CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\MySQL -&gt; SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D97A3230-95EB-40DD-B68A-B4911542A81D}"
+      DTS:From="Package\MySQL -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_TREINAMENTOS_PARTICIPANTES_CRM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{70147F82-0EC1-47BD-8DC5-E7461BE0115C}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_TREINAMENTOS_PARTICIPANTES_CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="362,42"
+          Id="Package\Limpar VAGAS_DW_TREINAMENTOS_PARTICIPANTES_CRM"
+          TopLeft="310,51" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\MySQL -&gt; SQL Server"
+          TopLeft="401,142" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="417,313" />
+        <NodeLayout
+          Size="415,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_TREINAMENTOS_PARTICIPANTES_CRM"
+          TopLeft="291,228" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="491.5,93">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49"
+              Start="0,0"
+              End="0,41.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="495.25,184">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44"
+              Start="0,0"
+              End="0,36.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="496.5,270">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="159,42"
+          Id="Package\MySQL -&gt; SQL Server\SQL Server - DW"
+          TopLeft="371,239" />
+        <NodeLayout
+          Size="170,42"
+          Id="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM"
+          TopLeft="367,48" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\MySQL -&gt; SQL Server\Data Conversion"
+          TopLeft="373,143" />
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="451.5,90">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53"
+              Start="0,0"
+              End="0,45.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+          TopLeft="450.75,185">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,54"
+              Start="0,0"
+              End="0,46.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,46.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\SQL Server - DW">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

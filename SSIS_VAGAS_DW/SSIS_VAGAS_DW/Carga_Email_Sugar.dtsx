@@ -1,0 +1,1662 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/3/2017 10:41:07 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLMIRROR05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{A990F860-A151-4BE5-BA9B-055E91AC65D5}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Email_Sugar"
+  DTS:PackageType="5"
+  DTS:VersionBuild="43"
+  DTS:VersionGUID="{EF2D2753-BF0F-4EE4-BF93-7B7CC8235983}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{583851D9-3CA0-4DF9-8471-DB41C7319A80}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_ALTERACAO">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar  VAGAS_DW_EMAILS_CRM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{800daaed-3300-439a-9c85-4868c5273c8d}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar  VAGAS_DW_EMAILS_CRM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_EMAILS_CRM" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DelayValidation="True"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{ab7f5d04-9015-435f-b7ac-90dad5c73d56}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[MySQL].[SqlCommand]">"SELECT CONVERT(A.id USING Latin1) AS ID_EMAIL,
+       CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
+       CONVERT(B.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
+       CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
+       CONVERT(D.user_name USING Latin1) AS USUARIO_CADASTRO,
+       A.deleted AS FLAG_DELETADO,
+       IF(CONVERT_TZ(A.date_sent,@@session.time_zone, '-03:00') &lt; '1900-01-01', '1900-01-01', CONVERT_TZ(A.date_sent,@@session.time_zone, '-03:00')) AS DATA_ENVIO,
+       CONVERT(A.name USING Latin1) AS NOME,
+       CONVERT(A.type USING Latin1) AS TIPO,
+       CONVERT(A.status USING Latin1) AS STATUS,
+       CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+            WHEN F.id IS NOT NULL THEN F.name
+            WHEN G.id IS NOT NULL THEN G.name
+            WHEN H.id IS NOT NULL THEN H.name
+            WHEN I.id IS NOT NULL THEN CONCAT(IFNULL(I.first_name,\"\"),\" \",IFNULL(I.last_name,\"\"))
+            WHEN J.id IS NOT NULL THEN CONCAT(IFNULL(J.first_name,\"\"),\" \",IFNULL(J.last_name,\"\"))
+            ELSE \"\" END USING Latin1) AS REFERENTE_A, 
+       CONVERT(A.parent_type USING Latin1) AS TIPO_CONTATO,
+       L.name AS ANEXO ,
+       CONVERT(A.parent_id USING Latin1) AS ID_TIPO_CONTATO ,
+	   CONVERT(CONCAT(LTRIM(RTRIM(O.first_name)), \" \", LTRIM(RTRIM(O.last_name))) USING Latin1) AS NOME_CONTATO ,
+       CONVERT(LTRIM(RTRIM(N1.email_address)) USING Latin1) AS EMAIL_CONTATO ,
+       CONVERT(IF(P.contato_principal_c = 1 OR P.usuario_admin_c = 1, \"SIM\", \"NÃO\") USING Latin1) AS CONTATO_ADM_PRINCIPAL ,
+
+	   ( SELECT CASE
+                WHEN A1.bean_module = \"Accounts\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Opportunities\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Cases\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Leads\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Contacts\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+            END AS CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS CONTEXTO ,
+      
+      ( SELECT CASE
+                WHEN A1.bean_module = \"Accounts\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Opportunities\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Cases\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Leads\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Contacts\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+            END AS ID_CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS ID_CONTEXTO 
+
+
+
+FROM emails A
+INNER JOIN users D ON D.id = A.created_by 
+LEFT OUTER JOIN users B ON B.id = A.assigned_user_id
+LEFT OUTER JOIN users C ON C.id = A.modified_user_id
+LEFT OUTER JOIN cases E ON E.id = A.parent_id 
+                 AND A.parent_type = \"Cases\"
+LEFT OUTER JOIN oqc_contract F ON F.id = A.parent_id 
+                 AND A.parent_type = \"oqc_Contract\"
+LEFT OUTER JOIN opportunities G ON G.id = A.parent_id 
+                 AND A.parent_type = \"Opportunities\"
+LEFT OUTER JOIN accounts H ON H.id = A.parent_id 
+                 AND A.parent_type = \"Accounts\"                               
+LEFT OUTER JOIN contacts I ON I.id = A.parent_id 
+                 AND A.parent_type = \"Contacts\"                                                              
+LEFT OUTER JOIN leads J ON J.id = A.parent_id 
+                 AND A.parent_type = \"Leads\" 
+LEFT OUTER JOIN notes L ON L.parent_id = A.id
+                       AND L.parent_type = \"Emails\"
+                       AND L.deleted = 0
+                       AND L.file_mime_type = \"application/pdf\"
+                       AND L.id = ( SELECT MIN(L1.id) 
+                  FROM notes L1
+                                    WHERE L1.parent_id = A.id
+                                    AND L1.parent_type = \"Emails\"
+                                    AND L1.deleted = 0
+                                    AND L1.file_mime_type = \"application/pdf\" )  
+									
+LEFT OUTER JOIN	sugarcrm.emails_email_addr_rel AS M	ON M.email_id = A.id AND M.address_type = \"to\" AND M.deleted = 0
+LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS N ON N.email_address_id = M.email_address_id AND N.bean_module = \"Contacts\" AND N.deleted = 0
+LEFT OUTER JOIN sugarcrm.email_addresses AS N1 ON N1.id = N.email_address_id  AND N1.deleted = 0
+LEFT OUTER JOIN sugarcrm.contacts AS O ON O.id = N.bean_id AND O.deleted = 0
+LEFT OUTER JOIN sugarcrm.contacts_cstm AS P ON O.id = P.id_c AND P.funcionario_desligado_c = 0						
+									               
+WHERE A.date_modified &gt; " + @[User::DATA_ALTERACAO] + 
+
+" UNION ALL
+
+ SELECT CONVERT(A.id USING Latin1) AS ID_NOTA,
+         CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
+       CONVERT(B.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
+       CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
+       CONVERT(D.user_name USING Latin1) AS USUARIO_CADASTRO,
+       A.deleted AS FLAG_DELETADO,
+       IF(CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') &lt; '1900-01-01', '1900-01-01', CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00')) AS DATA_ENVIO,
+       CONVERT(A.name USING Latin1) AS NOME,
+       CONVERT(CASE WHEN INSTR (UPPER(A.name), \"ENVIADO\") &gt; 0 THEN \"out\"
+                  WHEN INSTR (UPPER(A.name), \"RECEBIDO\") &gt; 0 THEN \"inbound\"
+                  ELSE \"\" END USING Latin1) AS TIPO,
+         CONVERT(\"Email cadastrado como NOTA\" USING Latin1) AS STATUS,
+       CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+            WHEN F.id IS NOT NULL THEN F.name
+            WHEN G.id IS NOT NULL THEN G.name
+            WHEN H.id IS NOT NULL THEN H.name
+            WHEN I.id IS NOT NULL THEN CONCAT(IFNULL(I.first_name,\"\"),\" \",IFNULL(I.last_name,\"\"))
+            WHEN J.id IS NOT NULL THEN CONCAT(IFNULL(J.first_name,\"\"),\" \",IFNULL(J.last_name,\"\"))
+            ELSE \"\" END USING Latin1) AS REFERENTE_A, 
+       CONVERT(A.parent_type USING Latin1) AS TIPO_CONTATO,
+       NULL AS ANEXO ,
+       CONVERT(A.parent_id USING Latin1) AS ID_TIPO_CONTATO ,
+	   CONVERT(CONCAT(LTRIM(RTRIM(K.first_name)), \" \", LTRIM(RTRIM(K.last_name))) USING Latin1) AS NOME_CONTATO ,
+       CONVERT(LTRIM(RTRIM(KK1.email_address)) USING Latin1) AS EMAIL_CONTATO ,
+       CONVERT(IF(K1.contato_principal_c = 1 OR K1.usuario_admin_c = 1, \"SIM\", \"NÃO\") USING Latin1) AS CONTATO_ADM_PRINCIPAL ,
+	   
+	   
+	   	   ( SELECT CASE
+                WHEN A1.bean_module = \"Accounts\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Opportunities\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Cases\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Leads\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = \"Contacts\"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+            END AS CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS CONTEXTO ,
+      
+      ( SELECT CASE
+                WHEN A1.bean_module = \"Accounts\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Opportunities\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Cases\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Leads\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = \"Contacts\"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+            END AS ID_CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS ID_CONTEXTO  
+	   
+	   	   
+FROM notes A
+INNER JOIN users D ON D.id = A.created_by 
+LEFT OUTER JOIN users B ON B.id = A.assigned_user_id
+LEFT OUTER JOIN users C ON C.id = A.modified_user_id
+LEFT OUTER JOIN cases E ON E.id = A.parent_id 
+                                             AND A.parent_type = \"Cases\"
+LEFT OUTER JOIN oqc_contract F ON F.id = A.parent_id 
+                                             AND A.parent_type = \"oqc_Contract\"
+LEFT OUTER JOIN opportunities G ON G.id = A.parent_id 
+                                             AND A.parent_type = \"Opportunities\"
+LEFT OUTER JOIN accounts H ON H.id = A.parent_id 
+                                             AND A.parent_type = \"Accounts\"                               
+LEFT OUTER JOIN contacts I ON I.id = A.parent_id 
+                                             AND A.parent_type = \"Contacts\"                                                              
+LEFT OUTER JOIN leads J ON J.id = A.parent_id 
+                                             AND A.parent_type = \"Leads\"
+
+LEFT OUTER JOIN sugarcrm.contacts AS K ON K.id = A.contact_id AND K.deleted = 0
+LEFT OUTER JOIN sugarcrm.contacts_cstm AS K1 ON K.id = K1.id_c AND K1.funcionario_desligado_c = 0
+LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS KK ON K.id = KK.bean_id AND KK.deleted = 0 AND KK.primary_address = \"1\" AND KK.bean_module = \"Contacts\"  
+LEFT OUTER JOIN sugarcrm.email_addresses AS KK1 ON KK1.id = KK.email_address_id AND KK1.deleted = 0
+
+
+WHERE A.date_modified &gt; " + @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\MySQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT CONVERT(A.id USING Latin1) AS ID_EMAIL,
+       CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
+       CONVERT(B.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
+       CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
+       CONVERT(D.user_name USING Latin1) AS USUARIO_CADASTRO,
+       A.deleted AS FLAG_DELETADO,
+       IF(CONVERT_TZ(A.date_sent,@@session.time_zone, '-03:00') &lt; '1900-01-01', '1900-01-01', CONVERT_TZ(A.date_sent,@@session.time_zone, '-03:00')) AS DATA_ENVIO,
+       CONVERT(A.name USING Latin1) AS NOME,
+       CONVERT(A.type USING Latin1) AS TIPO,
+       CONVERT(A.status USING Latin1) AS STATUS,
+       CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+            WHEN F.id IS NOT NULL THEN F.name
+            WHEN G.id IS NOT NULL THEN G.name
+            WHEN H.id IS NOT NULL THEN H.name
+            WHEN I.id IS NOT NULL THEN CONCAT(IFNULL(I.first_name,"")," ",IFNULL(I.last_name,""))
+            WHEN J.id IS NOT NULL THEN CONCAT(IFNULL(J.first_name,"")," ",IFNULL(J.last_name,""))
+            ELSE "" END USING Latin1) AS REFERENTE_A, 
+       CONVERT(A.parent_type USING Latin1) AS TIPO_CONTATO,
+       L.name AS ANEXO ,
+       CONVERT(A.parent_id USING Latin1) AS ID_TIPO_CONTATO ,
+	   CONVERT(CONCAT(LTRIM(RTRIM(O.first_name)), " ", LTRIM(RTRIM(O.last_name))) USING Latin1) AS NOME_CONTATO ,
+       CONVERT(LTRIM(RTRIM(N1.email_address)) USING Latin1) AS EMAIL_CONTATO ,
+       CONVERT(IF(P.contato_principal_c = 1 OR P.usuario_admin_c = 1, "SIM", "NÃO") USING Latin1) AS CONTATO_ADM_PRINCIPAL ,
+
+	   ( SELECT CASE
+                WHEN A1.bean_module = "Accounts"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Opportunities"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Cases"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Leads"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Contacts"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+            END AS CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS CONTEXTO ,
+      
+      ( SELECT CASE
+                WHEN A1.bean_module = "Accounts"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Opportunities"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Cases"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Leads"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Contacts"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+            END AS ID_CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS ID_CONTEXTO 
+
+
+
+FROM emails A
+INNER JOIN users D ON D.id = A.created_by 
+LEFT OUTER JOIN users B ON B.id = A.assigned_user_id
+LEFT OUTER JOIN users C ON C.id = A.modified_user_id
+LEFT OUTER JOIN cases E ON E.id = A.parent_id 
+                 AND A.parent_type = "Cases"
+LEFT OUTER JOIN oqc_contract F ON F.id = A.parent_id 
+                 AND A.parent_type = "oqc_Contract"
+LEFT OUTER JOIN opportunities G ON G.id = A.parent_id 
+                 AND A.parent_type = "Opportunities"
+LEFT OUTER JOIN accounts H ON H.id = A.parent_id 
+                 AND A.parent_type = "Accounts"                               
+LEFT OUTER JOIN contacts I ON I.id = A.parent_id 
+                 AND A.parent_type = "Contacts"                                                              
+LEFT OUTER JOIN leads J ON J.id = A.parent_id 
+                 AND A.parent_type = "Leads" 
+LEFT OUTER JOIN notes L ON L.parent_id = A.id
+                       AND L.parent_type = "Emails"
+                       AND L.deleted = 0
+                       AND L.file_mime_type = "application/pdf"
+                       AND L.id = ( SELECT MIN(L1.id) 
+                  FROM notes L1
+                                    WHERE L1.parent_id = A.id
+                                    AND L1.parent_type = "Emails"
+                                    AND L1.deleted = 0
+                                    AND L1.file_mime_type = "application/pdf" )  
+									
+LEFT OUTER JOIN	sugarcrm.emails_email_addr_rel AS M	ON M.email_id = A.id AND M.address_type = "to" AND M.deleted = 0
+LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS N ON N.email_address_id = M.email_address_id AND N.bean_module = "Contacts" AND N.deleted = 0
+LEFT OUTER JOIN sugarcrm.email_addresses AS N1 ON N1.id = N.email_address_id  AND N1.deleted = 0
+LEFT OUTER JOIN sugarcrm.contacts AS O ON O.id = N.bean_id AND O.deleted = 0
+LEFT OUTER JOIN sugarcrm.contacts_cstm AS P ON O.id = P.id_c AND P.funcionario_desligado_c = 0						
+									               
+WHERE A.date_modified &gt;  UNION ALL
+
+ SELECT CONVERT(A.id USING Latin1) AS ID_NOTA,
+         CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') AS DATA_CADASTRO,
+       CONVERT_TZ(A.date_modified,@@session.time_zone, '-03:00') AS DATA_ALTERACAO,
+       CONVERT(B.user_name USING Latin1) AS USUARIO_RESPONSAVEL,
+       CONVERT(C.user_name USING Latin1) AS USUARIO_ALTERACAO,
+       CONVERT(D.user_name USING Latin1) AS USUARIO_CADASTRO,
+       A.deleted AS FLAG_DELETADO,
+       IF(CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00') &lt; '1900-01-01', '1900-01-01', CONVERT_TZ(A.date_entered,@@session.time_zone, '-03:00')) AS DATA_ENVIO,
+       CONVERT(A.name USING Latin1) AS NOME,
+       CONVERT(CASE WHEN INSTR (UPPER(A.name), "ENVIADO") &gt; 0 THEN "out"
+                  WHEN INSTR (UPPER(A.name), "RECEBIDO") &gt; 0 THEN "inbound"
+                  ELSE "" END USING Latin1) AS TIPO,
+         CONVERT("Email cadastrado como NOTA" USING Latin1) AS STATUS,
+       CONVERT(CASE WHEN E.id IS NOT NULL THEN E.name
+            WHEN F.id IS NOT NULL THEN F.name
+            WHEN G.id IS NOT NULL THEN G.name
+            WHEN H.id IS NOT NULL THEN H.name
+            WHEN I.id IS NOT NULL THEN CONCAT(IFNULL(I.first_name,"")," ",IFNULL(I.last_name,""))
+            WHEN J.id IS NOT NULL THEN CONCAT(IFNULL(J.first_name,"")," ",IFNULL(J.last_name,""))
+            ELSE "" END USING Latin1) AS REFERENTE_A, 
+       CONVERT(A.parent_type USING Latin1) AS TIPO_CONTATO,
+       NULL AS ANEXO ,
+       CONVERT(A.parent_id USING Latin1) AS ID_TIPO_CONTATO ,
+	   CONVERT(CONCAT(LTRIM(RTRIM(K.first_name)), " ", LTRIM(RTRIM(K.last_name))) USING Latin1) AS NOME_CONTATO ,
+       CONVERT(LTRIM(RTRIM(KK1.email_address)) USING Latin1) AS EMAIL_CONTATO ,
+       CONVERT(IF(K1.contato_principal_c = 1 OR K1.usuario_admin_c = 1, "SIM", "NÃO") USING Latin1) AS CONTATO_ADM_PRINCIPAL ,
+	   
+	   
+	   	   ( SELECT CASE
+                WHEN A1.bean_module = "Accounts"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Opportunities"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Cases"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Leads"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+                WHEN A1.bean_module = "Contacts"
+                    THEN CONVERT(A1.bean_module USING Latin1)
+            END AS CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS CONTEXTO ,
+      
+      ( SELECT CASE
+                WHEN A1.bean_module = "Accounts"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Opportunities"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Cases"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Leads"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+                WHEN A1.bean_module = "Contacts"
+                    THEN CONVERT(A1.bean_id USING Latin1)
+            END AS ID_CONTEXTO                    
+      FROM   sugarcrm.emails_beans AS A1
+      WHERE  A.id = A1.email_id
+      ORDER BY
+              A1.bean_module
+      LIMIT 1) AS ID_CONTEXTO  
+	   
+	   	   
+FROM notes A
+INNER JOIN users D ON D.id = A.created_by 
+LEFT OUTER JOIN users B ON B.id = A.assigned_user_id
+LEFT OUTER JOIN users C ON C.id = A.modified_user_id
+LEFT OUTER JOIN cases E ON E.id = A.parent_id 
+                                             AND A.parent_type = "Cases"
+LEFT OUTER JOIN oqc_contract F ON F.id = A.parent_id 
+                                             AND A.parent_type = "oqc_Contract"
+LEFT OUTER JOIN opportunities G ON G.id = A.parent_id 
+                                             AND A.parent_type = "Opportunities"
+LEFT OUTER JOIN accounts H ON H.id = A.parent_id 
+                                             AND A.parent_type = "Accounts"                               
+LEFT OUTER JOIN contacts I ON I.id = A.parent_id 
+                                             AND A.parent_type = "Contacts"                                                              
+LEFT OUTER JOIN leads J ON J.id = A.parent_id 
+                                             AND A.parent_type = "Leads"
+
+LEFT OUTER JOIN sugarcrm.contacts AS K ON K.id = A.contact_id AND K.deleted = 0
+LEFT OUTER JOIN sugarcrm.contacts_cstm AS K1 ON K.id = K1.id_c AND K1.funcionario_desligado_c = 0
+LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS KK ON K.id = KK.bean_id AND KK.deleted = 0 AND KK.primary_address = "1" AND KK.bean_module = "Contacts"  
+LEFT OUTER JOIN sugarcrm.email_addresses AS KK1 ON KK1.id = KK.email_address_id AND KK1.deleted = 0
+
+
+WHERE A.date_modified &gt; </property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\MySQL.Connections[ODBCConnection]"
+                  connectionManagerID="{D8B49F88-60AF-4C25-A849-3E7F55926C5F}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção SUGAR user_dw]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_EMAIL]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_EMAIL]"
+                      name="ID_EMAIL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_CADASTRO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_CADASTRO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_CADASTRO]"
+                      name="DATA_CADASTRO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ALTERACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ALTERACAO]"
+                      name="DATA_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_RESPONSAVEL]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_RESPONSAVEL]"
+                      name="USUARIO_RESPONSAVEL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_ALTERACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_ALTERACAO]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_ALTERACAO]"
+                      name="USUARIO_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_CADASTRO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_CADASTRO]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_CADASTRO]"
+                      name="USUARIO_CADASTRO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[FLAG_DELETADO]"
+                      dataType="i1"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[FLAG_DELETADO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[FLAG_DELETADO]"
+                      name="FLAG_DELETADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ENVIO]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ENVIO]"
+                      length="19"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ENVIO]"
+                      name="DATA_ENVIO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NOME]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NOME]"
+                      name="NOME" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO]"
+                      name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]"
+                      name="REFERENTE_A" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_CONTATO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_CONTATO]"
+                      name="TIPO_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ANEXO]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ANEXO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ANEXO]"
+                      name="ANEXO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_TIPO_CONTATO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_TIPO_CONTATO]"
+                      name="ID_TIPO_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NOME_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NOME_CONTATO]"
+                      length="201"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NOME_CONTATO]"
+                      name="NOME_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[EMAIL_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[EMAIL_CONTATO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[EMAIL_CONTATO]"
+                      name="EMAIL_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTATO_ADM_PRINCIPAL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTATO_ADM_PRINCIPAL]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTATO_ADM_PRINCIPAL]"
+                      name="CONTATO_ADM_PRINCIPAL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTEXTO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTEXTO]"
+                      name="CONTEXTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_CONTEXTO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_CONTEXTO]"
+                      name="ID_CONTEXTO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_EMAIL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_CADASTRO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CADASTRO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_RESPONSAVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_ALTERACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_CADASTRO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_CADASTRO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[FLAG_DELETADO]"
+                      dataType="i1"
+                      name="FLAG_DELETADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ENVIO]"
+                      dataType="wstr"
+                      length="19"
+                      name="DATA_ENVIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="NOME" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="REFERENTE_A" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="TIPO_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ANEXO]"
+                      dataType="wstr"
+                      length="255"
+                      name="ANEXO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_TIPO_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NOME_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="201"
+                      name="NOME_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[EMAIL_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EMAIL_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTATO_ADM_PRINCIPAL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="CONTATO_ADM_PRINCIPAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONTEXTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_CONTEXTO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_EMAIL]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_EMAIL]"
+                      name="ID_EMAIL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_CADASTRO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_CADASTRO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_CADASTRO]"
+                      name="DATA_CADASTRO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ALTERACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_ALTERACAO]"
+                      name="DATA_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[USUARIO_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_RESPONSAVEL]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[USUARIO_RESPONSAVEL]"
+                      name="USUARIO_RESPONSAVEL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[USUARIO_ALTERACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_ALTERACAO]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[USUARIO_ALTERACAO]"
+                      name="USUARIO_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[USUARIO_CADASTRO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[USUARIO_CADASTRO]"
+                      length="60"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[USUARIO_CADASTRO]"
+                      name="USUARIO_CADASTRO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[FLAG_DELETADO]"
+                      dataType="i1"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[FLAG_DELETADO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[FLAG_DELETADO]"
+                      name="FLAG_DELETADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_ENVIO]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DATA_ENVIO]"
+                      length="19"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DATA_ENVIO]"
+                      name="DATA_ENVIO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NOME]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[NOME]"
+                      name="NOME" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO]"
+                      name="TIPO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[REFERENTE_A]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[REFERENTE_A]"
+                      name="REFERENTE_A" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[TIPO_CONTATO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[TIPO_CONTATO]"
+                      name="TIPO_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ANEXO]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ANEXO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ANEXO]"
+                      name="ANEXO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_TIPO_CONTATO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_TIPO_CONTATO]"
+                      name="ID_TIPO_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[NOME_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[NOME_CONTATO]"
+                      length="201"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[NOME_CONTATO]"
+                      name="NOME_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[EMAIL_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[EMAIL_CONTATO]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[EMAIL_CONTATO]"
+                      name="EMAIL_CONTATO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTATO_ADM_PRINCIPAL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTATO_ADM_PRINCIPAL]"
+                      length="3"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTATO_ADM_PRINCIPAL]"
+                      name="CONTATO_ADM_PRINCIPAL" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[CONTEXTO]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[CONTEXTO]"
+                      name="CONTEXTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[ID_CONTEXTO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ID_CONTEXTO]"
+                      name="ID_CONTEXTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL -&gt; SQL Server\OLTP"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLTP"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_EMAILS_CRM]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL -&gt; SQL Server\OLTP.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[ID_EMAIL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="ID_EMAIL"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ID_EMAIL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_EMAIL]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[DATA_CADASTRO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CADASTRO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CADASTRO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_CADASTRO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[DATA_ALTERACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_ALTERACAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ALTERACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[USUARIO_RESPONSAVEL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="USUARIO_RESPONSAVEL"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_RESPONSAVEL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_RESPONSAVEL]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[USUARIO_ALTERACAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="USUARIO_ALTERACAO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_ALTERACAO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_ALTERACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[USUARIO_CADASTRO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="USUARIO_CADASTRO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_CADASTRO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[USUARIO_CADASTRO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[FLAG_DELETADO]"
+                      cachedDataType="i1"
+                      cachedName="FLAG_DELETADO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_DELETADO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[FLAG_DELETADO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[DATA_ENVIO]"
+                      cachedDataType="wstr"
+                      cachedLength="19"
+                      cachedName="DATA_ENVIO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENVIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DATA_ENVIO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[NOME]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="NOME"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[NOME]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NOME]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[TIPO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="TIPO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[STATUS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="STATUS"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[STATUS]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[REFERENTE_A]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="REFERENTE_A"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[REFERENTE_A]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[REFERENTE_A]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[TIPO_CONTATO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="TIPO_CONTATO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_CONTATO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[TIPO_CONTATO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[ANEXO]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ANEXO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ANEXO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ANEXO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[ID_TIPO_CONTATO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="ID_TIPO_CONTATO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ID_TIPO_CONTATO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_TIPO_CONTATO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[NOME_CONTATO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="201"
+                      cachedName="NOME_CONTATO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[NOME_CONTATO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[NOME_CONTATO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[EMAIL_CONTATO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="EMAIL_CONTATO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_CONTATO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[EMAIL_CONTATO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[CONTATO_ADM_PRINCIPAL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="CONTATO_ADM_PRINCIPAL"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[CONTATO_ADM_PRINCIPAL]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTATO_ADM_PRINCIPAL]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[CONTEXTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="CONTEXTO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[CONTEXTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[CONTEXTO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].Columns[ID_CONTEXTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="ID_CONTEXTO"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ID_CONTEXTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[ID_CONTEXTO]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ID_EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="ID_EMAIL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="NOME" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CADASTRO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CADASTRO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_CADASTRO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_CADASTRO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_ALTERACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_DELETADO]"
+                      dataType="bool"
+                      name="FLAG_DELETADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO_RESPONSAVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ENVIO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ENVIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[REFERENTE_A]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="REFERENTE_A" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[GRUPO_VENDEDOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="GRUPO_VENDEDOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="TIPO_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ANEXO]"
+                      dataType="wstr"
+                      length="255"
+                      name="ANEXO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_ANEXO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TIPO_ANEXO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ID_TIPO_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="ID_TIPO_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[NOME_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="NOME_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_CONTATO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="EMAIL_CONTATO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[CONTATO_ADM_PRINCIPAL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="CONTATO_ADM_PRINCIPAL" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CONTEXTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input].ExternalColumns[ID_CONTEXTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ID_CONTEXTO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL -&gt; SQL Server\OLTP.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\OLTP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\OLTP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL -&gt; SQL Server\OLTP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL -&gt; SQL Server\OLTP.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Pegar Última Data Alteração"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{499610ca-0f61-403f-ae78-45f674370170}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pegar Última Data Alteração"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="SELECT CONVERT(VARCHAR,ISNULL(MAX(DATA_ALTERACAO),'19010101'),112) AS DATA_ALTERACAO&#xA;FROM VAGAS_DW.EMAILS_CRM&#xA;&#xA;--SELECT '19010101' AS DATA_ALTERACAO"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="DATA_ALTERACAO"
+            SQLTask:DtsVariableName="User::DATA_ALTERACAO" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{edd74804-e5c3-4b6c-a9d0-b66dbc2a50ae}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;EMAILS_CRM - DATA ENVIO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;EMAILS_CRM&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_Emails_CRM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{f6891b34-56cc-4db2-9e00-e491db0dbf95}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_Emails_CRM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC VAGAS_DW.SPR_OLAP_Carga_Emails_CRM" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{F0697566-A8FA-4B49-AEDB-4A95656F1469}"
+      DTS:From="Package\Pegar Última Data Alteração"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Limpar  VAGAS_DW_EMAILS_CRM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{0D82F8DC-6529-4049-AB9D-23A419B7B6F6}"
+      DTS:From="Package\Limpar  VAGAS_DW_EMAILS_CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\MySQL -&gt; SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{64E8EF5F-391D-457E-A903-FFBC3954C3E1}"
+      DTS:From="Package\MySQL -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_Emails_CRM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{81C92A77-C006-4962-9BFA-29A8A10543FB}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_Emails_CRM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="241,42"
+          Id="Package\Limpar  VAGAS_DW_EMAILS_CRM"
+          TopLeft="342,127" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\MySQL -&gt; SQL Server"
+          TopLeft="378,207" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Pegar Última Data Alteração"
+          TopLeft="351,49" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="420,357" />
+        <NodeLayout
+          Size="285,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_Emails_CRM"
+          TopLeft="355,284" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="459.75,91">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36"
+              Start="0,0"
+              End="0,28.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="465.75,169">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38"
+              Start="0,0"
+              End="0,30.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="469,249">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="28.5,35"
+              Start="0,0"
+              End="28.5,27.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.5"
+                    Point2="0,17.5"
+                    Point3="4,17.5" />
+                  <mssgle:LineSegment
+                    End="24.5,17.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="24.5,17.5"
+                    Point2="28.5,17.5"
+                    Point3="28.5,21.5" />
+                  <mssgle:LineSegment
+                    End="28.5,27.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="497.5,326">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31"
+              Start="0,0"
+              End="0,23.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="104,42"
+          Id="Package\MySQL -&gt; SQL Server\OLTP"
+          TopLeft="195,230" />
+        <NodeLayout
+          Size="111,42"
+          Id="Package\MySQL -&gt; SQL Server\MySQL"
+          TopLeft="165,94" />
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="220.5,136">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="26.5,94"
+              Start="0,0"
+              End="26.5,86.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,43"
+                    Point2="0,47"
+                    Point3="4,47" />
+                  <mssgle:LineSegment
+                    End="22.5,47" />
+                  <mssgle:CubicBezierSegment
+                    Point1="22.5,47"
+                    Point2="26.5,47"
+                    Point3="26.5,51" />
+                  <mssgle:LineSegment
+                    End="26.5,86.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\MySQL">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL -&gt; SQL Server\OLTP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

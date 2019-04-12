@@ -1,0 +1,2674 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/10/2016 3:58:36 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DTSID="{C7891CA3-2CA4-4CA8-B6B9-B783C4EDDFA9}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Evolucao_Marcos_Equipes"
+  DTS:PackageType="5"
+  DTS:VersionBuild="136"
+  DTS:VersionGUID="{FF102CBD-09EB-49C0-9378-1A36903C4B74}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Carga - Resultados-Chave"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{FA9A5834-6E2F-44E6-8B4E-C245F3EB9BA0}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga - Resultados-Chave"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Marcos_Resultados_Chave] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga VAGAS_DW - Evolução Marcos Equipes"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1981C33C-480C-4191-A3B9-D92583740037}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga VAGAS_DW - Evolução Marcos Equipes"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC VAGAS_DW.SPR_OLAP_Carga_Evolucao_Marcos_Equipes" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Intranet -&gt; DW"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{F28FD5F0-BD07-40E1-8CC1-3DC53F0C448F}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Intranet -&gt; DW"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Intranet -&gt; DW\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[MARCO_NID]"
+                      cachedDataType="ui4"
+                      cachedName="MARCO_NID"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_NID]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[CICLO_NID]"
+                      cachedDataType="ui4"
+                      cachedName="CICLO_NID"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_NID]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[CRITERIO_NID]"
+                      cachedDataType="ui4"
+                      cachedName="CRITERIO_NID"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_NID]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[MARCO_INDICADOR]"
+                      cachedDataType="i4"
+                      cachedName="MARCO_INDICADOR"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_INDICADOR]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="765"
+                      cachedName="CONTEXTO_IMPACTO_NEGOCIO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CONTEXTO_IMPACTO_NEGOCIO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[IMPACTO_NEGOCIO]"
+                      cachedDataType="ui4"
+                      cachedName="IMPACTO_NEGOCIO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_NEGOCIO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[TITULO_DIRECIONADOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="TITULO_DIRECIONADOR"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[TITULO_DIRECIONADOR]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[IMPACTO_PE]"
+                      cachedDataType="ui4"
+                      cachedName="IMPACTO_PE"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_PE]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[STATUS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="765"
+                      cachedName="STATUS"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[RESULTADO_AFERICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="RESULTADO_AFERICAO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[RESULTADO_ESPERADO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="RESULTADO_ESPERADO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input].Columns[MEDIR]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="MEDIR"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MEDIR]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MARCO_NID_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MARCO_NID_Conv]"
+                      name="MARCO_NID_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_NID]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CICLO_NID_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CICLO_NID_Conv]"
+                      name="CICLO_NID_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_NID]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CRITERIO_NID_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CRITERIO_NID_Conv]"
+                      name="CRITERIO_NID_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_NID]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MARCO_INDICADOR_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MARCO_INDICADOR_Conv]"
+                      name="MARCO_INDICADOR_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_INDICADOR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CONTEXTO_IMPACTO_NEGOCIO_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CONTEXTO_IMPACTO_NEGOCIO_Conv]"
+                      name="CONTEXTO_IMPACTO_NEGOCIO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CONTEXTO_IMPACTO_NEGOCIO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[IMPACTO_NEGOCIO_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[IMPACTO_NEGOCIO_Conv]"
+                      name="IMPACTO_NEGOCIO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_NEGOCIO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[TITULO_DIRECIONADOR_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[TITULO_DIRECIONADOR_Conv]"
+                      name="TITULO_DIRECIONADOR_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[TITULO_DIRECIONADOR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[IMPACTO_PE_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[IMPACTO_PE_Conv]"
+                      name="IMPACTO_PE_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_PE]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[STATUS_Conv]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[STATUS_Conv]"
+                      name="STATUS_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[RESULTADO_AFERICAO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[RESULTADO_AFERICAO_Conv]"
+                      name="RESULTADO_AFERICAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[RESULTADO_ESPERADO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[RESULTADO_ESPERADO_Conv]"
+                      name="RESULTADO_ESPERADO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MEDIR_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MEDIR_Conv]"
+                      name="MEDIR_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MEDIR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave)"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Conversão de Dados;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;0"
+              description="Conversão de Dados"
+              name="Data Conversion (Resultados-Chave)"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados]"
+                  name="Entrada de Conversão de Dados">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[NID_RESULTADO]"
+                      cachedDataType="ui4"
+                      cachedName="NID_RESULTADO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_RESULTADO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[DATA_CRIACAO_RESULTADO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CRIACAO_RESULTADO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_CRIACAO_RESULTADO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[NID_MARCO]"
+                      cachedDataType="ui4"
+                      cachedName="NID_MARCO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_MARCO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[NID_CICLO]"
+                      cachedDataType="ui4"
+                      cachedName="NID_CICLO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_CICLO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[RESULTADO_ESPERADO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="RESULTADO_ESPERADO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[MEDIR]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="MEDIR"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[MEDIR]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_RESULTADO_DISPONIVEL"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[RESULTADO_AFERICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="RESULTADO_AFERICAO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[DATA_AFERICAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_AFERICAO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_AFERICAO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados].Columns[STATUS_AFERICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="11"
+                      cachedName="STATUS_AFERICAO"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados]"
+                  exclusionGroup="1"
+                  name="Saída de Conversão de Dados"
+                  synchronousInputId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_RESULTADO_Conv]"
+                      dataType="ui4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_RESULTADO_Conv]"
+                      name="NID_RESULTADO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_RESULTADO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_CRIACAO_RESULTADO_Conv]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_CRIACAO_RESULTADO_Conv]"
+                      name="DATA_CRIACAO_RESULTADO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_CRIACAO_RESULTADO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_MARCO_Conv]"
+                      dataType="ui4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_MARCO_Conv]"
+                      name="NID_MARCO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_MARCO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_CICLO_Conv]"
+                      dataType="ui4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_CICLO_Conv]"
+                      name="NID_CICLO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_CICLO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[RESULTADO_ESPERADO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[RESULTADO_ESPERADO_Conv]"
+                      name="RESULTADO_ESPERADO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[MEDIR_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[MEDIR_Conv]"
+                      name="MEDIR_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[MEDIR]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_RESULTADO_DISPONIVEL_Conv]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_RESULTADO_DISPONIVEL_Conv]"
+                      name="DATA_RESULTADO_DISPONIVEL_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[RESULTADO_AFERICAO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="8000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[RESULTADO_AFERICAO_Conv]"
+                      name="RESULTADO_AFERICAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_AFERICAO_Conv]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_AFERICAO_Conv]"
+                      name="DATA_AFERICAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_AFERICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[STATUS_AFERICAO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="1000"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[STATUS_AFERICAO_Conv]"
+                      name="STATUS_AFERICAO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Erro de Conversão de Dados]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Conversão de Dados"
+                  synchronousInputId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Intranet -&gt; DW\Intranet"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="Intranet"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT DISTINCT n.nid AS MARCO_NID,
+	   groups.title AS EQUIPE,
+	   contador.field_contador_value AS MARCO_INDICADOR,
+	   titulo.field_marcos_titulo_value AS MARCO_TITULO,
+	   atingimento.field_marcos_atingimento_value AS PERC_ATINGIMENTO,
+	   marco_ciclo.field_marcos_ciclo_target_id AS CICLO_NID,
+	   ciclo.field_ciclo_titulo_value AS CICLO,
+	   criterio_marco.entity_id AS CRITERIO_NID,
+	   criterio.field_criterio_sucesso_value AS CRITERIO_SUCESSO,
+       contexto.field_contexto_do_impacto_value AS CONTEXTO_IMPACTO_NEGOCIO,
+       field_impacto_tipo.field_impacto_tipo_tid AS IMPACTO_NEGOCIO,    
+       
+       field_contador.field_contador_value AS DIRECIONADOR,
+       field_dir.field_direcionador_value AS TITULO_DIRECIONADOR,
+       field_impacto_tipo_2.field_impacto_tipo_tid AS IMPACTO_PE,
+       ciclo_periodo.field_ciclo_periodo_value AS CICLO_INICIO,
+       ciclo_periodo.field_ciclo_periodo_value2 AS CICLO_FIM,
+       status.field_marcos_status_value AS STATUS ,
+       # Resultado Chave
+       esperado.field_esperado_value AS RESULTADO_ESPERADO ,
+		 medir.field_medir_value AS MEDIR , 
+		 data_disponivel.field_data_disponivel_value AS DATA_RESULTADO_DISPONIVEL ,
+		 aferido.field_aferido_value AS RESULTADO_AFERICAO ,
+		 data_aferido.field_data_aferido_value AS DATA_AFERICAO ,
+		 # Status 1 Aferido, 2 Não Aferido 
+		 CASE
+            WHEN resultado_status.field_resultado_status_value = 1
+                THEN 'AFERIDO'
+            WHEN resultado_status.field_resultado_status_value = 2
+                THEN 'NÃO AFERIDO'
+            ELSE NULL
+         END AS STATUS_AFERICAO
+FROM drp_node n
+LEFT JOIN drp_field_data_field_equipes equipe ON n.nid = equipe.entity_id
+LEFT JOIN drp_groups groups ON equipe.field_equipes_target_id = groups.gid
+LEFT JOIN drp_field_data_field_marcos_ciclo marco_ciclo ON n.nid = marco_ciclo.entity_id
+LEFT JOIN drp_field_data_field_ciclo_titulo ciclo ON marco_ciclo.field_marcos_ciclo_target_id = ciclo.entity_id
+LEFT JOIN drp_field_data_field_contador contador ON n.nid = contador.entity_id
+LEFT JOIN drp_field_data_field_marcos_titulo titulo ON n.nid = titulo.entity_id
+LEFT JOIN drp_field_data_field_marcos_status status ON n.nid = status.entity_id
+LEFT JOIN drp_field_data_field_marcos_atingimento atingimento ON n.nid = atingimento.entity_id  
+LEFT JOIN drp_field_data_field_pe_marco criterio_marco ON n.nid = criterio_marco.field_pe_marco_target_id 
+LEFT JOIN drp_field_data_field_criterio_sucesso criterio ON criterio_marco.entity_id = criterio.entity_id 
+LEFT JOIN drp_field_data_field_ciclo_periodo ciclo_periodo ON marco_ciclo.field_marcos_ciclo_target_id = ciclo_periodo.entity_id
+
+# Impacto de Negócio
+LEFT JOIN drp_field_data_field_impacto_marco impacto_marco ON n.nid = impacto_marco.field_impacto_marco_target_id 
+LEFT JOIN drp_field_data_field_contexto_do_impacto contexto ON impacto_marco.entity_id = contexto.entity_id 
+LEFT JOIN drp_field_data_field_impacto_tipo field_impacto_tipo ON impacto_marco.entity_id  = field_impacto_tipo.entity_id
+
+# Impacto do PE
+LEFT JOIN drp_field_data_field_pe_marco impacto_pe_marco ON n.nid = impacto_pe_marco.field_pe_marco_target_id
+LEFT JOIN drp_field_data_field_pe_direcionador dir ON impacto_pe_marco.entity_id = dir.entity_id
+LEFT JOIN drp_field_data_field_direcionador field_dir ON dir.field_pe_direcionador_target_id = field_dir.entity_id
+LEFT JOIN drp_field_data_field_contador field_contador ON dir.field_pe_direcionador_target_id = field_contador.entity_id 
+LEFT JOIN drp_field_data_field_obj_estrategico obj ON impacto_pe_marco.entity_id = obj.entity_id 
+LEFT JOIN drp_field_data_field_objetivo field_obj ON obj.field_obj_estrategico_target_id = field_obj.entity_id
+LEFT JOIN drp_field_data_field_contador field_contador_obj ON obj.field_obj_estrategico_target_id = field_contador_obj.entity_id
+LEFT JOIN drp_field_data_field_impacto_tipo field_impacto_tipo_2 ON impacto_pe_marco.entity_id = field_impacto_tipo_2.entity_id
+
+# Resultado
+LEFT JOIN drp_field_data_field_nid_marco nid_marco ON n.nid = nid_marco.field_nid_marco_target_id
+AND nid_marco.bundle = 'marco_resultado'
+LEFT JOIN drp_field_data_field_esperado esperado ON nid_marco.entity_id = esperado.entity_id
+AND esperado.bundle = 'marco_resultado'
+LEFT JOIN drp_field_data_field_medir medir ON nid_marco.entity_id = medir.entity_id
+AND medir.bundle = 'marco_resultado'
+LEFT JOIN drp_field_data_field_data_disponivel data_disponivel ON nid_marco.entity_id = data_disponivel.entity_id
+LEFT JOIN drp_field_data_field_aferido aferido ON nid_marco.entity_id = aferido.entity_id
+LEFT JOIN drp_field_data_field_data_aferido data_aferido ON nid_marco.entity_id = data_aferido.entity_id
+LEFT JOIN drp_field_data_field_resultado_status resultado_status ON nid_marco.entity_id = resultado_status.entity_id
+
+WHERE n.type ='marcos'
+ORDER BY ciclo.field_ciclo_titulo_value</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Intranet -&gt; DW\Intranet.Connections[ODBCConnection]"
+                  connectionManagerID="{80C07C59-7BED-45A6-8397-D0E7A9AFFA8B}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Intranet]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_NID]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_NID]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_NID]"
+                      name="MARCO_NID" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[EQUIPE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[EQUIPE]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[EQUIPE]"
+                      name="EQUIPE" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_INDICADOR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_INDICADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_INDICADOR]"
+                      name="MARCO_INDICADOR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_TITULO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_TITULO]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_TITULO]"
+                      name="MARCO_TITULO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[PERC_ATINGIMENTO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[PERC_ATINGIMENTO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[PERC_ATINGIMENTO]"
+                      name="PERC_ATINGIMENTO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_NID]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_NID]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_NID]"
+                      name="CICLO_NID" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO]"
+                      name="CICLO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_NID]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_NID]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_NID]"
+                      name="CRITERIO_NID" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_SUCESSO]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]"
+                      name="CRITERIO_SUCESSO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      name="CONTEXTO_IMPACTO_NEGOCIO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_NEGOCIO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[IMPACTO_NEGOCIO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_NEGOCIO]"
+                      name="IMPACTO_NEGOCIO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DIRECIONADOR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DIRECIONADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DIRECIONADOR]"
+                      name="DIRECIONADOR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[TITULO_DIRECIONADOR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[TITULO_DIRECIONADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[TITULO_DIRECIONADOR]"
+                      name="TITULO_DIRECIONADOR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_PE]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[IMPACTO_PE]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[IMPACTO_PE]"
+                      name="IMPACTO_PE" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_INICIO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_INICIO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_INICIO]"
+                      name="CICLO_INICIO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_FIM]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_FIM]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_FIM]"
+                      name="CICLO_FIM" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[RESULTADO_ESPERADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]"
+                      name="RESULTADO_ESPERADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MEDIR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MEDIR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MEDIR]"
+                      name="MEDIR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[RESULTADO_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]"
+                      name="RESULTADO_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DATA_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DATA_AFERICAO]"
+                      name="DATA_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[STATUS_AFERICAO]"
+                      length="11"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]"
+                      name="STATUS_AFERICAO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_NID]"
+                      dataType="ui4"
+                      name="MARCO_NID" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[EQUIPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="EQUIPE" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_INDICADOR]"
+                      dataType="i4"
+                      name="MARCO_INDICADOR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_TITULO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="MARCO_TITULO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[PERC_ATINGIMENTO]"
+                      dataType="i4"
+                      name="PERC_ATINGIMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_NID]"
+                      dataType="ui4"
+                      name="CICLO_NID" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO]"
+                      dataType="i4"
+                      name="CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_NID]"
+                      dataType="ui4"
+                      name="CRITERIO_NID" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="CRITERIO_SUCESSO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="CONTEXTO_IMPACTO_NEGOCIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[IMPACTO_NEGOCIO]"
+                      dataType="ui4"
+                      name="IMPACTO_NEGOCIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DIRECIONADOR]"
+                      dataType="i4"
+                      name="DIRECIONADOR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[TITULO_DIRECIONADOR]"
+                      codePage="1252"
+                      dataType="text"
+                      name="TITULO_DIRECIONADOR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[IMPACTO_PE]"
+                      dataType="ui4"
+                      name="IMPACTO_PE" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_INICIO]"
+                      dataType="dbTimeStamp"
+                      name="CICLO_INICIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_FIM]"
+                      dataType="dbTimeStamp"
+                      name="CICLO_FIM" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="RESULTADO_ESPERADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MEDIR]"
+                      codePage="1252"
+                      dataType="text"
+                      name="MEDIR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="RESULTADO_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="11"
+                      name="STATUS_AFERICAO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MARCO_NID]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_NID]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MARCO_NID]"
+                      name="MARCO_NID" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[EQUIPE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[EQUIPE]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[EQUIPE]"
+                      name="EQUIPE" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MARCO_INDICADOR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_INDICADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MARCO_INDICADOR]"
+                      name="MARCO_INDICADOR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MARCO_TITULO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MARCO_TITULO]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MARCO_TITULO]"
+                      name="MARCO_TITULO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[PERC_ATINGIMENTO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[PERC_ATINGIMENTO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[PERC_ATINGIMENTO]"
+                      name="PERC_ATINGIMENTO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO_NID]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_NID]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO_NID]"
+                      name="CICLO_NID" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO]"
+                      name="CICLO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CRITERIO_NID]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_NID]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CRITERIO_NID]"
+                      name="CRITERIO_NID" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CRITERIO_SUCESSO]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CRITERIO_SUCESSO]"
+                      name="CRITERIO_SUCESSO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      name="CONTEXTO_IMPACTO_NEGOCIO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[IMPACTO_NEGOCIO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[IMPACTO_NEGOCIO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[IMPACTO_NEGOCIO]"
+                      name="IMPACTO_NEGOCIO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[DIRECIONADOR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DIRECIONADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[DIRECIONADOR]"
+                      name="DIRECIONADOR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[TITULO_DIRECIONADOR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[TITULO_DIRECIONADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[TITULO_DIRECIONADOR]"
+                      name="TITULO_DIRECIONADOR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[IMPACTO_PE]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[IMPACTO_PE]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[IMPACTO_PE]"
+                      name="IMPACTO_PE" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO_INICIO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_INICIO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO_INICIO]"
+                      name="CICLO_INICIO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO_FIM]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[CICLO_FIM]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[CICLO_FIM]"
+                      name="CICLO_FIM" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="765"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[RESULTADO_ESPERADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[RESULTADO_ESPERADO]"
+                      name="RESULTADO_ESPERADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MEDIR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[MEDIR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[MEDIR]"
+                      name="MEDIR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[RESULTADO_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[RESULTADO_AFERICAO]"
+                      name="RESULTADO_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[DATA_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[DATA_AFERICAO]"
+                      name="DATA_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].ExternalColumns[STATUS_AFERICAO]"
+                      length="11"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[STATUS_AFERICAO]"
+                      name="STATUS_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave)"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="Intranet (Resultados-Chave)"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT n.nid as NID_RESULTADO , 
+FROM_UNIXTIME(n.created) DATA_CRIACAO_RESULTADO , 
+nid_marco.field_nid_marco_target_id as NID_MARCO,
+marco_ciclo.field_marcos_ciclo_target_id AS NID_CICLO , 
+esperado.field_esperado_value AS RESULTADO_ESPERADO , 
+medir.field_medir_value AS MEDIR ,
+data_disponivel.field_data_disponivel_value AS DATA_RESULTADO_DISPONIVEL ,
+aferido.field_aferido_value AS RESULTADO_AFERICAO ,
+data_aferido.field_data_aferido_value AS DATA_AFERICAO ,
+ # Status 1 Aferido, 2 Não Aferido 
+ CASE
+    WHEN resultado_status.field_resultado_status_value = 1
+        THEN 'AFERIDO'
+    WHEN resultado_status.field_resultado_status_value = 2
+        THEN 'NÃO AFERIDO'
+    ELSE NULL
+ END AS STATUS_AFERICAO
+FROM drp_node n
+LEFT JOIN drp_field_data_field_nid_marco nid_marco ON n.nid = nid_marco.entity_id
+LEFT JOIN drp_field_data_field_esperado esperado ON n.nid = esperado.entity_id
+LEFT JOIN drp_field_data_field_medir medir ON n.nid = medir.entity_id
+LEFT JOIN drp_field_data_field_data_disponivel data_disponivel ON n.nid = data_disponivel.entity_id
+LEFT JOIN drp_field_data_field_aferido aferido ON n.nid = aferido.entity_id
+LEFT JOIN drp_field_data_field_data_aferido data_aferido ON n.nid = data_aferido.entity_id
+LEFT JOIN drp_field_data_field_resultado_status resultado_status ON n.nid = resultado_status.entity_id
+LEFT JOIN drp_field_data_field_marcos_ciclo marco_ciclo ON n.nid = marco_ciclo.entity_id
+WHERE n.type = 'marco_resultado' ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Connections[ODBCConnection]"
+                  connectionManagerID="{80C07C59-7BED-45A6-8397-D0E7A9AFFA8B}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Intranet]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_RESULTADO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_RESULTADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_RESULTADO]"
+                      name="NID_RESULTADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_CRIACAO_RESULTADO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO_RESULTADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_CRIACAO_RESULTADO]"
+                      name="DATA_CRIACAO_RESULTADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_MARCO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_MARCO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_MARCO]"
+                      name="NID_MARCO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_CICLO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[NID_CICLO]"
+                      name="NID_CICLO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[RESULTADO_ESPERADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_ESPERADO]"
+                      name="RESULTADO_ESPERADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[MEDIR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[MEDIR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[MEDIR]"
+                      name="MEDIR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[RESULTADO_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[RESULTADO_AFERICAO]"
+                      name="RESULTADO_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[DATA_AFERICAO]"
+                      name="DATA_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[STATUS_AFERICAO]"
+                      length="11"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]"
+                      name="STATUS_AFERICAO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_RESULTADO]"
+                      dataType="ui4"
+                      name="NID_RESULTADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO_RESULTADO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO_RESULTADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_MARCO]"
+                      dataType="ui4"
+                      name="NID_MARCO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_CICLO]"
+                      dataType="ui4"
+                      name="NID_CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="RESULTADO_ESPERADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[MEDIR]"
+                      codePage="1252"
+                      dataType="text"
+                      name="MEDIR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      name="RESULTADO_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="11"
+                      name="STATUS_AFERICAO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[NID_RESULTADO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_RESULTADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[NID_RESULTADO]"
+                      name="NID_RESULTADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO_RESULTADO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO_RESULTADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO_RESULTADO]"
+                      name="DATA_CRIACAO_RESULTADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[NID_MARCO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_MARCO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[NID_MARCO]"
+                      name="NID_MARCO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[NID_CICLO]"
+                      dataType="ui4"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[NID_CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[NID_CICLO]"
+                      name="NID_CICLO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[RESULTADO_ESPERADO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[RESULTADO_ESPERADO]"
+                      name="RESULTADO_ESPERADO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[MEDIR]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[MEDIR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[MEDIR]"
+                      name="MEDIR" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[RESULTADO_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[RESULTADO_AFERICAO]"
+                      name="RESULTADO_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[DATA_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[DATA_AFERICAO]"
+                      name="DATA_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output].ExternalColumns[STATUS_AFERICAO]"
+                      length="11"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[STATUS_AFERICAO]"
+                      name="STATUS_AFERICAO" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Intranet -&gt; DW\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_INDICADOR_MARCOS_INTRANET]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Intranet -&gt; DW\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PERC_ATINGIMENTO]"
+                      cachedDataType="i4"
+                      cachedName="PERC_ATINGIMENTO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PERC_ATINGIMENTO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[PERC_ATINGIMENTO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CICLO]"
+                      cachedDataType="i4"
+                      cachedName="CICLO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CRITERIO_SUCESSO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="765"
+                      cachedName="CRITERIO_SUCESSO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CRITERIO_SUCESSO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CRITERIO_SUCESSO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CICLO_INICIO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="CICLO_INICIO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CICLO_INICIO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_INICIO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CICLO_FIM]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="CICLO_FIM"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CICLO_FIM]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[CICLO_FIM]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DATA_RESULTADO_DISPONIVEL]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_RESULTADO_DISPONIVEL"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DATA_RESULTADO_DISPONIVEL]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DATA_AFERICAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_AFERICAO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DATA_AFERICAO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[STATUS_AFERICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="11"
+                      cachedName="STATUS_AFERICAO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[STATUS_AFERICAO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CONTEXTO_IMPACTO_NEGOCIO_Conv]"
+                      cachedDataType="i4"
+                      cachedName="CONTEXTO_IMPACTO_NEGOCIO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CONTEXTO_IMPACTO_NEGOCIO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TITULO_DIRECIONADOR_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="TITULO_DIRECIONADOR_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DIRECIONADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[TITULO_DIRECIONADOR_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[IMPACTO_NEGOCIO_Conv]"
+                      cachedDataType="i4"
+                      cachedName="IMPACTO_NEGOCIO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IMPACTO_NEGOCIO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[IMPACTO_NEGOCIO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[IMPACTO_PE_Conv]"
+                      cachedDataType="i4"
+                      cachedName="IMPACTO_PE_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IMPACTO_PE]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[IMPACTO_PE_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MARCO_TITULO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="765"
+                      cachedName="MARCO_TITULO"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MARCO]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[MARCO_TITULO]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MEDIR_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="MEDIR_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MEDIR]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MEDIR_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CICLO_NID_Conv]"
+                      cachedDataType="i4"
+                      cachedName="CICLO_NID_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NID_CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CICLO_NID_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CRITERIO_NID_Conv]"
+                      cachedDataType="i4"
+                      cachedName="CRITERIO_NID_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NID_CRITERIO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[CRITERIO_NID_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MARCO_NID_Conv]"
+                      cachedDataType="i4"
+                      cachedName="MARCO_NID_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NID_MARCO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MARCO_NID_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EQUIPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="765"
+                      cachedName="EQUIPE"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NOME_EQUIPE]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[EQUIPE]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DIRECIONADOR]"
+                      cachedDataType="i4"
+                      cachedName="DIRECIONADOR"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DIRECIONADOR]"
+                      lineageId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output].Columns[DIRECIONADOR]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MARCO_INDICADOR_Conv]"
+                      cachedDataType="i4"
+                      cachedName="MARCO_INDICADOR_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_MARCO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[MARCO_INDICADOR_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RESULTADO_AFERICAO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="RESULTADO_AFERICAO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[RESULTADO_AFERICAO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RESULTADO_ESPERADO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="RESULTADO_ESPERADO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_ESPERADO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[RESULTADO_ESPERADO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[STATUS_Conv]"
+                      cachedDataType="i4"
+                      cachedName="STATUS_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output].Columns[STATUS_Conv]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NOME_EQUIPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="NOME_EQUIPE" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NID_MARCO]"
+                      dataType="i4"
+                      name="NID_MARCO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_MARCO]"
+                      dataType="i4"
+                      name="NUMERO_MARCO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MARCO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="765"
+                      name="MARCO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PERC_ATINGIMENTO]"
+                      dataType="i4"
+                      name="PERC_ATINGIMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NID_CICLO]"
+                      dataType="i4"
+                      name="NID_CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CICLO]"
+                      dataType="i4"
+                      name="CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NID_CRITERIO]"
+                      dataType="i4"
+                      name="NID_CRITERIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CRITERIO_SUCESSO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1000"
+                      name="CRITERIO_SUCESSO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTEXTO_IMPACTO_NEGOCIO]"
+                      dataType="i4"
+                      name="CONTEXTO_IMPACTO_NEGOCIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IMPACTO_NEGOCIO]"
+                      dataType="i4"
+                      name="IMPACTO_NEGOCIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DIRECIONADOR]"
+                      dataType="i4"
+                      name="NUMERO_DIRECIONADOR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DIRECIONADOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="DIRECIONADOR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IMPACTO_PE]"
+                      dataType="i4"
+                      name="IMPACTO_PE" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CICLO_INICIO]"
+                      dataType="dbTimeStamp"
+                      name="CICLO_INICIO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CICLO_FIM]"
+                      dataType="dbTimeStamp"
+                      name="CICLO_FIM" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      dataType="i4"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="RESULTADO_ESPERADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MEDIR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="MEDIR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="RESULTADO_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1000"
+                      name="STATUS_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ENTREGA_CHAVE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1000"
+                      name="ENTREGA_CHAVE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Intranet -&gt; DW\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave)"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination (Resultados-Chave)"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_MARCOS_RESULTADOS_CHAVE]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[NID_MARCO_Conv]"
+                      cachedDataType="ui4"
+                      cachedName="NID_MARCO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[NID_MARCO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_MARCO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[NID_CICLO_Conv]"
+                      cachedDataType="ui4"
+                      cachedName="NID_CICLO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[NID_CICLO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_CICLO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[RESULTADO_ESPERADO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="RESULTADO_ESPERADO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_ESPERADO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[RESULTADO_ESPERADO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[MEDIR_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="MEDIR_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[MEDIR]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[MEDIR_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[DATA_RESULTADO_DISPONIVEL_Conv]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_RESULTADO_DISPONIVEL_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_RESULTADO_DISPONIVEL_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[RESULTADO_AFERICAO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8000"
+                      cachedName="RESULTADO_AFERICAO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[RESULTADO_AFERICAO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[DATA_AFERICAO_Conv]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_AFERICAO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[DATA_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_AFERICAO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[STATUS_AFERICAO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="1000"
+                      cachedName="STATUS_AFERICAO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[STATUS_AFERICAO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[STATUS_AFERICAO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[NID_RESULTADO_Conv]"
+                      cachedDataType="ui4"
+                      cachedName="NID_RESULTADO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[NID_RESULTADO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[NID_RESULTADO_Conv]" />
+                    <inputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].Columns[DATA_CRIACAO_RESULTADO_Conv]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CRIACAO_RESULTADO_Conv"
+                      externalMetadataColumnId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO_RESULTADO]"
+                      lineageId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados].Columns[DATA_CRIACAO_RESULTADO_Conv]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[NID_MARCO]"
+                      dataType="i4"
+                      name="NID_MARCO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[NID_CICLO]"
+                      dataType="i4"
+                      name="NID_CICLO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_ESPERADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="RESULTADO_ESPERADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[MEDIR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="MEDIR" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[DATA_RESULTADO_DISPONIVEL]"
+                      dataType="dbTimeStamp"
+                      name="DATA_RESULTADO_DISPONIVEL" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[RESULTADO_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8000"
+                      name="RESULTADO_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[DATA_AFERICAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[STATUS_AFERICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1000"
+                      name="STATUS_AFERICAO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[NID_RESULTADO]"
+                      dataType="i4"
+                      name="NID_RESULTADO" />
+                    <externalMetadataColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO_RESULTADO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO_RESULTADO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Intranet -&gt; DW.Paths[Data Conversion Output]"
+              endId="Package\Intranet -&gt; DW\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\Intranet -&gt; DW\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\Intranet -&gt; DW.Paths[ODBC Source Output]"
+              endId="Package\Intranet -&gt; DW\Data Conversion.Inputs[Data Conversion Input]"
+              name="ODBC Source Output"
+              startId="Package\Intranet -&gt; DW\Intranet.Outputs[ODBC Source Output]" />
+            <path
+              refId="Package\Intranet -&gt; DW.Paths[ODBC Source Output1]"
+              endId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Inputs[Entrada de Conversão de Dados]"
+              name="ODBC Source Output"
+              startId="Package\Intranet -&gt; DW\Intranet (Resultados-Chave).Outputs[ODBC Source Output]" />
+            <path
+              refId="Package\Intranet -&gt; DW.Paths[Saída de Conversão de Dados]"
+              endId="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave).Inputs[OLE DB Destination Input]"
+              name="Saída de Conversão de Dados"
+              startId="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave).Outputs[Saída de Conversão de Dados]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar Tabela TMP DW"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{8178D00F-5226-47B8-B0FE-E347F670BB66}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar Tabela TMP DW"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_INDICADOR_MARCOS_INTRANET ;&#xA;TRUNCATE TABLE [VAGAS_DW].[TMP_MARCOS_RESULTADOS_CHAVE] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{1f7d7e22-0749-4a34-bb3b-bc71cd3cae8b}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;MARCOS_RESULTADOS_CHAVE - DATA_AFERICAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;MARCOS_IMPACTO_PE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;MARCOS_RESULTADOS_CHAVE - DATA_RESULT_DISP&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;MARCOS_RESULTADOS_CHAVE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;EVOLUCAO_MARCOS_EQUIPES&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;MARCOS_IMPACTO_NEGOCIO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;EVOLUC_MARCOS - DATA_CICLO_FIM&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{FFD88794-AA58-4F85-8C40-80A912812C16}"
+      DTS:From="Package\Limpar Tabela TMP DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Intranet -&gt; DW" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{EFC5EFC2-BB18-4FE8-A37D-10EFC7420908}"
+      DTS:From="Package\Carga VAGAS_DW - Evolução Marcos Equipes"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Carga - Resultados-Chave" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{F0EFD2A1-2F66-48A6-99F0-8255F19EADA0}"
+      DTS:From="Package\Intranet -&gt; DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Carga VAGAS_DW - Evolução Marcos Equipes" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{772B980A-6A81-470C-8EA6-6F87D2B07423}"
+      DTS:From="Package\Carga - Resultados-Chave"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="201,42"
+          Id="Package\Carga - Resultados-Chave"
+          TopLeft="104,241" />
+        <NodeLayout
+          Size="293,42"
+          Id="Package\Carga VAGAS_DW - Evolução Marcos Equipes"
+          TopLeft="61,166" />
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Intranet -&gt; DW"
+          TopLeft="243,106" />
+        <NodeLayout
+          Size="190,42"
+          Id="Package\Limpar Tabela TMP DW"
+          TopLeft="73,27" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="122,307" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="168,69">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="151,37"
+              Start="0,0"
+              End="151,29.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,14.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,14.5"
+                    Point2="0,18.5"
+                    Point3="4,18.5" />
+                  <mssgle:LineSegment
+                    End="147,18.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="147,18.5"
+                    Point2="151,18.5"
+                    Point3="151,22.5" />
+                  <mssgle:LineSegment
+                    End="151,29.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="206,208">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33"
+              Start="0,0"
+              End="0,25.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="243,127">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-35.5,39"
+              Start="0,0"
+              End="-35.5,31.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-31.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-31.5,0"
+                    Point2="-35.5,0"
+                    Point3="-35.5,4" />
+                  <mssgle:LineSegment
+                    End="-35.5,31.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="202,283">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,24"
+              Start="0,0"
+              End="0,16.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Intranet -&gt; DW">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Intranet -&gt; DW\OLE DB Destination"
+          TopLeft="153,279" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Intranet -&gt; DW\Data Conversion"
+          TopLeft="335,142" />
+        <NodeLayout
+          Size="117,42"
+          Id="Package\Intranet -&gt; DW\Intranet"
+          TopLeft="173,72" />
+        <EdgeLayout
+          Id="Package\Intranet -&gt; DW.Paths[Data Conversion Output]"
+          TopLeft="413,184">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-174.5,95"
+              Start="0,0"
+              End="-174.5,87.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,43.5"
+                    Point2="0,47.5"
+                    Point3="-4,47.5" />
+                  <mssgle:LineSegment
+                    End="-170.5,47.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-170.5,47.5"
+                    Point2="-174.5,47.5"
+                    Point3="-174.5,51.5" />
+                  <mssgle:LineSegment
+                    End="-174.5,87.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Intranet -&gt; DW.Paths[ODBC Source Output]"
+          TopLeft="231.5,114">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="181.5,28"
+              Start="0,0"
+              End="181.5,20.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10"
+                    Point2="0,14"
+                    Point3="4,14" />
+                  <mssgle:LineSegment
+                    End="177.5,14" />
+                  <mssgle:CubicBezierSegment
+                    Point1="177.5,14"
+                    Point2="181.5,14"
+                    Point3="181.5,18" />
+                  <mssgle:LineSegment
+                    End="181.5,20.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Intranet -&gt; DW\Intranet (Resultados-Chave)"
+          TopLeft="657,67" />
+        <NodeLayout
+          Size="266,42"
+          Id="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave)"
+          TopLeft="524,286" />
+        <NodeLayout
+          Size="251,42"
+          Id="Package\Intranet -&gt; DW\Data Conversion (Resultados-Chave)"
+          TopLeft="617,147" />
+        <EdgeLayout
+          Id="Package\Intranet -&gt; DW.Paths[ODBC Source Output1]"
+          TopLeft="763,109">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-20.5,38"
+              Start="0,0"
+              End="-20.5,30.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15"
+                    Point2="0,19"
+                    Point3="-4,19" />
+                  <mssgle:LineSegment
+                    End="-16.5,19" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-16.5,19"
+                    Point2="-20.5,19"
+                    Point3="-20.5,23" />
+                  <mssgle:LineSegment
+                    End="-20.5,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Intranet -&gt; DW.Paths[Saída de Conversão de Dados]"
+          TopLeft="742.5,189">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-85.5,97"
+              Start="0,0"
+              End="-85.5,89.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,44.5"
+                    Point2="0,48.5"
+                    Point3="-4,48.5" />
+                  <mssgle:LineSegment
+                    End="-81.5,48.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-81.5,48.5"
+                    Point2="-85.5,48.5"
+                    Point3="-85.5,52.5" />
+                  <mssgle:LineSegment
+                    End="-85.5,89.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Intranet -&gt; DW\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Intranet -&gt; DW\OLE DB Destination (Resultados-Chave)">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

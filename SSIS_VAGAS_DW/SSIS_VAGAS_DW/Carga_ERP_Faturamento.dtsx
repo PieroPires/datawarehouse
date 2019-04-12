@@ -1,0 +1,1071 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/20/2016 6:03:21 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DTSID="{1075AB43-D2B6-4E50-8177-44580834CA8F}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_ERP_Faturamento"
+  DTS:PackageType="5"
+  DTS:VersionBuild="305"
+  DTS:VersionGUID="{24524953-E594-4C54-B551-D75E001572A8}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SRV-SQLERP01.DB_TOTVS_P12_PROD]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{6CFEAF88-44E3-4FD8-946A-75FF5B41BD05}"
+      DTS:ObjectName="SRV-SQLERP01.DB_TOTVS_P12_PROD">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=SRV-SQLERP01;User ID=userDW;Initial Catalog=DB_TOTVS_P12_PROD;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA2nnONVRzLE2Hrzlsb/HnOAAAAAAIAAAARABUAFMAAAADZgAAwAAAABAAAADw1Dl7D/B4HMX6vfNsRJ4IAAAAAASAAACgAAAAEAAAAIfyWo1GL7q76G9Twu7bk+UYAAAA891h/B/oOy/NDtTfoo5AAnA9Ua7MucamFAAAAPjE7C4E7fntkyeEJ5n0NIEA4TSR</DTS:Password>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Carga VAGAS_DW - Faturamento"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A801AF04-445E-44FD-8586-CED8B3D6079A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga VAGAS_DW - Faturamento"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="exec VAGAS_DW.SPR_OLAP_Carga_Faturamento" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga_Alterações_GR"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{773A24BE-A06A-4948-9B06-0B549C636466}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga_Alterações_GR"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>Carga_Alteracoes_GR.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carregar alteracoes de mercado"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{185E524D-020B-4922-A663-9E8CFE3F713C}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carregar alteracoes de mercado"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>Carga_Alteracoes_Mercado.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar Tabela TMP DW"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3B75CD5F-7101-4E30-9213-015C78840D34}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar Tabela TMP DW"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_FATURAMENTO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{DFF68914-C632-402B-B2B6-0EBAE97B16BD}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;FATURAMENTO - DATA REFERENCIA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;FATURAMENTO - DATA INIC VIGENCIA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;FATURAMENTO - DATA FIM VIGENCIA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;FATURAMENTO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;FATURAMENTO - DATA EMISSAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{0E12BF27-BE84-42C6-A902-674704490EBA}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Transferir dados TMP -&gt; DW FATURAMENTO"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="ERP"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CANDIDATURAS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">DECLARE @DATA_INICIO_MES_REF SMALLDATETIME,
+		@DATA_FIM_MES_REF SMALLDATETIME,
+		@DATA_ATUAL SMALLDATETIME
+
+SELECT @DATA_ATUAL = CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112))
+
+-- reprocessamento de datas retroativas (indicar mes)
+-- SET @DATA_ATUAL = '20190301'
+
+SELECT @DATA_INICIO_MES_REF = CONVERT(SMALLDATETIME,CONVERT(VARCHAR,@DATA_ATUAL,112)) - DAY(CONVERT(SMALLDATETIME,CONVERT(VARCHAR,@DATA_ATUAL,112))) + 1,
+	   @DATA_FIM_MES_REF = DATEADD(MONTH,1,@DATA_INICIO_MES_REF 	)
+	   
+-- pedidos mensais
+SELECT A.C5_NUM AS NUM_PEDIDO,
+	   D.A1_X_CCRM AS COD_CLI_CRM,
+	   A.C5_CLIENT AS COD_CLI,
+	   D.A1_NOME AS CLIENTE,
+	   C.B1_DESC AS PRODUTO,
+	   --CONVERT(SMALLDATETIME, C5_EMISSAO, 103) AS DATA_EMISSAO,
+	   CONVERT(SMALLDATETIME, C6_ENTREG, 103) AS DATA_EMISSAO,
+	   @DATA_ATUAL AS DATA_REFERENCIA,
+	   B.C6_VALOR AS VALOR,
+	   NULL AS DATA_INICIO_VIGENCIA,
+	   NULL AS DATA_FIM_VIGENCIA,
+       0 AS FLAG_IMPORTACAO,
+	   CASE A.C5_XAVSPRV WHEN 1 THEN 1 ELSE 0 END AS AVISO_PREVIO
+FROM SC5010 A
+INNER JOIN SC6010 B ON B.C6_FILIAL = A.C5_FILIAL AND B.C6_NUM = A.C5_NUM AND B.D_E_L_E_T_ = ' ' 
+INNER JOIN SB1010 C ON C.B1_FILIAL = A.C5_FILIAL AND C.B1_COD = B.C6_PRODUTO AND C.D_E_L_E_T_ = ' ' 
+INNER JOIN SA1010 D ON D.A1_FILIAL = ' ' AND D.A1_COD = A.C5_CLIENT AND D.D_E_L_E_T_ = ' ' 
+WHERE A.D_E_L_E_T_ = ' ' 
+AND C.B1_DESC NOT LIKE '%ANUID%'
+--AND CONVERT(SMALLDATETIME, C5_EMISSAO, 103) &gt;= @DATA_INICIO_MES_REF 
+--AND CONVERT(SMALLDATETIME, C5_EMISSAO, 103) &lt; @DATA_FIM_MES_REF 
+AND CONVERT(SMALLDATETIME, C6_ENTREG, 103) &gt;= @DATA_INICIO_MES_REF 
+AND CONVERT(SMALLDATETIME, C6_ENTREG, 103) &lt; @DATA_FIM_MES_REF 
+
+UNION ALL
+
+-- Anuidades
+SELECT A.C5_NUM AS NUM_PEDIDO,
+	   D.A1_X_CCRM AS COD_CLI_CRM,
+	   A.C5_CLIENT AS COD_CLI,
+	   D.A1_NOME AS CLIENTE,
+	   C.B1_DESC AS PRODUTO,
+	   --CONVERT(SMALLDATETIME, C5_EMISSAO, 103) AS DATA_EMISSAO,
+	   CONVERT(SMALLDATETIME, C6_ENTREG, 103) AS DATA_EMISSAO,
+	   @DATA_ATUAL AS DATA_REFERENCIA,
+	   B.C6_VALOR / 12 AS VALOR,
+	   CONVERT(SMALLDATETIME, AAN_XINCOM, 103) AS DATA_INICIO_VIGENCIA,
+	   CONVERT(SMALLDATETIME, AAN_XFIMCO, 103) AS DATA_FIM_VIGENCIA,
+       0 AS FLAG_IMPORTACAO,
+	   CASE A.C5_XAVSPRV WHEN 1 THEN 1 ELSE 0 END AS AVISO_PREVIO
+FROM SC5010 A
+INNER JOIN SC6010 B ON B.C6_FILIAL = A.C5_FILIAL AND B.C6_NUM = A.C5_NUM AND B.D_E_L_E_T_ = ' ' 
+INNER JOIN SB1010 C ON C.B1_FILIAL = A.C5_FILIAL AND C.B1_COD = B.C6_PRODUTO AND C.D_E_L_E_T_ = ' ' 
+INNER JOIN SA1010 D ON D.A1_FILIAL = ' ' AND D.A1_COD = A.C5_CLIENT AND D.D_E_L_E_T_ = ' ' 
+LEFT OUTER JOIN AAN010 E ON E.AAN_ULTPED = A.C5_NUM 
+				AND E.AAN_CODPRO = B.C6_PRODUTO
+				AND E.AAN_CONTRT = B.C6_CONTRT
+				AND E.AAN_ITEM = B.C6_ITCONTR
+				AND E.D_E_L_E_T_ = ' ' 
+				AND CONVERT(SMALLDATETIME,E.AAN_ULTEMI) &gt;= '20160101'
+LEFT OUTER JOIN AAM010 F ON F.AAM_CONTRT = E.AAN_CONTRT 
+				AND F.D_E_L_E_T_ = ' '
+WHERE A.D_E_L_E_T_ = ' ' 
+AND C.B1_DESC LIKE '%ANUID%'
+AND ( @DATA_ATUAL BETWEEN CONVERT(SMALLDATETIME, AAN_XINCOM, 103) AND CONVERT(SMALLDATETIME, AAN_XFIMCO, 103)
+	  OR AAN_XFIMCO IS NULL ) -- Existem casos sem contrato</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SRV-SQLERP01.DB_TOTVS_P12_PROD]"
+                  connectionManagerRefId="Package.ConnectionManagers[SRV-SQLERP01.DB_TOTVS_P12_PROD]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[NUM_PEDIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[NUM_PEDIDO]"
+                      length="9"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[NUM_PEDIDO]"
+                      name="NUM_PEDIDO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[CLIENTE]"
+                      length="75"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[CLIENTE]"
+                      name="CLIENTE"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[VALOR]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[VALOR]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[VALOR]"
+                      name="VALOR"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[COD_CLI_CRM]"
+                      length="36"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[COD_CLI_CRM]"
+                      name="COD_CLI_CRM"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[COD_CLI]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[COD_CLI]"
+                      length="6"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[COD_CLI]"
+                      name="COD_CLI"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_REFERENCIA]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_REFERENCIA]"
+                      name="DATA_REFERENCIA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_EMISSAO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_EMISSAO]"
+                      name="DATA_EMISSAO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[PRODUTO]"
+                      length="30"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[PRODUTO]"
+                      name="PRODUTO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_INICIO_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_INICIO_VIGENCIA]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_INICIO_VIGENCIA]"
+                      name="DATA_INICIO_VIGENCIA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_FIM_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_FIM_VIGENCIA]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_FIM_VIGENCIA]"
+                      name="DATA_FIM_VIGENCIA"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[FLAG_IMPORTACAO]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[FLAG_IMPORTACAO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[FLAG_IMPORTACAO]"
+                      name="FLAG_IMPORTACAO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[AVISO_PREVIO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[AVISO_PREVIO]"
+                      length="1"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[AVISO_PREVIO]"
+                      name="AVISO_PREVIO"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[NUM_PEDIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="NUM_PEDIDO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="75"
+                      name="CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[VALOR]"
+                      dataType="r8"
+                      name="VALOR" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="COD_CLI_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[COD_CLI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="COD_CLI" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_EMISSAO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="PRODUTO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_INICIO_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_INICIO_VIGENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[DATA_FIM_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_FIM_VIGENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[FLAG_IMPORTACAO]"
+                      dataType="i4"
+                      name="FLAG_IMPORTACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].ExternalColumns[AVISO_PREVIO]"
+                      dataType="i4"
+                      name="AVISO_PREVIO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[NUM_PEDIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[NUM_PEDIDO]"
+                      name="NUM_PEDIDO" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[COD_CLI_CRM]"
+                      name="COD_CLI_CRM" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[COD_CLI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[COD_CLI]"
+                      name="COD_CLI" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="75"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[CLIENTE]"
+                      name="CLIENTE" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[PRODUTO]"
+                      name="PRODUTO" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_EMISSAO]"
+                      name="DATA_EMISSAO" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[VALOR]"
+                      dataType="r8"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[VALOR]"
+                      name="VALOR" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_REFERENCIA]"
+                      name="DATA_REFERENCIA" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_INICIO_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_INICIO_VIGENCIA]"
+                      name="DATA_INICIO_VIGENCIA" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_FIM_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[DATA_FIM_VIGENCIA]"
+                      name="DATA_FIM_VIGENCIA" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[FLAG_IMPORTACAO]"
+                      dataType="i4"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[FLAG_IMPORTACAO]"
+                      name="FLAG_IMPORTACAO" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[AVISO_PREVIO]"
+                      dataType="i4"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[AVISO_PREVIO]"
+                      name="AVISO_PREVIO" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="VagasDW - TMP"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_FATURAMENTO]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[NUM_PEDIDO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="9"
+                      cachedName="NUM_PEDIDO"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[NUM_PEDIDO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[NUM_PEDIDO]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[CLIENTE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="75"
+                      cachedName="CLIENTE"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[CLIENTE]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[VALOR]"
+                      cachedDataType="r8"
+                      cachedName="VALOR"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[VALOR]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[VALOR]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[COD_CLI_CRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="COD_CLI_CRM"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI_CRM]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[COD_CLI_CRM]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[COD_CLI]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="COD_CLI"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[COD_CLI]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[DATA_REFERENCIA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_REFERENCIA"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_REFERENCIA]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[DATA_EMISSAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_EMISSAO"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_EMISSAO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_EMISSAO]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[PRODUTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="PRODUTO"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[PRODUTO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[PRODUTO]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[DATA_INICIO_VIGENCIA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_INICIO_VIGENCIA"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INICIO_VIGENCIA]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_INICIO_VIGENCIA]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[DATA_FIM_VIGENCIA]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_FIM_VIGENCIA"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_FIM_VIGENCIA]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[DATA_FIM_VIGENCIA]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[FLAG_IMPORTACAO]"
+                      cachedDataType="i4"
+                      cachedName="FLAG_IMPORTACAO"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_IMPORTACAO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[FLAG_IMPORTACAO]" />
+                    <inputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[AVISO_PREVIO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="1"
+                      cachedName="AVISO_PREVIO"
+                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[AVISO_PREVIO]"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output].Columns[AVISO_PREVIO]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[NUM_PEDIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="NUM_PEDIDO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="75"
+                      name="CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[VALOR]"
+                      dataType="cy"
+                      name="VALOR" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="COD_CLI_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="COD_CLI" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_REFERENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_REFERENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_EMISSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_EMISSAO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="PRODUTO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INICIO_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_INICIO_VIGENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DATA_FIM_VIGENCIA]"
+                      dataType="dbTimeStamp"
+                      name="DATA_FIM_VIGENCIA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[GRUPO_I]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="GRUPO_I" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[GRUPO_II]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="GRUPO_II" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_IMPORTACAO]"
+                      dataType="bool"
+                      name="FLAG_IMPORTACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[AVISO_PREVIO]"
+                      dataType="i4"
+                      name="AVISO_PREVIO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Transferir dados TMP -&gt; DW FATURAMENTO.Paths[OLE DB Source Output]"
+              endId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{E2783DE1-91D5-44C3-9F23-3CB371DF49CA}"
+      DTS:From="Package\Limpar Tabela TMP DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Transferir dados TMP -&gt; DW FATURAMENTO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{FD4B32EC-C563-4A09-8C9C-8999C8E84136}"
+      DTS:From="Package\Transferir dados TMP -&gt; DW FATURAMENTO"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Carga VAGAS_DW - Faturamento" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{6F71D2CB-528B-43D6-8070-381AB9B2923C}"
+      DTS:From="Package\Carga VAGAS_DW - Faturamento"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{B2F3F54E-D64D-4743-B1B5-A484D04694CC}"
+      DTS:From="Package\Carregar alteracoes de mercado"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Limpar Tabela TMP DW" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{83A2DFD2-7D6B-4AD7-8E15-CB8EF37D6F1B}"
+      DTS:From="Package\Carga_Alterações_GR"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Carregar alteracoes de mercado" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="235,42"
+          Id="Package\Carga VAGAS_DW - Faturamento"
+          TopLeft="311,321" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Carga_Alterações_GR"
+          TopLeft="332,4" />
+        <NodeLayout
+          Size="230,42"
+          Id="Package\Carregar alteracoes de mercado"
+          TopLeft="304,73" />
+        <NodeLayout
+          Size="190,42"
+          Id="Package\Limpar Tabela TMP DW"
+          TopLeft="329,156" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="347,431" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Transferir dados TMP -&gt; DW FATURAMENTO"
+          TopLeft="285,235" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="427.25,198">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37"
+              Start="0,0"
+              End="0,29.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="429.5,277">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44"
+              Start="0,0"
+              End="0,36.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="426.5,363">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,68"
+              Start="0,0"
+              End="0,60.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,60.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="421.5,115">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41"
+              Start="0,0"
+              End="0,33.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="420.5,46">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,27"
+              Start="0,0"
+              End="0,19.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Transferir dados TMP -&gt; DW FATURAMENTO">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP"
+          TopLeft="156,130" />
+        <NodeLayout
+          Size="97,42"
+          Id="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP"
+          TopLeft="114,40" />
+        <EdgeLayout
+          Id="Package\Transferir dados TMP -&gt; DW FATURAMENTO.Paths[OLE DB Source Output]"
+          TopLeft="162.5,82">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="71,48"
+              Start="0,0"
+              End="71,40.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20"
+                    Point2="0,24"
+                    Point3="4,24" />
+                  <mssgle:LineSegment
+                    End="67,24" />
+                  <mssgle:CubicBezierSegment
+                    Point1="67,24"
+                    Point2="71,24"
+                    Point3="71,28" />
+                  <mssgle:LineSegment
+                    End="71,40.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Transferir dados TMP -&gt; DW FATURAMENTO\ERP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Transferir dados TMP -&gt; DW FATURAMENTO\VagasDW - TMP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

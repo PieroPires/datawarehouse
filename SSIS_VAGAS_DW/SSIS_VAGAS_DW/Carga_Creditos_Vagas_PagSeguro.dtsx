@@ -1,0 +1,730 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="10/29/2018 7:24:20 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLMIRROR05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{EB7ED82E-E232-4D01-8F78-E9FA1149D441}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Creditos_Vagas_PagSeguro"
+  DTS:PackageType="5"
+  DTS:VersionBuild="8"
+  DTS:VersionGUID="{7D9BC6A9-A0CC-482A-A9FB-8CE7BFF358A0}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpeza da tabela temporária"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{7FE64402-72C8-486B-B591-CDCDE7400A11}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpeza da tabela temporária"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_CREDITOS_VAGAS_PAGSEGURO] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PostgreSQL -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{1FED1486-0B67-418E-98C7-1EF7DF03D8F0}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PostgreSQL -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">"public"."vw_dados_pagseguro"</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT 	
+id , 
+cliente_id ,  
+usuario_id , 
+status , 
+CAST(created_at AS DATE) AS DATA_INCLUSAO , 
+CAST(updated_at AS DATE) AS DATA_ALTERACAO , 
+valor , 
+quantidade_creditos
+FROM public.vw_dados_pagseguro;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="{AB7B9A63-E1E3-4855-977E-C273341582F3}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - PostgreSQL Créditos VAGAS]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[cliente_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cliente_id]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[cliente_id]"
+                      name="cliente_id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[usuario_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[usuario_id]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[usuario_id]"
+                      name="usuario_id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[status]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      length="70"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[status]"
+                      name="status" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[data_inclusao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_inclusao]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[data_inclusao]"
+                      name="data_inclusao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[data_alteracao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_alteracao]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[data_alteracao]"
+                      name="data_alteracao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[valor]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[valor]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[valor]"
+                      name="valor" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[quantidade_creditos]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[quantidade_creditos]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[quantidade_creditos]"
+                      name="quantidade_creditos" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      dataType="i4"
+                      name="id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cliente_id]"
+                      dataType="i4"
+                      name="cliente_id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[usuario_id]"
+                      dataType="i4"
+                      name="usuario_id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      codePage="1252"
+                      dataType="str"
+                      length="70"
+                      name="status" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_inclusao]"
+                      dataType="dbDate"
+                      name="data_inclusao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_alteracao]"
+                      dataType="dbDate"
+                      name="data_alteracao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[valor]"
+                      dataType="r8"
+                      name="valor" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[quantidade_creditos]"
+                      dataType="i4"
+                      name="quantidade_creditos" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cliente_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cliente_id]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cliente_id]"
+                      name="cliente_id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[usuario_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[usuario_id]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[usuario_id]"
+                      name="usuario_id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[status]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      length="70"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[status]"
+                      name="status" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_inclusao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_inclusao]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_inclusao]"
+                      name="data_inclusao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_alteracao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_alteracao]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_alteracao]"
+                      name="data_alteracao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[valor]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[valor]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[valor]"
+                      name="valor" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[quantidade_creditos]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[quantidade_creditos]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[quantidade_creditos]"
+                      name="quantidade_creditos" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PostgreSQL -&gt; SQL Server\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CREDITOS_VAGAS_PAGSEGURO]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[cliente_id]"
+                      cachedDataType="i4"
+                      cachedName="cliente_id"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE_ID]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[cliente_id]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[usuario_id]"
+                      cachedDataType="i4"
+                      cachedName="usuario_id"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_ID]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[usuario_id]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[valor]"
+                      cachedDataType="r8"
+                      cachedName="valor"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[VALOR]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[valor]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[id]"
+                      cachedDataType="i4"
+                      cachedName="id"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_COMPRA]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[id]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[status]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="70"
+                      cachedName="status"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_COMPRA]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[status]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[quantidade_creditos]"
+                      cachedDataType="i4"
+                      cachedName="quantidade_creditos"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CREDITOS]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[quantidade_creditos]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[data_inclusao]"
+                      cachedDataType="dbDate"
+                      cachedName="data_inclusao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INCLUSAO]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[data_inclusao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[data_alteracao]"
+                      cachedDataType="dbDate"
+                      cachedName="data_alteracao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ATUALIZACAO]"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output].Columns[data_alteracao]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[ID_COMPRA]"
+                      dataType="i4"
+                      name="ID_COMPRA" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE_ID]"
+                      dataType="i4"
+                      name="CLIENTE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_ID]"
+                      dataType="i4"
+                      name="USUARIO_ID" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_COMPRA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS_COMPRA" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INCLUSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_INCLUSAO" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ATUALIZACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ATUALIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[VALOR]"
+                      dataType="cy"
+                      name="VALOR" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CREDITOS]"
+                      dataType="i4"
+                      name="QTD_CREDITOS" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\PostgreSQL -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\PostgreSQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\PostgreSQL -&gt; SQL Server\PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{1D70AE7C-0A7B-4D65-B466-4DF5E903AACD}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CRED_VAGAS_PGSEGURO - DATA_INCLUSAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CREDITOS_VAGAS_PAGSEGURO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_Creditos_VAGAS_PagSeguro"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D77B1D4E-33DF-4FD5-94B3-18AB0383C90E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_Creditos_VAGAS_PagSeguro"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[VAGAS_DW_SPR_OLAP_Carga_Creditos_VAGAS_PagSeguro] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{4242C531-E4E0-4D05-9439-155BDCEB6306}"
+      DTS:From="Package\PostgreSQL -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_Creditos_VAGAS_PagSeguro" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{F9B48600-EF71-447F-AACD-8FDDFECC505A}"
+      DTS:From="Package\Limpeza da tabela temporária"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\PostgreSQL -&gt; SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{E10A282A-3B9B-44B6-8E07-21F4D9A0C92C}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_Creditos_VAGAS_PagSeguro"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="219,42"
+          Id="Package\Limpeza da tabela temporária"
+          TopLeft="480,68" />
+        <NodeLayout
+          Size="204,42"
+          Id="Package\PostgreSQL -&gt; SQL Server"
+          TopLeft="483,137" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="520,290" />
+        <NodeLayout
+          Size="361,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_Creditos_VAGAS_PagSeguro"
+          TopLeft="400,206" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="582.75,179">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,27"
+              Start="0,0"
+              End="0,19.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="587.25,110">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,27"
+              Start="0,0"
+              End="0,19.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="580.5,248">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="17,42"
+              Start="0,0"
+              End="17,34.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,17" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,17"
+                    Point2="0,21"
+                    Point3="4,21" />
+                  <mssgle:LineSegment
+                    End="13,21" />
+                  <mssgle:CubicBezierSegment
+                    Point1="13,21"
+                    Point2="17,21"
+                    Point3="17,25" />
+                  <mssgle:LineSegment
+                    End="17,34.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\PostgreSQL -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="133,42"
+          Id="Package\PostgreSQL -&gt; SQL Server\PostgreSQL"
+          TopLeft="468,68" />
+        <NodeLayout
+          Size="131,42"
+          Id="Package\PostgreSQL -&gt; SQL Server\SQL Server"
+          TopLeft="474,148" />
+        <EdgeLayout
+          Id="Package\PostgreSQL -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="537,110">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38"
+              Start="0,0"
+              End="0,30.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; SQL Server\PostgreSQL">
+    <Properties>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; SQL Server\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

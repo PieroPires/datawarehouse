@@ -1,0 +1,1094 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="1/5/2016 6:26:46 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLDW01"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DelayValidation="True"
+  DTS:DTSID="{05EBC9CC-B64C-45B4-B582-5CD488A99C4E}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Chamados"
+  DTS:PackageType="5"
+  DTS:VersionBuild="107"
+  DTS:VersionGUID="{B2D55ABB-F263-4BF7-BEE0-D944032441AA}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{958E8B8D-5428-424A-A833-C9198EBE0E0F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_ALTERACAO">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar Tabela TMP DW CHAMADOS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{f9f6e77e-6172-4fcc-b368-2bb4c42c187a}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar Tabela TMP DW CHAMADOS"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_CHAMADOS" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL (OTRS) -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DelayValidation="True"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{B60EDE9C-09CC-43FA-BFA1-04995FF13713}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL (OTRS) -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[MySQL - OTRS].[SqlCommand]">"SELECT A.id AS TicketId,
+	   tn AS TicketNumber,
+	   B.name AS Fila,
+       C.name AS Bloqueio,
+       COALESCE(D.name,\"Não Classificado\") AS TicketTipo,
+       E.login,
+       CONCAT(CONCAT(E.first_name,\" \"),E.last_name) AS Proprietario,
+       F.name AS TicketState,
+       A.create_time AS DataCriacao,
+       A.change_Time AS DataAlteracao,
+       A.customer_id AS Cliente,A.title AS ASSUNTO
+ FROM ticket A 
+LEFT OUTER JOIN queue B ON B.id = A.queue_id 
+LEFT OUTER JOIN ticket_lock_type C ON C.id = A.ticket_lock_id 
+LEFT OUTER JOIN ticket_type D ON D.id = A.type_id 
+LEFT OUTER JOIN users E ON E.id = A.user_id 
+LEFT OUTER JOIN ticket_state F ON F.id = A.ticket_state_id
+ WHERE A.change_Time &gt;= " +  @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL - OTRS"
+              usesDispositions="true"
+              validateExternalMetadata="False"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">`vwOportunidadesComProdutos`</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT A.id AS TicketId,
+	   tn AS TicketNumber,
+	   B.name AS Fila,
+       C.name AS Bloqueio,
+       COALESCE(D.name,"Não Classificado") AS TicketTipo,
+       E.login,
+       CONCAT(CONCAT(E.first_name," "),E.last_name) AS Proprietario,
+       F.name AS TicketState,
+       A.create_time AS DataCriacao,
+       A.change_Time AS DataAlteracao,
+       A.customer_id AS Cliente,A.title AS ASSUNTO
+ FROM ticket A 
+LEFT OUTER JOIN queue B ON B.id = A.queue_id 
+LEFT OUTER JOIN ticket_lock_type C ON C.id = A.ticket_lock_id 
+LEFT OUTER JOIN ticket_type D ON D.id = A.type_id 
+LEFT OUTER JOIN users E ON E.id = A.user_id 
+LEFT OUTER JOIN ticket_state F ON F.id = A.ticket_state_id
+ WHERE A.change_Time &gt;= </property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Connections[ODBCConnection]"
+                  connectionManagerID="{2DE89685-BAA3-49CE-860E-C7E3536417D5}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL OTRS]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketId]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketId]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketId]"
+                      name="TicketId" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketNumber]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketNumber]"
+                      length="50"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketNumber]"
+                      name="TicketNumber" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Fila]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Fila]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Fila]"
+                      name="Fila" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Bloqueio]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Bloqueio]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Bloqueio]"
+                      name="Bloqueio" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketTipo]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketTipo]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketTipo]"
+                      name="TicketTipo" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[login]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[login]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[login]"
+                      name="login" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Proprietario]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Proprietario]"
+                      length="201"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Proprietario]"
+                      name="Proprietario" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketState]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketState]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketState]"
+                      name="TicketState" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[DataCriacao]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[DataCriacao]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[DataCriacao]"
+                      name="DataCriacao" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[DataAlteracao]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[DataAlteracao]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[DataAlteracao]"
+                      name="DataAlteracao" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Cliente]"
+                      length="150"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Cliente]"
+                      name="Cliente" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[ASSUNTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[ASSUNTO]"
+                      length="255"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[ASSUNTO]"
+                      name="ASSUNTO" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketId]"
+                      dataType="i8"
+                      name="TicketId" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketNumber]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TicketNumber" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Fila]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="Fila" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Bloqueio]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="Bloqueio" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketTipo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="TicketTipo" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[login]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="login" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Proprietario]"
+                      codePage="1252"
+                      dataType="str"
+                      length="201"
+                      name="Proprietario" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketState]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="TicketState" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[DataCriacao]"
+                      dataType="dbTimeStamp"
+                      name="DataCriacao" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[DataAlteracao]"
+                      dataType="dbTimeStamp"
+                      name="DataAlteracao" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="Cliente" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[ASSUNTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ASSUNTO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketId]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketId]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketId]"
+                      name="TicketId" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketNumber]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketNumber]"
+                      length="50"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketNumber]"
+                      name="TicketNumber" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Fila]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Fila]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Fila]"
+                      name="Fila" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Bloqueio]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Bloqueio]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Bloqueio]"
+                      name="Bloqueio" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketTipo]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketTipo]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketTipo]"
+                      name="TicketTipo" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[login]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[login]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[login]"
+                      name="login" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Proprietario]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Proprietario]"
+                      length="201"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Proprietario]"
+                      name="Proprietario" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketState]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[TicketState]"
+                      length="200"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[TicketState]"
+                      name="TicketState" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[DataCriacao]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[DataCriacao]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[DataCriacao]"
+                      name="DataCriacao" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[DataAlteracao]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[DataAlteracao]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[DataAlteracao]"
+                      name="DataAlteracao" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Cliente]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[Cliente]"
+                      length="150"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[Cliente]"
+                      name="Cliente" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[ASSUNTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].ExternalColumns[ASSUNTO]"
+                      length="255"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[ASSUNTO]"
+                      name="ASSUNTO" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server - DW"
+              usesDispositions="true"
+              validateExternalMetadata="False"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CHAMADOS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Fila]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="Fila"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[FILA]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Fila]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[login]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="login"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[LOGIN]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[login]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Proprietario]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="201"
+                      cachedName="Proprietario"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[PROPRIETARIO]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Proprietario]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Cliente]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="Cliente"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Cliente]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[TicketId]"
+                      cachedDataType="i8"
+                      cachedName="TicketId"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_TICKET]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketId]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[TicketNumber]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="TicketNumber"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[TICKET_NUMBER]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketNumber]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Bloqueio]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="Bloqueio"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[BLOQUEIO_SOURCE]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[Bloqueio]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[TicketTipo]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="TicketTipo"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_SOURCE]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketTipo]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[TicketState]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="TicketState"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ESTADO_SOURCE]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[TicketState]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[DataCriacao]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DataCriacao"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO_SOURCE]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[DataCriacao]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[DataAlteracao]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DataAlteracao"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO_SOURCE]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[DataAlteracao]" />
+                    <inputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ASSUNTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="ASSUNTO"
+                      externalMetadataColumnId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ASSUNTO]"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output].Columns[ASSUNTO]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_TICKET]"
+                      dataType="i4"
+                      name="ID_TICKET" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[TICKET_NUMBER]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TICKET_NUMBER" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[FILA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="FILA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[BLOQUEIO_SOURCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="BLOQUEIO_SOURCE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[BLOQUEIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="BLOQUEIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[TIPO_SOURCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="TIPO_SOURCE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[TIPO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="TIPO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[LOGIN]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="LOGIN" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[PROPRIETARIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="201"
+                      name="PROPRIETARIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ESTADO_SOURCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="ESTADO_SOURCE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ESTADO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="ESTADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO_SOURCE]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO_SOURCE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO_SOURCE]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ALTERACAO_SOURCE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ASSUNTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="ASSUNTO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL (OTRS) -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Pegar Última Data Alteração"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{ddaf4d4e-0db7-4d79-9e14-2b86740cbd7f}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pegar Última Data Alteração"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="&#xA;SELECT CONVERT(VARCHAR,ISNULL(MAX(DATA_ALTERACAO),'19010101'),112) AS DATA_ALTERACAO&#xA;FROM VAGAS_DW.CHAMADOS"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="DATA_ALTERACAO"
+            SQLTask:DtsVariableName="User::DATA_ALTERACAO" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar Chamados Histórico (calculo do TMA)"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{50511011-1E5B-42D8-A8CF-D005F381F964}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar Chamados Histórico (calculo do TMA)"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>Carga_Chamados_Histórico.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{3f19f1e2-b601-4935-a3c6-038803a4bebe}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;dataOnly&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CHAMADOS - DATA ALTERACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;dataOnly&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CHAMADOS - DATA ABERTURA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;dataOnly&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CHAMADOS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_Chamados"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{add420a1-c856-4671-988d-e0ca6ab43c7e}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_Chamados"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC VAGAS_DW.SPR_OLAP_Carga_Chamados" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{A53A53F8-4C91-4337-9928-BBAFCE829005}"
+      DTS:From="Package\Pegar Última Data Alteração"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Limpar Tabela TMP DW CHAMADOS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D8FCE817-3579-4ECE-84AA-68528DD3EC7B}"
+      DTS:From="Package\Limpar Tabela TMP DW CHAMADOS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\MySQL (OTRS) -&gt; SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{80D6CD04-9F8D-49CF-9E14-FB453C72F7B0}"
+      DTS:From="Package\MySQL (OTRS) -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Processar Chamados Histórico (calculo do TMA)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{0B6E1E97-F9B0-4174-9712-DBA0A1D8E62F}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_Chamados"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{DEC7607D-02ED-44FD-ACF5-9CF6E0CB35F5}"
+      DTS:From="Package\Processar Chamados Histórico (calculo do TMA)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_Chamados" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="248,42"
+          Id="Package\Limpar Tabela TMP DW CHAMADOS"
+          TopLeft="48,114" />
+        <NodeLayout
+          Size="220,42"
+          Id="Package\MySQL (OTRS) -&gt; SQL Server"
+          TopLeft="67,183" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Pegar Última Data Alteração"
+          TopLeft="60,42" />
+        <NodeLayout
+          Size="303,42"
+          Id="Package\Processar Chamados Histórico (calculo do TMA)"
+          TopLeft="219,240" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="107,375" />
+        <NodeLayout
+          Size="277,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_Chamados"
+          TopLeft="46,304" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="169,84">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,30"
+              Start="0,0"
+              End="0,22.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="174.5,156">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,27"
+              Start="0,0"
+              End="0,19.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="287,204">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="83.5,36"
+              Start="0,0"
+              End="83.5,28.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="79.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="79.5,0"
+                    Point2="83.5,0"
+                    Point3="83.5,4" />
+                  <mssgle:LineSegment
+                    End="83.5,28.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="184.5,346">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,29"
+              Start="0,0"
+              End="0,21.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="219,261">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-34.5,43"
+              Start="0,0"
+              End="-34.5,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-30.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-30.5,0"
+                    Point2="-34.5,0"
+                    Point3="-34.5,4" />
+                  <mssgle:LineSegment
+                    End="-34.5,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL (OTRS) -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="159,43"
+          Id="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW"
+          TopLeft="117,159" />
+        <NodeLayout
+          Size="148,42"
+          Id="Package\MySQL (OTRS) -&gt; SQL Server\MySQL - OTRS"
+          TopLeft="60,60" />
+        <EdgeLayout
+          Id="Package\MySQL (OTRS) -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="134,102">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.5,57"
+              Start="0,0"
+              End="62.5,49.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,24.5"
+                    Point2="0,28.5"
+                    Point3="4,28.5" />
+                  <mssgle:LineSegment
+                    End="58.5,28.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="58.5,28.5"
+                    Point2="62.5,28.5"
+                    Point3="62.5,32.5" />
+                  <mssgle:LineSegment
+                    End="62.5,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL (OTRS) -&gt; SQL Server\SQL Server - DW">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

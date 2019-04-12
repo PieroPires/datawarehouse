@@ -1,0 +1,812 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/20/2017 6:45:37 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SRV-SQLMIRROR05"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{1560C367-B562-4099-A636-77B051F95678}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Carga_Links_Transicao_Status_Homepages"
+  DTS:PackageType="5"
+  DTS:VersionBuild="15"
+  DTS:VersionGUID="{6F9B9A6D-E3F3-41A2-B94E-343FAD7C918A}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{f06b65b0-276a-4e98-a429-888859f76535}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_LINKS_TRANSICAO_STATUS] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar VAGAS_DW_VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{e956d12c-c4f1-40df-ac61-be755bf724a7}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar VAGAS_DW_VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_LINKS_TRANSICAO_STATUS] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MySQL - SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{7d7e62a9-4d5a-4947-b1b8-3fbf1de20db0}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MySQL - SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MySQL - SQL Server\MySQL - SugarCRM"
+              componentClassID="Attunity.SSISODBCSrc"
+              description="ODBC Source"
+              name="MySQL - SugarCRM"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	CONVERT(SUBQUERY_2.ID_LINK USING Latin1) AS ID_LINK ,
+		CONVERT(SUBQUERY_2.NOME_LINK USING Latin1) AS NOME_LINK ,
+        SUBQUERY_2.DATA_CRIACAO_ALTERACAO ,
+        CONVERT(SUBQUERY_2.VALOR_ANTERIOR USING Latin1) AS VALOR_ANTERIOR ,
+        CONVERT(SUBQUERY_2.VALOR_POSTERIOR USING Latin1) AS VALOR_POSTERIOR ,
+        SUBQUERY_2.ROW_NUMBER
+FROM	(
+	SELECT	SUBQUERY.ID_LINK ,
+			SUBQUERY.NOME_LINK ,
+			SUBQUERY.DATA_CRIACAO_ALTERACAO ,
+			SUBQUERY.VALOR_ANTERIOR ,
+			SUBQUERY.VALOR_POSTERIOR ,
+			@ROW_NUMBER:= IF(@ID_LINK = SUBQUERY.ID_LINK, @ROW_NUMBER + 1, 1) AS ROW_NUMBER ,
+			@ID_LINK := SUBQUERY.ID_LINK AS ID_LINK_CONTROLE
+	FROM	(
+		SELECT	B.id AS ID_LINK  ,
+				B.name AS NOME_LINK ,
+				CONVERT_TZ(A.date_created, @@session.time_zone, 'America/Sao_Paulo') AS DATA_CRIACAO_ALTERACAO ,
+				C.user_name AS USUARIO_ALTERACAO ,
+				A.before_value_string AS VALOR_ANTERIOR ,
+				A.after_value_string AS VALOR_POSTERIOR
+		FROM	sugarcrm.lnk_links_audit AS A	LEFT OUTER JOIN sugarcrm.lnk_links AS B ON A.parent_id = B.id
+												LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
+		WHERE	A.field_name = 'status' ) AS SUBQUERY
+ORDER BY
+	SUBQUERY.ID_LINK ASC ,
+	SUBQUERY.DATA_CRIACAO_ALTERACAO ASC) AS SUBQUERY_2 ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Connections[ODBCConnection]"
+                  connectionManagerID="{D8B49F88-60AF-4C25-A849-3E7F55926C5F}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção SUGAR user_dw]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_LINK]"
+                      length="36"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_LINK]"
+                      name="ID_LINK" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[NOME_LINK]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_LINK]"
+                      name="NOME_LINK" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO_ALTERACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO_ALTERACAO]"
+                      name="DATA_CRIACAO_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_ANTERIOR]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_ANTERIOR]"
+                      name="VALOR_ANTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_POSTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_POSTERIOR]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_POSTERIOR]"
+                      name="VALOR_POSTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ROW_NUMBER]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ROW_NUMBER]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ROW_NUMBER]"
+                      name="ROW_NUMBER" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_LINK" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[NOME_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="NOME_LINK" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="VALOR_ANTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_POSTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="VALOR_POSTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ROW_NUMBER]"
+                      dataType="r8"
+                      name="ROW_NUMBER" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ID_LINK]"
+                      length="36"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_LINK]"
+                      name="ID_LINK" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[NOME_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[NOME_LINK]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[NOME_LINK]"
+                      name="NOME_LINK" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[DATA_CRIACAO_ALTERACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[DATA_CRIACAO_ALTERACAO]"
+                      name="DATA_CRIACAO_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[VALOR_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_ANTERIOR]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[VALOR_ANTERIOR]"
+                      name="VALOR_ANTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[VALOR_POSTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[VALOR_POSTERIOR]"
+                      length="255"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[VALOR_POSTERIOR]"
+                      name="VALOR_POSTERIOR" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ROW_NUMBER]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ROW_NUMBER]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ROW_NUMBER]"
+                      name="ROW_NUMBER" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MySQL - SQL Server\SQL Server - DW"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="SQL Server - DW"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_LINKS_TRANSICAO_STATUS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MySQL - SQL Server\SQL Server - DW.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[NOME_LINK]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="NOME_LINK"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[NOME_LINK]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[NOME_LINK]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[DATA_CRIACAO_ALTERACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CRIACAO_ALTERACAO"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO_ALTERACAO]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[DATA_CRIACAO_ALTERACAO]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[VALOR_ANTERIOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="VALOR_ANTERIOR"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_ANTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_ANTERIOR]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[VALOR_POSTERIOR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="VALOR_POSTERIOR"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_POSTERIOR]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_POSTERIOR]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ROW_NUMBER]"
+                      cachedDataType="r8"
+                      cachedName="ROW_NUMBER"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTROLE]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ROW_NUMBER]" />
+                    <inputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ID_LINK]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="ID_LINK"
+                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_LINK]"
+                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_LINK]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[NOME_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="NOME_LINK" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CRIACAO_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CRIACAO_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_ANTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="VALOR_ANTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_POSTERIOR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="VALOR_POSTERIOR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTROLE]"
+                      dataType="i2"
+                      name="CONTROLE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_LINK]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_LINK" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MySQL - SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MySQL - SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MySQL - SQL Server\SQL Server - DW.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MySQL - SQL Server.Paths[ODBC Source Output]"
+              endId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{BCBDE0DE-615E-4D60-91AD-EDFB54F72194}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LNK_TRANSICAO - DATA_VALOR_NORMALIZADO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LNK_TRANSICAO - DATA_VALOR_POSTERIOR&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LINKS_TRANSICAO_STATUS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SPR_OLAP_Carga_Links_Transicao_Status_Homepages"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{80c36aa7-11d6-44ec-979b-73bf84abd9a9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SPR_OLAP_Carga_Links_Transicao_Status_Homepages"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Links_Transicao_Status_Homepages]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SPR_OLTP_Carga_Links_Transicao_Status_HomePages"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{87b4ff1e-0004-409a-a5f8-7d2fd86abcba}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SPR_OLTP_Carga_Links_Transicao_Status_HomePages"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLTP_Carga_Links_Transicao_Status_HomePages]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{A52F99B0-440F-4178-87AE-8B3A4F340111}"
+      DTS:From="Package\Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Limpar VAGAS_DW_VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{C82360F3-D830-4540-B97D-9D705BC29117}"
+      DTS:From="Package\Limpar VAGAS_DW_VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\MySQL - SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{BCF0EBFA-EDCA-400B-861A-8DC547B366C6}"
+      DTS:From="Package\MySQL - SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\SPR_OLTP_Carga_Links_Transicao_Status_HomePages" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{14C1ED68-4968-49B5-9360-34A2F568B0F6}"
+      DTS:From="Package\SPR_OLTP_Carga_Links_Transicao_Status_HomePages"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\SPR_OLAP_Carga_Links_Transicao_Status_Homepages" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{940FF219-E2EE-40D7-BC59-05AC42D87449}"
+      DTS:From="Package\SPR_OLAP_Carga_Links_Transicao_Status_Homepages"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="336,42"
+          Id="Package\Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+          TopLeft="372,34" />
+        <NodeLayout
+          Size="397,42"
+          Id="Package\Limpar VAGAS_DW_VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+          TopLeft="338,123" />
+        <NodeLayout
+          Size="174,42"
+          Id="Package\MySQL - SQL Server"
+          TopLeft="450,203" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="445,464" />
+        <NodeLayout
+          Size="338,42"
+          Id="Package\SPR_OLAP_Carga_Links_Transicao_Status_Homepages"
+          TopLeft="359,379" />
+        <NodeLayout
+          Size="338,42"
+          Id="Package\SPR_OLTP_Carga_Links_Transicao_Status_HomePages"
+          TopLeft="365,289" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="538.25,76">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47"
+              Start="0,0"
+              End="0,39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="536.75,165">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38"
+              Start="0,0"
+              End="0,30.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="535.5,245">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44"
+              Start="0,0"
+              End="0,36.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="531,331">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48"
+              Start="0,0"
+              End="0,40.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="525.25,421">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MySQL - SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="159,42"
+          Id="Package\MySQL - SQL Server\SQL Server - DW"
+          TopLeft="396,150" />
+        <NodeLayout
+          Size="170,42"
+          Id="Package\MySQL - SQL Server\MySQL - SugarCRM"
+          TopLeft="393,42" />
+        <EdgeLayout
+          Id="Package\MySQL - SQL Server.Paths[ODBC Source Output]"
+          TopLeft="476.75,84">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,66"
+              Start="0,0"
+              End="0,58.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,58.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL - SQL Server\MySQL - SugarCRM">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MySQL - SQL Server\SQL Server - DW">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
