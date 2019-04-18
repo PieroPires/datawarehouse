@@ -525,58 +525,6 @@ DataAlteracaoConta,IGPM_MES,Campanha,POSSUI_CONTA_MEMBRO,
 @DATA_REFERENCIA AS DATA_REFERENCIA,INSERT_MANUAL FROM VAGAS_DW.OPORTUNIDADES
 END
 
-------------------------------------------------------
--- Manter a estrutura legado de classificação dos GRs:
-------------------------------------------------------
 
--- Atualização do GRUPO LEADS
-UPDATE	[VAGAS_DW].[OPORTUNIDADES]
-SET		GRUPO_VENDEDOR = 'LEADs'
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
-WHERE	A.PROPRIETARIO IN ('raquel.oliveira', 'milena.santana')
-		AND  (A.DATACRIACAO < '20190401'
-			  OR A.DATAFECHAMENTO < '20190401') ;
-
--- Atualização do GRUPO SI,NN - Simplifica Novos Negócios
-UPDATE	[VAGAS_DW].[OPORTUNIDADES]
-SET		GRUPO_VENDEDOR = 'SI,NN - Simplifica Novos Negócios'
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
-WHERE	A.PROPRIETARIO IN ('debora.nakao','MEREN.FISCHER','leticia.franca')      
-		AND  (A.DATACRIACAO < '20190401'
-			  OR A.DATAFECHAMENTO < '20190401') ;
-
-
--- Atualização do GRUPO SI,RL - Simplifica Relacionamento
-UPDATE	[VAGAS_DW].[OPORTUNIDADES]
-SET		GRUPO_VENDEDOR = 'SI,RL - Simplifica Relacionamento'
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
-WHERE	A.PROPRIETARIO IN ('Camila.Martins','Luciana.Nascimento','Daniela.Martins')
-		AND  (A.DATACRIACAO < '20190401'
-			  OR A.DATAFECHAMENTO < '20190401') ;
-
-
--- Atualização do GRUPO SU,NN - Supera Novos Negócios
-UPDATE	[VAGAS_DW].[OPORTUNIDADES]
-SET		GRUPO_VENDEDOR = 'SU,NN - Supera Novos Negócios'
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
-WHERE	A.PROPRIETARIO IN ('Andreza.Nogueira','alessandro.silva','daniela.rosa')
-		AND  (A.DATACRIACAO < '20190401'
-			  OR A.DATAFECHAMENTO < '20190401') ;
-
-
--- Atualização do SU,RL - Supera Relacionamento
-UPDATE	[VAGAS_DW].[OPORTUNIDADES]
-SET		GRUPO_VENDEDOR = 'SU,RL - Supera Relacionamento'
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
-WHERE	A.PROPRIETARIO IN ('silvia.ferreira','tatiane.pires','Karina.Ribeiro','fernanda.rocha','andressa.secioso')
-		AND  (A.DATACRIACAO < '20190401'
-			  OR A.DATAFECHAMENTO < '20190401') ;
-
-
--- Migração de VENDEDOR dentre os grupos existentes:
-UPDATE	[VAGAS_DW].[OPORTUNIDADES]
-SET		GRUPO_VENDEDOR = 'SI,RL - Simplifica Relacionamento'
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
-WHERE	A.PROPRIETARIO = 'MEREN.FISCHER'
-		AND A.DATAFECHAMENTO >= '20181201'
-		AND A.GRUPO_VENDEDOR = 'SI, NN - Simplifica Novos Negócios' ;
+-- Ajustes do GRUPO_VENDEDOR:
+EXEC [VAGAS_DW].[SPR_OLAP_Carga_Oportunidades_Ajustes_GRUPO_VENDEDOR] ;
