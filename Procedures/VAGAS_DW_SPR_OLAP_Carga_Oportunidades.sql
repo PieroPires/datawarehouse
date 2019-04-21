@@ -528,3 +528,42 @@ END
 
 -- Ajustes do GRUPO_VENDEDOR:
 EXEC [VAGAS_DW].[SPR_OLAP_Carga_Oportunidades_Ajustes_GRUPO_VENDEDOR] ;
+
+
+-- Negociações que compõem o MRR:
+UPDATE	[VAGAS_DW].[OPORTUNIDADES]
+SET		NEGOCIACAO_MRR = CASE
+							WHEN A.OportunidadeCategoria IN ('cliente_potencial','cliente_cotacao')
+							AND A.PRODUTO_GRUPO IN ('FIT','RECRUTADOR','VREDES')
+							AND A.RECORRENTE = 1
+							AND A.Fase = 'fechado_e_ganho'
+								THEN 'NOVO'
+							WHEN A.OportunidadeCategoria IN ('revisao_de_perfil','retencao')
+							AND A.VALOR_REAL > 0
+							AND A.PRODUTO_GRUPO IN ('FIT','RECRUTADOR','VREDES')
+							AND A.RECORRENTE = 1
+							AND A.Fase = 'fechado_e_ganho'
+								THEN 'UPSELL'
+							WHEN A.OportunidadeCategoria IN ('revisao_de_perfil','retencao')
+							AND A.VALOR_REAL < 0
+							AND A.PRODUTO_GRUPO IN ('FIT','RECRUTADOR','VREDES')
+							AND A.RECORRENTE = 1
+							AND A.Fase = 'fechado_e_ganho'
+								THEN 'DOWNSELL'
+							WHEN A.OportunidadeCategoria IN ('rescisao')
+							AND A.PRODUTO_GRUPO IN ('FIT','RECRUTADOR','VREDES')
+							AND A.RECORRENTE = 1
+							AND A.Fase = 'fechado_e_ganho'
+								THEN 'CHURN'
+							WHEN A.OportunidadeCategoria IN ('venda_pontual','projeto')
+							AND A.PRODUTO_GRUPO IN ('DSM', 'PROD COMP')
+							AND A.FASE = 'fechado_e_ganho'
+								THEN 'CROSS SELL'
+							WHEN A.OportunidadeCategoria = 'renovacao'
+							AND A.PRODUTO_GRUPO IN ('FIT','RECRUTADOR','VREDES')
+							AND A.RECORRENTE = 1
+							AND A.Fase = 'fechado_e_ganho'
+								THEN 'RENEWALL'
+							ELSE NULL
+						END
+FROM	[VAGAS_DW].[OPORTUNIDADES] AS A ;
