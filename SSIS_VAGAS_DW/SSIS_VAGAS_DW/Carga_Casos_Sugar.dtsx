@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="2/17/2016 1:32:37 PM"
@@ -7,12 +7,12 @@
   DTS:CreatorName="VAGASTEC\luiz.braz"
   DTS:DTSID="{64320CBF-6EDD-44D8-9F1A-67541897F91B}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Casos_Sugar"
   DTS:PackageType="5"
-  DTS:VersionBuild="234"
-  DTS:VersionGUID="{7BCAAB0F-942E-4693-B733-C7DE517B5388}">
+  DTS:VersionBuild="235"
+  DTS:VersionGUID="{50C506BC-ED44-40EC-B4FE-8D550867B3B2}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -106,7 +106,9 @@
 		 LEFT OUTER JOIN sugarcrm.email_addresses AS I ON I.id = H.email_address_id AND I.deleted = 0 
 		 LEFT OUTER JOIN sugarcrm.contacts_cstm AS J ON G.id = J.id_c AND J.funcionario_desligado_c = 0
 		 WHERE A.id = F.case_id
-         LIMIT 1) AS CONTATO_ADM_PRINCIPAL
+         LIMIT 1) AS CONTATO_ADM_PRINCIPAL,
+         CONVERT(D.segmento_sc USING Latin1) AS SEGMENTO_SC
+         
 FROM cases A
  LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id
  LEFT OUTER JOIN accounts C ON C.id = A.account_id AND C.deleted = 0
@@ -184,7 +186,9 @@ FROM cases A
 		 LEFT OUTER JOIN sugarcrm.email_addresses AS I ON I.id = H.email_address_id AND I.deleted = 0 
 		 LEFT OUTER JOIN sugarcrm.contacts_cstm AS J ON G.id = J.id_c AND J.funcionario_desligado_c = 0
 		 WHERE A.id = F.case_id
-         LIMIT 1) AS CONTATO_ADM_PRINCIPAL
+         LIMIT 1) AS CONTATO_ADM_PRINCIPAL,
+         CONVERT(D.segmento_sc USING Latin1) AS SEGMENTO_SC
+         
 FROM cases A
  LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id
  LEFT OUTER JOIN accounts C ON C.id = A.account_id AND C.deleted = 0
