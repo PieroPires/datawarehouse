@@ -8,7 +8,8 @@
       {
         "name": "VAGAS_DW",
         "connectionString": "Provider=SQLNCLI11;Data Source=BKO-SRV-PBI;Persist Security Info=false;Integrated Security=SSPI;Initial Catalog=VAGAS_DW",
-        "impersonationMode": "impersonateServiceAccount",
+        "impersonationMode": "impersonateAccount",
+        "account": "VAGASTEC\\fiama.cristi",
         "maxConnections": 1000,
         "annotations": [
           {
@@ -18434,13 +18435,18 @@
             "dataType": "string",
             "isDataTypeInferred": true,
             "expression": "UPPER(CONCATENATE(CONCATENATE([TIPO], \" - \"),[SUB_TIPO]))"
+          },
+          {
+            "name": "SEGMENTO_SC",
+            "dataType": "string",
+            "sourceColumn": "SEGMENTO_SC"
           }
         ],
         "partitions": [
           {
             "name": "CASOS",
             "source": {
-              "query": " SELECT [VAGAS_DW].[CASOS].[ID_CASO],[VAGAS_DW].[CASOS].[NUMERO_CASO],[VAGAS_DW].[CASOS].[CONTA],[VAGAS_DW].[CASOS].[FILA_ATENDIMENTO],[VAGAS_DW].[CASOS].[STATUS],[VAGAS_DW].[CASOS].[PRIORIDADE],[VAGAS_DW].[CASOS].[CRITICIDADE],[VAGAS_DW].[CASOS].[ORIGEM],[VAGAS_DW].[CASOS].[TIPO],[VAGAS_DW].[CASOS].[SUB_TIPO],[VAGAS_DW].[CASOS].[DATA_INICIO_ATENDIMENTO],[VAGAS_DW].[CASOS].[DATA_FECHAMENTO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO],[VAGAS_DW].[CASOS].[DATA_MODIFICACAO],[VAGAS_DW].[CASOS].[USUARIO_RESPONSAVEL],[VAGAS_DW].[CASOS].[ORIGEM_SUPORTE],[VAGAS_DW].[CASOS].[DATA_PRM_ACAO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO_NORMALIZADA],[VAGAS_DW].[CASOS].[TME],[VAGAS_DW].[CASOS].[TMS],[VAGAS_DW].[CASOS].[CONTA_ID],[VAGAS_DW].[CASOS].[MERCADO],[VAGAS_DW].[CASOS].[QTD_TOTAL_CASO_EMAIL_4H],[VAGAS_DW].[CASOS].[MEDIA_CASOS_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_DIAS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[TIPO_CLIENTE],[VAGAS_DW].[CASOS].[MOTIVO_CONTATO] FROM [VAGAS_DW].[CASOS] ",
+              "query": " SELECT [VAGAS_DW].[CASOS].[ID_CASO],[VAGAS_DW].[CASOS].[NUMERO_CASO],[VAGAS_DW].[CASOS].[CONTA],[VAGAS_DW].[CASOS].[FILA_ATENDIMENTO],[VAGAS_DW].[CASOS].[STATUS],[VAGAS_DW].[CASOS].[PRIORIDADE],[VAGAS_DW].[CASOS].[CRITICIDADE],[VAGAS_DW].[CASOS].[ORIGEM],[VAGAS_DW].[CASOS].[TIPO],[VAGAS_DW].[CASOS].[SUB_TIPO],[VAGAS_DW].[CASOS].[DATA_INICIO_ATENDIMENTO],[VAGAS_DW].[CASOS].[DATA_FECHAMENTO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO],[VAGAS_DW].[CASOS].[DATA_MODIFICACAO],[VAGAS_DW].[CASOS].[USUARIO_RESPONSAVEL],[VAGAS_DW].[CASOS].[ORIGEM_SUPORTE],[VAGAS_DW].[CASOS].[DATA_PRM_ACAO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO_NORMALIZADA],[VAGAS_DW].[CASOS].[TME],[VAGAS_DW].[CASOS].[TMS],[VAGAS_DW].[CASOS].[CONTA_ID],[VAGAS_DW].[CASOS].[MERCADO],[VAGAS_DW].[CASOS].[QTD_TOTAL_CASO_EMAIL_4H],[VAGAS_DW].[CASOS].[MEDIA_CASOS_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_DIAS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[TIPO_CLIENTE],[VAGAS_DW].[CASOS].[MOTIVO_CONTATO],[VAGAS_DW].[CASOS].[SEGMENTO_SC] FROM [VAGAS_DW].[CASOS] ",
               "dataSource": "VAGAS_DW"
             },
             "annotations": [
@@ -18704,6 +18710,14 @@
                   "        <int>166</int>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEGMENTO_SC</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>103</int>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnWidths>",
                   "  <ColumnDisplayIndex>",
                   "    <item>",
@@ -18954,6 +18968,14 @@
                   "        <int>29</int>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEGMENTO_SC</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>31</int>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnDisplayIndex>",
                   "  <ColumnFrozen />",
                   "  <ColumnChecked>",
@@ -19045,6 +19067,14 @@
                   "        <boolean>false</boolean>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEGMENTO_SC</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnChecked>",
                   "  <ColumnFilter />",
                   "  <SelectionFilter />",
@@ -19111,7 +19141,7 @@
           },
           {
             "name": "_TM_ExtProp_QueryDefinition",
-            "value": " SELECT [VAGAS_DW].[CASOS].[ID_CASO],[VAGAS_DW].[CASOS].[NUMERO_CASO],[VAGAS_DW].[CASOS].[CONTA],[VAGAS_DW].[CASOS].[FILA_ATENDIMENTO],[VAGAS_DW].[CASOS].[STATUS],[VAGAS_DW].[CASOS].[PRIORIDADE],[VAGAS_DW].[CASOS].[CRITICIDADE],[VAGAS_DW].[CASOS].[ORIGEM],[VAGAS_DW].[CASOS].[TIPO],[VAGAS_DW].[CASOS].[SUB_TIPO],[VAGAS_DW].[CASOS].[DATA_INICIO_ATENDIMENTO],[VAGAS_DW].[CASOS].[DATA_FECHAMENTO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO],[VAGAS_DW].[CASOS].[DATA_MODIFICACAO],[VAGAS_DW].[CASOS].[USUARIO_RESPONSAVEL],[VAGAS_DW].[CASOS].[ORIGEM_SUPORTE],[VAGAS_DW].[CASOS].[DATA_PRM_ACAO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO_NORMALIZADA],[VAGAS_DW].[CASOS].[TME],[VAGAS_DW].[CASOS].[TMS],[VAGAS_DW].[CASOS].[CONTA_ID],[VAGAS_DW].[CASOS].[MERCADO],[VAGAS_DW].[CASOS].[QTD_TOTAL_CASO_EMAIL_4H],[VAGAS_DW].[CASOS].[MEDIA_CASOS_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_DIAS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[TIPO_CLIENTE],[VAGAS_DW].[CASOS].[MOTIVO_CONTATO] FROM [VAGAS_DW].[CASOS] "
+            "value": " SELECT [VAGAS_DW].[CASOS].[ID_CASO],[VAGAS_DW].[CASOS].[NUMERO_CASO],[VAGAS_DW].[CASOS].[CONTA],[VAGAS_DW].[CASOS].[FILA_ATENDIMENTO],[VAGAS_DW].[CASOS].[STATUS],[VAGAS_DW].[CASOS].[PRIORIDADE],[VAGAS_DW].[CASOS].[CRITICIDADE],[VAGAS_DW].[CASOS].[ORIGEM],[VAGAS_DW].[CASOS].[TIPO],[VAGAS_DW].[CASOS].[SUB_TIPO],[VAGAS_DW].[CASOS].[DATA_INICIO_ATENDIMENTO],[VAGAS_DW].[CASOS].[DATA_FECHAMENTO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO],[VAGAS_DW].[CASOS].[DATA_MODIFICACAO],[VAGAS_DW].[CASOS].[USUARIO_RESPONSAVEL],[VAGAS_DW].[CASOS].[ORIGEM_SUPORTE],[VAGAS_DW].[CASOS].[DATA_PRM_ACAO],[VAGAS_DW].[CASOS].[DATA_INCLUSAO_NORMALIZADA],[VAGAS_DW].[CASOS].[TME],[VAGAS_DW].[CASOS].[TMS],[VAGAS_DW].[CASOS].[CONTA_ID],[VAGAS_DW].[CASOS].[MERCADO],[VAGAS_DW].[CASOS].[QTD_TOTAL_CASO_EMAIL_4H],[VAGAS_DW].[CASOS].[MEDIA_CASOS_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[MEDIA_CASOS_DIAS_MESES_ANO_USUARIO],[VAGAS_DW].[CASOS].[TIPO_CLIENTE],[VAGAS_DW].[CASOS].[MOTIVO_CONTATO],[VAGAS_DW].[CASOS].[SEGMENTO_SC] FROM [VAGAS_DW].[CASOS] "
           },
           {
             "name": "TableWidgetSerialization",
@@ -19373,6 +19403,14 @@
               "        <int>166</int>",
               "      </value>",
               "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEGMENTO_SC</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>103</int>",
+              "      </value>",
+              "    </item>",
               "  </ColumnWidths>",
               "  <ColumnDisplayIndex>",
               "    <item>",
@@ -19623,6 +19661,14 @@
               "        <int>29</int>",
               "      </value>",
               "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEGMENTO_SC</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>31</int>",
+              "      </value>",
+              "    </item>",
               "  </ColumnDisplayIndex>",
               "  <ColumnFrozen />",
               "  <ColumnChecked>",
@@ -19712,6 +19758,14 @@
               "      </key>",
               "      <value>",
               "        <boolean>false</boolean>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEGMENTO_SC</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
               "      </value>",
               "    </item>",
               "  </ColumnChecked>",
@@ -69694,10 +69748,6 @@
             "memberId": "S-1-5-21-243640632-756488964-2366565561-5630"
           },
           {
-            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
-            "memberId": "S-1-5-20"
-          },
-          {
             "memberName": "VAGASTEC\\mariana",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7657"
           },
@@ -69710,7 +69760,11 @@
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7635"
           },
           {
-            "memberName": "Todos",
+            "memberName": "NT AUTHORITY\\NETWORK SERVICE",
+            "memberId": "S-1-5-20"
+          },
+          {
+            "memberName": "Everyone",
             "memberId": "S-1-1-0"
           }
         ]
