@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="9/29/2016 4:51:30 PM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1046"
   DTS:ObjectName="Carga_Treinamento_Participantes"
   DTS:PackageType="5"
-  DTS:VersionBuild="46"
-  DTS:VersionGUID="{B758A83F-3550-4EDB-9324-00939354F5D8}">
+  DTS:VersionBuild="51"
+  DTS:VersionGUID="{CB245E29-3F14-4258-A374-FD4D3B0A2877}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -135,6 +135,13 @@
                       cachedLength="36"
                       cachedName="ID_TREINAMENTO"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_TREINAMENTO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[EMAIL_PARTICIPANTE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="EMAIL_PARTICIPANTE"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[EMAIL_PARTICIPANTE]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -383,6 +390,28 @@
                           name="FastParse">false</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[EMAIL_PARTICIPANTE_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[EMAIL_PARTICIPANTE_Conv]"
+                      name="EMAIL_PARTICIPANTE_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[EMAIL_PARTICIPANTE]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -437,13 +466,16 @@
     CONVERT(CONCAT(D.first_name, ' ', D.last_name) USING Latin1) AS CONTATO ,
     CONVERT(F.name USING Latin1) AS NOME_TREINAMENTO, 
     CONVERT(G.name USING Latin1) AS CONTA ,
-    F.ID AS ID_TREINAMENTO
+    F.ID AS ID_TREINAMENTO ,
+    CONVERT(I.email_address USING Latin1) AS EMAIL_PARTICIPANTE
 FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.modified_user_id = B.id
 										LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
                                         LEFT OUTER JOIN sugarcrm.contacts AS D ON A.contact_id_c = D.id
                                         LEFT OUTER JOIN sugarcrm.trn_treinamentos_trn_participantes_c AS E ON A.id = E.trn_treinamentos_trn_participantestrn_participantes_idb
                                         LEFT OUTER JOIN sugarcrm.trn_treinamentos AS F ON E.trn_treinamentos_trn_participantestrn_treinamentos_ida = F.id
-                                        LEFT OUTER JOIN sugarcrm.accounts AS G ON A.account_id_c = G.id</property>
+                                        LEFT OUTER JOIN sugarcrm.accounts AS G ON A.account_id_c = G.id
+                                        LEFT OUTER JOIN sugarcrm.email_addr_bean_rel AS H ON D.id = H.bean_id AND H.bean_module = 'Contacts'
+                                        LEFT OUTER JOIN sugarcrm.email_addresses AS I ON H.email_address_id = I.id ;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -594,6 +626,14 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       length="36"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ID_TREINAMENTO]"
                       name="ID_TREINAMENTO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[EMAIL_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[EMAIL_PARTICIPANTE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[EMAIL_PARTICIPANTE]"
+                      name="EMAIL_PARTICIPANTE" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -661,6 +701,12 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       dataType="wstr"
                       length="36"
                       name="ID_TREINAMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[EMAIL_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EMAIL_PARTICIPANTE" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -755,6 +801,14 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ID_TREINAMENTO]"
                       name="ID_TREINAMENTO" />
                     <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[EMAIL_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[EMAIL_PARTICIPANTE]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[EMAIL_PARTICIPANTE]"
+                      name="EMAIL_PARTICIPANTE" />
+                    <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
@@ -787,7 +841,7 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[VAGAS_DW].[TREINAMENTOS_PARTICIPANTES_CRM]</property>
+                  name="OpenRowset">[VAGAS_DW].[TMP_TREINAMENTOS_PARTICIPANTES_CRM]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -926,6 +980,14 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       cachedName="ID_TREINAMENTO_Convert"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[ID_TREINAMENTO]"
                       lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[ID_TREINAMENTO_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[EMAIL_PARTICIPANTE_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="EMAIL_PARTICIPANTE_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_PARTICIPANTE]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[EMAIL_PARTICIPANTE_Conv]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -994,6 +1056,12 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       dataType="str"
                       length="36"
                       name="ID_TREINAMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_PARTICIPANTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EMAIL_PARTICIPANTE" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
