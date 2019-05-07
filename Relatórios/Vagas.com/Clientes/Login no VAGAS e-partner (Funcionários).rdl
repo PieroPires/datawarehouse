@@ -10,30 +10,55 @@
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="DATASET_Login_Funcionarios">
+    <DataSet Name="Dataset_Login_Funcionarios">
       <Query>
         <DataSourceName>SQLMirror</DataSourceName>
         <QueryParameters>
-          <QueryParameter Name="@IDENT_FUNC">
-            <Value>=Parameters!IDENT_FUNC.Value</Value>
+          <QueryParameter Name="@Ident_func">
+            <Value>=Parameters!Ident_func.Value</Value>
           </QueryParameter>
-          <QueryParameter Name="@DATA_INICIO">
-            <Value>=Parameters!DATA_INICIO.Value</Value>
+          <QueryParameter Name="@Cod_func">
+            <Value>=Parameters!Cod_func.Value</Value>
           </QueryParameter>
-          <QueryParameter Name="@DATA_FIM">
-            <Value>=Parameters!DATA_FIM.Value</Value>
+          <QueryParameter Name="@Data_inicio">
+            <Value>=Parameters!Data_inicio.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Data_fim">
+            <Value>=Parameters!Data_fim.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT	TOP 100 
-		A.IP_log AS IP ,
-		A.SessionID_log AS SessionID ,
-		FORMAT(A.Data_log, 'dd/MM/yyyy HH:mm:ss') AS DATA ,
-		B.Ident_func AS FuncID
-FROM	[hrh-data].[dbo].[Clientes-Login]  AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON B.Cod_func = A.Codfunc_Log
-WHERE	A.CodUsumanut_log &lt; 1
-		AND B.Ident_func = ISNULL(@IDENT_FUNC, B.Ident_func)
-		AND CONVERT(DATE, A.Data_log) &gt;= ISNULL(@DATA_INICIO, A.Data_log)
-		AND CONVERT(DATE, A.Data_log) &lt;= ISNULL(@DATA_FIM, A.Data_log)
+        <CommandText>-- Login funcionários:
+IF (@Ident_func IS NULL AND @Cod_func IS NULL)
+	SELECT	TOP 100
+			A.IP_log AS IP ,
+			A.SessionID_log AS SessionID ,
+			FORMAT(A.Data_log, 'dd/MM/yyyy HH:mm:ss') AS Data_Login ,
+			B.Cod_func ,
+			B.Ident_func AS FuncID ,
+			C.Ident_cli AS CliID ,
+			A.CodUsuManut_log
+	FROM	[hrh-data].[dbo].[Clientes-Login]  AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.Codfunc_Log = B.Cod_func
+														INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
+	WHERE	CONVERT(DATE, A.Data_log) &gt;= ISNULL(@Data_inicio, A.Data_log)
+			AND CONVERT(DATE, A.Data_log) &lt;= ISNULL(@Data_fim, A.Data_log)
+	ORDER BY
+			A.Data_log DESC ;
+ELSE
+	SELECT	TOP 100
+			A.IP_log AS IP ,
+			A.SessionID_log AS SessionID ,
+			FORMAT(A.Data_log, 'dd/MM/yyyy HH:mm:ss') AS Data_Login ,
+			B.Cod_func ,
+			B.Ident_func AS FuncID ,
+			C.Ident_cli AS CliID ,
+			A.CodUsuManut_log
+	FROM	[hrh-data].[dbo].[Clientes-Login]  AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.Codfunc_Log = B.Cod_func
+														INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
+	WHERE	B.Cod_func = ( SELECT	A1.Cod_func
+						   FROM		[hrh-data].[dbo].[Funcionarios] AS A1
+						   WHERE	A1.Ident_func = @Ident_func )
+			AND CONVERT(DATE, A.Data_log) &gt;= ISNULL(@Data_inicio, A.Data_log)
+			AND CONVERT(DATE, A.Data_log) &lt;= ISNULL(@Data_fim, A.Data_log)
 ORDER BY A.Data_log DESC ;</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -46,13 +71,49 @@ ORDER BY A.Data_log DESC ;</CommandText>
           <DataField>SessionID</DataField>
           <rd:TypeName>System.Double</rd:TypeName>
         </Field>
-        <Field Name="DATA">
-          <DataField>DATA</DataField>
+        <Field Name="Data_Login">
+          <DataField>Data_Login</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Cod_func">
+          <DataField>Cod_func</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="FuncID">
           <DataField>FuncID</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CliID">
+          <DataField>CliID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CodUsuManut_log">
+          <DataField>CodUsuManut_log</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dataset_Ano_Anterior">
+      <Query>
+        <DataSourceName>SQLMirror</DataSourceName>
+        <CommandText>SELECT	DATEADD(YEAR, -1, CONVERT(DATE, GETDATE())) AS Ano_Anterior</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Ano_Anterior">
+          <DataField>Ano_Anterior</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dataset_Ano_Atual">
+      <Query>
+        <DataSourceName>SQLMirror</DataSourceName>
+        <CommandText>SELECT	CONVERT(DATE, GETDATE()) AS Ano_Atual</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Ano_Atual">
+          <DataField>Ano_Atual</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -107,22 +168,69 @@ ORDER BY A.Data_log DESC ;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>2.03125in</Width>
+                  <Width>0.45in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.132in</Width>
+                  <Width>2.00208in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.45833in</Width>
+                  <Width>1.10283in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.453in</Width>
+                  <Width>1.61666in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.04883in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.9896in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.5in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
                   <Height>0.22in</Height>
                   <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>White</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                     <TablixCell>
                       <CellContents>
                         <Textbox Name="textbox7">
@@ -275,11 +383,122 @@ ORDER BY A.Data_log DESC ;</CommandText>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>ID VAGAS (Cliente)</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>White</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Código Usuário Manut</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>White</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
                   <Height>0.21in</Height>
                   <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=RowNumber(Nothing)</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                     <TablixCell>
                       <CellContents>
                         <Textbox Name="IP1">
@@ -352,14 +571,14 @@ ORDER BY A.Data_log DESC ;</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="DATA1">
+                        <Textbox Name="Data_Login">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!DATA.Value</Value>
+                                  <Value>=Fields!Data_Login.Value</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>9pt</FontSize>
@@ -371,7 +590,7 @@ ORDER BY A.Data_log DESC ;</CommandText>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>DATA1</rd:DefaultName>
+                          <rd:DefaultName>Data_Login</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -420,12 +639,86 @@ ORDER BY A.Data_log DESC ;</CommandText>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="CliID">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!CliID.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>CliID</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="CodUsuManut_log">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!CodUsuManut_log.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>9pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>CodUsuManut_log</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <rd:Selected>true</rd:Selected>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
               </TablixRows>
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -453,10 +746,10 @@ ORDER BY A.Data_log DESC ;</CommandText>
               </TablixMembers>
             </TablixRowHierarchy>
             <KeepTogether>true</KeepTogether>
-            <DataSetName>DATASET_Login_Funcionarios</DataSetName>
-            <Top>1.61843cm</Top>
+            <DataSetName>Dataset_Login_Funcionarios</DataSetName>
+            <Top>1.61844cm</Top>
             <Height>0.43in</Height>
-            <Width>8.07458in</Width>
+            <Width>10.71in</Width>
             <ZIndex>1</ZIndex>
             <Style />
           </Tablix>
@@ -464,7 +757,7 @@ ORDER BY A.Data_log DESC ;</CommandText>
         <Height>1.06718in</Height>
         <Style />
       </Body>
-      <Width>9.07458in</Width>
+      <Width>10.71in</Width>
       <Page>
         <LeftMargin>1in</LeftMargin>
         <RightMargin>1in</RightMargin>
@@ -475,39 +768,71 @@ ORDER BY A.Data_log DESC ;</CommandText>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="IDENT_FUNC">
+    <ReportParameter Name="Data_inicio">
+      <DataType>DateTime</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dataset_Ano_Anterior</DataSetName>
+          <ValueField>Ano_Anterior</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Data de início:</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Data_fim">
+      <DataType>DateTime</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dataset_Ano_Atual</DataSetName>
+          <ValueField>Ano_Atual</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Data final:</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Ident_func">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
       <Prompt>Identificação do funcionário:</Prompt>
     </ReportParameter>
-    <ReportParameter Name="DATA_INICIO">
-      <DataType>DateTime</DataType>
-      <Prompt>Data de início:</Prompt>
+    <ReportParameter Name="Cod_func">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <Hidden>true</Hidden>
     </ReportParameter>
-    <ReportParameter Name="DATA_FIM">
-      <DataType>DateTime</DataType>
-      <Prompt>Data final:</Prompt>
+    <ReportParameter Name="Ident_cli">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>Identificação do cliente:</Prompt>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>2</NumberOfColumns>
-      <NumberOfRows>2</NumberOfRows>
+      <NumberOfRows>3</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>IDENT_FUNC</ParameterName>
+          <ParameterName>Data_inicio</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>DATA_INICIO</ParameterName>
+          <ParameterName>Data_fim</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>1</RowIndex>
-          <ParameterName>DATA_FIM</ParameterName>
+          <ParameterName>Ident_func</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>Cod_func</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>Ident_cli</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
