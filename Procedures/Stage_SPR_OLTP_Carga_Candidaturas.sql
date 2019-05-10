@@ -25,10 +25,10 @@ IF @COD_HISTCAND IS NULL
 SET @COD_HISTCAND = 0
 
 INSERT INTO VAGAS_DW.TMP_CANDIDATURAS
-SELECT Cod_histCand,CodCand_HistCand,CodVaga_HistCand,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtPrimCand_histCand,112)),
-	   B.CPF_cand
+SELECT Cod_histCand,CodCand_HistCand,CodVaga_HistCand,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,DtPrimCand_histCand,112))
+	--,B.CPF_cand
 FROM [HRH-DATA].DBO.HistoricoCandidaturas A
-INNER JOIN [HRH-DATA].DBO.Candidatos B ON B.Cod_cand = A.CodCand_histCand
+--INNER JOIN [HRH-DATA].DBO.Candidatos B ON B.Cod_cand = A.CodCand_histCand
 WHERE Cod_HistCand > @COD_HISTCAND
 
 -- INSERIR DIRETAMENTE NO BD VAGAS_DW
