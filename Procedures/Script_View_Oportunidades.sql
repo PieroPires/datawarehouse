@@ -67,6 +67,9 @@ select    `acc`.`name` AS `cntConta`
 	      ,CONVERT(opp_cstm.motivo_do_fechamento_detalhe_c USING Latin1) AS MOTIVO_FECHAMENTO_DETALHE
           ,CONVERT(opp_cstm.concorrente_c USING Latin1) AS MOTIVO_CONCORRENTE
           ,CONVERT(CAST(opp_cstm.perfis_especificos_c AS CHAR(200)) USING Latin1) AS MOTIVO_PERFIL_ESPECIFICO
+		  ,opp_cstm.data_proposta_c AS Data_proposta
+		  ,opp_cstm.data_avaliacao_c AS Data_avaliacao_proposta
+		  ,opp_cstm.data_contrato_c AS Data_contrato
 from     ((((((((((((((((`opportunities` `opp`
           join `users` `usropp` on((`usropp`.`id` = `opp`.`assigned_user_id`)))
           join `accounts_opportunities` `accopp` on(((`accopp`.`opportunity_id` = `opp`.`id`) and (`accopp`.`deleted` = 0))))

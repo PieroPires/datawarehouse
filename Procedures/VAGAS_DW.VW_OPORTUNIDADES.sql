@@ -71,6 +71,58 @@ SELECT CONTAID AS CONTA_ID,
   	   MOTIVO_FECHAMENTO_DETALHE,
 	   MOTIVO_CONCORRENTE,
 	   MOTIVO_PERFIL_ESPECIFICO,
-	   NEGOCIACAO_MRR
-FROM VAGAS_DW.OPORTUNIDADES
+	   NEGOCIACAO_MRR ,
+CASE 
+	WHEN A.Fase = 'projeto_suspenso' THEN NULL
+	WHEN A.Fase = 'prospeccao' THEN DATEDIFF(DAY, A.DataCriacao, CONVERT(DATE, GETDATE()))
+	WHEN A.Fase NOT IN ('projeto_suspenso', 'prospeccao') THEN DATEDIFF(DAY, A.DataCriacao, A.DATA_PROPOSTA)
+	ELSE NULL
+END AS [DiasFase10Prospecção] ,
+CASE
+	WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'prospeccao' THEN NULL
+	WHEN A.Fase = 'proposta_comercial' THEN DATEDIFF(DAY, A.DATA_PROPOSTA, CONVERT(DATE, GETDATE()))
+	WHEN A.Fase NOT IN ('projeto_suspenso','prospeccao', 'proposta_comercial') THEN DATEDIFF(DAY, DATA_PROPOSTA, DATA_AVALIACAO_PROPOSTA)
+	ELSE NULL
+END AS [DiasFase40PropostaComercial] ,
+CASE
+	WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'prospeccao' OR A.Fase = 'proposta_comercial' THEN NULL
+	WHEN A.Fase = 'avaliacao_interna' THEN DATEDIFF(DAY, DATA_PROPOSTA, CONVERT(DATE, GETDATE()))
+	WHEN A.Fase NOT IN ('projeto_suspenso', 'prospeccao', 'proposta_comercial', 'avaliacao_interna') THEN DATEDIFF(DAY, DATA_PROPOSTA, DATA_AVALIACAO_PROPOSTA)
+	ELSE NULL
+END AS [DiasFase60AnaliseInterna] ,
+CASE
+	WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'prospeccao' OR A.Fase = 'proposta_comercial' OR A.Fase = 'avaliacao_interna' THEN NULL
+	WHEN A.Fase = 'contrato' THEN DATEDIFF(DAY, A.DATA_AVALIACAO_PROPOSTA, CONVERT(DATE, GETDATE()))
+	WHEN A.Fase NOT IN ('projeto_suspenso', 'prospeccao', 'proposta_comercial', 'avaliacao_interna', 'contrato') THEN DATEDIFF(DAY, A.DATA_AVALIACAO_PROPOSTA, A.DATA_CONTRATO)
+	ELSE NULL
+END AS [DiasFase80Contrato] ,
+CASE
+	WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'fechado_e_ganho' OR A.Fase = 'fechado_e_perdido' THEN NULL
+	WHEN A.Fase = 'prospeccao' THEN CASE 
+										WHEN A.Fase = 'projeto_suspenso' THEN NULL
+										WHEN A.Fase = 'prospeccao' THEN DATEDIFF(DAY, A.DataCriacao, CONVERT(DATE, GETDATE()))
+										WHEN A.Fase NOT IN ('projeto_suspenso', 'prospeccao') THEN DATEDIFF(DAY, A.DataCriacao, A.DATA_PROPOSTA)
+										ELSE NULL
+									END -- DiasFase10Prospecção
+	WHEN A.Fase = 'proposta_comercial'	THEN CASE
+												WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'prospeccao' THEN NULL
+												WHEN A.Fase = 'proposta_comercial' THEN DATEDIFF(DAY, A.DATA_PROPOSTA, CONVERT(DATE, GETDATE()))
+												WHEN A.Fase NOT IN ('projeto_suspenso','prospeccao', 'proposta_comercial') THEN DATEDIFF(DAY, DATA_PROPOSTA, DATA_AVALIACAO_PROPOSTA)
+												ELSE NULL
+											END -- DiasFase40PropostaComercial
+	WHEN A.Fase = 'avaliacao_interna' THEN CASE
+											WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'prospeccao' OR A.Fase = 'proposta_comercial' THEN NULL
+											WHEN A.Fase = 'avaliacao_interna' THEN DATEDIFF(DAY, DATA_PROPOSTA, CONVERT(DATE, GETDATE()))
+											WHEN A.Fase NOT IN ('projeto_suspenso', 'prospeccao', 'proposta_comercial', 'avaliacao_interna') THEN DATEDIFF(DAY, DATA_PROPOSTA, DATA_AVALIACAO_PROPOSTA)
+											ELSE NULL
+										END -- DiasFase60AnaliseInterna
+	WHEN A.Fase = 'contrato' THEN CASE
+									WHEN A.Fase = 'projeto_suspenso' OR A.Fase = 'prospeccao' OR A.Fase = 'proposta_comercial' OR A.Fase = 'avaliacao_interna' THEN NULL
+									WHEN A.Fase = 'contrato' THEN DATEDIFF(DAY, A.DATA_AVALIACAO_PROPOSTA, CONVERT(DATE, GETDATE()))
+									WHEN A.Fase NOT IN ('projeto_suspenso', 'prospeccao', 'proposta_comercial', 'avaliacao_interna', 'contrato') THEN DATEDIFF(DAY, A.DATA_AVALIACAO_PROPOSTA, A.DATA_CONTRATO)
+									ELSE NULL
+								END
+	ELSE NULL
+END AS [DiasFaseAtual]
+FROM VAGAS_DW.OPORTUNIDADES AS A ;
 --WHERE DataCriacao < CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112))

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="10/6/2015 10:28:00 AM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Sugar"
   DTS:PackageType="5"
-  DTS:VersionBuild="200"
-  DTS:VersionGUID="{376B4730-4D09-41D8-AEC5-CCA0AD86CD69}">
+  DTS:VersionBuild="201"
+  DTS:VersionGUID="{2EA290EE-CD22-476E-AD2E-656ED360D541}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -388,6 +388,21 @@
                       cachedLength="255"
                       cachedName="cnae_subclasse_descr_c"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[cnae_subclasse_descr_c]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[Data_proposta]"
+                      cachedDataType="dbDate"
+                      cachedName="Data_proposta"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_proposta]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[Data_avaliacao_proposta]"
+                      cachedDataType="dbDate"
+                      cachedName="Data_avaliacao_proposta"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_avaliacao_proposta]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[Data_contrato]"
+                      cachedDataType="dbDate"
+                      cachedName="Data_contrato"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_contrato]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1452,6 +1467,66 @@
                           name="FastParse">false</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_proposta_Conv]"
+                      dataType="dbDate"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_proposta_Conv]"
+                      name="Data_proposta_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_proposta]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_avaliacao_proposta_Conv]"
+                      dataType="dbDate"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_avaliacao_proposta_Conv]"
+                      name="Data_avaliacao_proposta_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_avaliacao_proposta]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_contrato_Conv]"
+                      dataType="dbDate"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_contrato_Conv]"
+                      name="Data_contrato_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_contrato]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -1555,7 +1630,10 @@
    MOTIVO_FECHAMENTO,
    MOTIVO_FECHAMENTO_DETALHE,
    MOTIVO_CONCORRENTE,
-   MOTIVO_PERFIL_ESPECIFICO
+   MOTIVO_PERFIL_ESPECIFICO,
+   Data_proposta,
+   Data_avaliacao_proposta,
+   Data_contrato
 FROM vwOportunidadesComProdutos
 WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                 <property
@@ -2088,6 +2166,24 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                       length="200"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[MOTIVO_PERFIL_ESPECIFICO]"
                       name="MOTIVO_PERFIL_ESPECIFICO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_proposta]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_proposta]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_proposta]"
+                      name="Data_proposta" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_avaliacao_proposta]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_avaliacao_proposta]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_avaliacao_proposta]"
+                      name="Data_avaliacao_proposta" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_contrato]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_contrato]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[Data_contrato]"
+                      name="Data_contrato" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2437,6 +2533,18 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                       dataType="str"
                       length="200"
                       name="MOTIVO_PERFIL_ESPECIFICO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_proposta]"
+                      dataType="dbDate"
+                      name="Data_proposta" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_avaliacao_proposta]"
+                      dataType="dbDate"
+                      name="Data_avaliacao_proposta" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_contrato]"
+                      dataType="dbDate"
+                      name="Data_contrato" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -2910,6 +3018,24 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                       length="200"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[MOTIVO_PERFIL_ESPECIFICO]"
                       name="MOTIVO_PERFIL_ESPECIFICO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[Data_proposta]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_proposta]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[Data_proposta]"
+                      name="Data_proposta" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[Data_avaliacao_proposta]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_avaliacao_proposta]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[Data_avaliacao_proposta]"
+                      name="Data_avaliacao_proposta" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[Data_contrato]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[Data_contrato]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[Data_contrato]"
+                      name="Data_contrato" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3438,6 +3564,24 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                       cachedName="MOTIVO_PERFIL_ESPECIFICO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[MOTIVO_PERFIL_ESPECIFICO]"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[MOTIVO_PERFIL_ESPECIFICO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Data_proposta_Conv]"
+                      cachedDataType="dbDate"
+                      cachedName="Data_proposta_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_PROPOSTA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_proposta_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Data_avaliacao_proposta_Conv]"
+                      cachedDataType="dbDate"
+                      cachedName="Data_avaliacao_proposta_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_AVALIACAO_PROPOSTA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_avaliacao_proposta_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[Data_contrato_Conv]"
+                      cachedDataType="dbDate"
+                      cachedName="Data_contrato_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONTRATO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Data_contrato_Conv]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3892,6 +4036,24 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                       refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[SOMA_PRODUTOS_OPP]"
                       dataType="cy"
                       name="SOMA_PRODUTOS_OPP" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[NEGOCIACAO_MRR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="NEGOCIACAO_MRR" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_PROPOSTA]"
+                      dataType="dbDate"
+                      name="DATA_PROPOSTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_AVALIACAO_PROPOSTA]"
+                      dataType="dbDate"
+                      name="DATA_AVALIACAO_PROPOSTA" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONTRATO]"
+                      dataType="dbDate"
+                      name="DATA_CONTRATO" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -3997,12 +4159,12 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
       DTS:To="Package\Processar Cubo" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -4115,47 +4277,13 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
           Id="Package\MySQL -&gt; SQL Server\SQL Server - DW"
           TopLeft="125,256" />
         <NodeLayout
-          Size="156,42"
-          Id="Package\MySQL -&gt; SQL Server\Data Conversion"
-          TopLeft="260,148" />
-        <EdgeLayout
-          Id="Package\MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
-          TopLeft="338,190">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-133.5,66"
-              Start="0,0"
-              End="-133.5,58.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,29" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,29"
-                    Point2="0,33"
-                    Point3="-4,33" />
-                  <mssgle:LineSegment
-                    End="-129.5,33" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-129.5,33"
-                    Point2="-133.5,33"
-                    Point3="-133.5,37" />
-                  <mssgle:LineSegment
-                    End="-133.5,58.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
           Size="170,42"
           Id="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM"
           TopLeft="483,51" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\MySQL -&gt; SQL Server\Data Conversion"
+          TopLeft="260,148" />
         <EdgeLayout
           Id="Package\MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
           TopLeft="568,93">
@@ -4182,6 +4310,40 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
                     Point3="-230,31.5" />
                   <mssgle:LineSegment
                     End="-230,47.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+          TopLeft="338,190">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-133.5,66"
+              Start="0,0"
+              End="-133.5,58.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29"
+                    Point2="0,33"
+                    Point3="-4,33" />
+                  <mssgle:LineSegment
+                    End="-129.5,33" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-129.5,33"
+                    Point2="-133.5,33"
+                    Point3="-133.5,37" />
+                  <mssgle:LineSegment
+                    End="-133.5,58.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
