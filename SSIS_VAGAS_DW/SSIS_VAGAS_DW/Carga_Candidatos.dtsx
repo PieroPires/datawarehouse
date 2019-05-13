@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="9/29/2015 1:38:01 PM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Candidatos"
   DTS:PackageType="5"
-  DTS:VersionBuild="281"
-  DTS:VersionGUID="{1B578236-B1C3-4497-9809-4C8EAAEA0737}">
+  DTS:VersionBuild="283"
+  DTS:VersionGUID="{7EB0A92C-EEB3-42A2-AED6-7ECEB1E292E4}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:PackageParameters>
@@ -146,6 +146,22 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{636686C6-1FF8-44E5-AFAD-E74F71532208}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CANDIDATOS - DATA_ULT_LOGIN&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CANDIDATOS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CANDIDATOS - DATA_ULT_ATUALIZ&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CANDIDATOS - DATA_CADASTRO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;CANDIDATOS - CIDADE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Validar se DATA CARGA foi passada"
       DTS:CreationName="Microsoft.ExpressionTask"
       DTS:Description="Expression Task"
@@ -171,6 +187,14 @@
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
       DTS:To="Package\Carga VAGAS_DW - Candidatos" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{E8CFAD3A-1199-40C4-B83B-4CEFD2F55A83}"
+      DTS:From="Package\Carga VAGAS_DW - Candidatos"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Processar CUBO" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
@@ -198,47 +222,47 @@
       DTS:To="Package\Carga Stage Mirror -TMP_CANDIDATOS" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="265,42"
           Id="Package\Carga Stage Mirror -TMP_CANDIDATOS"
-          TopLeft="349,188" />
+          TopLeft="478,306.5" />
         <NodeLayout
           Size="227,42"
           Id="Package\Carga VAGAS_DW - Candidatos"
-          TopLeft="365,275" />
+          TopLeft="497,408.5" />
         <NodeLayout
           Size="210,42"
           Id="Package\Pegar Última Data de Carga"
-          TopLeft="266,90" />
+          TopLeft="339.5,204.5" />
         <NodeLayout
           Size="247,42"
           Id="Package\Validar se DATA CARGA foi passada"
-          TopLeft="429,24" />
+          TopLeft="487,102.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="480,230">
+          TopLeft="610.5,348.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,45"
+              EndConnector="0,60"
               Start="0,0"
-              End="0,37.5">
+              End="0,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,37.5" />
+                    End="0,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -249,30 +273,30 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="371,132">
+          TopLeft="444.5,246.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="67.6666666666667,56"
+              EndConnector="123.166666666667,60"
               Start="0,0"
-              End="67.6666666666667,48.5">
+              End="123.166666666667,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,29.3983495873969" />
+                    End="0,31.7839459864966" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,29.3983495873969"
-                    Point2="0,33.3983495873969"
-                    Point3="4,33.3983495873969" />
+                    Point1="0,31.7839459864966"
+                    Point2="0,35.7839459864966"
+                    Point3="4,35.7839459864966" />
                   <mssgle:LineSegment
-                    End="63.6666666666667,33.3983495873969" />
+                    End="119.166666666667,35.7839459864966" />
                   <mssgle:CubicBezierSegment
-                    Point1="63.6666666666667,33.3983495873969"
-                    Point2="67.6666666666667,33.3983495873969"
-                    Point3="67.6666666666667,37.3983495873969" />
+                    Point1="119.166666666667,35.7839459864966"
+                    Point2="123.166666666667,35.7839459864966"
+                    Point3="123.166666666667,39.7839459864966" />
                   <mssgle:LineSegment
-                    End="67.6666666666667,48.5" />
+                    End="123.166666666667,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -283,74 +307,88 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="512.666666666667,66">
+          TopLeft="570.666666666667,144.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-141.666666666667,24"
+              EndConnector="-126.166666666667,60"
               Start="0,0"
-              End="-141.666666666667,16.5">
+              End="-126.166666666667,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,5.69267900241351" />
+                    End="0,20.2316975060338" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,5.69267900241351"
-                    Point2="0,9.69267900241351"
-                    Point3="-4,9.69267900241351" />
+                    Point1="0,20.2316975060338"
+                    Point2="0,24.2316975060338"
+                    Point3="-4,24.2316975060338" />
                   <mssgle:LineSegment
-                    End="-137.666666666667,9.69267900241351" />
+                    End="-122.166666666667,24.2316975060338" />
                   <mssgle:CubicBezierSegment
-                    Point1="-137.666666666667,9.69267900241351"
-                    Point2="-141.666666666667,9.69267900241351"
-                    Point3="-141.666666666667,13.6926790024135" />
+                    Point1="-122.166666666667,24.2316975060338"
+                    Point2="-126.166666666667,24.2316975060338"
+                    Point3="-126.166666666667,28.2316975060338" />
                   <mssgle:LineSegment
-                    End="-141.666666666667,16.5" />
+                    End="-126.166666666667,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-78.8333333333335,14.6926790024135,16,16"
+              BoundingBox="-71.0833333333333,29.2316975060338,16,16"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="592.333333333333,66">
+          TopLeft="651.833333333333,144.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-68,122"
+              EndConnector="0,162"
               Start="0,0"
-              End="-68,114.5">
+              End="0,154.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,57.0330329878608" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,57.0330329878608"
-                    Point2="0,61.0330329878608"
-                    Point3="-4,61.0330329878608" />
-                  <mssgle:LineSegment
-                    End="-64,61.0330329878608" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-64,61.0330329878608"
-                    Point2="-68,61.0330329878608"
-                    Point3="-68,65.0330329878608" />
-                  <mssgle:LineSegment
-                    End="-68,114.5" />
+                    End="0,154.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-42,66.0330329878608,16,16"
+              BoundingBox="-8,69.25,16,16"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="533,510.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="610.5,450.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
