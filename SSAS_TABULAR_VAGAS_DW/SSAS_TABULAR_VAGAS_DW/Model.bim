@@ -8,7 +8,8 @@
       {
         "name": "VAGAS_DW",
         "connectionString": "Provider=SQLNCLI11;Data Source=BKO-SRV-PBI;Persist Security Info=false;Integrated Security=SSPI;Initial Catalog=VAGAS_DW",
-        "impersonationMode": "impersonateServiceAccount",
+        "impersonationMode": "impersonateAccount",
+        "account": "VAGASTEC\\fiama.cristi",
         "maxConnections": 1000,
         "annotations": [
           {
@@ -2462,6 +2463,54 @@
             "dataType": "int64",
             "isHidden": true,
             "sourceColumn": "fase_ordem"
+          },
+          {
+            "name": "DiasFase10Prospecção_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DiasFase10Prospecção"
+          },
+          {
+            "name": "DiasFase40PropostaComercial_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DiasFase40PropostaComercial"
+          },
+          {
+            "name": "DiasFase60AnaliseInterna_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DiasFase60AnaliseInterna"
+          },
+          {
+            "name": "DiasFase80Contrato_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DiasFase80Contrato"
+          },
+          {
+            "name": "DiasFaseAtual_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DiasFaseAtual"
+          },
+          {
+            "name": "DATA_PROPOSTA_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_PROPOSTA"
+          },
+          {
+            "name": "DATA_AVALIACAO_PROPOSTA_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_AVALIACAO_PROPOSTA"
+          },
+          {
+            "name": "DATA_CONTRATO_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_CONTRATO"
           }
         ],
         "partitions": [
@@ -2540,7 +2589,16 @@
                 "\tWHEN 'fechado_e_ganho' THEN 5",
                 "\tWHEN 'fechado_e_perdido' THEN 6 ",
                 "\tWHEN 'projeto_suspenso' THEN 7",
-                "end fase_ordem FROM [VAGAS_DW].[VW_OPORTUNIDADES]"
+                "end fase_ordem,",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase10Prospecção],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase40PropostaComercial],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase60AnaliseInterna],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase80Contrato],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFaseAtual],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
+                "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO]",
+                " FROM [VAGAS_DW].[VW_OPORTUNIDADES]"
               ],
               "dataSource": "VAGAS_DW"
             },
@@ -2619,7 +2677,16 @@
                   "\tWHEN 'fechado_e_ganho' THEN 5",
                   "\tWHEN 'fechado_e_perdido' THEN 6 ",
                   "\tWHEN 'projeto_suspenso' THEN 7",
-                  "end fase_ordem FROM [VAGAS_DW].[VW_OPORTUNIDADES]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                  "end fase_ordem,",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase10Prospecção],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase40PropostaComercial],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase60AnaliseInterna],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase80Contrato],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFaseAtual],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
+                  "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO]",
+                  " FROM [VAGAS_DW].[VW_OPORTUNIDADES]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
                 ]
               }
             ]
@@ -2755,6 +2822,26 @@
           {
             "name": "DiasEmAberto",
             "expression": " AVERAGE([DiasEmAberto_SOURCE])"
+          },
+          {
+            "name": "DiasFaseProspeccao",
+            "expression": "AVERAGE([DiasFase10Prospecção_SOURCE])"
+          },
+          {
+            "name": "DiasFasePropostaComercial",
+            "expression": "AVERAGE([DiasFase40PropostaComercial_SOURCE])"
+          },
+          {
+            "name": "DiasFaseAnaliseInterna",
+            "expression": "AVERAGE([DiasFase60AnaliseInterna_SOURCE])"
+          },
+          {
+            "name": "DiasFaseContrato",
+            "expression": "AVERAGE([DiasFase80Contrato_SOURCE])"
+          },
+          {
+            "name": "DiasFaseAtual",
+            "expression": "AVERAGE([DiasFaseAtual_SOURCE])"
           }
         ],
         "annotations": [
@@ -2840,7 +2927,16 @@
               "\tWHEN 'fechado_e_ganho' THEN 5",
               "\tWHEN 'fechado_e_perdido' THEN 6 ",
               "\tWHEN 'projeto_suspenso' THEN 7",
-              "end fase_ordem FROM [VAGAS_DW].[VW_OPORTUNIDADES]"
+              "end fase_ordem,",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase10Prospecção],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase40PropostaComercial],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase60AnaliseInterna],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase80Contrato],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFaseAtual],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO]",
+              " FROM [VAGAS_DW].[VW_OPORTUNIDADES]"
             ]
           },
           {
@@ -2917,7 +3013,16 @@
               "\tWHEN 'fechado_e_ganho' THEN 5",
               "\tWHEN 'fechado_e_perdido' THEN 6 ",
               "\tWHEN 'projeto_suspenso' THEN 7",
-              "end fase_ordem FROM [VAGAS_DW].[VW_OPORTUNIDADES]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+              "end fase_ordem,",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase10Prospecção],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase40PropostaComercial],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase60AnaliseInterna],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFase80Contrato],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DiasFaseAtual],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
+              "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO]",
+              " FROM [VAGAS_DW].[VW_OPORTUNIDADES]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
             ]
           }
         ]
@@ -64238,6 +64343,234 @@
             ]
           }
         ]
+      },
+      {
+        "name": "OPORT - DATA PROPOSTA",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_PROPOSTA",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "OPORT - DATA PROPOSTA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "OPORT - DATA_AVALIACAO_PROPOSTA",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_AVALIACAO_PROPOSTA",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "OPORT - DATA_AVALIACAO_PROPOSTA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "OPORT - DATA_CONTRATO",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_CONTRATO",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "OPORT - DATA_CONTRATO",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -65711,6 +66044,27 @@
         "fromColumn": "COD_CIDADE",
         "toTable": "CLIENTES - CIDADE",
         "toColumn": "COD_CIDADE"
+      },
+      {
+        "name": "40db6d29-6656-4195-bc45-94f1cd49ff05",
+        "fromTable": "OPORTUNIDADES",
+        "fromColumn": "DATA_PROPOSTA_SOURCE",
+        "toTable": "OPORT - DATA PROPOSTA",
+        "toColumn": "DATA_PROPOSTA"
+      },
+      {
+        "name": "1b83da59-27d2-45b2-8c63-cf8a0ba3f7a2",
+        "fromTable": "OPORTUNIDADES",
+        "fromColumn": "DATA_AVALIACAO_PROPOSTA_SOURCE",
+        "toTable": "OPORT - DATA_AVALIACAO_PROPOSTA",
+        "toColumn": "DATA_AVALIACAO_PROPOSTA"
+      },
+      {
+        "name": "b7fb89f9-b904-4549-b65d-f40f23054554",
+        "fromTable": "OPORTUNIDADES",
+        "fromColumn": "DATA_CONTRATO_SOURCE",
+        "toTable": "OPORT - DATA_CONTRATO",
+        "toColumn": "DATA_CONTRATO"
       }
     ],
     "roles": [
