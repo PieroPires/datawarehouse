@@ -694,6 +694,14 @@
             "dataType": "int64",
             "isHidden": true,
             "sourceColumn": "NIVEL_ORDEM"
+          },
+          {
+            "type": "calculated",
+            "name": "QTD_CANDIDATURAS",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "CALCULATE([QTD_CANDIDATURAS], FILTER(CANDIDATURAS, CANDIDATURAS[CodVaga_HistCand] = VALUE(VAGAS[COD_VAGA])))"
           }
         ],
         "partitions": [
@@ -1079,6 +1087,14 @@
           {
             "name": "DiasVagaAberta",
             "expression": "AVERAGE([DiasAberta_Source])"
+          },
+          {
+            "name": "QTD_VISUALIZACOES_CVS_VAGA",
+            "expression": "SUM([QTD_VISUALIZACOES_CVS_SOURCE])"
+          },
+          {
+            "name": "MEDIANA_CANDIDATURAS",
+            "expression": "MEDIAN(VAGAS[QTD_CANDIDATURAS])"
           }
         ],
         "annotations": [
