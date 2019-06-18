@@ -54173,6 +54173,12 @@
             "dataType": "string",
             "isDataTypeInferred": true,
             "expression": "LOOKUPVALUE(CLIENTES[INICIAL_CLIENTE],CLIENTES[COD_CLI],[COD_CLI])"
+          },
+          {
+            "name": "QTD_CURRICULOS_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "qtd_curriculos"
           }
         ],
         "partitions": [
@@ -54268,6 +54274,14 @@
                   "        <int>74</int>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>qtd_curriculos</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>97</int>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnWidths>",
                   "  <ColumnDisplayIndex>",
                   "    <item>",
@@ -54342,6 +54356,14 @@
                   "        <int>8</int>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>qtd_curriculos</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>9</int>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnDisplayIndex>",
                   "  <ColumnFrozen />",
                   "  <ColumnChecked>",
@@ -54393,6 +54415,14 @@
                   "        <boolean>true</boolean>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>qtd_curriculos</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnChecked>",
                   "  <ColumnFilter />",
                   "  <SelectionFilter />",
@@ -54412,6 +54442,10 @@
           {
             "name": "TEMPO_DIAS_TRIAGEM",
             "expression": " SUM([TEMPO_DIAS_TRIAGEM_SOURCE])"
+          },
+          {
+            "name": "QTD_CURRICULOS",
+            "expression": "SUM([QTD_CURRICULOS_SOURCE])"
           }
         ],
         "annotations": [
@@ -54511,6 +54545,14 @@
               "        <int>74</int>",
               "      </value>",
               "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>qtd_curriculos</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>97</int>",
+              "      </value>",
+              "    </item>",
               "  </ColumnWidths>",
               "  <ColumnDisplayIndex>",
               "    <item>",
@@ -54585,6 +54627,14 @@
               "        <int>8</int>",
               "      </value>",
               "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>qtd_curriculos</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>9</int>",
+              "      </value>",
+              "    </item>",
               "  </ColumnDisplayIndex>",
               "  <ColumnFrozen />",
               "  <ColumnChecked>",
@@ -54631,6 +54681,14 @@
               "    <item>",
               "      <key>",
               "        <string>COD_CLI</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>qtd_curriculos</string>",
               "      </key>",
               "      <value>",
               "        <boolean>true</boolean>",
@@ -66780,6 +66838,14 @@
         "toColumn": "COD_CIDADE"
       },
       {
+        "name": "3dfaa01b-0592-4e5a-b054-70749f6564b7",
+        "fromTable": "CANDIDATURAS",
+        "fromColumn": "CodCand_HistCand",
+        "toTable": "CANDIDATOS",
+        "toColumn": "COD_CAND",
+        "crossFilteringBehavior": "bothDirections"
+      },
+      {
         "name": "40db6d29-6656-4195-bc45-94f1cd49ff05",
         "fromTable": "OPORTUNIDADES",
         "fromColumn": "DATA_PROPOSTA_SOURCE",
@@ -66799,14 +66865,494 @@
         "fromColumn": "DATA_CONTRATO_SOURCE",
         "toTable": "OPORT - DATA_CONTRATO",
         "toColumn": "DATA_CONTRATO"
-      },
+      }
+    ],
+    "perspectives": [
       {
-        "name": "3dfaa01b-0592-4e5a-b054-70749f6564b7",
-        "fromTable": "CANDIDATURAS",
-        "fromColumn": "CodCand_HistCand",
-        "toTable": "CANDIDATOS",
-        "toColumn": "COD_CAND",
-        "crossFilteringBehavior": "bothDirections"
+        "name": "Oportunidades",
+        "tables": [
+          {
+            "name": "OPORT - DATA ALT CONTA",
+            "columns": [
+              {
+                "name": "ANO"
+              },
+              {
+                "name": "DATA ALT CONTA"
+              },
+              {
+                "name": "DATAKEY"
+              },
+              {
+                "name": "DIA"
+              },
+              {
+                "name": "MES"
+              },
+              {
+                "name": "NOMEMES"
+              }
+            ]
+          },
+          {
+            "name": "OPORT - DATA CRIACAO",
+            "columns": [
+              {
+                "name": "ANO"
+              },
+              {
+                "name": "DATA CRIACAO"
+              },
+              {
+                "name": "DATAKEY"
+              },
+              {
+                "name": "DIA"
+              },
+              {
+                "name": "MES"
+              },
+              {
+                "name": "NOMEMES"
+              }
+            ]
+          },
+          {
+            "name": "OPORT - DATA FECHAMENTO",
+            "columns": [
+              {
+                "name": "ANO"
+              },
+              {
+                "name": "DATAKEY"
+              },
+              {
+                "name": "DIA"
+              },
+              {
+                "name": "MES"
+              },
+              {
+                "name": "MesAno"
+              },
+              {
+                "name": "MesAnoFech"
+              },
+              {
+                "name": "NOMEMES"
+              },
+              {
+                "name": "Ordem"
+              }
+            ]
+          },
+          {
+            "name": "OPORT - DATA PROPOSTA",
+            "columns": [
+              {
+                "name": "ANO"
+              },
+              {
+                "name": "DATA_PROPOSTA"
+              },
+              {
+                "name": "DATAKEY"
+              },
+              {
+                "name": "DIA"
+              },
+              {
+                "name": "MES"
+              },
+              {
+                "name": "NOMEMES"
+              },
+              {
+                "name": "SEMANA"
+              }
+            ]
+          },
+          {
+            "name": "OPORT - DATA_AVALIACAO_PROPOSTA",
+            "columns": [
+              {
+                "name": "ANO"
+              },
+              {
+                "name": "DATA_AVALIACAO_PROPOSTA"
+              },
+              {
+                "name": "DATAKEY"
+              },
+              {
+                "name": "DIA"
+              },
+              {
+                "name": "MES"
+              },
+              {
+                "name": "NOMEMES"
+              },
+              {
+                "name": "SEMANA"
+              }
+            ]
+          },
+          {
+            "name": "OPORT - DATA_CONTRATO",
+            "columns": [
+              {
+                "name": "ANO"
+              },
+              {
+                "name": "DATA_CONTRATO"
+              },
+              {
+                "name": "DATAKEY"
+              },
+              {
+                "name": "DIA"
+              },
+              {
+                "name": "MES"
+              },
+              {
+                "name": "NOMEMES"
+              },
+              {
+                "name": "SEMANA"
+              }
+            ]
+          },
+          {
+            "name": "OPORTUNIDADES",
+            "columns": [
+              {
+                "name": "Campanha"
+              },
+              {
+                "name": "Cliente"
+              },
+              {
+                "name": "CNPJ"
+              },
+              {
+                "name": "cntCategoria"
+              },
+              {
+                "name": "cntConta"
+              },
+              {
+                "name": "cntNegócio"
+              },
+              {
+                "name": "cntPai"
+              },
+              {
+                "name": "cntPerfil"
+              },
+              {
+                "name": "CONTA_ID"
+              },
+              {
+                "name": "CONTEM_CREDITO_OFFLINE"
+              },
+              {
+                "name": "CONTEM_FIT"
+              },
+              {
+                "name": "CONTEM_REDES"
+              },
+              {
+                "name": "Contr_SOURCE"
+              },
+              {
+                "name": "Contrib_SOURCE"
+              },
+              {
+                "name": "DATA_AVALIACAO_PROPOSTA_SOURCE"
+              },
+              {
+                "name": "DATA_CONTRATO_SOURCE"
+              },
+              {
+                "name": "DATA_PROPOSTA_SOURCE"
+              },
+              {
+                "name": "DATAALTERACAOCONTA"
+              },
+              {
+                "name": "Dias_SOURCE"
+              },
+              {
+                "name": "Dias_SRC"
+              },
+              {
+                "name": "DiasEmAberto_SOURCE"
+              },
+              {
+                "name": "DiasFase10Prospecção_SOURCE"
+              },
+              {
+                "name": "DiasFase40PropostaComercial_SOURCE"
+              },
+              {
+                "name": "DiasFase60AnaliseInterna_SOURCE"
+              },
+              {
+                "name": "DiasFase80Contrato_SOURCE"
+              },
+              {
+                "name": "DiasFaseAtual_SOURCE"
+              },
+              {
+                "name": "ÉFechGan"
+              },
+              {
+                "name": "ÉFGFit"
+              },
+              {
+                "name": "ÉFGRevFit"
+              },
+              {
+                "name": "ÉRevFitRev"
+              },
+              {
+                "name": "ErrFit"
+              },
+              {
+                "name": "fase_ordem"
+              },
+              {
+                "name": "Grupo"
+              },
+              {
+                "name": "GRUPO_OPORTUNIDADE"
+              },
+              {
+                "name": "ID_VAGAS"
+              },
+              {
+                "name": "idhsys"
+              },
+              {
+                "name": "IGPM_MES_SOURCE"
+              },
+              {
+                "name": "LeadCampanha"
+              },
+              {
+                "name": "leadFonte"
+              },
+              {
+                "name": "leadNome"
+              },
+              {
+                "name": "MesAnoFech"
+              },
+              {
+                "name": "MOTIVO_CONCORRENTE"
+              },
+              {
+                "name": "MOTIVO_FECHAMENTO"
+              },
+              {
+                "name": "MOTIVO_FECHAMENTO_DETALHE"
+              },
+              {
+                "name": "MOTIVO_PERFIL_ESPECIFICO"
+              },
+              {
+                "name": "NEGOCIACAO_MRR"
+              },
+              {
+                "name": "OPP_CRIADA_ULT_12_M"
+              },
+              {
+                "name": "oppCategoria"
+              },
+              {
+                "name": "OppCriador"
+              },
+              {
+                "name": "oppDataCriada"
+              },
+              {
+                "name": "oppDataFechamento"
+              },
+              {
+                "name": "oppFase"
+              },
+              {
+                "name": "oppID"
+              },
+              {
+                "name": "oppOportunidade"
+              },
+              {
+                "name": "oppProprietário"
+              },
+              {
+                "name": "Opps_fechado_ganho_pont_SOURCE"
+              },
+              {
+                "name": "Opps_fechado_ganho_rec_SOURCE"
+              },
+              {
+                "name": "Opps_fechado_ganho_rescisao_SOURCE"
+              },
+              {
+                "name": "Opps_fechado_ganho_retencao_SOURCE"
+              },
+              {
+                "name": "Opps_fechado_ganho_revisao_SOURCE"
+              },
+              {
+                "name": "Opps_fechado_perdido_SOURCE"
+              },
+              {
+                "name": "Opps_negociacao_SOURCE"
+              },
+              {
+                "name": "oppValor_SOURCE"
+              },
+              {
+                "name": "Prod"
+              },
+              {
+                "name": "prodCodProduto"
+              },
+              {
+                "name": "prodDesconto"
+              },
+              {
+                "name": "prodQuantidade"
+              },
+              {
+                "name": "ProdRec"
+              },
+              {
+                "name": "prodRecorrencia"
+              },
+              {
+                "name": "prodValor"
+              },
+              {
+                "name": "prodValorFinal"
+              },
+              {
+                "name": "prpID"
+              },
+              {
+                "name": "prpPrincipal"
+              },
+              {
+                "name": "prpProposta"
+              },
+              {
+                "name": "prpValor"
+              },
+              {
+                "name": "Rec"
+              },
+              {
+                "name": "USUARIO_ALTERACAO_CONTA"
+              },
+              {
+                "name": "ValAntFit"
+              },
+              {
+                "name": "ValNeg_SOURCE"
+              },
+              {
+                "name": "ValorReal_SOURCE"
+              },
+              {
+                "name": "ValPos_SOURCE"
+              },
+              {
+                "name": "ValRankCli_SOURCE"
+              }
+            ],
+            "measures": [
+              {
+                "name": "Contrib"
+              },
+              {
+                "name": "Dias"
+              },
+              {
+                "name": "DiasEmAberto"
+              },
+              {
+                "name": "DiasFaseAnaliseInterna"
+              },
+              {
+                "name": "DiasFaseAtual"
+              },
+              {
+                "name": "DiasFaseContrato"
+              },
+              {
+                "name": "DiasFasePropostaComercial"
+              },
+              {
+                "name": "DiasFaseProspeccao"
+              },
+              {
+                "name": "IGPM_MES"
+              },
+              {
+                "name": "Opports"
+              },
+              {
+                "name": "Opps_fechado_ganho_pont"
+              },
+              {
+                "name": "Opps_fechado_ganho_rec"
+              },
+              {
+                "name": "Opps_fechado_ganho_rescisao"
+              },
+              {
+                "name": "Opps_fechado_ganho_retencao"
+              },
+              {
+                "name": "Opps_fechado_ganho_revisao"
+              },
+              {
+                "name": "Opps_fechado_perdido"
+              },
+              {
+                "name": "Opps_negociacao"
+              },
+              {
+                "name": "oppValor"
+              },
+              {
+                "name": "Produtos"
+              },
+              {
+                "name": "Qtd_Contas"
+              },
+              {
+                "name": "ValNeg"
+              },
+              {
+                "name": "ValorProduto"
+              },
+              {
+                "name": "ValorReal"
+              },
+              {
+                "name": "ValPos"
+              },
+              {
+                "name": "ValRankCli"
+              }
+            ]
+          }
+        ]
       }
     ],
     "roles": [

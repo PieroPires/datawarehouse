@@ -508,6 +508,17 @@ WHERE	 (A.VAGAS_COD_VAGA = 853804
 	SET		TEMPO_DIAS_CONTRATACAO = B.TEMPO_DIAS_CONTRATACAO
 	FROM	[VAGAS_DW].[VAGAS] AS A		INNER JOIN #TMP_TEMPO_DIAS_CONTRATACAO AS B ON A.VAGAS_Cod_Vaga = B.COD_VAGA
 	WHERE	ISNULL(A.TEMPO_DIAS_CONTRATACAO, 0) <> B.TEMPO_DIAS_CONTRATACAO ;
+	
+	
+	-----------------------------------
+	-- Atualiza QTD_PAGEVIEWS:
+	-----------------------------------	
+	
+	UPDATE VAGAS_DW.VAGAS
+	SET QTD_PAGEVIEWS = b.PageViews_vaga
+	FROM [hrh-data].dbo.Vagas as b
+	WHERE VAGAS_DW.VAGAS.VAGAS_Cod_Vaga = b.Cod_vaga
+		AND VAGAS_DW.VAGAS.QTD_PageViews <> b.PageViews_vaga ;
 
 
 -----------------------------------------------------------------------
