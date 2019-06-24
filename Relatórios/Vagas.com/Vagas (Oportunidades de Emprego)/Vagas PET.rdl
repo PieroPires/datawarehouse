@@ -6,68 +6,97 @@
     <DataSource Name="SRV_SQLSERVER_DW">
       <DataSourceReference>SRV-SQLSERVER-DW</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>6dc2529c-70d4-442e-b67a-64b96fd05798</rd:DataSourceID>
+      <rd:DataSourceID>b165ed58-857a-4d08-a15e-f8d7a88ea5a6</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="Dataset_Query_Vagas_PET">
+    <DataSet Name="DataSet_Query_Vagas_PET">
       <Query>
         <DataSourceName>SRV_SQLSERVER_DW</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@IdVagas">
             <Value>=Parameters!IdVagas.Value</Value>
           </QueryParameter>
-          <QueryParameter Name="@FiltroData">
-            <Value>=Parameters!FiltroData.Value</Value>
+          <QueryParameter Name="@Data_inicio">
+            <Value>=Parameters!Data_inicio.Value</Value>
           </QueryParameter>
-          <QueryParameter Name="@DataInicioPublicacao">
-            <Value>=Parameters!DataInicioPublicacao.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@DataFimPublicacao">
-            <Value>=Parameters!DataFimPublicacao.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@DataInicioExpiracao">
-            <Value>=Parameters!DataInicioExpiracao.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@DataFimExpiracao">
-            <Value>=Parameters!DataFimExpiracao.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@DataInicioValidacao">
-            <Value>=Parameters!DataInicioValidacao.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@DataFimValidacao">
-            <Value>=Parameters!DataFimValidacao.Value</Value>
+          <QueryParameter Name="@Data_Fim">
+            <Value>=Parameters!Data_Fim.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT	A.CLIENTE  AS [ID do Cliente no Manut] ,
-		A.CARGO AS [Cargo da vaga] ,
-		A.VAGAS_Cod_vaga AS [Código da Vaga] ,
-		B.DescrReg_vaga AS [Local da Vaga] ,
-		(	SELECT	COUNT(*) AS Qtd_candidaturas
-			FROM	[VAGAS_DW].[VAGAS_DW].[CANDIDATURAS] AS A1
-			WHERE	A.VAGAS_Cod_Vaga = A1.CodVaga_HistCand ) AS [Quantidade de candidaturas] ,
-		B.PageViews_vaga AS [Pageviews na Vaga] ,
-		A.QTD_EMAILS_RECOMENDACAO AS [Quantidade e-mails de recomendação] ,
-		A.SOLICITA_TESTE AS [Contém teste] ,
-		A.SOLICITA_PREENCHIMENTO_FICHA AS [Contém ficha] ,
-		A.ESCOLARIDADE AS [Nível de escolaridade] ,
-		A.DATA_PUBLICACAO AS [Data publicação] ,
-		A.DATA_EXPIRACAO AS [Data expiração] ,
-		A.DATA_VALIDACAO AS [Data validação]
-FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A		INNER JOIN [hrh-data].[dbo].[Vagas] AS B ON A.Vagas_Cod_Vaga = B.Cod_vaga
-WHERE	A.TIPO_PROCESSO = 'PET'
-		AND A.CLIENTE LIKE '%' + ISNULL(@IdVagas, A.CLIENTE) + '%'
-		AND (@FiltroData IS NULL
-			 OR (@FiltroData = 'Publicação'
-					AND A.DATA_PUBLICACAO &gt;= @DataInicioPublicacao AND A.DATA_PUBLICACAO &lt;= @DataFimPublicacao)
-			 OR (@FiltroData = 'Expiração'
-					AND A.DATA_EXPIRACAO &gt;= @DataInicioExpiracao AND A.DATA_EXPIRACAO &lt;= @DataFimExpiracao)
-			 OR (@FiltroData = 'Validação'
-					AND A.DATA_VALIDACAO &gt;= @DataInicioValidacao AND A.DATA_VALIDACAO &lt;= @DataFimValidacao))
-ORDER BY
-		A.CLIENTE ASC ,
-		A.DATA_PUBLICACAO ASC ;</CommandText>
-        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+        <CommandText>-- DataSet_Query_Vagas_PET:
+SELECT	Subquery.[ID do Cliente no Manut] ,
+		Subquery.[Cargo da vaga] ,
+		Subquery.[Código da vaga] ,
+		Subquery.[Local da vaga] ,
+		Subquery.[Quantidade de candidaturas] ,
+		Subquery.[Pageviews na vaga] ,
+		ISNULL(B.QTD_EMAILS_RECOMENDACAO, 0) AS [E-mails recomendação] ,
+		ISNULL(B.QTD_ALERTA_DISPARADO, 0) AS [Quantidade de alerta disparado] ,
+		Subquery.[Data abertura] ,
+		Subquery.[Data expiração] ,
+		B.DATA_VALIDACAO AS [Data validação] ,
+		Subquery.[Contém Teste] ,
+		Subquery.[Contém Ficha] ,
+		Subquery.[Quantidade Máx Candidaturas]
+FROM	OPENQUERY([SRV-SQLSERVER], 'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
+											B.Cargo_vaga AS [Cargo da vaga] ,
+											B.Cod_vaga AS [Código da vaga] ,
+											B.DescrReg_vaga AS [Local da Vaga] ,
+											(	SELECT	COUNT(*)
+												FROM	[hrh-data].[dbo].[HistoricoCandidaturas] AS A1 WITH(NOLOCK)
+												WHERE	B.Cod_vaga = A1.CodVaga_HistCand ) AS [Quantidade de candidaturas] ,
+											B.PageViews_vaga AS [Pageviews na vaga] ,
+											CONVERT(DATE, B.DtInicioWeb_vaga) AS [Data abertura] ,
+											CONVERT(DATE, B.DtExpiracaoWeb_vaga) AS [Data expiração] ,
+											IIF(T1.Cod_fic IS NULL 
+												AND T2.Cod_fic IS NULL 
+												AND T3.Cod_fic IS NULL 
+												AND T4.Cod_fic IS NULL, ''Não'', ''Sim'') AS [Contém Teste] ,
+											IIF(F1.Cod_fic IS NULL 
+												AND F2.Cod_fic IS NULL 
+												AND F3.Cod_fic IS NULL 
+												AND F4.Cod_fic IS NULL, ''Não'', ''Sim'') AS [Contém Ficha] ,
+											B.QtdeMaxResp_vaga AS [Quantidade Máx Candidaturas]
+									FROM	[hrh-data].[dbo].[Clientes] AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[Vagas] AS B WITH(NOLOCK)
+																								ON A.Cod_cli = B.CodCliente_vaga
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS T1 WITH(NOLOCK)
+																								ON B.CodFicha1_vaga = T1.Cod_fic
+																								AND T1.Teste_fic = 4
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS T2 WITH(NOLOCK)
+																								ON B.CodFicha2_vaga = T2.Cod_fic
+																								AND T2.Teste_fic = 4
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS T3 WITH(NOLOCK)
+																								ON B.CodFicha3_vaga = T3.Cod_fic
+																								AND T3.Teste_fic = 4
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS T4 WITH(NOLOCK)
+																								ON B.CodFicha4_vaga = T4.Cod_fic
+																								AND T4.Teste_fic = 4
+
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS F1 WITH(NOLOCK)
+																								ON B.CodFicha1_vaga = F1.Cod_fic
+																								AND F1.Teste_fic = -1
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS F2 WITH(NOLOCK)
+																								ON B.CodFicha2_vaga = F2.Cod_fic
+																								AND F2.Teste_fic = -1
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS F3 WITH(NOLOCK)
+																								ON B.CodFicha3_vaga = F3.Cod_fic
+																								AND F3.Teste_fic = -1
+																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS F4 WITH(NOLOCK)
+																								ON B.CodFicha4_vaga = F4.Cod_fic
+																								AND F4.Teste_fic = -1
+
+
+
+									WHERE	ISNULL(B.tipoprocesso_vaga, 0) = 1
+											AND B.ColetaCur_vaga = 0
+											AND B.VagaModelo_vaga = 0
+											AND LEFT(B.Cargo_vaga,5) not in (''demo '', ''demo-'')
+											AND ISNULL(B.VagaComExt_vaga, 0) = 0') AS Subquery
+									INNER JOIN [VAGAS_DW].[VAGAS_DW].[VAGAS] AS B ON Subquery.[Código da vaga] = B.VAGAS_Cod_Vaga
+WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID do Cliente no Manut]) + '%'
+		AND Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, DATEADD(DAY, 1, DATEADD(DAY, DAY(EOMONTH(GETDATE())) *-1, EOMONTH(GETDATE()))))
+		AND Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, EOMONTH(GETDATE())) ;</CommandText>
       </Query>
       <Fields>
         <Field Name="ID_do_Cliente_no_Manut">
@@ -78,40 +107,32 @@ ORDER BY
           <DataField>Cargo da vaga</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Código_da_Vaga">
-          <DataField>Código da Vaga</DataField>
+        <Field Name="Código_da_vaga">
+          <DataField>Código da vaga</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Local_da_Vaga">
-          <DataField>Local da Vaga</DataField>
+        <Field Name="Local_da_vaga">
+          <DataField>Local da vaga</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Quantidade_de_candidaturas">
           <DataField>Quantidade de candidaturas</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Pageviews_na_Vaga">
-          <DataField>Pageviews na Vaga</DataField>
+        <Field Name="Pageviews_na_vaga">
+          <DataField>Pageviews na vaga</DataField>
           <rd:TypeName>System.Double</rd:TypeName>
         </Field>
-        <Field Name="Quantidade_e_mails_de_recomendação">
-          <DataField>Quantidade e-mails de recomendação</DataField>
+        <Field Name="E_mails_recomendação">
+          <DataField>E-mails recomendação</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Contém_teste">
-          <DataField>Contém teste</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="Quantidade_de_alerta_disparado">
+          <DataField>Quantidade de alerta disparado</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="Contém_ficha">
-          <DataField>Contém ficha</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Nível_de_escolaridade">
-          <DataField>Nível de escolaridade</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Data_publicação">
-          <DataField>Data publicação</DataField>
+        <Field Name="Data_abertura">
+          <DataField>Data abertura</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
         <Field Name="Data_expiração">
@@ -121,6 +142,58 @@ ORDER BY
         <Field Name="Data_validação">
           <DataField>Data validação</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Contém_Teste">
+          <DataField>Contém Teste</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Contém_Ficha">
+          <DataField>Contém Ficha</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Quantidade_Máx_Candidaturas">
+          <DataField>Quantidade Máx Candidaturas</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DataSet_TotalVagas">
+      <Query>
+        <DataSourceName>SRV_SQLSERVER_DW</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@IdVagas">
+            <Value>=Parameters!IdVagas.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Data_inicio">
+            <Value>=Parameters!Data_inicio.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Data_Fim">
+            <Value>=Parameters!Data_Fim.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>-- DataSet_TotalVagas:
+SELECT	COUNT(*) AS [Total de Vagas]
+FROM	OPENQUERY([SRV-SQLSERVER], 'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
+											B.Cod_vaga AS [Código da vaga] ,
+											CONVERT(DATE, B.DtInicioWeb_vaga) AS [Data abertura] ,
+											B.QtdeMaxResp_vaga AS [Quantidade Máx Candidaturas]
+									FROM	[hrh-data].[dbo].[Clientes] AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[Vagas] AS B WITH(NOLOCK)
+																								ON A.Cod_cli = B.CodCliente_vaga
+
+									WHERE	ISNULL(B.tipoprocesso_vaga, 0) = 1
+											AND B.ColetaCur_vaga = 0
+											AND B.VagaModelo_vaga = 0
+											AND LEFT(B.Cargo_vaga,5) not in (''demo '', ''demo-'')
+											AND ISNULL(B.VagaComExt_vaga, 0) = 0') AS Subquery
+									INNER JOIN [VAGAS_DW].[VAGAS_DW].[VAGAS] AS B ON Subquery.[Código da vaga] = B.VAGAS_Cod_Vaga
+WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID do Cliente no Manut]) + '%'
+		AND Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, DATEADD(DAY, 1, DATEADD(DAY, DAY(EOMONTH(GETDATE())) *-1, EOMONTH(GETDATE()))))
+		AND Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, EOMONTH(GETDATE())) ;</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Total_de_Vagas">
+          <DataField>Total de Vagas</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -133,13 +206,13 @@ ORDER BY
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.72917in</Width>
+                  <Width>1.72917in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.6875in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
@@ -148,25 +221,28 @@ ORDER BY
                   <Width>0.85417in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.76042in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.40625in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.15625in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.80208in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.85417in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.80208in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.82292in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.75in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
@@ -257,7 +333,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Código da Vaga</Value>
+                                  <Value>Vaga</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -367,7 +443,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Pageviews Vaga</Value>
+                                  <Value>Pageviews</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -441,7 +517,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Contém teste</Value>
+                                  <Value>Quantidade de alerta disparado</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -478,7 +554,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Contém ficha</Value>
+                                  <Value>Data abertura</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -515,7 +591,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Escolaridade</Value>
+                                  <Value>Data expiração</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -552,7 +628,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data publicação</Value>
+                                  <Value>Data validação</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -589,7 +665,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data expiração</Value>
+                                  <Value>Contém teste</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -626,7 +702,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data validação</Value>
+                                  <Value>Contém ficha</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -640,6 +716,43 @@ ORDER BY
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox75</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Quantidade Máx Candidaturas</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -729,14 +842,14 @@ ORDER BY
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Código_da_Vaga">
+                        <Textbox Name="Código_da_vaga">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Código_da_Vaga.Value</Value>
+                                  <Value>=Fields!Código_da_vaga.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -747,7 +860,7 @@ ORDER BY
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Código_da_Vaga</rd:DefaultName>
+                          <rd:DefaultName>Código_da_vaga</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -763,14 +876,14 @@ ORDER BY
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Local_da_Vaga">
+                        <Textbox Name="Local_da_vaga">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Local_da_Vaga.Value</Value>
+                                  <Value>=Fields!Local_da_vaga.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -782,7 +895,7 @@ ORDER BY
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Local_da_Vaga</rd:DefaultName>
+                          <rd:DefaultName>Local_da_vaga</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -833,14 +946,14 @@ ORDER BY
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Pageviews_na_Vaga">
+                        <Textbox Name="Pageviews_na_vaga">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Pageviews_na_Vaga.Value</Value>
+                                  <Value>=Fields!Pageviews_na_vaga.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -852,7 +965,7 @@ ORDER BY
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Pageviews_na_Vaga</rd:DefaultName>
+                          <rd:DefaultName>Pageviews_na_vaga</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -868,14 +981,14 @@ ORDER BY
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Quantidade_e_mails_de_recomendação">
+                        <Textbox Name="E_mails_recomendação">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Quantidade_e_mails_de_recomendação.Value</Value>
+                                  <Value>=Fields!E_mails_recomendação.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -887,7 +1000,7 @@ ORDER BY
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Quantidade_e_mails_de_recomendação</rd:DefaultName>
+                          <rd:DefaultName>E_mails_recomendação</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -903,14 +1016,14 @@ ORDER BY
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Contém_teste">
+                        <Textbox Name="Quantidade_de_alerta_disparado">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Contém_teste.Value</Value>
+                                  <Value>=Fields!Quantidade_de_alerta_disparado.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -922,7 +1035,7 @@ ORDER BY
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Contém_teste</rd:DefaultName>
+                          <rd:DefaultName>Quantidade_de_alerta_disparado</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -938,84 +1051,14 @@ ORDER BY
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Contém_ficha">
+                        <Textbox Name="Data_abertura">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Contém_ficha.Value</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                    <FontSize>8pt</FontSize>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Contém_ficha</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Nível_de_escolaridade">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!Nível_de_escolaridade.Value</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                    <FontSize>8pt</FontSize>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Nível_de_escolaridade</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Data_publicação">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!Data_publicação.Value</Value>
+                                  <Value>=Fields!Data_abertura.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -1028,7 +1071,7 @@ ORDER BY
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Data_publicação</rd:DefaultName>
+                          <rd:DefaultName>Data_abertura</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1114,12 +1157,120 @@ ORDER BY
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Contém_Teste">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Contém_Teste.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>dd/MM/yyyy</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Contém_Teste</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Contém_Ficha">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Contém_Ficha.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>dd/MM/yyyy</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Contém_Ficha</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Quantidade_Máx_Candidaturas">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Quantidade_Máx_Candidaturas.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Quantidade_Máx_Candidaturas</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
               </TablixRows>
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -1150,9 +1301,123 @@ ORDER BY
             </TablixRowHierarchy>
             <RepeatColumnHeaders>true</RepeatColumnHeaders>
             <KeepTogether>true</KeepTogether>
-            <DataSetName>Dataset_Query_Vagas_PET</DataSetName>
+            <DataSetName>DataSet_Query_Vagas_PET</DataSetName>
+            <Top>2.11667cm</Top>
+            <Left>0.34396cm</Left>
             <Height>0.5in</Height>
-            <Width>12.98959in</Width>
+            <Width>13.21876in</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>1in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Total de Vagas</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Total_de_Vagas">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Total_de_Vagas.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Total_de_Vagas</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Detalhes1" />
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet_TotalVagas</DataSetName>
+            <Top>0.13416in</Top>
+            <Left>0.13542in</Left>
+            <Height>0.5in</Height>
+            <Width>1in</Width>
+            <ZIndex>1</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1160,13 +1425,13 @@ ORDER BY
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.5in</Height>
+        <Height>1.33333in</Height>
         <Style />
       </Body>
-      <Width>12.98959in</Width>
+      <Width>13.35417in</Width>
       <Page>
         <PageHeader>
-          <Height>0.47917in</Height>
+          <Height>0.49306in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1189,9 +1454,9 @@ ORDER BY
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Lista de Vagas PET com informações atreladas a vaga, possibilitando o filtro pelo ID Vagas e pelos campos de data (Data publicação, expiração e validação).</Value>
+                      <Value>Lista de Vagas PET, com informações resumidas da vaga.</Value>
                       <Style>
-                        <FontSize>9pt</FontSize>
+                        <FontWeight>Normal</FontWeight>
                       </Style>
                     </TextRun>
                   </TextRuns>
@@ -1199,8 +1464,9 @@ ORDER BY
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Left>0.34396cm</Left>
               <Height>0.47917in</Height>
-              <Width>12.98959in</Width>
+              <Width>8.61459in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1230,66 +1496,17 @@ ORDER BY
     <ReportParameter Name="IdVagas">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
-      <Prompt>ID Vagas:</Prompt>
+      <Prompt>ID do Cliente:</Prompt>
     </ReportParameter>
-    <ReportParameter Name="FiltroData">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <DefaultValue>
-        <Values>
-          <Value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
-        </Values>
-      </DefaultValue>
-      <Prompt>Selecione um Filtro de Data:</Prompt>
-      <ValidValues>
-        <ParameterValues>
-          <ParameterValue>
-            <Value>Publicação</Value>
-            <Label>Publicação</Label>
-          </ParameterValue>
-          <ParameterValue>
-            <Value>Expiração</Value>
-            <Label>Expiração</Label>
-          </ParameterValue>
-          <ParameterValue>
-            <Value>Validação</Value>
-            <Label>Validação</Label>
-          </ParameterValue>
-          <ParameterValue>
-            <Label>Null</Label>
-          </ParameterValue>
-        </ParameterValues>
-      </ValidValues>
-    </ReportParameter>
-    <ReportParameter Name="DataInicioPublicacao">
+    <ReportParameter Name="Data_inicio">
       <DataType>DateTime</DataType>
       <Nullable>true</Nullable>
-      <Prompt>Data Início Publicação:</Prompt>
+      <Prompt>Data início:</Prompt>
     </ReportParameter>
-    <ReportParameter Name="DataFimPublicacao">
+    <ReportParameter Name="Data_Fim">
       <DataType>DateTime</DataType>
       <Nullable>true</Nullable>
-      <Prompt>Data Fim Publicação:</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="DataInicioExpiracao">
-      <DataType>DateTime</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>Data Início Expiração:</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="DataFimExpiracao">
-      <DataType>DateTime</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>Data Fim Expiração:</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="DataInicioValidacao">
-      <DataType>DateTime</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>Data Inicio Validação:</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="DataFimValidacao">
-      <DataType>DateTime</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>Data Fim Validação:</Prompt>
+      <Prompt>Data Fim:</Prompt>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
@@ -1305,37 +1522,12 @@ ORDER BY
         <CellDefinition>
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>FiltroData</ParameterName>
+          <ParameterName>Data_inicio</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>2</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>DataInicioPublicacao</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>DataFimPublicacao</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>DataInicioExpiracao</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>DataFimExpiracao</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>DataInicioValidacao</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>DataFimValidacao</ParameterName>
+          <ParameterName>Data_Fim</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
