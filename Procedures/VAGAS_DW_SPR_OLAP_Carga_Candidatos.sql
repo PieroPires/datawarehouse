@@ -218,3 +218,54 @@ WHERE descr_idioma IS NOT NULL
 	AND cod_fluencia > 1
 	AND EXISTS ( SELECT 1 FROM VAGAS_DW.TMP_CANDIDATOS 
 				 WHERE COD_CAND = A.COD_CAND )
+
+
+
+-- Popula a tabela que alimenta o Cubo Candidatos_Deficiências:
+DELETE FROM [VAGAS_DW].[CANDIDATOS_DEFICIENCIAS]
+FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS A
+WHERE	EXISTS ( SELECT 1
+				 FROM	[VAGAS_DW].[TMP_CANDIDATOS] AS A1
+				 WHERE	A.Cod_cand = A1.COD_CAND ) ;
+
+
+INSERT INTO [VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] (Cod_cand, TipoDeficiencia)
+SELECT	A.CodCand_necEsp AS Cod_cand ,
+		'Auditiva' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Auditiva_necEsp > -1
+		AND EXISTS ( SELECT 1
+					 FROM	[VAGAS_DW].[TMP_CANDIDATOS] AS A1
+					 WHERE	A.CodCand_necEsp = A1.Cod_cand )
+UNION ALL
+SELECT	A.CodCand_necEsp ,
+		'Fala' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Fala_necEsp > -1
+		AND EXISTS ( SELECT 1
+					 FROM	[VAGAS_DW].[TMP_CANDIDATOS] AS A1
+					 WHERE	A.CodCand_necEsp = A1.Cod_cand )	
+UNION ALL
+SELECT	A.CodCand_necEsp ,
+		'Física' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Fisica_necEsp > -1
+		AND EXISTS ( SELECT 1
+					 FROM	[VAGAS_DW].[TMP_CANDIDATOS] AS A1
+					 WHERE	A.CodCand_necEsp = A1.Cod_cand )
+UNION ALL
+SELECT	A.CodCand_necEsp ,
+		'Mental' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Mental_necEsp > -1
+		AND EXISTS ( SELECT 1
+					 FROM	[VAGAS_DW].[TMP_CANDIDATOS] AS A1
+					 WHERE	A.CodCand_necEsp = A1.Cod_cand )
+UNION ALL
+SELECT	A.CodCand_necEsp ,
+		'Visual' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Visual_necEsp > -1
+		AND EXISTS ( SELECT 1
+					 FROM	[VAGAS_DW].[TMP_CANDIDATOS] AS A1
+					 WHERE	A.CodCand_necEsp = A1.Cod_cand ) ;
