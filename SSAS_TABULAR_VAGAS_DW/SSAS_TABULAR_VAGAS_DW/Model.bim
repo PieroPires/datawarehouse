@@ -65476,6 +65476,62 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "CANDIDATOS - IDIOMA",
+        "columns": [
+          {
+            "name": "COD_CAND",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "COD_CAND",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "IDIOMA",
+            "dataType": "string",
+            "sourceColumn": "IDIOMA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NIVEL",
+            "dataType": "string",
+            "sourceColumn": "NIVEL",
+            "sortByColumn": "NIVEL_ORDEM",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NIVEL_ORDEM",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NIVEL_ORDEM",
+            "sourceProviderType": "Integer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CANDIDATOS - IDIOMA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[CANDIDATOS_IDIOMA].* FROM [VAGAS_DW].[CANDIDATOS_IDIOMA] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[CANDIDATOS_IDIOMA].* FROM [VAGAS_DW].[CANDIDATOS_IDIOMA] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "CANDIDATOS_IDIOMA"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -66886,6 +66942,14 @@
         "toColumn": "COD_CIDADE"
       },
       {
+        "name": "3dfaa01b-0592-4e5a-b054-70749f6564b7",
+        "fromTable": "CANDIDATURAS",
+        "fromColumn": "CodCand_HistCand",
+        "toTable": "CANDIDATOS",
+        "toColumn": "COD_CAND",
+        "crossFilteringBehavior": "bothDirections"
+      },
+      {
         "name": "40db6d29-6656-4195-bc45-94f1cd49ff05",
         "fromTable": "OPORTUNIDADES",
         "fromColumn": "DATA_PROPOSTA_SOURCE",
@@ -66907,19 +66971,19 @@
         "toColumn": "DATA_CONTRATO"
       },
       {
-        "name": "3dfaa01b-0592-4e5a-b054-70749f6564b7",
-        "fromTable": "CANDIDATURAS",
-        "fromColumn": "CodCand_HistCand",
-        "toTable": "CANDIDATOS",
-        "toColumn": "COD_CAND",
-        "crossFilteringBehavior": "bothDirections"
-      },
-      {
         "name": "4359aa0c-5b4c-47c1-a198-d3d2c427e22c",
         "fromTable": "CANDIDATOS_DEFICIENCIAS",
         "fromColumn": "Cod_cand",
         "toTable": "CANDIDATOS",
         "toColumn": "COD_CAND"
+      },
+      {
+        "name": "2e69de38-838d-4548-9965-7e9c38990bb0",
+        "fromTable": "CANDIDATOS - IDIOMA",
+        "fromColumn": "COD_CAND",
+        "toTable": "CANDIDATOS",
+        "toColumn": "COD_CAND",
+        "crossFilteringBehavior": "bothDirections"
       }
     ],
     "perspectives": [
