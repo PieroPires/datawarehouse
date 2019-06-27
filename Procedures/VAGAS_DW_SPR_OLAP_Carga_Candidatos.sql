@@ -200,3 +200,21 @@ UPDATE	[VAGAS_DW].[CANDIDATOS]
 SET		DATA_ULT_LOGIN_SOURCE = ISNULL(B.Data_logCand, '19000101') ,
 		DATA_ULT_LOGIN = ISNULL(CONVERT(DATE, B.Data_logCand), '19000101')
 FROM	[VAGAS_DW].[CANDIDATOS] AS A		INNER JOIN #TMP_CANDIDATO_LOGIN AS B ON A.COD_CAND = B.CodCand_logCand ;
+
+-- CARREGAR CUBO DE IDIOMAS
+
+DELETE VAGAS_DW.CANDIDATOS_IDIOMA 
+FROM VAGAS_DW.CANDIDATOS_IDIOMA A
+WHERE EXISTS ( SELECT 1 FROM VAGAS_DW.TMP_CANDIDATOS 
+				WHERE COD_CAND = A.COD_CAND )
+			 
+INSERT INTO VAGAS_DW.CANDIDATOS_IDIOMA
+SELECT a.cod_cand, z.descr_idioma as idioma, c.Nivel_fluencia as nivel, c.cod_fluencia as nivel_ordem
+FROM VAGAS_DW.CANDIDATOS AS A
+	LEFT OUTER JOIN [hrh-data].[dbo].[Cand-idiomas] AS B ON A.Cod_cand = B.CodCand_idiomaCand
+	LEFT OUTER JOIN [hrh-data].[dbo].[Cad_fluencias] AS C ON B.Nconv_idiomaCand = C.Cod_fluencia
+	LEFT OUTER JOIN [hrh-data].[dbo].[Cad_idiomas] AS Z on z.cod_idioma = b.cod_idiomacand
+WHERE descr_idioma IS NOT NULL
+	AND cod_fluencia > 1
+	AND EXISTS ( SELECT 1 FROM VAGAS_DW.TMP_CANDIDATOS 
+				 WHERE COD_CAND = A.COD_CAND )
