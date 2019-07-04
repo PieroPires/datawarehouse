@@ -24,22 +24,16 @@
             <Value>=Parameters!Data_Fim.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>-- DataSet_Query_Vagas_PET:
-SELECT	Subquery.[ID do Cliente no Manut] ,
-		Subquery.[Cargo da vaga] ,
-		Subquery.[Código da vaga] ,
-		Subquery.[Local da vaga] ,
-		Subquery.[Quantidade de candidaturas] ,
-		Subquery.[Pageviews na vaga] ,
-		ISNULL(B.QTD_EMAILS_RECOMENDACAO, 0) AS [E-mails recomendação] ,
-		ISNULL(B.QTD_ALERTA_DISPARADO, 0) AS [Quantidade de alerta disparado] ,
-		Subquery.[Data abertura] ,
-		Subquery.[Data expiração] ,
-		B.DATA_VALIDACAO AS [Data validação] ,
-		Subquery.[Contém Teste] ,
-		Subquery.[Contém Ficha] ,
-		Subquery.[Quantidade Máx Candidaturas]
-FROM	OPENQUERY([SRV-SQLSERVER], 'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
+        <CommandText>IF (@IdVagas IS NULL AND @Data_inicio IS NULL AND @Data_Fim IS NULL)
+PRINT ''
+ELSE
+
+
+SELECT        Subquery.[ID do Cliente no Manut], Subquery.[Cargo da vaga], Subquery.[Código da vaga], Subquery.[Local da Vaga], Subquery.[Quantidade de candidaturas], Subquery.[Pageviews na vaga], 
+                         ISNULL(B.QTD_EMAILS_RECOMENDACAO, 0) AS [E-mails recomendação], ISNULL(B.QTD_ALERTA_DISPARADO, 0) AS [Quantidade de alerta disparado], Subquery.[Data abertura], Subquery.[Data expiração], 
+                         B.DATA_VALIDACAO AS [Data validação], Subquery.[Contém Teste], Subquery.[Contém Ficha], Subquery.[Quantidade Máx Candidaturas]
+FROM            OPENQUERY([SRV-SQLSERVER], 
+                         'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
 											B.Cargo_vaga AS [Cargo da vaga] ,
 											B.Cod_vaga AS [Código da vaga] ,
 											B.DescrReg_vaga AS [Local da Vaga] ,
@@ -85,18 +79,16 @@ FROM	OPENQUERY([SRV-SQLSERVER], 'SELECT	A.ident_cli AS [ID do Cliente no Manut] 
 																								LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS F4 WITH(NOLOCK)
 																								ON B.CodFicha4_vaga = F4.Cod_fic
 																								AND F4.Teste_fic = -1
-
-
-
 									WHERE	ISNULL(B.tipoprocesso_vaga, 0) = 1
 											AND B.ColetaCur_vaga = 0
 											AND B.VagaModelo_vaga = 0
 											AND LEFT(B.Cargo_vaga,5) not in (''demo '', ''demo-'')
-											AND ISNULL(B.VagaComExt_vaga, 0) = 0') AS Subquery
-									INNER JOIN [VAGAS_DW].[VAGAS_DW].[VAGAS] AS B ON Subquery.[Código da vaga] = B.VAGAS_Cod_Vaga
-WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID do Cliente no Manut]) + '%'
-		AND Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, DATEADD(DAY, 1, DATEADD(DAY, DAY(EOMONTH(GETDATE())) *-1, EOMONTH(GETDATE()))))
-		AND Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, EOMONTH(GETDATE())) ;</CommandText>
+											AND ISNULL(B.VagaComExt_vaga, 0) = 0')
+                          AS Subquery INNER JOIN
+                         VAGAS_DW.VAGAS_DW.VAGAS AS B ON Subquery.[Código da vaga] = B.VAGAS_Cod_Vaga
+WHERE        (Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID do Cliente no Manut]) + '%') 
+			AND (Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, Subquery.[Data abertura])) 
+			AND (Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, Subquery.[Data abertura]))</CommandText>
       </Query>
       <Fields>
         <Field Name="ID_do_Cliente_no_Manut">
@@ -111,8 +103,8 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
           <DataField>Código da vaga</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Local_da_vaga">
-          <DataField>Local da vaga</DataField>
+        <Field Name="Local_da_Vaga">
+          <DataField>Local da Vaga</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Quantidade_de_candidaturas">
@@ -172,6 +164,11 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
           </QueryParameter>
         </QueryParameters>
         <CommandText>-- DataSet_TotalVagas:
+IF (@IdVagas IS NULL AND @Data_inicio IS NULL AND @Data_Fim IS NULL)
+PRINT ''
+ELSE
+
+
 SELECT	COUNT(*) AS [Total de Vagas]
 FROM	OPENQUERY([SRV-SQLSERVER], 'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
 											B.Cod_vaga AS [Código da vaga] ,
@@ -187,8 +184,8 @@ FROM	OPENQUERY([SRV-SQLSERVER], 'SELECT	A.ident_cli AS [ID do Cliente no Manut] 
 											AND ISNULL(B.VagaComExt_vaga, 0) = 0') AS Subquery
 									INNER JOIN [VAGAS_DW].[VAGAS_DW].[VAGAS] AS B ON Subquery.[Código da vaga] = B.VAGAS_Cod_Vaga
 WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID do Cliente no Manut]) + '%'
-		AND Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, DATEADD(DAY, 1, DATEADD(DAY, DAY(EOMONTH(GETDATE())) *-1, EOMONTH(GETDATE()))))
-		AND Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, EOMONTH(GETDATE())) ;</CommandText>
+		AND Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, Subquery.[Data abertura])
+		AND Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, Subquery.[Data abertura]) ;</CommandText>
       </Query>
       <Fields>
         <Field Name="Total_de_Vagas">
@@ -876,14 +873,14 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Local_da_vaga">
+                        <Textbox Name="Local_da_Vaga">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Local_da_vaga.Value</Value>
+                                  <Value>=Fields!Local_da_Vaga.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -895,7 +892,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Local_da_vaga</rd:DefaultName>
+                          <rd:DefaultName>Local_da_Vaga</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1302,7 +1299,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
             <RepeatColumnHeaders>true</RepeatColumnHeaders>
             <KeepTogether>true</KeepTogether>
             <DataSetName>DataSet_Query_Vagas_PET</DataSetName>
-            <Top>2.11667cm</Top>
+            <Top>1.62278cm</Top>
             <Left>0.34396cm</Left>
             <Height>0.5in</Height>
             <Width>13.21876in</Width>
@@ -1413,7 +1410,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet_TotalVagas</DataSetName>
-            <Top>0.13416in</Top>
+            <Top>0.06944in</Top>
             <Left>0.13542in</Left>
             <Height>0.5in</Height>
             <Width>1in</Width>
@@ -1425,13 +1422,13 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>1.33333in</Height>
+        <Height>1.13889in</Height>
         <Style />
       </Body>
-      <Width>13.35417in</Width>
+      <Width>13.35418in</Width>
       <Page>
         <PageHeader>
-          <Height>0.49306in</Height>
+          <Height>0.83208in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1465,8 +1462,41 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Left>0.34396cm</Left>
-              <Height>0.47917in</Height>
+              <Height>0.55778in</Height>
               <Width>8.61459in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox4">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=IIf(IsNothing(Parameters!IdVagas.Value) = True AND IsNothing(Parameters!Data_inicio.Value) = True AND IsNothing(Parameters!Data_Fim.Value) = True, "&gt;&gt;	Informe um valor a um dos parâmetros do relatório", "")</Value>
+                      <Style>
+                        <FontStyle>Italic</FontStyle>
+                        <Color>Red</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox4</rd:DefaultName>
+              <Top>0.57166in</Top>
+              <Left>0.13542in</Left>
+              <Height>0.26042in</Height>
+              <Width>8.61459in</Width>
+              <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
