@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="2/17/2016 1:32:37 PM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Creditos_VAGAS_Sugar"
   DTS:PackageType="5"
-  DTS:VersionBuild="116"
-  DTS:VersionGUID="{B000D124-F4F4-4BFA-995D-8313C3A8184A}">
+  DTS:VersionBuild="117"
+  DTS:VersionGUID="{FB0171AF-D6A9-450E-B074-A81463329BA1}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -97,7 +97,7 @@
        CONVERT(A.forma_de_pagamento USING Latin1) AS FORMA_PAGTO,
        CONVERT(A.codigo_da_compra USING Latin1) AS CODIGO_COMPRA,
        CONVERT(D.apelidos_c USING Latin1) AS RAZAO_SOCIAL,
-       CONVERT(D.cnpj_c USING Latin1) AS CNPJ
+       CONVERT(replace(replace(replace(D.cnpj_c, '/',''),'.',''),'-','') USING Latin1) AS CNPJ
  FROM int_vendas_online A 
 INNER JOIN users B ON B.id = A.modified_user_id
 INNER JOIN users C ON C.id = A.created_by 
@@ -153,7 +153,7 @@ INNER JOIN accounts_cstm D ON D.id_c = A.id_conta_crm
        CONVERT(A.forma_de_pagamento USING Latin1) AS FORMA_PAGTO,
        CONVERT(A.codigo_da_compra USING Latin1) AS CODIGO_COMPRA,
        CONVERT(D.apelidos_c USING Latin1) AS RAZAO_SOCIAL,
-       CONVERT(D.cnpj_c USING Latin1) AS CNPJ
+       CONVERT(replace(replace(replace(D.cnpj_c, '/',''),'.',''),'-','') USING Latin1) AS CNPJ
  FROM int_vendas_online A 
 INNER JOIN users B ON B.id = A.modified_user_id
 INNER JOIN users C ON C.id = A.created_by 

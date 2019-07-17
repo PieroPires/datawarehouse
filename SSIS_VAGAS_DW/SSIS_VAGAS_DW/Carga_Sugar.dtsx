@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Sugar"
   DTS:PackageType="5"
-  DTS:VersionBuild="203"
-  DTS:VersionGUID="{C289C7B6-A193-41B1-95C0-C0B049F6D08E}">
+  DTS:VersionBuild="204"
+  DTS:VersionGUID="{14F12E82-C0EA-4596-86B9-8A616A7BD11B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -1608,7 +1608,7 @@
     CONVERT(cntValPropAprov USING Latin1) AS cntValPropAprov ,
     CONVERT(cntProprietario USING Latin1) AS cntProprietario ,
     CONVERT(Fatura_ERP USING Latin1) AS Fatura_ERP ,
-    CONVERT(CNPJ USING Latin1) AS CNPJ ,
+    CONVERT(replace(replace(replace(CNPJ, '/',''),'.',''),'-','') USING Latin1) AS CNPJ ,
     CONVERT(TipoConta USING Latin1) AS TIPO_CONTA ,
     CONVERT(oppCriador USING Latin1) AS oppCriador ,
     CONVERT(cntUsuarioAlteracao USING Latin1) AS ContaUsuarioAlteracao ,
@@ -4159,12 +4159,12 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
       DTS:To="Package\Processar Cubo" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -4271,7 +4271,7 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
     design-time-name="Package\MySQL -&gt; SQL Server">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="159,42"
           Id="Package\MySQL -&gt; SQL Server\SQL Server - DW"
@@ -4315,9 +4315,7 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -4351,9 +4349,7 @@ WHERE prpPrincipal = 1 OR prpPrincipal IS NULL</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

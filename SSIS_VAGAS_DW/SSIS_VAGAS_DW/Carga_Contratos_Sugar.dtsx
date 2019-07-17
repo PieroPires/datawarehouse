@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="2/17/2016 1:32:37 PM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Contratos_Sugar"
   DTS:PackageType="5"
-  DTS:VersionBuild="116"
-  DTS:VersionGUID="{656782A2-E988-41FC-B28B-7E21DF18684C}">
+  DTS:VersionBuild="117"
+  DTS:VersionGUID="{4F24EC2B-7680-44E0-8857-9259AEACBDB1}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -69,7 +69,7 @@
        A.grand_total AS VALOR,
        CONVERT(B.link_para_o_documento_c USING Latin1) AS Documento,
        CONVERT(C1.id_vagas_c USING Latin1) AS CLIENTE_VAGAS,
-       CONVERT(C1.cnpj_c USING Latin1) AS CNPJ,
+       CONVERT(replace(replace(replace(C1.cnpj_c, '/',''),'.',''),'-','') USING Latin1) AS CNPJ,
        CONVERT(C.account_type USING Latin1) AS CATEGORIA_CONTA,
        CONVERT(C1.tipo_c USING Latin1) AS TIPO_CONTA,
        CONVERT(C1.id_hsys_c USING Latin1) AS CLIENTE_HSYS,
@@ -344,7 +344,7 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; " +  @[User::DATA_ALTERACAO]</DTS:
        A.grand_total AS VALOR,
        CONVERT(B.link_para_o_documento_c USING Latin1) AS Documento,
        CONVERT(C1.id_vagas_c USING Latin1) AS CLIENTE_VAGAS,
-       CONVERT(C1.cnpj_c USING Latin1) AS CNPJ,
+       CONVERT(replace(replace(replace(C1.cnpj_c, '/',''),'.',''),'-','') USING Latin1) AS CNPJ,
        CONVERT(C.account_type USING Latin1) AS CATEGORIA_CONTA,
        CONVERT(C1.tipo_c USING Latin1) AS TIPO_CONTA,
        CONVERT(C1.id_hsys_c USING Latin1) AS CLIENTE_HSYS,
@@ -1700,12 +1700,12 @@ WHERE A.deleted = 0 AND  A.date_modified &gt; </property>
       DTS:To="Package\Processar CUBO" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
