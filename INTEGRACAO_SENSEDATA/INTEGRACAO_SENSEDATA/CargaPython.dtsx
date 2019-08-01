@@ -1,0 +1,75 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="7/31/2019 1:56:55 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DD9Y1H2"
+  DTS:CreatorName="VAGASTEC\diego.gatto"
+  DTS:DTSID="{13DDAE60-6BB4-4BB3-81BD-FFA27122CB1A}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="CargaPython"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="7"
+  DTS:VersionGUID="{386B802A-1E61-4DCF-A932-189D66F84B1B}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{90AE7123-2C0B-4D86-8BA7-0155180F997A}"
+      DTS:ObjectName="CSV_NAME"
+      DTS:Required="True">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue">teste-clientes.csv</DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Carga CSV's via Python"
+      DTS:CreationName="Microsoft.ExecuteProcess"
+      DTS:Description="Execute Process Task"
+      DTS:DTSID="{F02DB5A3-6288-42D4-BE51-46F69433A6CA}"
+      DTS:ExecutableType="Microsoft.ExecuteProcess"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga CSV's via Python"
+      DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2017; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Arguments">@[$Project::UPLOAD_S3_SCRIPT] + " " +  "\"" + @[$Project::CSV_DIR] + "\" \"" +  @[$Package::CSV_NAME] + "\""</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="Executable">@[$Project::PYTHON_EXE]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ExecuteProcessData
+          Executable="C:\Python27\python.exe"
+          Arguments="C:\Users\diego.gatto\Documents\integracao_sensedata\upload_s3_sensedata.py &quot;C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\&quot; &quot;teste-clientes.csv&quot;" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="188,42"
+          Id="Package\Carga CSV's via Python"
+          TopLeft="494,128" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
