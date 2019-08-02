@@ -55,9 +55,6 @@ FROM	[hrh-data].[dbo].[DebugTriagem] AS A	LEFT OUTER JOIN [hrh-data].[dbo].[Vaga
 												LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS D ON C.CodCli_func = D.Cod_cli
 WHERE	A.Data_debTri >= '19000101'
 		AND A.SenhaMestre_debTri = 0 -- Não foi realizado por acesso Manut
-		AND ( A.VersaoTriagem_debTri IS NULL -- Triagem 1.0
-			  OR A.VersaoTriagem_debTri = 2 ) -- Triagem 2.0
-		AND CODVAGA_DEBTRI > 0
 GROUP BY
 		CONVERT(DATE, A.Data_debTri) ,
 		A.CodVaga_debTri ,
