@@ -20,13 +20,18 @@ SELECT  COD_CONTATO ,
 		CONVERT(RUA USING latin1) AS RUA,        
         CONVERT(CIDADE USING latin1) AS CIDADE , 
         CONVERT(ESTADO USING latin1) AS ESTADO , 
-        CONVERT(PAÍS USING latin1) AS PAÍS  , 
+        CONVERT(PAIS USING latin1) AS PAIS  , 
         CONVERT(EMAIL USING latin1) AS EMAIL , 
         CONVERT(CLIENTE_VAGAS USING latin1) AS CLIENTE_VAGAS , 
         CONVERT(CONTA_CRM USING latin1) AS CONTA_CRM , 
         CONVERT(COD_CONTA_CRM USING latin1) AS COD_CONTA_CRM ,
 		ADMIN ,
-        CONTATO_PRINCIPAL
+        CONTATO_PRINCIPAL ,
+        FUNCIONARIO_DESLIGADO ,
+        IF(IFNULL(DtUltEmail, '19000101 00:00:00')>IFNULL(DtUltLigacao, '19000101 00:00:00') AND IFNULL(DtUltEmail, '19000101 00:00:00') > IFNULL(DtUltReuniao, '19000101 00:00:00')AND IFNULL(DtUltEmail, '19000101 00:00:00') > IFNULL(DtUltNotaEmail, '19000101 00:00:00'),DtUltEmail,
+            IF(IFNULL(DtUltLigacao, '19000101 00:00:00')>IFNULL(DtUltReuniao, '19000101 00:00:00') AND IFNULL(DtUltLigacao, '19000101 00:00:00') > IFNULL(DtUltNotaEmail, '19000101 00:00:00')AND IFNULL(DtUltLigacao, '19000101 00:00:00') > IFNULL(DtUltEmail, '19000101 00:00:00'),DtUltLigacao,
+                IF(IFNULL(DtUltNotaEmail, '19000101 00:00:00')>IFNULL(DtUltEmail, '19000101 00:00:00') AND IFNULL(DtUltNotaEmail, '19000101 00:00:00') > IFNULL(DtUltLigacao, '19000101 00:00:00')AND IFNULL(DtUltNotaEmail, '19000101 00:00:00') > IFNULL(DtUltReuniao, '19000101 00:00:00'),DtUltNotaEmail,
+                    IF(IFNULL(DtUltReuniao, '19000101 00:00:00')>IFNULL(DtUltNotaEmail, '19000101 00:00:00') AND IFNULL(DtUltReuniao, '19000101 00:00:00') > IFNULL(DtUltEmail, '19000101 00:00:00')AND IFNULL(DtUltReuniao, '19000101 00:00:00') > IFNULL(DtUltLigacao, '19000101 00:00:00'),DtUltReuniao, NULL)))) AS DtUltAtividade
 FROM  ( 
   SELECT	A.id AS COD_CONTATO , 
 			A.first_name AS NOME , 
@@ -41,13 +46,51 @@ FROM  (
             A.primary_address_street AS RUA , 
             A.primary_address_city AS CIDADE , 
             A.primary_address_state AS ESTADO , 
-            A.primary_address_country AS PAÍS  , 
+            A.primary_address_country AS PAIS  , 
             F.email_address AS EMAIL , 
             G.id_vagas_c AS CLIENTE_VAGAS , 
 			D.name AS CONTA_CRM , 
             D.id AS COD_CONTA_CRM ,
 			B.usuario_admin_c AS ADMIN,
-            B.contato_principal_c AS CONTATO_PRINCIPAL
+            B.contato_principal_c AS CONTATO_PRINCIPAL ,
+            CONVERT(IF(B.funcionario_desligado_c = 1, "SIM", "NÃO") USING Latin1) AS FUNCIONARIO_DESLIGADO ,
+                        (   SELECT  A3.date_entered
+                FROM    sugarcrm.email_addr_bean_rel AS A1  LEFT OUTER JOIN sugarcrm.email_addresses AS AA1 ON AA1.id = A1.email_address_id 
+                                                            AND AA1.deleted = 0
+                                                            AND AA1.deleted = 0
+                                                            LEFT OUTER JOIN sugarcrm.emails_email_addr_rel AS A2 ON A1.email_address_id = A2.email_address_id 
+                                                            AND A2.deleted = 0
+                                                            AND A2.address_type = "to"
+                                                            LEFT OUTER JOIN sugarcrm.emails AS A3 ON A3.id = A2.email_id
+                WHERE   A.id = A1.bean_id
+                        AND A1.bean_module = "Contacts"
+                        AND A1.deleted = 0
+                ORDER BY
+                        A3.date_entered DESC
+                LIMIT 1) AS DtUltEmail ,
+            (   SELECT  A2.date_entered
+                FROM    sugarcrm.meetings_contacts AS A1        INNER JOIN meetings AS A2 ON A1.meeting_id = A2.id
+                WHERE   A.id = A1.contact_id
+                        AND A1.deleted = 0
+                        AND A2.deleted = 0
+                ORDER BY
+                        A2.date_entered DESC
+                LIMIT 1) AS DtUltReuniao ,
+             (  SELECT  A2.date_entered
+                FROM    sugarcrm.calls_contacts AS A1            INNER JOIN sugarcrm.calls AS A2 ON A1.call_id = A2.id
+                WHERE   A.id = A1.contact_id
+                        AND A1.deleted = 0
+                        AND A2.deleted = 0
+                ORDER BY 
+                        A2.date_entered DESC
+                LIMIT 1) AS DtUltLigacao ,
+            (   SELECT  A1.date_entered
+                FROM    sugarcrm.notes AS A1
+                WHERE   A.id = A1.contact_id
+                        AND A1.deleted = 0
+                ORDER BY
+                        A1.date_entered DESC
+                LIMIT 1) AS DtUltNotaEmail
     FROM	sugarcrm.contacts AS A	INNER JOIN sugarcrm.contacts_cstm AS B ON A.id = B.id_c 
 									INNER JOIN sugarcrm.accounts_contacts AS C ON A.id = C.contact_id AND C.deleted = 0 
 									INNER JOIN sugarcrm.accounts AS D ON C.account_id = D.id AND D.deleted = 0 

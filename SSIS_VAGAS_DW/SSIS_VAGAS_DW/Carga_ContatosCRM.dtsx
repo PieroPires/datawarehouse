@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="12/16/2016 10:59:11 AM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1046"
   DTS:ObjectName="Carga_ContatosCRM"
   DTS:PackageType="5"
-  DTS:VersionBuild="45"
-  DTS:VersionGUID="{C6E7B0D1-3DFD-483F-8565-0C10EC27A8E0}">
+  DTS:VersionBuild="47"
+  DTS:VersionGUID="{E2C455F1-473F-4A9B-8CC6-C989849935D6}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -678,7 +678,11 @@
         CONVERT(COD_CONTA_CRM USING latin1) AS COD_CONTA_CRM ,
 		ADMIN ,
         CONTATO_PRINCIPAL ,
-        FUNCIONARIO_DESLIGADO
+        FUNCIONARIO_DESLIGADO ,
+        IF(IFNULL(DtUltEmail, '19000101 00:00:00')&gt;IFNULL(DtUltLigacao, '19000101 00:00:00') AND IFNULL(DtUltEmail, '19000101 00:00:00') &gt; IFNULL(DtUltReuniao, '19000101 00:00:00')AND IFNULL(DtUltEmail, '19000101 00:00:00') &gt; IFNULL(DtUltNotaEmail, '19000101 00:00:00'),CAST(DtUltEmail AS DATE),
+            IF(IFNULL(DtUltLigacao, '19000101 00:00:00')&gt;IFNULL(DtUltReuniao, '19000101 00:00:00') AND IFNULL(DtUltLigacao, '19000101 00:00:00') &gt; IFNULL(DtUltNotaEmail, '19000101 00:00:00')AND IFNULL(DtUltLigacao, '19000101 00:00:00') &gt; IFNULL(DtUltEmail, '19000101 00:00:00'),CAST(DtUltLigacao AS DATE),
+                IF(IFNULL(DtUltNotaEmail, '19000101 00:00:00')&gt;IFNULL(DtUltEmail, '19000101 00:00:00') AND IFNULL(DtUltNotaEmail, '19000101 00:00:00') &gt; IFNULL(DtUltLigacao, '19000101 00:00:00')AND IFNULL(DtUltNotaEmail, '19000101 00:00:00') &gt; IFNULL(DtUltReuniao, '19000101 00:00:00'),CAST(DtUltNotaEmail AS DATE),
+                    IF(IFNULL(DtUltReuniao, '19000101 00:00:00')&gt;IFNULL(DtUltNotaEmail, '19000101 00:00:00') AND IFNULL(DtUltReuniao, '19000101 00:00:00') &gt; IFNULL(DtUltEmail, '19000101 00:00:00')AND IFNULL(DtUltReuniao, '19000101 00:00:00') &gt; IFNULL(DtUltLigacao, '19000101 00:00:00'),CAST(DtUltReuniao AS DATE), NULL)))) AS DtUltAtividade
 FROM  ( 
   SELECT	A.id AS COD_CONTATO , 
 			A.first_name AS NOME , 
@@ -700,7 +704,44 @@ FROM  (
             D.id AS COD_CONTA_CRM ,
 			B.usuario_admin_c AS ADMIN,
             B.contato_principal_c AS CONTATO_PRINCIPAL ,
-            CONVERT(IF(B.funcionario_desligado_c = 1, "SIM", "NÃO") USING Latin1) AS FUNCIONARIO_DESLIGADO
+            CONVERT(IF(B.funcionario_desligado_c = 1, "SIM", "NÃO") USING Latin1) AS FUNCIONARIO_DESLIGADO ,
+                        (   SELECT  A3.date_entered
+                FROM    sugarcrm.email_addr_bean_rel AS A1  LEFT OUTER JOIN sugarcrm.email_addresses AS AA1 ON AA1.id = A1.email_address_id 
+                                                            AND AA1.deleted = 0
+                                                            AND AA1.deleted = 0
+                                                            LEFT OUTER JOIN sugarcrm.emails_email_addr_rel AS A2 ON A1.email_address_id = A2.email_address_id 
+                                                            AND A2.deleted = 0
+                                                            AND A2.address_type = "to"
+                                                            LEFT OUTER JOIN sugarcrm.emails AS A3 ON A3.id = A2.email_id
+                WHERE   A.id = A1.bean_id
+                        AND A1.bean_module = "Contacts"
+                        AND A1.deleted = 0
+                ORDER BY
+                        A3.date_entered DESC
+                LIMIT 1) AS DtUltEmail ,
+            (   SELECT  A2.date_entered
+                FROM    sugarcrm.meetings_contacts AS A1        INNER JOIN meetings AS A2 ON A1.meeting_id = A2.id
+                WHERE   A.id = A1.contact_id
+                        AND A1.deleted = 0
+                        AND A2.deleted = 0
+                ORDER BY
+                        A2.date_entered DESC
+                LIMIT 1) AS DtUltReuniao ,
+             (  SELECT  A2.date_entered
+                FROM    sugarcrm.calls_contacts AS A1            INNER JOIN sugarcrm.calls AS A2 ON A1.call_id = A2.id
+                WHERE   A.id = A1.contact_id
+                        AND A1.deleted = 0
+                        AND A2.deleted = 0
+                ORDER BY 
+                        A2.date_entered DESC
+                LIMIT 1) AS DtUltLigacao ,
+            (   SELECT  A1.date_entered
+                FROM    sugarcrm.notes AS A1
+                WHERE   A.id = A1.contact_id
+                        AND A1.deleted = 0
+                ORDER BY
+                        A1.date_entered DESC
+                LIMIT 1) AS DtUltNotaEmail
     FROM	sugarcrm.contacts AS A	INNER JOIN sugarcrm.contacts_cstm AS B ON A.id = B.id_c 
 									INNER JOIN sugarcrm.accounts_contacts AS C ON A.id = C.contact_id AND C.deleted = 0 
 									INNER JOIN sugarcrm.accounts AS D ON C.account_id = D.id AND D.deleted = 0 
@@ -932,6 +973,12 @@ FROM  (
                       length="3"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[FUNCIONARIO_DESLIGADO]"
                       name="FUNCIONARIO_DESLIGADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DtUltAtividade]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DtUltAtividade]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DtUltAtividade]"
+                      name="DtUltAtividade" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1052,6 +1099,10 @@ FROM  (
                       dataType="str"
                       length="3"
                       name="FUNCIONARIO_DESLIGADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DtUltAtividade]"
+                      dataType="dbDate"
+                      name="DtUltAtividade" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1218,6 +1269,12 @@ FROM  (
                       length="3"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[FUNCIONARIO_DESLIGADO]"
                       name="FUNCIONARIO_DESLIGADO" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DtUltAtividade]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].ExternalColumns[DtUltAtividade]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[DtUltAtividade]"
+                      name="DtUltAtividade" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1467,6 +1524,12 @@ FROM  (
                       cachedName="FUNCIONARIO_DESLIGADO_Convert"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[FUNCIONARIO_DESLIGADO]"
                       lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[FUNCIONARIO_DESLIGADO_Convert]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].Columns[DtUltAtividade]"
+                      cachedDataType="dbDate"
+                      cachedName="DtUltAtividade"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DtUltAtividade]"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL.Outputs[ODBC Source Output].Columns[DtUltAtividade]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1588,6 +1651,10 @@ FROM  (
                       dataType="str"
                       length="3"
                       name="FUNCIONARIO_DESLIGADO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[DtUltAtividade]"
+                      dataType="dbDate"
+                      name="DtUltAtividade" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1669,12 +1736,12 @@ FROM  (
       DTS:To="Package\VAGAS_DW_CONTATOS_CRM" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
