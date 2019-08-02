@@ -18,7 +18,7 @@ SET NOCOUNT ON
 
 TRUNCATE TABLE [VAGAS_DW].[TMP_EXTRACOES_RELATORIOS_VEP] ;
 
-INSERT INTO [VAGAS_DW].[TMP_EXTRACOES_RELATORIOS_VEP](DATA_EXTRACAO,COD_CLI,CONTEXTO_EXTRACAO,TIPO_RELATORIO,FONTE_EXTRACAO,QTD_EXTRACOES_RELATORIOS,RELATORIO_PADRAO)
+INSERT INTO [VAGAS_DW].[TMP_EXTRACOES_RELATORIOS_VEP](DATA_EXTRACAO,COD_CLI,CONTEXTO_EXTRACAO,TIPO_RELATORIO,FONTE_EXTRACAO,COD_FUNC,QTD_EXTRACOES_RELATORIOS,RELATORIO_PADRAO)
 SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Dt_email, 112)) AS DATA_EXTRACAO ,
 		B.CodCli_func AS COD_CLI ,
 		IIF(A.CodVaga_email > 0, 'VAGA', 'OUTRO') AS CONTEXTO_EXTRACAO ,
@@ -32,6 +32,7 @@ SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Dt_email, 112)) AS DATA_EXTRAC
 			ELSE NULL
 		END AS TIPO_RELATORIO ,
 		'E-MAIL' AS FONTE_EXTRACAO ,
+		B.Cod_func AS COD_FUNC ,
 		COUNT(*) AS QTD_EXTRACOES_RELATORIOS ,
 		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') AS RELATORIO_PADRAO
 FROM	[hrh-data].[dbo].[Email] AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B	ON A.CodFunc_email = B.Cod_func
@@ -50,6 +51,7 @@ GROUP BY
 				THEN 'SERVIÇOS SOBRE MARCADOS'
 			ELSE NULL
 		END ,
+		B.Cod_func ,
 		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO')
 UNION ALL
 SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Data_pedXls, 112)) AS DATA_EXTRACAO ,
@@ -65,6 +67,7 @@ SELECT	CONVERT(SMALLDATETIME, CONVERT(CHAR(10), A.Data_pedXls, 112)) AS DATA_EXT
 					ELSE NULL
 				END AS TIPO_RELATORIO ,
 		'ON-LINE' AS FONTE_EXTRACAO ,
+		B.Cod_func AS COD_FUNC ,
 		COUNT(*) AS QTD_EXTRACOES_RELATORIOS ,
 		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') AS RELATORIO_PADRAO
 FROM [hrh-data].[dbo].[Pedidos_Excel] AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.CodFunc_pedXls = B.Cod_func
@@ -84,4 +87,5 @@ GROUP BY
 						THEN 'SERVIÇOS SOBRE MARCADOS'
 					ELSE NULL
 				END ,
-IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') ;
+		B.Cod_func ,
+		IIF(C.IdFmt_rel IN ('Padrão', 'Padrão-confidencial', 'Padrão-programável'), 'SIM', 'NÃO') ;
