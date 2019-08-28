@@ -1,0 +1,2188 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/19/2019 2:06:21 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="2WNP172"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{D63A8F29-6B5F-4C59-93C1-BA8D6E8ADD69}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Carga_VideoEntrevista"
+  DTS:PackageType="5"
+  DTS:VersionBuild="156"
+  DTS:VersionGUID="{EE5F3CD6-EB1C-4368-A277-95EE3A5716D4}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PG_VideoEntrevista.usr_in]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{B420F26E-F416-452C-95B3-D1DD8E6FA3B5}"
+      DTS:ObjectName="PG_VideoEntrevista.usr_in">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="uid=usr_in;Dsn=PG_VideoEntrevista;">
+          <DTS:Password
+            DTS:Name="pwd"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAiLWvS1SUyEqaEvdtw8FpTgAAAAAIAAAARABUAFMAAAADZgAAwAAAABAAAAA+RQx3lkVcaOAjfAxgM3N5AAAAAASAAACgAAAAEAAAAMZBb/G7NJKaJB/soxyBNlMQAAAA7fKK5NwedcXXFTTflhSnORQAAADnOI12SaIIJN2clqVXzqjRr1VVXw</DTS:Password>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SRV-SQLSERVER-DW]"
+      DTS:CreationName="ADO.NET:System.Data.SqlClient.SqlConnection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+      DTS:DTSID="{86187D35-BE3A-4332-B156-2B1DCD09B0EF}"
+      DTS:ObjectName="SRV-SQLSERVER-DW">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=SRV-SQLSERVER-DW;Integrated Security=True;Application Name=SSIS-Carga_VideoEntrevista-{86187D35-BE3A-4332-B156-2B1DCD09B0EF}SRV-SQLSERVER-DW;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Limpar tabelas - VideoEntrevista"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{38515E95-60D2-4084-A219-3A14D09A4BC3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar tabelas - VideoEntrevista"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[VideoEntrevista_Saldo_Clientes] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[VideoEntrevista_Cadastros] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[VideoEntrevista_Participantes] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[VideoEntrevista_Avaliacao] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PostgreSQL -&gt; Avaliação"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{0689224d-2a49-4b8b-a003-a92d00390f7e}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PostgreSQL -&gt; Avaliação"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              localeId="1033"
+              name="PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	CAST(A.id AS INT) AS Cod_avaliacao ,
+		CAST(A.processo_seletivo_id AS INT) AS CodVaga_avaliacao ,
+        CAST(A.candidato_id AS INT) AS CodCand_avaliacao ,
+        CAST(A.video_entrevista_id AS INT) AS CodVideoentrevista_avaliacao ,
+        CAST(A.pontuacao AS INT) AS Pontuacao_avaliacao ,
+        CAST(A.comunicacao AS INT) AS Comunicacao_avaliacao ,
+        CAST(A.postura AS INT) AS Postura_avaliacao ,
+        CAST(A.aderencia AS INT) AS Aderencia_avaliacao ,
+        CAST(A.cuidado_video AS INT) AS CuidadoVideo_avaliacao ,
+        CAST(A.data_avaliacao AS DATE) AS DataAvaliacao_avaliacao       
+FROM	video_entrevista.public.avaliacoes AS A;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="{19F25722-3D9A-4D15-8D1F-9AE8DEC55B50}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PG_VideoEntrevista]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_avaliacao]"
+                      name="cod_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codvaga_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvaga_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codvaga_avaliacao]"
+                      name="codvaga_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codcand_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codcand_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codcand_avaliacao]"
+                      name="codcand_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codvideoentrevista_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvideoentrevista_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codvideoentrevista_avaliacao]"
+                      name="codvideoentrevista_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[pontuacao_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[pontuacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[pontuacao_avaliacao]"
+                      name="pontuacao_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[comunicacao_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[comunicacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[comunicacao_avaliacao]"
+                      name="comunicacao_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[postura_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[postura_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[postura_avaliacao]"
+                      name="postura_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[aderencia_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[aderencia_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[aderencia_avaliacao]"
+                      name="aderencia_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[cuidadovideo_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cuidadovideo_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[cuidadovideo_avaliacao]"
+                      name="cuidadovideo_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[dataavaliacao_avaliacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dataavaliacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[dataavaliacao_avaliacao]"
+                      name="dataavaliacao_avaliacao" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_avaliacao]"
+                      dataType="i4"
+                      name="cod_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvaga_avaliacao]"
+                      dataType="i4"
+                      name="codvaga_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codcand_avaliacao]"
+                      dataType="i4"
+                      name="codcand_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvideoentrevista_avaliacao]"
+                      dataType="i4"
+                      name="codvideoentrevista_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[pontuacao_avaliacao]"
+                      dataType="i4"
+                      name="pontuacao_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[comunicacao_avaliacao]"
+                      dataType="i4"
+                      name="comunicacao_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[postura_avaliacao]"
+                      dataType="i4"
+                      name="postura_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[aderencia_avaliacao]"
+                      dataType="i4"
+                      name="aderencia_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cuidadovideo_avaliacao]"
+                      dataType="i4"
+                      name="cuidadovideo_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dataavaliacao_avaliacao]"
+                      dataType="dbDate"
+                      name="dataavaliacao_avaliacao" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_avaliacao]"
+                      name="cod_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvaga_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvaga_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvaga_avaliacao]"
+                      name="codvaga_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codcand_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codcand_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codcand_avaliacao]"
+                      name="codcand_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvideoentrevista_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvideoentrevista_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvideoentrevista_avaliacao]"
+                      name="codvideoentrevista_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[pontuacao_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[pontuacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[pontuacao_avaliacao]"
+                      name="pontuacao_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[comunicacao_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[comunicacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[comunicacao_avaliacao]"
+                      name="comunicacao_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[postura_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[postura_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[postura_avaliacao]"
+                      name="postura_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[aderencia_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[aderencia_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[aderencia_avaliacao]"
+                      name="aderencia_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cuidadovideo_avaliacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cuidadovideo_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cuidadovideo_avaliacao]"
+                      name="cuidadovideo_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dataavaliacao_avaliacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dataavaliacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dataavaliacao_avaliacao]"
+                      name="dataavaliacao_avaliacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PostgreSQL -&gt; Avaliação\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[VideoEntrevista_Avaliacao]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[cod_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="cod_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[codvaga_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="codvaga_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodVaga_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codvaga_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[codcand_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="codcand_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodCand_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codcand_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[codvideoentrevista_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="codvideoentrevista_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodVideoentrevista_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[codvideoentrevista_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[pontuacao_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="pontuacao_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Pontuacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[pontuacao_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[comunicacao_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="comunicacao_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Comunicacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[comunicacao_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[postura_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="postura_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Postura_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[postura_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[aderencia_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="aderencia_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Aderencia_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[aderencia_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[cuidadovideo_avaliacao]"
+                      cachedDataType="i4"
+                      cachedName="cuidadovideo_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CuidadoVideo_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[cuidadovideo_avaliacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[dataavaliacao_avaliacao]"
+                      cachedDataType="dbDate"
+                      cachedName="dataavaliacao_avaliacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DataAvaliacao_avaliacao]"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output].Columns[dataavaliacao_avaliacao]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_avaliacao]"
+                      dataType="i4"
+                      name="Cod_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodVaga_avaliacao]"
+                      dataType="i4"
+                      name="CodVaga_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodCand_avaliacao]"
+                      dataType="i4"
+                      name="CodCand_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodVideoentrevista_avaliacao]"
+                      dataType="i4"
+                      name="CodVideoentrevista_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Pontuacao_avaliacao]"
+                      dataType="i4"
+                      name="Pontuacao_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Comunicacao_avaliacao]"
+                      dataType="i4"
+                      name="Comunicacao_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Postura_avaliacao]"
+                      dataType="i4"
+                      name="Postura_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Aderencia_avaliacao]"
+                      dataType="i4"
+                      name="Aderencia_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CuidadoVideo_avaliacao]"
+                      dataType="i4"
+                      name="CuidadoVideo_avaliacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DataAvaliacao_avaliacao]"
+                      dataType="dbDate"
+                      name="DataAvaliacao_avaliacao" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\PostgreSQL -&gt; Avaliação.Paths[ODBC Source Output]"
+              endId="Package\PostgreSQL -&gt; Avaliação\SQL Server.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\PostgreSQL -&gt; Avaliação\PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PostgreSQL -&gt; Cadastro"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{eadbd21c-48d9-46e4-9abf-3f577fc7bea4}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PostgreSQL -&gt; Cadastro"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              localeId="1033"
+              name="PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	A.cod_videoentr AS Id, 
+	CAST(A.descr_videoentr AS VARCHAR(100)) AS VideoEntrevista , 
+                   CAST(A.codcli_videoentr AS INT) AS Cod_cli , 
+                   A.tempoleitura_videoentr AS TempoLeitura , 
+                   CAST(A.dtcriacao_videoentr AS DATE) AS DtCriacao
+FROM	video_entrevista.public.video_entrevistas AS A;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="{19F25722-3D9A-4D15-8D1F-9AE8DEC55B50}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PG_VideoEntrevista]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[videoentrevista]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[videoentrevista]"
+                      length="200"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[videoentrevista]"
+                      name="videoentrevista" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      name="cod_cli" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[tempoleitura]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[tempoleitura]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[tempoleitura]"
+                      name="tempoleitura" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[dtcriacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtcriacao]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[dtcriacao]"
+                      name="dtcriacao" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      dataType="i4"
+                      name="id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[videoentrevista]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="videoentrevista" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      dataType="i4"
+                      name="cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[tempoleitura]"
+                      dataType="i4"
+                      name="tempoleitura" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtcriacao]"
+                      dataType="dbDate"
+                      name="dtcriacao" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[videoentrevista]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[videoentrevista]"
+                      length="200"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[videoentrevista]"
+                      name="videoentrevista" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      name="cod_cli" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[tempoleitura]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[tempoleitura]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[tempoleitura]"
+                      name="tempoleitura" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dtcriacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtcriacao]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dtcriacao]"
+                      name="dtcriacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PostgreSQL -&gt; Cadastro\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[VideoEntrevista_Cadastros]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[cod_cli]"
+                      cachedDataType="i4"
+                      cachedName="cod_cli"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_cli]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[id]"
+                      cachedDataType="i4"
+                      cachedName="id"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Id]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[id]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[videoentrevista]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="videoentrevista"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[VideoEntrevista]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[videoentrevista]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[tempoleitura]"
+                      cachedDataType="i4"
+                      cachedName="tempoleitura"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[TempoLeitura]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[tempoleitura]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[dtcriacao]"
+                      cachedDataType="dbDate"
+                      cachedName="dtcriacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtCriacao]"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output].Columns[dtcriacao]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_cli]"
+                      dataType="i4"
+                      name="Cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Id]"
+                      dataType="i4"
+                      name="Id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[VideoEntrevista]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="VideoEntrevista" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[TempoLeitura]"
+                      dataType="i4"
+                      name="TempoLeitura" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtCriacao]"
+                      dataType="dbDate"
+                      name="DtCriacao" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\PostgreSQL -&gt; Cadastro.Paths[ODBC Source Output]"
+              endId="Package\PostgreSQL -&gt; Cadastro\SQL Server.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\PostgreSQL -&gt; Cadastro\PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PostgreSQL -&gt; Participantes"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{94098616-3895-44b3-818c-45d904fa1ba5}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PostgreSQL -&gt; Participantes"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              localeId="1033"
+              name="PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	CAST(A.cod_participante AS INT) AS Cod_participante , 
+		CAST(A.codvideoentr_participante AS INT) AS CodVideoentrevista_participante , 
+        CAST(A.codprocessoseletivo_participante AS INT) AS CodVaga_participante , 
+        CAST(A.codcandidato_participante AS INT) AS CodCand_participante ,
+        CAST(A.dtlimite_participante AS DATE) AS DtLimite_participante , 
+        CAST(A.dtcriacao_participante AS DATE) AS DtCriacao_participante , 
+        CAST(A.score AS INT) AS Score , 
+        CAST(A.status AS VARCHAR(100)) AS Status, 
+        CAST(A.ativo_participante AS VARCHAR(100)) AS Ativo_participante
+FROM	public.participantes AS A;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="{19F25722-3D9A-4D15-8D1F-9AE8DEC55B50}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PG_VideoEntrevista]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_participante]"
+                      name="cod_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codvideoentrevista_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvideoentrevista_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codvideoentrevista_participante]"
+                      name="codvideoentrevista_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codvaga_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvaga_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codvaga_participante]"
+                      name="codvaga_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codcand_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codcand_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codcand_participante]"
+                      name="codcand_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[dtlimite_participante]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtlimite_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[dtlimite_participante]"
+                      name="dtlimite_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[dtcriacao_participante]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtcriacao_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[dtcriacao_participante]"
+                      name="dtcriacao_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[score]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[score]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[score]"
+                      name="score" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[status]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      length="200"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[status]"
+                      name="status" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[ativo_participante]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[ativo_participante]"
+                      length="200"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[ativo_participante]"
+                      name="ativo_participante" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_participante]"
+                      dataType="i4"
+                      name="cod_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvideoentrevista_participante]"
+                      dataType="i4"
+                      name="codvideoentrevista_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvaga_participante]"
+                      dataType="i4"
+                      name="codvaga_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codcand_participante]"
+                      dataType="i4"
+                      name="codcand_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtlimite_participante]"
+                      dataType="dbDate"
+                      name="dtlimite_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtcriacao_participante]"
+                      dataType="dbDate"
+                      name="dtcriacao_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[score]"
+                      dataType="i4"
+                      name="score" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="status" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[ativo_participante]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="ativo_participante" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_participante]"
+                      name="cod_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvideoentrevista_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvideoentrevista_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvideoentrevista_participante]"
+                      name="codvideoentrevista_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvaga_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codvaga_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codvaga_participante]"
+                      name="codvaga_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codcand_participante]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[codcand_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[codcand_participante]"
+                      name="codcand_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dtlimite_participante]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtlimite_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dtlimite_participante]"
+                      name="dtlimite_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dtcriacao_participante]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[dtcriacao_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[dtcriacao_participante]"
+                      name="dtcriacao_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[score]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[score]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[score]"
+                      name="score" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[status]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      length="200"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[status]"
+                      name="status" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ativo_participante]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[ativo_participante]"
+                      length="200"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ativo_participante]"
+                      name="ativo_participante" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PostgreSQL -&gt; Participantes\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[VideoEntrevista_Participantes]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[cod_participante]"
+                      cachedDataType="i4"
+                      cachedName="cod_participante"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_participante]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[codcand_participante]"
+                      cachedDataType="i4"
+                      cachedName="codcand_participante"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodCand_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codcand_participante]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[dtlimite_participante]"
+                      cachedDataType="dbDate"
+                      cachedName="dtlimite_participante"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtLimite_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[dtlimite_participante]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[dtcriacao_participante]"
+                      cachedDataType="dbDate"
+                      cachedName="dtcriacao_participante"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtCriacao_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[dtcriacao_participante]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[score]"
+                      cachedDataType="i4"
+                      cachedName="score"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Score]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[score]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[ativo_participante]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="ativo_participante"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Ativo_participante]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[ativo_participante]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[codvideoentrevista_participante]"
+                      cachedDataType="i4"
+                      cachedName="codvideoentrevista_participante"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_videoentrevista]"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output].Columns[codvideoentrevista_participante]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_participante]"
+                      dataType="i4"
+                      name="Cod_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_videoentrevista]"
+                      dataType="i4"
+                      name="Cod_videoentrevista" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[CodCand_participante]"
+                      dataType="i4"
+                      name="CodCand_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtLimite_participante]"
+                      dataType="dbDate"
+                      name="DtLimite_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtCriacao_participante]"
+                      dataType="dbDate"
+                      name="DtCriacao_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Ativo_participante]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="Ativo_participante" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Score]"
+                      dataType="numeric"
+                      name="Score"
+                      precision="4"
+                      scale="2" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Participantes\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Participantes\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\PostgreSQL -&gt; Participantes.Paths[ODBC Source Output]"
+              endId="Package\PostgreSQL -&gt; Participantes\SQL Server.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\PostgreSQL -&gt; Participantes\PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PostgreSQL -&gt; Saldo_Segudos"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{9EA0F625-68A6-43C1-B424-2E4E8AC483FD}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PostgreSQL -&gt; Saldo_Segudos"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              localeId="1033"
+              name="PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	A.id AS Id ,
+		CAST(A.cliente_id AS INT) AS Cod_cli , 
+		CAST(A.saldo_segundos AS BIGINT) AS Saldo_segundos , 
+		CAST(A.created_at AS DATE) AS Data_criacao , 
+		CAST(A.updated_at AS DATE) AS Data_atualizacao 
+FROM	video_entrevista.public.contas AS A ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="{19F25722-3D9A-4D15-8D1F-9AE8DEC55B50}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PG_VideoEntrevista]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      name="cod_cli" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[saldo_segundos]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[saldo_segundos]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[saldo_segundos]"
+                      name="saldo_segundos" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[data_criacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_criacao]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[data_criacao]"
+                      name="data_criacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[data_atualizacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_atualizacao]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[data_atualizacao]"
+                      name="data_atualizacao" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      dataType="i4"
+                      name="id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      dataType="i4"
+                      name="cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[saldo_segundos]"
+                      dataType="i8"
+                      name="saldo_segundos" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_criacao]"
+                      dataType="dbDate"
+                      name="data_criacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_atualizacao]"
+                      dataType="dbDate"
+                      name="data_atualizacao" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      name="cod_cli" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[saldo_segundos]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[saldo_segundos]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[saldo_segundos]"
+                      name="saldo_segundos" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_criacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_criacao]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_criacao]"
+                      name="data_criacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_atualizacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_atualizacao]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_atualizacao]"
+                      name="data_atualizacao" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[VideoEntrevista_Saldo_Clientes]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[cod_cli]"
+                      cachedDataType="i4"
+                      cachedName="cod_cli"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_cli]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[data_criacao]"
+                      cachedDataType="dbDate"
+                      cachedName="data_criacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_criacao]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[data_criacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[data_atualizacao]"
+                      cachedDataType="dbDate"
+                      cachedName="data_atualizacao"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_alteracao]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[data_atualizacao]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[saldo_segundos]"
+                      cachedDataType="i8"
+                      cachedName="saldo_segundos"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Saldo_Segundos]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[saldo_segundos]" />
+                    <inputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[id]"
+                      cachedDataType="i4"
+                      cachedName="id"
+                      externalMetadataColumnId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Id]"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output].Columns[id]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_cli]"
+                      dataType="i4"
+                      name="Cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Id]"
+                      dataType="i4"
+                      name="Id" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_criacao]"
+                      dataType="dbDate"
+                      name="Data_criacao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_alteracao]"
+                      dataType="dbDate"
+                      name="Data_alteracao" />
+                    <externalMetadataColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[Saldo_Segundos]"
+                      dataType="i4"
+                      name="Saldo_Segundos" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\PostgreSQL -&gt; Saldo_Segudos.Paths[ODBC Source Output]"
+              endId="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{E5AE1BFB-061C-4D0F-AF0E-6D3D9481B26D}"
+      DTS:From="Package\Limpar tabelas - VideoEntrevista"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\PostgreSQL -&gt; Cadastro" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{AB6B1EC6-7622-48E5-8CEC-A361CC0CF780}"
+      DTS:From="Package\PostgreSQL -&gt; Cadastro"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 4"
+      DTS:To="Package\PostgreSQL -&gt; Avaliação" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{44013810-CE85-4D74-AFB3-8E5C8CDA40C6}"
+      DTS:From="Package\PostgreSQL -&gt; Avaliação"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 5"
+      DTS:To="Package\PostgreSQL -&gt; Saldo_Segudos" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{1E6F8DF6-D130-456E-810A-AA13E0A6EBBE}"
+      DTS:From="Package\PostgreSQL -&gt; Saldo_Segudos"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 6"
+      DTS:To="Package\PostgreSQL -&gt; Participantes" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="231,42"
+          Id="Package\Limpar tabelas - VideoEntrevista"
+          TopLeft="384,105" />
+        <NodeLayout
+          Size="193,42"
+          Id="Package\PostgreSQL -&gt; Cadastro"
+          TopLeft="402,190" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\PostgreSQL -&gt; Participantes"
+          TopLeft="393,451" />
+        <NodeLayout
+          Size="223,42"
+          Id="Package\PostgreSQL -&gt; Saldo_Segudos"
+          TopLeft="389,362" />
+        <NodeLayout
+          Size="196,42"
+          Id="Package\PostgreSQL -&gt; Avaliação"
+          TopLeft="404,274" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 4]"
+          TopLeft="500.25,232">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42"
+              Start="0,0"
+              End="0,34.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 5]"
+          TopLeft="501.25,316">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 6]"
+          TopLeft="499.75,404">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47"
+              Start="0,0"
+              End="0,39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="499,147">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\PostgreSQL -&gt; Cadastro">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\PostgreSQL -&gt; Cadastro\SQL Server"
+          TopLeft="409,182" />
+        <NodeLayout
+          Size="133,42"
+          Id="Package\PostgreSQL -&gt; Cadastro\PostgreSQL"
+          TopLeft="406,81" />
+        <EdgeLayout
+          Id="Package\PostgreSQL -&gt; Cadastro.Paths[ODBC Source Output]"
+          TopLeft="473.5,123">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59"
+              Start="0,0"
+              End="0,51.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; Cadastro\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\PostgreSQL -&gt; Participantes">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\PostgreSQL -&gt; Participantes\SQL Server"
+          TopLeft="409,182" />
+        <NodeLayout
+          Size="133,42"
+          Id="Package\PostgreSQL -&gt; Participantes\PostgreSQL"
+          TopLeft="406,81" />
+        <EdgeLayout
+          Id="Package\PostgreSQL -&gt; Participantes.Paths[ODBC Source Output]"
+          TopLeft="473.5,123">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59"
+              Start="0,0"
+              End="0,51.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; Participantes\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\PostgreSQL -&gt; Saldo_Segudos">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server"
+          TopLeft="409,182" />
+        <NodeLayout
+          Size="133,42"
+          Id="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL"
+          TopLeft="406,81" />
+        <EdgeLayout
+          Id="Package\PostgreSQL -&gt; Saldo_Segudos.Paths[ODBC Source Output]"
+          TopLeft="473.5,123">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59"
+              Start="0,0"
+              End="0,51.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; Saldo_Segudos\PostgreSQL">
+    <Properties>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; Saldo_Segudos\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\PostgreSQL -&gt; Avaliação">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="133,42"
+          Id="Package\PostgreSQL -&gt; Avaliação\PostgreSQL"
+          TopLeft="406,81" />
+        <NodeLayout
+          Size="131,42"
+          Id="Package\PostgreSQL -&gt; Avaliação\SQL Server"
+          TopLeft="409,182" />
+        <EdgeLayout
+          Id="Package\PostgreSQL -&gt; Avaliação.Paths[ODBC Source Output]"
+          TopLeft="473.5,123">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59"
+              Start="0,0"
+              End="0,51.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\PostgreSQL -&gt; Avaliação\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
