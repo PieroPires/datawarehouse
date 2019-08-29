@@ -20,6 +20,9 @@
           <QueryParameter Name="@Cod_func">
             <Value>=Parameters!Cod_func.Value</Value>
           </QueryParameter>
+          <QueryParameter Name="@Ident_cli">
+            <Value>=Parameters!Ident_cli.Value</Value>
+          </QueryParameter>
           <QueryParameter Name="@Data_inicio">
             <Value>=Parameters!Data_inicio.Value</Value>
           </QueryParameter>
@@ -27,8 +30,8 @@
             <Value>=Parameters!Data_fim.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>-- Login funcionários:
-IF (@Ident_func IS NULL AND @Cod_func IS NULL)
+        <CommandText>--Login funcionários:
+IF (@Ident_func IS NULL AND @Cod_func IS NULL AND @Ident_cli IS NULL)
 	SELECT	TOP 100
 			A.IP_log AS IP ,
 			A.SessionID_log AS SessionID ,
@@ -54,11 +57,12 @@ ELSE
 			A.CodUsuManut_log
 	FROM	[hrh-data].[dbo].[Clientes-Login]  AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.Codfunc_Log = B.Cod_func
 														INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
-	WHERE	B.Cod_func = ( SELECT	A1.Cod_func
+	WHERE	B.Cod_func IN (SELECT	A1.Cod_func
 						   FROM		[hrh-data].[dbo].[Funcionarios] AS A1
-						   WHERE	A1.Ident_func = @Ident_func )
+						   WHERE	A1.Ident_func = ISNULL(@Ident_func, A1.Ident_func))
 			AND CONVERT(DATE, A.Data_log) &gt;= ISNULL(@Data_inicio, A.Data_log)
 			AND CONVERT(DATE, A.Data_log) &lt;= ISNULL(@Data_fim, A.Data_log)
+			AND C.Ident_cli = ISNULL(@Ident_cli, C.Ident_cli)
 ORDER BY A.Data_log DESC ;</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
