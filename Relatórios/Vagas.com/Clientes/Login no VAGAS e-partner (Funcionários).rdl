@@ -3,22 +3,25 @@
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
-    <DataSource Name="SQLMirror">
-      <DataSourceReference>SQLMirror</DataSourceReference>
+    <DataSource Name="VAGAS_PROD">
+      <DataSourceReference>VAGAS-PROD</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>bdabce0f-1043-4e2d-ac72-065795a8b383</rd:DataSourceID>
+      <rd:DataSourceID>4805dc17-5a38-418a-ab16-002ace614edd</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="Dataset_Login_Funcionarios">
       <Query>
-        <DataSourceName>SQLMirror</DataSourceName>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Ident_func">
             <Value>=Parameters!Ident_func.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@Cod_func">
             <Value>=Parameters!Cod_func.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Ident_cli">
+            <Value>=Parameters!Ident_cli.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@Data_inicio">
             <Value>=Parameters!Data_inicio.Value</Value>
@@ -27,8 +30,8 @@
             <Value>=Parameters!Data_fim.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>-- Login funcionários:
-IF (@Ident_func IS NULL AND @Cod_func IS NULL)
+        <CommandText>--Login funcionários:
+IF (@Ident_func IS NULL AND @Cod_func IS NULL AND @Ident_cli IS NULL)
 	SELECT	TOP 100
 			A.IP_log AS IP ,
 			A.SessionID_log AS SessionID ,
@@ -54,11 +57,12 @@ ELSE
 			A.CodUsuManut_log
 	FROM	[hrh-data].[dbo].[Clientes-Login]  AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.Codfunc_Log = B.Cod_func
 														INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
-	WHERE	B.Cod_func = ( SELECT	A1.Cod_func
+	WHERE	B.Cod_func IN (SELECT	A1.Cod_func
 						   FROM		[hrh-data].[dbo].[Funcionarios] AS A1
-						   WHERE	A1.Ident_func = @Ident_func )
+						   WHERE	A1.Ident_func = ISNULL(@Ident_func, A1.Ident_func))
 			AND CONVERT(DATE, A.Data_log) &gt;= ISNULL(@Data_inicio, A.Data_log)
 			AND CONVERT(DATE, A.Data_log) &lt;= ISNULL(@Data_fim, A.Data_log)
+			AND C.Ident_cli = ISNULL(@Ident_cli, C.Ident_cli)
 ORDER BY A.Data_log DESC ;</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -93,26 +97,26 @@ ORDER BY A.Data_log DESC ;</CommandText>
         </Field>
       </Fields>
     </DataSet>
-    <DataSet Name="Dataset_Ano_Anterior">
+    <DataSet Name="Dataset_Hoje">
       <Query>
-        <DataSourceName>SQLMirror</DataSourceName>
-        <CommandText>SELECT	DATEADD(YEAR, -1, CONVERT(DATE, GETDATE())) AS Ano_Anterior</CommandText>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <CommandText>SELECT        CONVERT(DATE, GETDATE()) AS Hoje</CommandText>
       </Query>
       <Fields>
-        <Field Name="Ano_Anterior">
-          <DataField>Ano_Anterior</DataField>
+        <Field Name="Hoje">
+          <DataField>Hoje</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
-    <DataSet Name="Dataset_Ano_Atual">
+    <DataSet Name="Dataset_Amanha">
       <Query>
-        <DataSourceName>SQLMirror</DataSourceName>
-        <CommandText>SELECT	CONVERT(DATE, GETDATE()) AS Ano_Atual</CommandText>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <CommandText>SELECT        DATEADD(DAY, 1, CONVERT(DATE, GETDATE())) AS Amanha</CommandText>
       </Query>
       <Fields>
-        <Field Name="Ano_Atual">
-          <DataField>Ano_Atual</DataField>
+        <Field Name="Amanha">
+          <DataField>Amanha</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
       </Fields>
@@ -707,7 +711,6 @@ ORDER BY A.Data_log DESC ;</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -772,8 +775,8 @@ ORDER BY A.Data_log DESC ;</CommandText>
       <DataType>DateTime</DataType>
       <DefaultValue>
         <DataSetReference>
-          <DataSetName>Dataset_Ano_Anterior</DataSetName>
-          <ValueField>Ano_Anterior</ValueField>
+          <DataSetName>Dataset_Hoje</DataSetName>
+          <ValueField>Hoje</ValueField>
         </DataSetReference>
       </DefaultValue>
       <Prompt>Data de início:</Prompt>
@@ -782,8 +785,8 @@ ORDER BY A.Data_log DESC ;</CommandText>
       <DataType>DateTime</DataType>
       <DefaultValue>
         <DataSetReference>
-          <DataSetName>Dataset_Ano_Atual</DataSetName>
-          <ValueField>Ano_Atual</ValueField>
+          <DataSetName>Dataset_Amanha</DataSetName>
+          <ValueField>Amanha</ValueField>
         </DataSetReference>
       </DefaultValue>
       <Prompt>Data final:</Prompt>

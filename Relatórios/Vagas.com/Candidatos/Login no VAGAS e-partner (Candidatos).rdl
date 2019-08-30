@@ -3,8 +3,8 @@
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
-    <DataSource Name="SQLMirror">
-      <DataSourceReference>SQLMirror</DataSourceReference>
+    <DataSource Name="VAGAS_PROD">
+      <DataSourceReference>VAGAS-PROD</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>8c46ab27-a10d-420e-a6e9-8f9e5ac94bf6</rd:DataSourceID>
     </DataSource>
@@ -12,7 +12,7 @@
   <DataSets>
     <DataSet Name="Dataset_Login_Candidato">
       <Query>
-        <DataSourceName>SQLMirror</DataSourceName>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Cod_cand">
             <Value>=Parameters!cod_cand.Value</Value>
@@ -36,7 +36,7 @@ IF (@Cod_cand IS NULL AND @Ident_cand IS NULL)
 			B.Cod_cand ,
 			B.Ident_cand ,
 			A.CodUsuManut_logCand AS CodUsuManut
-	FROM	[hrh-data].[dbo].[Candidatos-Login]	AS A INNER JOIN [hrh-data].[dbo].[Candidatos] AS B ON A.codcand_logCand = B.Cod_cand
+	FROM	[hrh-data].[dbo].[Candidatos-Login]	AS A WITH(NOLOCK) INNER JOIN [hrh-data].[dbo].[Candidatos] AS B WITH(NOLOCK) ON A.codcand_logCand = B.Cod_cand
 	ORDER BY Cod_logCand DESC
 ELSE
 	SELECT  TOP 100
@@ -45,9 +45,9 @@ ELSE
 			FORMAT(A.Data_logCand, 'dd/MM/yyyy HH:mm:ss') AS [Data],
 			B.Ident_cand ,
 			A.CodUsuManut_logCand AS CodUsuManut
-	FROM	[hrh-data].[dbo].[Candidatos-Login]	AS A INNER JOIN [hrh-data].[dbo].[Candidatos] AS B ON A.codcand_logCand = B.Cod_cand
+	FROM	[hrh-data].[dbo].[Candidatos-Login]	AS A WITH(NOLOCK) INNER JOIN [hrh-data].[dbo].[Candidatos] AS B WITH(NOLOCK) ON A.codcand_logCand = B.Cod_cand
 	WHERE	A.codcand_logCand IN (SELECT A1.Cod_cand
-			 				      FROM	 [hrh-data].[dbo].[Candidatos] AS A1
+			 				      FROM	 [hrh-data].[dbo].[Candidatos] AS A1 WITH(NOLOCK)
 								  WHERE	 A1.Ident_cand = @Ident_cand )
 			AND CONVERT(DATE, A.Data_logCand) &gt;= ISNULL(@Data_inicio, DATEADD(YEAR, -1, CONVERT(DATE, GETDATE()))) 
 			AND CONVERT(DATE, A.Data_logCand) &lt;= ISNULL(@Data_fim, CONVERT(DATE, GETDATE()))
@@ -81,26 +81,26 @@ ELSE
         </Field>
       </Fields>
     </DataSet>
-    <DataSet Name="Dataset_AnoAnterior">
+    <DataSet Name="Dataset_Hoje">
       <Query>
-        <DataSourceName>SQLMirror</DataSourceName>
-        <CommandText>SELECT	DATEADD(YEAR, -1, CONVERT(DATE, GETDATE())) AS Ano_Anterior</CommandText>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <CommandText>SELECT        CONVERT(DATE, GETDATE()) AS Hoje</CommandText>
       </Query>
       <Fields>
-        <Field Name="Ano_Anterior">
-          <DataField>Ano_Anterior</DataField>
+        <Field Name="Hoje">
+          <DataField>Hoje</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
-    <DataSet Name="Dataset_AnoAtual">
+    <DataSet Name="Dataset_Amanha">
       <Query>
-        <DataSourceName>SQLMirror</DataSourceName>
-        <CommandText>SELECT        CONVERT(DATE, GETDATE()) AS Ano_Atual</CommandText>
+        <DataSourceName>VAGAS_PROD</DataSourceName>
+        <CommandText>SELECT        DATEADD(DAY, 1, CONVERT(DATE, GETDATE())) AS Amanha</CommandText>
       </Query>
       <Fields>
-        <Field Name="Ano_Atual">
-          <DataField>Ano_Atual</DataField>
+        <Field Name="Amanha">
+          <DataField>Amanha</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
       </Fields>
@@ -749,8 +749,8 @@ ELSE
       <DataType>DateTime</DataType>
       <DefaultValue>
         <DataSetReference>
-          <DataSetName>Dataset_AnoAnterior</DataSetName>
-          <ValueField>Ano_Anterior</ValueField>
+          <DataSetName>Dataset_Hoje</DataSetName>
+          <ValueField>Hoje</ValueField>
         </DataSetReference>
       </DefaultValue>
       <Prompt>Data de início:</Prompt>
@@ -759,8 +759,8 @@ ELSE
       <DataType>DateTime</DataType>
       <DefaultValue>
         <DataSetReference>
-          <DataSetName>Dataset_AnoAtual</DataSetName>
-          <ValueField>Ano_Atual</ValueField>
+          <DataSetName>Dataset_Amanha</DataSetName>
+          <ValueField>Amanha</ValueField>
         </DataSetReference>
       </DefaultValue>
       <Prompt>Data fim:</Prompt>
