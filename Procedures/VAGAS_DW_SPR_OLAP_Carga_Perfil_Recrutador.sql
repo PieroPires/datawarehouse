@@ -23,7 +23,7 @@ WHERE EXISTS (SELECT	*
 
 
 -- Insere os registros na tabela OLAP:
-INSERT INTO [VAGAS_DW].[Perfil_Recrutador] (ID,Status_Assinatura,Plano,DtProx_Credito,Qtd_Credito_Contratado,Vigencia_contrato,Renovacao,DtUltAtualizacao_Perfil)
+INSERT INTO [VAGAS_DW].[Perfil_Recrutador] (ID,Status_Assinatura,Plano,DtProx_Credito,Qtd_Credito_Contratado,Vigencia_contrato,Renovacao,DtUltAtualizacao_Perfil,Cod_cli)
 SELECT	A.ID ,
 		A.Status_Assinatura ,
 		A.Plano ,
@@ -31,5 +31,6 @@ SELECT	A.ID ,
 		A.Qtd_Credito_Contratado ,
 		A.Vigencia_contrato ,
 		A.Renovacao ,
-		A.DtUltAtualizacao_Perfil
+		A.DtUltAtualizacao_Perfil ,
+		A.Cod_cli
 FROM	[VAGAS_DW].[TMP_Perfil_Recrutador] AS A ;
