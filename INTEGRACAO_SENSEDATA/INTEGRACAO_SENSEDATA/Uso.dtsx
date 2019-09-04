@@ -1,0 +1,843 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/1/2019 8:19:16 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DD9Y1H2"
+  DTS:CreatorName="VAGASTEC\diego.gatto"
+  DTS:DTSID="{B2F228A1-B5F2-4F7A-B494-87CE80F57D73}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Uso"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="22"
+  DTS:VersionGUID="{D4B091E4-CBB8-4DF3-8677-29BD4BD567DD}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CSV Uso]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{62F9D582-C592-4DC3-8B80-B68F2FEAF661}"
+      DTS:ObjectName="CSV Uso">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::CSV_DIR] + "\\" + @[$Package::CSV_NAME]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1046"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x0022_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\uso.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="100"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="IdConta_CRM"
+              DTS:DTSID="{69EA2797-3DB8-4AFD-8797-6BE2D583B295}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:DataType="3"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Cod_cli"
+              DTS:DTSID="{92A8ABD2-3680-4B79-9F11-6AF3D1ED935A}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:DataType="3"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Cod_func"
+              DTS:DTSID="{DC739DDC-E40E-4C26-BD50-FF4E1714D905}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="19"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Modulo"
+              DTS:DTSID="{657BF087-EA58-4C76-8CEE-D0411332AFD4}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="19"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Produto"
+              DTS:DTSID="{F5B26088-A2AD-46B0-A234-2D81E72359AE}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="127"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Acao"
+              DTS:DTSID="{2F6CF509-D7B1-44FC-92E1-5E9623203B3F}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="10"
+              DTS:DataType="130"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Data"
+              DTS:DTSID="{9DD47E6F-CFE5-4866-8E0C-74142B9C3B56}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000D__x000A_"
+              DTS:DataType="3"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Qtd"
+              DTS:DTSID="{F2598D2D-F7A2-49D3-81F8-A1359916000A}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{7CEA981F-B088-492F-A5EE-2BCFAB8655A1}"
+      DTS:ObjectName="CSV_NAME">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue">uso.csv</DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Exportação CSV"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DelayValidation="True"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{14ECA208-5B5D-4AC2-9B8A-568942F7FEA7}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:ForceExecValue="True"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Exportação CSV"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Exportação CSV\CSV Uso"
+              componentClassID="Microsoft.FlatFileDestination"
+              contactInfo="Destino de Arquivo Simples;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;0"
+              description="Destino de Arquivo Simples"
+              localeId="1046"
+              name="CSV Uso">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Especifica se os dados substituirão o arquivo de destino ou serão anexados a ele."
+                  name="Overwrite">true</property>
+                <property
+                  dataType="System.Null"
+                  description="Especifica o texto a ser gravado no arquivo de destino antes da gravação de quaisquer dados."
+                  expressionType="Notify"
+                  name="Header" />
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Exportação CSV\CSV Uso.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[CSV Uso]"
+                  connectionManagerRefId="Package.ConnectionManagers[CSV Uso]"
+                  name="FlatFileConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples]"
+                  hasSideEffects="true"
+                  name="Entrada de Destino de Arquivo Simples">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[IdConta_CRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="IdConta_CRM"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[IdConta_CRM]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[IdConta_CRM]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Cod_cli]"
+                      cachedDataType="i4"
+                      cachedName="Cod_cli"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Cod_cli]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Cod_cli]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Cod_func]"
+                      cachedDataType="i4"
+                      cachedName="Cod_func"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Cod_func]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Cod_func]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Modulo]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="19"
+                      cachedName="Modulo"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Modulo]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Modulo]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Produto]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="19"
+                      cachedName="Produto"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Produto]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Produto]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Acao]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="127"
+                      cachedName="Acao"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Acao]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Acao]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Data]"
+                      cachedDataType="wstr"
+                      cachedLength="10"
+                      cachedName="Data"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Data]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Data]" />
+                    <inputColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].Columns[Qtd]"
+                      cachedDataType="i4"
+                      cachedName="Qtd"
+                      externalMetadataColumnId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Qtd]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Qtd]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[IdConta_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="IdConta_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Cod_cli]"
+                      dataType="i4"
+                      name="Cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Cod_func]"
+                      dataType="i4"
+                      name="Cod_func" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Modulo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="Modulo" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Produto]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="Produto" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Acao]"
+                      codePage="1252"
+                      dataType="str"
+                      length="127"
+                      name="Acao" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Data]"
+                      dataType="wstr"
+                      length="10"
+                      name="Data" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Qtd]"
+                      dataType="i4"
+                      name="Qtd" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+            <component
+              refId="Package\Exportação CSV\Uso"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="Origem OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;7"
+              description="Origem OLE DB"
+              name="Uso"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT	B.IdContaCRM_cli COLLATE SQL_Latin1_General_CP1_CI_AI AS IdConta_CRM ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Avaliação e Seleção' AS Modulo ,
+		A.Versao_Triagem AS Produto ,
+		'Pesquisa --&gt;' + ' ' + A.Contexto AS Acao ,
+		A.Data_Triagem AS [Data] ,
+		COUNT(*) AS Qtd
+FROM	[VAGAS_DW].[VAGAS_DW].[TRIAGENS_VAGAS] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.Cod_cli = B.Cod_cli
+WHERE	A.DATA_TRIAGEM &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		A.Versao_Triagem ,
+		A.Contexto ,
+		A.Data_Triagem 
+UNION ALL
+SELECT	A.IdConta_CRM ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Colaboração' AS Modulo ,
+		'Requisição de Vagas' AS Produto ,
+		'Abertura de requisição --&gt;' + ' ' + A.Status_requisicao AS Acao ,
+		A.Data_requisicao ,
+		COUNT(*) AS Qtd
+FROM	[VAGAS_DW].[Requisicao_VagasEpartner] AS A
+WHERE	A.DATA_REQUISICAO &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		A.IdConta_CRM ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		A.Status_requisicao,
+		A.Data_requisicao
+
+UNION ALL
+SELECT	A.IdConta_CRM ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Acesso' AS Modulo ,
+		'VAGAS e-partner' AS Produto ,
+		A.Tipo AS Acao ,
+		A.Data_Login ,
+		COUNT(*) AS Qtd
+FROM	[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A
+WHERE	A.Data_login &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		A.IdConta_CRM ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		A.Tipo ,
+		A.Data_Login
+UNION ALL
+SELECT	B.IdContaCRM_cli AS IdConta_CRM ,
+		A.Cod_cli ,
+		C.Cod_func ,
+		'Avaliação e seleção' AS Modulo ,
+		'VAGAS e-talent' AS Produto ,
+		A.Tipo_lancamento + ' ' + A.Tipo_Rel_Comp_Rel AS Acao ,
+		A.Data_lancamento ,
+		SUM(A.Qtd_lancamentos) AS Qtd
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS_ETALENT_LANCAMENTOS] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.Cod_cli = B.Cod_cli
+																	INNER JOIN [hrh-data].[dbo].[Funcionarios] AS C ON B.Cod_cli = C.CodCli_func
+WHERE	A.Data_lancamento &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		C.Cod_func ,
+		A.Tipo_lancamento + ' ' + A.Tipo_Rel_Comp_Rel ,
+		A.Data_lancamento
+UNION ALL
+SELECT	B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Avaliação e seleção' AS Modulo ,
+		'Ficha' AS Produto ,
+		'Solicitou preenchidamento na candidatura' AS Acao ,
+		CONVERT(DATE, A.Data_publicacao) AS [Data] ,
+		COUNT(*) AS Qtd
+FROM	[VAGAS_DW].[VAGAS] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.Cod_cli = B.Cod_cli
+WHERE	A.SOLICITA_PREENCHIMENTO_FICHA = 'SIM'
+		AND A.Data_publicacao &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		A.Data_publicacao
+UNION ALL
+SELECT	B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Avaliação e seleção' AS Modulo ,
+		'Teste' AS Produto ,
+		'Solicitou preenchimento na candidatura' AS Acao ,
+		CONVERT(DATE, A.Data_publicacao) AS [Data] ,
+		COUNT(*) AS Qtd
+FROM	[VAGAS_DW].[VAGAS] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.Cod_cli = B.Cod_cli
+WHERE	A.SOLICITA_TESTE = 'SIM'
+		AND A.Data_publicacao &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		A.Data_publicacao
+UNION ALL
+SELECT	B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Atração de talentos' AS Modulo ,
+		'Vaga' AS Produto ,
+		'Publicou' + ' - ' + A.Tipo_processo AS Acao ,
+		CONVERT(DATE, A.Data_publicacao) AS [Data] ,
+		COUNT(*) AS Qtd
+FROM	[VAGAS_DW].[VAGAS] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.Cod_cli = B.Cod_cli
+WHERE	A.Data_publicacao &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		A.Tipo_processo ,
+		A.Data_publicacao
+UNION ALL
+SELECT	C.IdContaCRM_cli ,
+		C.Cod_cli ,
+		B.CodFunc_vaga AS Cod_func ,
+		'Avaliação e seleção' AS Modulo ,
+		'Currículo' AS Produto ,
+		'Avaliou' + ' --&gt; ' + A.Avaliacao AS Acao ,
+		A.Data_avaliacao AS [Data] ,
+		SUM(A.Qtd_avaliacoes_cvs) AS Qtd
+FROM	[VAGAS_DW].[AVALIACOES_CVS] AS A		INNER JOIN [hrh-data].[dbo].[Vagas] AS B ON A.Cod_vaga = B.Cod_vaga
+												INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCliente_vaga = C.Cod_cli
+WHERE	A.Data_avaliacao &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		C.IdContaCRM_cli ,
+		C.Cod_cli ,
+		B.CodFunc_vaga ,
+		A.Avaliacao ,
+		A.Data_avaliacao
+UNION ALL
+SELECT	B.IdContaCRM_cli AS IdConta_CRM ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		'Engajamento' AS Modulo ,
+		'SMS' AS Produto ,
+		'Envio' AS Acao ,
+		CONVERT(DATE, A.Data_envio) AS [Data] ,
+		SUM(A.QTD_SMS_ENVIADO) AS Qtd
+FROM	[VAGAS_DW].[VAGAS_DW].[ENVIO_SMS_VEP] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.Cod_cli = B.Cod_cli
+WHERE	A.Data_envio &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		B.IdContaCRM_cli ,
+		A.Cod_cli ,
+		A.Cod_func ,
+		CONVERT(DATE, A.Data_envio) 
+UNION ALL
+SELECT	C.IdContaCRM_cli AS IdConta_CRM ,
+		C.Cod_cli ,
+		A.Cod_func ,
+		'Avaliação e seleção' Modulo ,
+		'Evento Presencial' AS Produto ,
+		'Agendamento' AS Acao ,
+		A.Data_envio_agendamento AS [Data] ,
+		SUM(A.Qtd_envio_agendamento) AS Qtd
+FROM	[VAGAS_DW].[VAGAS_DW].[EVENTOS_PRESENCIAIS] AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.Cod_func = B.Cod_func
+																INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
+WHERE	A.Data_envio_agendamento &gt;= DATEADD(MONTH, -18, CONVERT(DATE, GETDATE()))
+GROUP BY
+		C.IdContaCRM_cli ,
+		C.Cod_cli ,
+		A.Cod_func ,
+		A.Data_envio_agendamento</property>
+                <property
+                  dataType="System.String"
+                  description="A variável que contém o comando SQL a ser executado."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Exportação CSV\Uso.Connections[OleDbConnection]"
+                  connectionManagerID="{01D8D567-93B2-4E49-A51A-28782164D7C4}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB]"
+                  name="Saída de Origem OLE DB">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[IdConta_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[IdConta_CRM]"
+                      length="100"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[IdConta_CRM]"
+                      name="IdConta_CRM"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Cod_cli]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Cod_cli]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Cod_cli]"
+                      name="Cod_cli"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Cod_func]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Cod_func]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Cod_func]"
+                      name="Cod_func"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Modulo]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Modulo]"
+                      length="19"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Modulo]"
+                      name="Modulo"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Produto]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Produto]"
+                      length="19"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Produto]"
+                      name="Produto"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Acao]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Acao]"
+                      length="127"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Acao]"
+                      name="Acao"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Data]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Data]"
+                      length="10"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Data]"
+                      name="Data"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Qtd]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Qtd]"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].Columns[Qtd]"
+                      name="Qtd"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[IdConta_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="IdConta_CRM" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Cod_cli]"
+                      dataType="i4"
+                      name="Cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Cod_func]"
+                      dataType="i4"
+                      name="Cod_func" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Modulo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="Modulo" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Produto]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="Produto" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Acao]"
+                      codePage="1252"
+                      dataType="str"
+                      length="127"
+                      name="Acao" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Data]"
+                      dataType="wstr"
+                      length="10"
+                      name="Data" />
+                    <externalMetadataColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB].ExternalColumns[Qtd]"
+                      dataType="i4"
+                      name="Qtd" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB]"
+                  isErrorOut="true"
+                  name="Saída de Erro de Origem OLE DB">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[IdConta_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[IdConta_CRM]"
+                      name="IdConta_CRM" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Cod_cli]"
+                      dataType="i4"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Cod_cli]"
+                      name="Cod_cli" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Cod_func]"
+                      dataType="i4"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Cod_func]"
+                      name="Cod_func" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Modulo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Modulo]"
+                      name="Modulo" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Produto]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Produto]"
+                      name="Produto" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Acao]"
+                      codePage="1252"
+                      dataType="str"
+                      length="127"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Acao]"
+                      name="Acao" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Data]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Data]"
+                      name="Data" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Qtd]"
+                      dataType="i4"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[Qtd]"
+                      name="Qtd" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Exportação CSV\Uso.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Exportação CSV.Paths[Saída de Origem OLE DB]"
+              endId="Package\Exportação CSV\CSV Uso.Inputs[Entrada de Destino de Arquivo Simples]"
+              name="Saída de Origem OLE DB"
+              startId="Package\Exportação CSV\Uso.Outputs[Saída de Origem OLE DB]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Upload S3 Bucket"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Tarefa Executar Pacote"
+      DTS:Disabled="True"
+      DTS:DTSID="{F20EFE23-26EE-4CA2-B4EB-B7406F5A6147}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Upload S3 Bucket"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>CargaPython.dtsx</PackageName>
+          <ParameterAssignment>
+            <ParameterName>CSV_NAME</ParameterName>
+            <BindedVariableOrParameterName>$Package::CSV_NAME</BindedVariableOrParameterName>
+          </ParameterAssignment>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{28503817-F660-4E35-B515-8195D258B599}"
+      DTS:From="Package\Exportação CSV"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Upload S3 Bucket" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="153,42"
+          Id="Package\Exportação CSV"
+          TopLeft="451,139.5" />
+        <NodeLayout
+          Size="162,42"
+          Id="Package\Upload S3 Bucket"
+          TopLeft="446.5,343.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="527.5,181.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,162"
+              Start="0,0"
+              End="0,154.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,154.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Exportação CSV">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="97,42"
+          Id="Package\Exportação CSV\Uso"
+          TopLeft="408.5,121.5" />
+        <NodeLayout
+          Size="119,42"
+          Id="Package\Exportação CSV\CSV Uso"
+          TopLeft="397,307" />
+        <EdgeLayout
+          Id="Package\Exportação CSV.Paths[Saída de Origem OLE DB]"
+          TopLeft="456.75,163.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,143.5"
+              Start="0,0"
+              End="0,136">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,136" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Exportação CSV\Uso">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
