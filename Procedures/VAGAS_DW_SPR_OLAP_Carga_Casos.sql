@@ -469,3 +469,12 @@ FROM	[VAGAS_DW].[CASOS] AS A
 WHERE	A.TME > A.TMS
 		AND A.FILA_ATENDIMENTO = 'suporte_empresas'
 		AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta') ;
+
+
+-- 09/09/2019: Ajuste do campo DATA_FECHAMENTO no CUBO de CASOS, quando o STATUS for igual a FECHADO ou FECHADO SEM RESPOSTA, e o campo DATA_FECHAMENTO estiver vazio, aplique o campo DATA_INCLUSAO:
+UPDATE	[VAGAS_DW].[CASOS]
+SET		DATA_FECHAMENTO = A.DATA_INCLUSAO
+FROM	[VAGAS_DW].[CASOS] AS A
+WHERE	A.[STATUS] IN ('fechado', 'fechado_sem_resposta')
+		AND A.DATA_FECHAMENTO IS NULL ;
+-- (16.969 rows affected)
