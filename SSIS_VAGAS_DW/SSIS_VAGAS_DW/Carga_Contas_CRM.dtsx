@@ -12,12 +12,29 @@
   DTS:ObjectName="Carga_Contas_CRM"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="59"
-  DTS:VersionGUID="{66D7DC95-0081-4973-A433-B8E47AC2345A}">
+  DTS:VersionBuild="62"
+  DTS:VersionGUID="{CDA34D07-27C6-4A4E-BEF6-FFA8857875AF}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Criação de índices"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{70BD8D4D-5563-4318-9810-F7BBD57CF696}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Criação de índices"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="CREATE NONCLUSTERED INDEX IDX_CONTAS_CRM_CONTA_ID ON VAGAS_DW.CONTAS_CRM (CONTA_ID);&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_CONTAS_MEMBRO_CRM_CONTA_ID ON VAGAS_DW.CONTAS_MEMBRO_CRM (CONTA_ID);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Limpar VAGAS_DW_CONTAS_CRM"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
@@ -32,7 +49,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[CONTAS_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP INDEX IF EXISTS IDX_CONTAS_CRM_CONTA_ID ON VAGAS_DW.CONTAS_CRM;&#xA;&#xA;TRUNCATE TABLE [VAGAS_DW].[CONTAS_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -49,7 +66,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[CONTAS_MEMBRO_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP INDEX IF EXISTS IDX_CONTAS_MEMBRO_CRM_CONTA_ID ON VAGAS_DW.CONTAS_MEMBRO_CRM;&#xA;&#xA;TRUNCATE TABLE [VAGAS_DW].[CONTAS_MEMBRO_CRM] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -110,8 +127,10 @@
          CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
          CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
          CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C ,
-        CONVERT(B.segmento_c USING Latin1) AS PLANO ,
-         CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH
+		 CONVERT(B.segmento_c USING Latin1) AS PLANO ,
+         CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH ,
+		 CONVERT(A.billing_address_city USING Latin1) AS Municipio ,
+         CONVERT(A.billing_address_state USING Latin1) AS UF
 FROM	sugarcrm.accounts AS A		LEFT OUTER JOIN sugarcrm.accounts_cstm AS B ON A.id = B.id_c
 									LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
 WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
@@ -370,6 +389,22 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       length="4"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]"
                       name="CONSULTORIA_RH" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[Municipio]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[Municipio]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[Municipio]"
+                      name="Municipio" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[UF]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[UF]"
+                      name="UF" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -515,6 +550,18 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       dataType="str"
                       length="4"
                       name="CONSULTORIA_RH" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[Municipio]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Municipio" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="UF" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -712,6 +759,22 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       length="4"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[CONSULTORIA_RH]"
                       name="CONSULTORIA_RH" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[Municipio]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[Municipio]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[Municipio]"
+                      name="Municipio" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].ExternalColumns[UF]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[UF]"
+                      name="UF" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -991,6 +1054,22 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       cachedName="PLANO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[SEGMENTO_SC]"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[PLANO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[Municipio]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Municipio"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MUNICIPIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[Municipio]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].Columns[UF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="UF"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[UF]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM.Outputs[ODBC Source Output].Columns[UF]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1134,6 +1213,18 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
                       dataType="str"
                       length="100"
                       name="SEGMENTO_SC" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MUNICIPIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MUNICIPIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="UF" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1233,7 +1324,9 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
          CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
          CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C ,
          CONVERT(B.segmento_c USING Latin1) AS PLANO ,
-         CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH
+         CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH ,
+         CONVERT(A.billing_address_city USING Latin1) AS Municipio ,
+         CONVERT(A.billing_address_state USING Latin1) AS UF
 FROM	sugarcrm.accounts AS A	LEFT OUTER JOIN sugarcrm.accounts_cstm AS B ON A.id = B.id_c
 								LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
 WHERE	A.deleted = 0 
@@ -1500,6 +1593,22 @@ WHERE	A.deleted = 0
                       length="4"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[CONSULTORIA_RH]"
                       name="CONSULTORIA_RH" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[Municipio]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[Municipio]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[Municipio]"
+                      name="Municipio" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[UF]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[UF]"
+                      name="UF" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1651,6 +1760,18 @@ WHERE	A.deleted = 0
                       dataType="str"
                       length="4"
                       name="CONSULTORIA_RH" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[Municipio]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="Municipio" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="UF" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1856,6 +1977,22 @@ WHERE	A.deleted = 0
                       length="4"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[CONSULTORIA_RH]"
                       name="CONSULTORIA_RH" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[Municipio]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[Municipio]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[Municipio]"
+                      name="Municipio" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].ExternalColumns[UF]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[UF]"
+                      name="UF" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -2143,6 +2280,22 @@ WHERE	A.deleted = 0
                       cachedName="PLANO"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[SEGMENTO_SC]"
                       lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[PLANO]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[Municipio]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Municipio"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MUNICIPIO]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[Municipio]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].Columns[UF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="UF"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[UF]"
+                      lineageId="Package\MySQL -&gt; SQL Server (Contas Pai)\MySQL - Contas Pai CRM.Outputs[ODBC Source Output].Columns[UF]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2290,6 +2443,18 @@ WHERE	A.deleted = 0
                       dataType="str"
                       length="100"
                       name="SEGMENTO_SC" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[MUNICIPIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MUNICIPIO" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server (Contas Pai)\SQL Server.Inputs[OLE DB Destination Input].ExternalColumns[UF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="UF" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -2355,6 +2520,14 @@ WHERE	A.deleted = 0
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 2"
       DTS:To="Package\MySQL -&gt; SQL Server (Contas Membro)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{80A4D5C6-DC20-44F9-A7A1-4B1E693BC150}"
+      DTS:From="Package\MySQL -&gt; SQL Server (Contas Membro)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Criação de índices" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -2367,7 +2540,7 @@ WHERE	A.deleted = 0
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="242,42"
           Id="Package\Limpar VAGAS_DW_CONTAS_CRM"
@@ -2442,6 +2615,32 @@ WHERE	A.deleted = 0
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,29" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="164,42"
+          Id="Package\Criação de índices"
+          TopLeft="425,414" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="508,346.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,67.5"
+              Start="0,0"
+              End="0,60">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,60" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

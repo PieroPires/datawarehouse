@@ -12,8 +12,8 @@
   DTS:ObjectName="Suporte"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="34"
-  DTS:VersionGUID="{CDACE48E-FBC0-4D69-B74E-44E458161EC0}">
+  DTS:VersionBuild="52"
+  DTS:VersionGUID="{C09A044C-13B5-4A1E-8581-5DF65C5CE5B4}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -186,11 +186,22 @@
         DTS:Name="ParameterValue">suporte.csv</DTS:Property>
     </DTS:PackageParameter>
   </DTS:PackageParameters>
-  <DTS:Variables />
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CD16760B-75AA-4726-A449-195148356222}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_CARGA_INICIO">
+      <DTS:VariableValue
+        DTS:DataType="8">2018-03-09</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
   <DTS:Executables>
     <DTS:Executable
       DTS:refId="Package\Criar tabelas temporárias"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DelayValidation="True"
       DTS:Description="Execute SQL Task"
       DTS:DTSID="{AF9247F9-D8EA-473F-9B36-F7863EB29890}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
@@ -199,10 +210,53 @@
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="SqlStatementSource">"DROP TABLE IF EXISTS TMP_Tab_casos
+GO
+
+SELECT	*
+INTO	TMP_Tab_casos
+FROM	OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto
+									FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id
+									WHERE B.data_fechamento_c &gt; ''" + @[User::DATA_CARGA_INICIO] + "'' ') AS A
+GO
+
+CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)
+GO
+
+DROP TABLE IF EXISTS VAGAS_DW.TMP_CASOS_SENSEDATA
+GO
+
+SELECT	
+	A.CONTA_ID AS IdConta_CRM ,
+	A.NUMERO_CASO AS Ticket ,
+	A.EMAIL_CONTATO AS Contato ,
+	A.USUARIO_RESPONSAVEL AS Responsavel ,
+	B.Assunto AS Assunto ,
+	A.MOTIVO_CONTATO AS Motivo_contato ,
+	A.ORIGEM_SUPORTE AS Origem ,
+	NULL AS Categoria ,
+	CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,
+	CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,
+	CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,
+	NULL AS Data_SLA ,
+	CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,
+	A.CRITICIDADE AS Criticidade ,
+	CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket
+INTO VAGAS_DW.TMP_CASOS_SENSEDATA
+FROM	
+	[VAGAS_DW].[CASOS] AS A	
+	LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI
+WHERE
+	A.FILA_ATENDIMENTO = 'suporte_empresas'
+	AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')
+	AND A.conta_id in (SELECT id_clientecrm FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA)
+	AND A.DATA_FECHAMENTO &gt; '" + @[User::DATA_CARGA_INICIO] + "'
+GO"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos;&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A.id AS Id ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;sugarcrm.cases AS A') AS A ;&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id) ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE B.data_fechamento_c &gt; ''2018-03-09'' ') AS A&#xA;GO&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO&#xA;&#xA;SELECT&#x9;&#xA;&#x9;A.CONTA_ID AS IdConta_CRM ,&#xA;&#x9;A.NUMERO_CASO AS Ticket ,&#xA;&#x9;A.EMAIL_CONTATO AS Contato ,&#xA;&#x9;A.USUARIO_RESPONSAVEL AS Responsavel ,&#xA;&#x9;B.Assunto AS Assunto ,&#xA;&#x9;A.MOTIVO_CONTATO AS Motivo_contato ,&#xA;&#x9;A.ORIGEM_SUPORTE AS Origem ,&#xA;&#x9;NULL AS Categoria ,&#xA;&#x9;CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,&#xA;&#x9;CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,&#xA;&#x9;CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,&#xA;&#x9;NULL AS Data_SLA ,&#xA;&#x9;CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,&#xA;&#x9;A.CRITICIDADE AS Criticidade ,&#xA;&#x9;CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket&#xA;INTO VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;FROM&#x9;&#xA;&#x9;[VAGAS_DW].[CASOS] AS A&#x9;&#xA;&#x9;LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;WHERE&#xA;&#x9;A.FILA_ATENDIMENTO = 'suporte_empresas'&#xA;&#x9;AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')&#xA;&#x9;AND A.conta_id in (SELECT id_clientecrm FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA)&#xA;&#x9;AND A.DATA_FECHAMENTO &gt; '2018-03-09'&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -219,7 +273,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -494,7 +548,7 @@
                 <property
                   dataType="System.String"
                   description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
-                  name="OpenRowset"></property>
+                  name="OpenRowset">[VAGAS_DW].[TMP_CASOS_SENSEDATA]</property>
                 <property
                   dataType="System.String"
                   description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
@@ -542,7 +596,7 @@ WHERE
                   dataType="System.Int32"
                   description="Especifica o modo usado para acessar o banco de dados."
                   name="AccessMode"
-                  typeConverter="AccessMode">2</property>
+                  typeConverter="AccessMode">0</property>
                 <property
                   dataType="System.String"
                   description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
@@ -942,6 +996,45 @@ WHERE
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\Obter metadados"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A4F955ED-5F80-4B54-BB3A-D3701FA23ECD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Obter metadados"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
+          SQLTask:SqlStatementSource="SELECT VALOR &#xA;FROM [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="VALOR"
+            SQLTask:DtsVariableName="User::DATA_CARGA_INICIO" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Salvar metadados"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{31EDA156-EB51-443B-B8E7-977958CD440E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Salvar metadados"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
+          SQLTask:SqlStatementSource="UPDATE [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;SET VALOR = (SELECT MAX(DATA_CONCLUSAO) FROM VAGAS_DW.TMP_CASOS_SENSEDATA)&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Upload S3 Bucket"
       DTS:CreationName="Microsoft.ExecutePackageTask"
       DTS:Description="Tarefa Executar Pacote"
@@ -975,19 +1068,35 @@ WHERE
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
-      DTS:DTSID="{AD15AACC-A735-4A31-8B41-BC83626DC449}"
+      DTS:DTSID="{AF0FD1F1-40A4-4972-AA31-DE050C215C76}"
       DTS:From="Package\Exportar CSV"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 1"
-      DTS:To="Package\Excluir tabelas temporárias" />
+      DTS:To="Package\Upload S3 Bucket" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
-      DTS:DTSID="{E87612CC-C7C5-4FFE-B933-E3F027EA781F}"
-      DTS:From="Package\Excluir tabelas temporárias"
+      DTS:DTSID="{6DEBB286-9ED4-4B4C-B545-173DB13724DF}"
+      DTS:From="Package\Salvar metadados"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 2"
-      DTS:To="Package\Upload S3 Bucket" />
+      DTS:To="Package\Excluir tabelas temporárias" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{2866BD2A-5D04-433C-BF72-43E05D7B11F0}"
+      DTS:From="Package\Upload S3 Bucket"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Salvar metadados" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{BE5B2C06-8FF8-4537-B8F6-7A7F10F78152}"
+      DTS:From="Package\Obter metadados"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Criar tabelas temporárias" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -1000,26 +1109,78 @@ WHERE
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="197,42"
           Id="Package\Criar tabelas temporárias"
-          TopLeft="409,39.5" />
+          TopLeft="376,113.5" />
         <NodeLayout
           Size="206,42"
           Id="Package\Excluir tabelas temporárias"
-          TopLeft="404.5,243.5" />
+          TopLeft="375.5,511.5" />
         <NodeLayout
           Size="141,42"
           Id="Package\Exportar CSV"
-          TopLeft="437,141.5" />
+          TopLeft="404,215.5" />
         <NodeLayout
           Size="162,42"
           Id="Package\Upload S3 Bucket"
-          TopLeft="426.5,345.5" />
+          TopLeft="395.5,312.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="507.5,81.5">
+          TopLeft="474.5,155.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="163,42"
+          Id="Package\Salvar metadados"
+          TopLeft="396,411.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="477,354.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57"
+              Start="0,0"
+              End="0,49.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="160,42"
+          Id="Package\Obter metadados"
+          TopLeft="394.5,11.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="474.5,53.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1041,18 +1202,18 @@ WHERE
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="507.5,183.5">
+          TopLeft="475.5,257.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60"
+              EndConnector="0,55"
               Start="0,0"
-              End="0,52.5">
+              End="0,47.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5" />
+                    End="0,47.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1063,18 +1224,18 @@ WHERE
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="507.5,285.5">
+          TopLeft="478,453.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60"
+              EndConnector="0,58"
               Start="0,0"
-              End="0,52.5">
+              End="0,50.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5" />
+                    End="0,50.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1092,13 +1253,13 @@ WHERE
       <GraphLayout
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="152,42"
-          Id="Package\Exportar CSV\Origem OLE DB"
-          TopLeft="425,86" />
-        <NodeLayout
           Size="208,42"
           Id="Package\Exportar CSV\Destino de Arquivo Simples"
           TopLeft="401,215" />
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Exportar CSV\Origem OLE DB"
+          TopLeft="425,86" />
         <EdgeLayout
           Id="Package\Exportar CSV.Paths[Saída de Origem OLE DB]"
           TopLeft="503,128">
@@ -1129,6 +1290,11 @@ WHERE
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
