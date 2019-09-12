@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_ERP_SE1010"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="133"
-  DTS:VersionGUID="{4D6AE7DD-12EB-4E87-9A6F-8F6D8E3B3AFA}">
+  DTS:VersionBuild="143"
+  DTS:VersionGUID="{9B80081E-855E-43AA-973E-D7344744BFBF}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -49,6 +49,173 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="Origem OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;7"
+              description="Origem OLE DB"
+              name="ERP - Aviso_Previo"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT	SA1.A1_X_CCRMF AS COD_CLI_CRM,
+		SE1.E1_NFELETR AS NFE, 
+		IIF(SC5.C5_XAVSPRV = 1, 1, 0) AS AVISO_PREVIO
+FROM	SA1010 SA1		INNER JOIN SE1010 SE1 ON SE1.E1_CLIENTE = SA1.A1_COD AND SE1.E1_LOJA = SA1.A1_LOJA AND SE1.D_E_L_E_T_ = ' ' 
+						INNER JOIN SC5010 AS SC5 ON SC5.C5_NOTA = SE1.E1_NUM AND SC5.D_E_L_E_T_ = ' '
+ WHERE	SE1.E1_FILIAL                     = '01'  
+		AND  SA1.A1_FILIAL                   = ''  
+		AND  SE1.D_E_L_E_T_                   = ''  
+		AND  SA1.D_E_L_E_T_                   = ''  
+		AND  SE1.E1_TIPO                    = 'NF'  
+		AND  SE1.E1_NFELETR                   &lt;&gt; ' ' -- Sempre é um espaço ou um número  
+		AND  len(replace(SE1.E1_NFELETR, ' ', ''))  &gt; 1
+   AND SC5.C5_XAVSPRV = 1
+   ORDER BY 2 ASC ;</property>
+                <property
+                  dataType="System.String"
+                  description="A variável que contém o comando SQL a ser executado."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Connections[OleDbConnection]"
+                  connectionManagerID="{446F384C-1AE6-418A-A976-38FA1ECAC7F9}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - SRV-SQLERP01 DB_TOTVS_P12_PROD]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB]"
+                  name="Saída de Origem OLE DB">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[NFE]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].ExternalColumns[NFE]"
+                      length="20"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[NFE]"
+                      name="NFE"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[AVISO_PREVIO]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].ExternalColumns[AVISO_PREVIO]"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[AVISO_PREVIO]"
+                      name="AVISO_PREVIO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].ExternalColumns[COD_CLI_CRM]"
+                      length="36"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[COD_CLI_CRM]"
+                      name="COD_CLI_CRM"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].ExternalColumns[NFE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="NFE" />
+                    <externalMetadataColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].ExternalColumns[AVISO_PREVIO]"
+                      dataType="i4"
+                      name="AVISO_PREVIO" />
+                    <externalMetadataColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].ExternalColumns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="COD_CLI_CRM" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB]"
+                  isErrorOut="true"
+                  name="Saída de Erro de Origem OLE DB">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[COD_CLI_CRM]"
+                      name="COD_CLI_CRM" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[NFE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[NFE]"
+                      name="NFE" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[AVISO_PREVIO]"
+                      dataType="i4"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[AVISO_PREVIO]"
+                      name="AVISO_PREVIO" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\Enriquecimento Dados ERP\ERP - Link_NFE"
               componentClassID="Microsoft.OLEDBSource"
@@ -353,6 +520,147 @@ WHERE	SE1.D_E_L_E_T_ = ' '
               </outputs>
             </component>
             <component
+              refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="Faturas - Aviso_Previo"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[Faturas_Enriquecimento_Aviso_Previo]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].Columns[NFE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="NFE"
+                      externalMetadataColumnId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].ExternalColumns[NFE]"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[NFE]" />
+                    <inputColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].Columns[AVISO_PREVIO]"
+                      cachedDataType="i4"
+                      cachedName="AVISO_PREVIO"
+                      externalMetadataColumnId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].ExternalColumns[AVISO_PREVIO]"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[AVISO_PREVIO]" />
+                    <inputColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].Columns[COD_CLI_CRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="COD_CLI_CRM"
+                      externalMetadataColumnId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CLI_CRM]"
+                      lineageId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB].Columns[COD_CLI_CRM]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].ExternalColumns[NFE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="NFE" />
+                    <externalMetadataColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].ExternalColumns[AVISO_PREVIO]"
+                      dataType="bool"
+                      name="AVISO_PREVIO" />
+                    <externalMetadataColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CLI_CRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="COD_CLI_CRM" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\Enriquecimento Dados ERP\Faturas - Link_NFE"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
@@ -626,6 +934,11 @@ WHERE	SE1.D_E_L_E_T_ = ' '
               endId="Package\Enriquecimento Dados ERP\Faturas - Status_Atraso.Inputs[Entrada de Destino OLE DB]"
               name="Saída de Origem OLE DB"
               startId="Package\Enriquecimento Dados ERP\ERP - Status_Atraso.Outputs[Saída de Origem OLE DB]" />
+            <path
+              refId="Package\Enriquecimento Dados ERP.Paths[Saída de Origem OLE DB2]"
+              endId="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo.Inputs[Entrada de Destino OLE DB]"
+              name="Saída de Origem OLE DB"
+              startId="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo.Outputs[Saída de Origem OLE DB]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -661,14 +974,13 @@ WHERE	SE1.D_E_L_E_T_ = ' '
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[Faturas_Enriquecimento_NFE] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[Faturas_Enriquecimento_StatusAtraso] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[Faturas_Enriquecimento_NFE] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[Faturas_Enriquecimento_StatusAtraso] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[Faturas_Enriquecimento_Aviso_Previo] ;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Processar CUBO"
       DTS:CreationName="Microsoft.DTSProcessingTask"
       DTS:Description="Analysis Services Processing Task"
-      DTS:Disabled="True"
       DTS:DTSID="{f6c78c75-cc17-417f-b7a9-f197d0980147}"
       DTS:ExecutableType="Microsoft.DTSProcessingTask"
       DTS:LocaleID="-1"
@@ -1738,6 +2050,18 @@ ORDER BY ID ;</property>
                       dataType="str"
                       length="20"
                       name="PARCELA" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAS\VAGAS_DW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[LINK_NFE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="LINK_NFE" />
+                    <externalMetadataColumn
+                      refId="Package\Transferir dados TMP -&gt; DW FATURAS\VAGAS_DW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[STATUS_ATRASO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="STATUS_ATRASO" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1837,9 +2161,17 @@ ORDER BY ID ;</property>
           Id="Package\Carga VAGAS_DW - Faturas"
           TopLeft="248,308" />
         <NodeLayout
+          Size="206,42"
+          Id="Package\Enriquecimento Dados ERP"
+          TopLeft="253,234" />
+        <NodeLayout
           Size="190,42"
           Id="Package\Limpar Tabela TMP DW"
           TopLeft="254,23" />
+        <NodeLayout
+          Size="281,42"
+          Id="Package\Limpar Tabelas Enriquecimento Dados ERP"
+          TopLeft="210,166" />
         <NodeLayout
           Size="155,42"
           Id="Package\Processar CUBO"
@@ -1892,36 +2224,6 @@ ORDER BY ID ;</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="206,42"
-          Id="Package\Enriquecimento Dados ERP"
-          TopLeft="253,234" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição 1]"
-          TopLeft="354.5,276">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,32"
-              Start="0,0"
-              End="0,24.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="281,42"
-          Id="Package\Limpar Tabelas Enriquecimento Dados ERP"
-          TopLeft="210,166" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição]"
           TopLeft="352,138">
@@ -1936,6 +2238,28 @@ ORDER BY ID ;</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,20.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="354.5,276">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32"
+              Start="0,0"
+              End="0,24.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1969,6 +2293,146 @@ ORDER BY ID ;</property>
       </GraphLayout>
     </LayoutInfo>
   </Package>
+  <TaskHost
+    design-time-name="Package\Enriquecimento Dados ERP">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="168,42"
+          Id="Package\Enriquecimento Dados ERP\Faturas - Link_NFE"
+          TopLeft="91,158" />
+        <NodeLayout
+          Size="190,42"
+          Id="Package\Enriquecimento Dados ERP\Faturas - Status_Atraso"
+          TopLeft="348,158" />
+        <NodeLayout
+          Size="173,42"
+          Id="Package\Enriquecimento Dados ERP\ERP - Status_Atraso"
+          TopLeft="361,73" />
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Enriquecimento Dados ERP\ERP - Link_NFE"
+          TopLeft="103,74" />
+        <EdgeLayout
+          Id="Package\Enriquecimento Dados ERP.Paths[Saída de Origem OLE DB1]"
+          TopLeft="445.25,115">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Enriquecimento Dados ERP.Paths[Saída de Origem OLE DB]"
+          TopLeft="177,116">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42"
+              Start="0,0"
+              End="0,34.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="167,42"
+          Id="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo"
+          TopLeft="104,261" />
+        <NodeLayout
+          Size="184,42"
+          Id="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo"
+          TopLeft="91,345" />
+        <EdgeLayout
+          Id="Package\Enriquecimento Dados ERP.Paths[Saída de Origem OLE DB2]"
+          TopLeft="185.25,303">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42"
+              Start="0,0"
+              End="0,34.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Enriquecimento Dados ERP\Faturas - Link_NFE">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Enriquecimento Dados ERP\Faturas - Status_Atraso">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Enriquecimento Dados ERP\ERP - Status_Atraso">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Enriquecimento Dados ERP\ERP - Link_NFE">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\Transferir dados TMP -&gt; DW FATURAS">
     <LayoutInfo>
@@ -2040,76 +2504,8 @@ ORDER BY ID ;</property>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Enriquecimento Dados ERP">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="152,42"
-          Id="Package\Enriquecimento Dados ERP\ERP - Link_NFE"
-          TopLeft="316,81" />
-        <NodeLayout
-          Size="168,42"
-          Id="Package\Enriquecimento Dados ERP\Faturas - Link_NFE"
-          TopLeft="304,165" />
-        <EdgeLayout
-          Id="Package\Enriquecimento Dados ERP.Paths[Saída de Origem OLE DB]"
-          TopLeft="390,123">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42"
-              Start="0,0"
-              End="0,34.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,34.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="173,42"
-          Id="Package\Enriquecimento Dados ERP\ERP - Status_Atraso"
-          TopLeft="574,80" />
-        <NodeLayout
-          Size="190,42"
-          Id="Package\Enriquecimento Dados ERP\Faturas - Status_Atraso"
-          TopLeft="561,165" />
-        <EdgeLayout
-          Id="Package\Enriquecimento Dados ERP.Paths[Saída de Origem OLE DB1]"
-          TopLeft="658.25,122">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,43"
-              Start="0,0"
-              End="0,35.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,35.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Enriquecimento Dados ERP\ERP - Link_NFE">
+    design-time-name="Package\Enriquecimento Dados ERP\ERP - Aviso_Previo">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -2117,28 +2513,7 @@ ORDER BY ID ;</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Enriquecimento Dados ERP\Faturas - Link_NFE">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Enriquecimento Dados ERP\ERP - Status_Atraso">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Enriquecimento Dados ERP\Faturas - Status_Atraso">
+    design-time-name="Package\Enriquecimento Dados ERP\Faturas - Aviso_Previo">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
