@@ -477,4 +477,3 @@ SET		DATA_FECHAMENTO = A.DATA_INCLUSAO
 FROM	[VAGAS_DW].[CASOS] AS A
 WHERE	A.[STATUS] IN ('fechado', 'fechado_sem_resposta')
 		AND A.DATA_FECHAMENTO IS NULL ;
--- (16.969 rows affected)
