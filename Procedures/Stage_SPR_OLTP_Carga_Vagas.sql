@@ -27,20 +27,7 @@ SET @DT_CARGA_INICIO = '19010101'
 IF @DT_CARGA_FIM < '19010101' OR @DT_CARGA_FIM IS NULL
 SET @DT_CARGA_FIM = CONVERT(SMALLDATETIME,CONVERT(VARCHAR,GETDATE(),112))
 
-TRUNCATE TABLE VAGAS_DW.TMP_VAGAS 
-
-	-- sp_who2 'active'
-  SELECT CodVaga_czMonitVaga,
-		 1.00 * SUM(CountOfCandCompativel_czMonitVaga) AS QtdAlertaDisparado,
-		 MIN(PercRetorno_czMonitVaga) as PercRetorno,
-		 COUNT( distinct CONVERT(date,DataIni_czMonit) ) as DiasAlertado
-   INTO #TMP_ALERTAS
-   FROM  [hrh-data].dbo.CruzamentoMonit with(nolock)
-   INNER JOIN [hrh-data].dbo.cruzamentomonitxVaga with(nolock) ON Cod_CzMonit = CodCzMonit_czMonitVaga
-   WHERE CountOfCand_czMonitVaga >= 0    
-   GROUP BY CodVaga_czMonitVaga;
-
-
+TRUNCATE TABLE VAGAS_DW.TMP_VAGAS ;
 
 -- DROP TABLE Tempdb.dbo.TMP_VAGAS
 WITH SETOR -- Para as VAGAS selecionadas, listar pela ordem de criação, os setores de cada uma
@@ -94,9 +81,9 @@ SELECT A.Cod_Vaga VAGAS_Cod_Vaga,
 	ISNULL(J.Descr_segmento,'NÃO CLASSIFICADO') AS SEGMENTO,
 	ISNULL(Descr_segmentoGrp,'NÃO CLASSIFICADO') AS GRUPO_SEGMENTO,
 	A.QTDEPOSICOES_VAGA AS QTD_POSICOES,
-	ISNULL(DiasAlertado,0) AS QTD_DIAS_ALERTADO,
-    ISNULL(QtdAlertaDisparado, 0) AS QTD_ALERTA_DISPARADO,
-	ISNULL(PercRetorno, 0) AS PERC_RETORNO,
+	NULL AS QTD_DIAS_ALERTADO,
+    NULL AS QTD_ALERTA_DISPARADO,
+	NULL AS PERC_RETORNO,
 	PageViews_vaga AS QTD_PageViews,
 	M.Descr_pais AS PAIS,
 	A.UltDtAtual_vaga AS DATA_ATUALIZACAO_SOURCE,
@@ -183,7 +170,6 @@ LEFT OUTER JOIN SETOR G3 ON G3.CodVaga_vagSet = A.Cod_vaga AND G3.ORDEM_SETOR = 
 OUTER APPLY ( SELECT MIN(DataVAlidacao_vagaval) DATA_VALIDACAO
 			  FROM [hrh-data].dbo.[vagas-validacao]
 			 WHERE codVaga_vagaVal = A.cod_vaga ) H
-LEFT OUTER JOIN #TMP_ALERTAS I ON I.CodVaga_czMonitVaga = A.Cod_Vaga
 LEFT OUTER JOIN [hrh-data].dbo.cad_segmentos J ON J.cod_segmento = B.CodSegmento_cli
 LEFT OUTER JOIN [hrh-data].dbo.Cad_segmentos_grupos L ON L.Cod_segmentoGrp = J.CodGrupo_Segmento
 LEFT OUTER JOIN [hrh-data].dbo.Cad_Paises M ON M.Cod_pais = A.CodPais_vaga
