@@ -12,8 +12,8 @@
   DTS:ObjectName="Contatos"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="17"
-  DTS:VersionGUID="{21792A97-F935-452E-863E-719AF6F827D6}">
+  DTS:VersionBuild="20"
+  DTS:VersionGUID="{7B98F351-5B29-4EEB-8B95-0DAFFA64F4B2}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\export\contatos.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\contatos.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -277,6 +277,7 @@
 FROM	[VAGAS_DW].[CONTAS_CRM] AS A		INNER JOIN [VAGAS_DW].[CONTATOS_CRM] AS B ON A.CONTA_ID = B.COD_CONTA_CRM
 											LEFT OUTER JOIN TMP_Tab_MainSponsor AS C ON B.COD_CONTATO = C.IdContato_CRM COLLATE SQL_Latin1_General_CP1_CI_AI
 WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO'
+		AND B.COD_CONTA_CRM IN (SELECT ID_CLIENTECRM FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA)
 UNION ALL
 SELECT	A.CONTA_ID AS Id_ClienteCRM ,
 		B.COD_CONTATO AS IdContato_CRM ,
@@ -301,7 +302,8 @@ SELECT	A.CONTA_ID AS Id_ClienteCRM ,
 		IIF(C.IdContato_CRM IS NULL, 'Não', 'Sim') AS Main_Sponsor
 FROM	[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A		INNER JOIN [VAGAS_DW].[CONTATOS_CRM] AS B ON A.CONTA_ID = B.COD_CONTA_CRM
 												LEFT OUTER JOIN TMP_Tab_MainSponsor AS C ON B.COD_CONTATO = C.IdContato_CRM COLLATE SQL_Latin1_General_CP1_CI_AI
-WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO' ;</property>
+WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO' 
+		AND B.COD_CONTA_CRM IN (SELECT ID_CLIENTECRM FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA);</property>
                 <property
                   dataType="System.String"
                   description="A variável que contém o comando SQL a ser executado."
@@ -924,6 +926,7 @@ WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO' ;</property>
       DTS:refId="Package\Upload S3 Bucket"
       DTS:CreationName="Microsoft.ExecutePackageTask"
       DTS:Description="Tarefa Executar Pacote"
+      DTS:Disabled="True"
       DTS:DTSID="{C4DC86C6-0B9B-411E-9A7D-0BBE981CCAD9}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
@@ -992,6 +995,10 @@ WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO' ;</property>
           Size="153,42"
           Id="Package\Exportação CSV"
           TopLeft="451,139.5" />
+        <NodeLayout
+          Size="162,42"
+          Id="Package\Upload S3 Bucket"
+          TopLeft="446.5,343.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="527.5,79.5">
@@ -1036,10 +1043,6 @@ WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO' ;</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="162,42"
-          Id="Package\Upload S3 Bucket"
-          TopLeft="446.5,343.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
           TopLeft="527.5,283.5">
