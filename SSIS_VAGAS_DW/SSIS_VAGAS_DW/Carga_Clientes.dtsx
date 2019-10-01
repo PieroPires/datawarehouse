@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Clientes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="218"
-  DTS:VersionGUID="{0ACA43A4-91FB-44AF-9331-DC5702C40D2C}">
+  DTS:VersionBuild="220"
+  DTS:VersionGUID="{CDEB8D6D-AEA1-4837-865D-D85C89D293CE}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -1355,6 +1355,255 @@ WHERE	NOT EXISTS (SELECT	1
           version="1">
           <components>
             <component
+              refId="Package\ERP -&gt; DW\CONTRATOS ERP"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="Origem OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;7"
+              description="Origem OLE DB"
+              name="CONTRATOS ERP"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT B.A1_X_CCRMF AS CONTA_ID,
+CASE
+       WHEN  A.AAM_STATUS = 1 THEN 'ATIVO'
+       WHEN  A.AAM_STATUS = 2 THEN 'SUSPENSO'
+       WHEN  A.AAM_STATUS = 3 THEN 'ENCERRADO'
+       WHEN  A.AAM_STATUS = 4 THEN 'CANCELADO'
+       END AS 'SITUAÇÃO',
+CASE
+       WHEN  A.AAM_XSTATU = 1 THEN 'ATIVO'
+       WHEN  A.AAM_XSTATU = 2 THEN 'BLQ.INADIMPLENCIA'
+       WHEN  A.AAM_XSTATU = 3 THEN 'BLOQ.COMERCIAL'
+       WHEN  A.AAM_XSTATU = 4 THEN 'RESCISÃO'
+       WHEN  A.AAM_XSTATU = 5 THEN 'ALTERAÇÃO.CNPJ'
+       END AS 'STATUS',
+CASE
+       WHEN  A.AAM_XBLOQ2 = 1 THEN 'SEM.BLOQUEIO'
+       WHEN  A.AAM_XBLOQ2 = 2 THEN 'CLIENTE.ANUIDADE'
+       WHEN  A.AAM_XBLOQ2 = 3 THEN 'VENDA.INTERNACIONAL'
+       WHEN  A.AAM_XBLOQ2 = 4 THEN 'PROBLEMA.CONTRATO'
+       END AS [BLOQUEIO POR],
+		C.B5_CEME AS PRODUTO
+		,ROW_NUMBER() OVER (PARTITION BY B.A1_X_CCRMF ORDER BY A.AAM_STATUS, A.AAM_XSTATU, A.AAM_XBLOQ2) AS SEQUENCIA
+FROM AAM010 AS A INNER JOIN SA1010 AS B ON A.AAM_CODCLI = B.A1_COD AND A.D_E_L_E_T_ = ' ' AND B.D_E_L_E_T_ = ' '
+	JOIN SB5010 AS C ON A.AAM_XPROD = C.B5_COD</property>
+                <property
+                  dataType="System.String"
+                  description="A variável que contém o comando SQL a ser executado."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ERP -&gt; DW\CONTRATOS ERP.Connections[OleDbConnection]"
+                  connectionManagerID="{446F384C-1AE6-418A-A976-38FA1ECAC7F9}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - SRV-SQLERP01 DB_TOTVS_P12_PROD]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB]"
+                  name="Saída de Origem OLE DB">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[CONTA_ID]"
+                      name="CONTA_ID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[SITUAÇÃO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[SITUAÇÃO]"
+                      length="9"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[SITUAÇÃO]"
+                      name="SITUAÇÃO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[STATUS]"
+                      length="17"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[STATUS]"
+                      name="STATUS"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[BLOQUEIO POR]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[BLOQUEIO POR]"
+                      length="19"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[BLOQUEIO POR]"
+                      name="BLOQUEIO POR"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[PRODUTO]"
+                      length="200"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[PRODUTO]"
+                      name="PRODUTO"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[SEQUENCIA]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[SEQUENCIA]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[SEQUENCIA]"
+                      name="SEQUENCIA"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[SITUAÇÃO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="9"
+                      name="SITUAÇÃO" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="17"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[BLOQUEIO POR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      name="BLOQUEIO POR" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="PRODUTO" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[SEQUENCIA]"
+                      dataType="i8"
+                      name="SEQUENCIA" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB]"
+                  isErrorOut="true"
+                  name="Saída de Erro de Origem OLE DB">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[SITUAÇÃO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="9"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[SITUAÇÃO]"
+                      name="SITUAÇÃO" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="17"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[BLOQUEIO POR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="19"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[BLOQUEIO POR]"
+                      name="BLOQUEIO POR" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[PRODUTO]"
+                      name="PRODUTO" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[SEQUENCIA]"
+                      dataType="i8"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[SEQUENCIA]"
+                      name="SEQUENCIA" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\ERP -&gt; DW\ERP"
               componentClassID="Microsoft.OLEDBSource"
               contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
@@ -1627,6 +1876,189 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
                 </output>
               </outputs>
             </component>
+            <component
+              refId="Package\ERP -&gt; DW\VAGAS_DW - TMP"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="VAGAS_DW - TMP"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CONTRATOS_ERP]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].Columns[CONTA_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[CONTA_ID]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[CONTA_ID]" />
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].Columns[STATUS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="17"
+                      cachedName="STATUS"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[STATUS]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[STATUS]" />
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].Columns[PRODUTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="PRODUTO"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[PRODUTO]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[PRODUTO]" />
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].Columns[SEQUENCIA]"
+                      cachedDataType="i8"
+                      cachedName="SEQUENCIA"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[SEQUENCIA]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[SEQUENCIA]" />
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].Columns[SITUAÇÃO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="9"
+                      cachedName="SITUAÇÃO"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[SITUACAO]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[SITUAÇÃO]" />
+                    <inputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].Columns[BLOQUEIO POR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="19"
+                      cachedName="BLOQUEIO POR"
+                      externalMetadataColumnId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[BLOQUEIO]"
+                      lineageId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB].Columns[BLOQUEIO POR]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[SITUACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="SITUACAO" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[BLOQUEIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="BLOQUEIO" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[PRODUTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="PRODUTO" />
+                    <externalMetadataColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB].ExternalColumns[SEQUENCIA]"
+                      dataType="i4"
+                      name="SEQUENCIA" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
           </components>
           <paths>
             <path
@@ -1634,6 +2066,11 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
               endId="Package\ERP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]"
               name="OLE DB Source Output"
               startId="Package\ERP -&gt; DW\ERP.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\ERP -&gt; DW.Paths[Saída de Origem OLE DB]"
+              endId="Package\ERP -&gt; DW\VAGAS_DW - TMP.Inputs[Entrada de Destino OLE DB]"
+              name="Saída de Origem OLE DB"
+              startId="Package\ERP -&gt; DW\CONTRATOS ERP.Outputs[Saída de Origem OLE DB]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -1703,7 +2140,7 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_NUM_PED_FAT] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_NUM_PED_FAT]&#xA;GO&#xA;&#xA;TRUNCATE TABLE [VAGAS_DW].TMP_CONTRATOS_ERP&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
@@ -2222,18 +2659,18 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
     design-time-name="Package\ERP -&gt; DW">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="155,42"
           Id="Package\ERP -&gt; DW\VagasDW - TMP"
-          TopLeft="485,376" />
+          TopLeft="189,262" />
         <NodeLayout
           Size="97,42"
           Id="Package\ERP -&gt; DW\ERP"
-          TopLeft="516,202" />
+          TopLeft="220,88" />
         <EdgeLayout
           Id="Package\ERP -&gt; DW.Paths[OLE DB Source Output]"
-          TopLeft="563.5,244">
+          TopLeft="267.5,130">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -2250,9 +2687,37 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="161,42"
+          Id="Package\ERP -&gt; DW\CONTRATOS ERP"
+          TopLeft="508,90" />
+        <NodeLayout
+          Size="165,42"
+          Id="Package\ERP -&gt; DW\VAGAS_DW - TMP"
+          TopLeft="509,265" />
+        <EdgeLayout
+          Id="Package\ERP -&gt; DW.Paths[Saída de Origem OLE DB]"
+          TopLeft="590,132">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,133"
+              Start="0,0"
+              End="0,125.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,125.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -2268,6 +2733,27 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\ERP -&gt; DW\VagasDW - TMP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\ERP -&gt; DW\CONTRATOS ERP">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\ERP -&gt; DW\VAGAS_DW - TMP">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
