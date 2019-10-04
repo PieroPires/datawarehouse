@@ -856,3 +856,10 @@ SET		PRODUTO = 'COMPL AVALIACAO' ,
 		GRUPO_II = 'AVALIACAO' 
 FROM	[VAGAS_DW].[FATURAMENTO] AS A 
 WHERE	A.NUM_PEDIDO = '066531' ;
+
+
+-- Alteração solicitada pelo Wesley (Financeiro) 04/10/2019: Não exibir os valores da empresa ETALENT, nos relatórios de Faturamento.
+UPDATE	[VAGAS_DW].[FATURAMENTO]
+SET		FLAG_EXIBICAO_PADRAO = 0
+FROM	[VAGAS_DW].[FATURAMENTO]
+WHERE	COD_CLI_CRM = '471becf9-e60e-11e4-a9bf-0ea319e5a468' ;
