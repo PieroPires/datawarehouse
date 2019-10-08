@@ -2226,6 +2226,46 @@ INNER JOIN
 
 						
 
+--------------------------------------
+-- Atualização do campo CLASSIFICACAO:
+--------------------------------------
+UPDATE	[VAGAS_DW].[CLIENTES]
+SET		CLASSIFICACAO = B.CLASSIFICACAO
+FROM	[VAGAS_DW].[CLIENTES] AS A		
+INNER JOIN 
+(
+	SELECT	A.CONTA_ID ,
+			CASE
+				WHEN A.TIPO IN ('cliente_em_aviso_previo','cliente_fit','cliente_recrutador','cliente_vagas_redes')
+					 AND A.CATEGORIA IN ('cliente_em_aviso_previo','cliente_fit','cliente_recrutador','cliente_vagas_redes')
+					THEN 'ATIVO'
+				WHEN A.TIPO IN ('ex_cliente','cliente_bloqueado')
+					 OR A.CATEGORIA IN ('ex_cliente','cliente_bloqueado')
+					THEN 'INATIVO'
+			END AS CLASSIFICACAO ,
+			A.TIPO ,
+			A.CATEGORIA
+	FROM	[VAGAS_DW].[CONTAS_CRM] AS A
+	WHERE	A.TIPO IN ('cliente_em_aviso_previo', 'cliente_fit', 'cliente_recrutador', 'cliente_vagas_redes', 'ex_cliente', 'cliente_bloqueado')
+			AND A.CATEGORIA IN ('cliente_em_aviso_previo', 'cliente_fit', 'cliente_recrutador', 'cliente_vagas_redes', 'ex_cliente', 'cliente_bloqueado')
+	UNION ALL
+	SELECT	A.CONTA_ID ,
+			CASE
+				WHEN A.TIPO IN ('cliente_em_aviso_previo','cliente_fit','cliente_recrutador','cliente_vagas_redes')
+					 AND A.CATEGORIA IN ('cliente_em_aviso_previo','cliente_fit','cliente_recrutador','cliente_vagas_redes')
+					THEN 'ATIVO'
+				WHEN A.TIPO IN ('ex_cliente','cliente_bloqueado')
+					 OR A.CATEGORIA IN ('ex_cliente','cliente_bloqueado')
+					THEN 'INATIVO'
+			END AS CLASSIFICACAO ,
+			A.TIPO ,
+			A.CATEGORIA
+	FROM	[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A
+	WHERE	A.TIPO IN ('cliente_em_aviso_previo', 'cliente_fit', 'cliente_recrutador', 'cliente_vagas_redes', 'ex_cliente', 'cliente_bloqueado')
+			AND A.CATEGORIA IN ('cliente_em_aviso_previo', 'cliente_fit', 'cliente_recrutador', 'cliente_vagas_redes', 'ex_cliente', 'cliente_bloqueado')) AS B
+	ON A.CONTA_ID = B.CONTA_ID ;
+
+
 -- Atualização dos CNAES com base nas contas do CRM						
 /*
 UPDATE VAGAS_DW.CLIENTES
