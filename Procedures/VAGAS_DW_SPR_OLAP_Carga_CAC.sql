@@ -31,7 +31,7 @@ SET NOCOUNT ON
 	-- Tratar erros ocorridos na rotina do Python	
 	IF EXISTS ( SELECT * FROM #TMP_LOG_ERRO WHERE CHARINDEX('ERROR_MESSAGE',ERRO) > 0 ) 
 	BEGIN 
-		SET @MSG = 'ERRO ocorrido na importação dos dados no ID_CONTROLE_SPREADSHEET : 181' 
+		SET @MSG = 'ERRO ocorrido na importação dos dados no ID_CONTROLE_SPREADSHEET : 220' 
 		RAISERROR(@MSG , 16, 1) 
 	END
 
