@@ -34864,6 +34864,14 @@
             "name": "SEGMENTO_SC",
             "dataType": "string",
             "sourceColumn": "SEGMENTO_SC"
+          },
+          {
+            "type": "calculated",
+            "name": "HORAS_TREINAMENTO_SOURCE",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEDIFF([DATA_REALIZACAO_INICIO_SOURCE],[DATA_REALIZACAO_FIM_SOURCE],HOUR)"
           }
         ],
         "partitions": [
@@ -35346,6 +35354,10 @@
           {
             "name": "QTD_TREINAMENTOS",
             "expression": "COUNTA([ID_TREINAMENTO])"
+          },
+          {
+            "name": "HORAS_TREINAMENTO",
+            "expression": " SUM([HORAS_TREINAMENTO_SOURCE])/3600/24"
           }
         ],
         "annotations": [
@@ -71203,6 +71215,14 @@
         "modelPermission": "administrator",
         "members": [
           {
+            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
+            "memberId": "S-1-5-20"
+          },
+          {
+            "memberName": "Todos",
+            "memberId": "S-1-1-0"
+          },
+          {
             "memberName": "VAGASTEC\\sylvia.fernandez",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-6302"
           },
@@ -71221,14 +71241,6 @@
           {
             "memberName": "VAGASTEC\\mario",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7635"
-          },
-          {
-            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
-            "memberId": "S-1-5-20"
-          },
-          {
-            "memberName": "Todos",
-            "memberId": "S-1-1-0"
           }
         ]
       }
