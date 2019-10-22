@@ -31,7 +31,7 @@ ELSE
 
 SELECT        Subquery.[ID do Cliente no Manut], Subquery.[Cargo da vaga], Subquery.[Código da vaga], Subquery.[Local da Vaga], Subquery.[Quantidade de candidaturas], Subquery.[Pageviews na vaga], 
                          ISNULL(B.QTD_EMAILS_RECOMENDACAO, 0) AS [E-mails recomendação], ISNULL(B.QTD_ALERTA_DISPARADO, 0) AS [Quantidade de alerta disparado], Subquery.[Data abertura], Subquery.[Data expiração], 
-                         B.DATA_VALIDACAO AS [Data validação], Subquery.[Contém Teste], Subquery.[Contém Ficha], Subquery.[Quantidade Máx Candidaturas]
+                         B.DATA_VALIDACAO AS [Data validação], Subquery.[Contém Teste], Subquery.[Contém Ficha], Subquery.[Quantidade Máx Candidaturas], B.QTD_POSICOES
 FROM            OPENQUERY([SRV-SQLSERVER], 
                          'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
 											B.Cargo_vaga AS [Cargo da vaga] ,
@@ -147,6 +147,10 @@ WHERE        (Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subq
           <DataField>Quantidade Máx Candidaturas</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+        <Field Name="QTD_POSICOES">
+          <DataField>QTD_POSICOES</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="DataSet_TotalVagas">
@@ -215,34 +219,40 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.85417in</Width>
+                  <Width>0.97917in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.76042in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.15625in</Width>
+                  <Width>1.63541in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.23958in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.125in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.16667in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.3125in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.08334in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.08333in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.52083in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.80208in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.85417in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.80208in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.82292in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.75in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.16667in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -258,7 +268,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>ID Vagas</Value>
+                                  <Value>ID_VAGAS</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -294,7 +304,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Cargo da vaga</Value>
+                                  <Value>CARGO</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -330,7 +340,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Vaga</Value>
+                                  <Value>VAGA</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -366,7 +376,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Local da Vaga</Value>
+                                  <Value>LOCAL_VAGA</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -403,7 +413,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Candidaturas</Value>
+                                  <Value>CANDIDATURAS</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -440,7 +450,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Pageviews</Value>
+                                  <Value>PAGEVIEWS</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -477,7 +487,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>E-mails recomendação</Value>
+                                  <Value>EMAILS_RECOMENDACAO</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -514,7 +524,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Quantidade de alerta disparado</Value>
+                                  <Value>ALERTA_DISPARADO</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -551,7 +561,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data abertura</Value>
+                                  <Value>DATA_ABERTURA</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -588,7 +598,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data expiração</Value>
+                                  <Value>DATA_EXPIRACAO</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -625,7 +635,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data validação</Value>
+                                  <Value>DATA_VALIDACAO</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -662,7 +672,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Contém teste</Value>
+                                  <Value>CONTEM_TESTE</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -699,7 +709,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Contém ficha</Value>
+                                  <Value>CONTEM_FICHA</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -736,7 +746,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Quantidade Máx Candidaturas</Value>
+                                  <Value>MAXIMO_CANDIDATURAS</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -750,6 +760,80 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox5">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>POSICOES</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox5</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>TAXA_CONVERSAO</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox6</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1261,12 +1345,85 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="QTD_POSICOES">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!QTD_POSICOES.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>QTD_POSICOES</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Label>TAXA_CONVERSAO</Label>
+                                  <Value>=FormatPercent(CDbl(Fields!Quantidade_de_candidaturas.Value)/Fields!Pageviews_na_vaga.Value,0)</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
               </TablixRows>
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -1302,7 +1459,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
             <Top>1.62278cm</Top>
             <Left>0.34396cm</Left>
             <Height>0.5in</Height>
-            <Width>13.21876in</Width>
+            <Width>18.48959in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1425,7 +1582,7 @@ WHERE	Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID
         <Height>1.13889in</Height>
         <Style />
       </Body>
-      <Width>13.35418in</Width>
+      <Width>18.625in</Width>
       <Page>
         <PageHeader>
           <Height>0.83208in</Height>
