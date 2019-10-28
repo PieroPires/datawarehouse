@@ -68476,6 +68476,7 @@
           {
             "name": "DATA_CRIACAO",
             "dataType": "dateTime",
+            "isHidden": true,
             "sourceColumn": "DATA_CRIACAO",
             "formatString": "General Date",
             "sourceProviderType": "Date"
@@ -68539,6 +68540,21 @@
             "dataType": "string",
             "sourceColumn": "STATUS",
             "sourceProviderType": "VarChar"
+          },
+          {
+            "type": "calculated",
+            "name": "DATA_CRIACAO_NORMALIZADA",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEVALUE('CHAMADOS FRESHDESK'[DATA_CRIACAO])",
+            "formatString": "Short Date",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
           }
         ],
         "partitions": [
@@ -68660,10 +68676,12 @@
       },
       {
         "name": "CHAMADOS FRESHDESK DATA DE CRIACAO",
+        "dataCategory": "Time",
         "columns": [
           {
             "name": "DATA DE CRIAÇÃO",
             "dataType": "dateTime",
+            "isKey": true,
             "sourceColumn": "DATAALTKEY",
             "formatString": "Short Date",
             "sourceProviderType": "DBTimeStamp",
@@ -70476,9 +70494,9 @@
         "crossFilteringBehavior": "bothDirections"
       },
       {
-        "name": "00d831e9-a883-41d3-b7c6-50fc3faa1c86",
+        "name": "d3f5278d-bdd7-45b8-8f3d-364712669a12",
         "fromTable": "CHAMADOS FRESHDESK",
-        "fromColumn": "DATA_CRIACAO",
+        "fromColumn": "DATA_CRIACAO_NORMALIZADA",
         "toTable": "CHAMADOS FRESHDESK DATA DE CRIACAO",
         "toColumn": "DATA DE CRIAÇÃO"
       }
