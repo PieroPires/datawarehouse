@@ -45235,10 +45235,6 @@
             "expression": " SUM(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
           },
           {
-            "name": "TEMPO_HORAS_MEDIA",
-            "expression": " AVERAGE(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
-          },
-          {
             "name": "TEMPO_HORAS_MEDIANA",
             "expression": " MEDIAN(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
           },
@@ -45265,6 +45261,10 @@
           {
             "name": "TEMPO_DIAS_MEDIA",
             "expression": " AVERAGE([TEMPO_DIAS_SOURCE])"
+          },
+          {
+            "name": "TEMPO_HORAS_MEDIA",
+            "expression": " AVERAGE(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
           }
         ],
         "annotations": [
@@ -68351,6 +68351,600 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "CHAMADOS FRESHDESK",
+        "columns": [
+          {
+            "name": "ID_TICKET",
+            "dataType": "string",
+            "sourceColumn": "ID_TICKET",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "FILA_ATENDIMENTO",
+            "dataType": "string",
+            "sourceColumn": "FILA_ATENDIMENTO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "TIPO",
+            "dataType": "string",
+            "sourceColumn": "TIPO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "SUBTIPO",
+            "dataType": "string",
+            "sourceColumn": "SUBTIPO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "DATA_CRIACAO",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_CRIACAO",
+            "formatString": "General Date",
+            "sourceProviderType": "Date"
+          },
+          {
+            "name": "FLAG_ESCALADO",
+            "dataType": "int64",
+            "sourceColumn": "FLAG_ESCALADO",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "EMAIL_ENCAMINHADO",
+            "dataType": "string",
+            "sourceColumn": "EMAIL_ENCAMINHADO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "PRIORIDADE",
+            "dataType": "string",
+            "sourceColumn": "PRIORIDADE",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "AGENTE",
+            "dataType": "string",
+            "sourceColumn": "AGENTE",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "CLIENTE",
+            "dataType": "string",
+            "sourceColumn": "CLIENTE",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "EMAIL_CLIENTE",
+            "dataType": "string",
+            "sourceColumn": "EMAIL_CLIENTE",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "TITULO_CLIENTE",
+            "dataType": "string",
+            "sourceColumn": "TITULO_CLIENTE",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "CPF_CLIENTE",
+            "dataType": "string",
+            "sourceColumn": "CPF_CLIENTE",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "ORIGEM",
+            "dataType": "string",
+            "sourceColumn": "ORIGEM",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "STATUS",
+            "dataType": "string",
+            "sourceColumn": "STATUS",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "type": "calculated",
+            "name": "DATA_CRIACAO_NORMALIZADA",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEVALUE('CHAMADOS FRESHDESK'[DATA_CRIACAO])",
+            "formatString": "Short Date",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CHAMADOS FRESHDESK",
+            "dataView": "full",
+            "source": {
+              "query": [
+                "SELECT",
+                "\tA.ID_TICKET",
+                "\t,A.FILA_ATENDIMENTO",
+                "\t,A.TIPO",
+                "\t,A.SUBTIPO",
+                "\t,CAST(A.DATA_CRIACAO AS smalldatetime) AS DATA_CRIACAO",
+                "\t,A.FLAG_ESCALADO",
+                "\t,A.EMAIL_ENCAMINHADO",
+                "\t,A.PRIORIDADE",
+                "\t,B.NOME AS AGENTE",
+                "\t,C.NOME AS CLIENTE",
+                "\t,C.EMAIL AS EMAIL_CLIENTE",
+                "\t,C.TITULO AS TITULO_CLIENTE",
+                "\t,C.CPF AS CPF_CLIENTE",
+                "\t,A.ORIGEM",
+                "\t,A.STATUS",
+                "FROM VAGAS_DW.FRESHDESK_TICKETS AS A",
+                "\tLEFT JOIN VAGAS_DW.FRESHDESK_AGENTES AS B ON A.ID_ATENDENTE = B.ID_AGENTE",
+                "\tLEFT JOIN VAGAS_DW.FRESHDESK_CONTATOS AS C ON A.ID_CLIENTE = C.ID_CONTATO"
+              ],
+              "dataSource": "VAGAS_DW"
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT",
+                  "\tA.ID_TICKET",
+                  "\t,A.FILA_ATENDIMENTO",
+                  "\t,A.TIPO",
+                  "\t,A.SUBTIPO",
+                  "\t,CAST(A.DATA_CRIACAO AS smalldatetime) AS DATA_CRIACAO",
+                  "\t,A.FLAG_ESCALADO",
+                  "\t,A.EMAIL_ENCAMINHADO",
+                  "\t,A.PRIORIDADE",
+                  "\t,B.NOME AS AGENTE",
+                  "\t,C.NOME AS CLIENTE",
+                  "\t,C.EMAIL AS EMAIL_CLIENTE",
+                  "\t,C.TITULO AS TITULO_CLIENTE",
+                  "\t,C.CPF AS CPF_CLIENTE",
+                  "\t,A.ORIGEM",
+                  "\t,A.STATUS",
+                  "FROM VAGAS_DW.FRESHDESK_TICKETS AS A",
+                  "\tLEFT JOIN VAGAS_DW.FRESHDESK_AGENTES AS B ON A.ID_ATENDENTE = B.ID_AGENTE",
+                  "\tLEFT JOIN VAGAS_DW.FRESHDESK_CONTATOS AS C ON A.ID_CLIENTE = C.ID_CONTATO</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "name": "Quantidade de chamados",
+            "expression": "COUNTA(([ID_TICKET]))"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": [
+              "SELECT",
+              "\tA.ID_TICKET",
+              "\t,A.FILA_ATENDIMENTO",
+              "\t,A.TIPO",
+              "\t,A.SUBTIPO",
+              "\t,CAST(A.DATA_CRIACAO AS smalldatetime) AS DATA_CRIACAO",
+              "\t,A.FLAG_ESCALADO",
+              "\t,A.EMAIL_ENCAMINHADO",
+              "\t,A.PRIORIDADE",
+              "\t,B.NOME AS AGENTE",
+              "\t,C.NOME AS CLIENTE",
+              "\t,C.EMAIL AS EMAIL_CLIENTE",
+              "\t,C.TITULO AS TITULO_CLIENTE",
+              "\t,C.CPF AS CPF_CLIENTE",
+              "\t,A.ORIGEM",
+              "\t,A.STATUS",
+              "FROM VAGAS_DW.FRESHDESK_TICKETS AS A",
+              "\tLEFT JOIN VAGAS_DW.FRESHDESK_AGENTES AS B ON A.ID_ATENDENTE = B.ID_AGENTE",
+              "\tLEFT JOIN VAGAS_DW.FRESHDESK_CONTATOS AS C ON A.ID_CLIENTE = C.ID_CONTATO"
+            ]
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "CHAMADOS FRESHDESK"
+          },
+          {
+            "name": "QueryEditorSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT",
+              "\tA.ID_TICKET",
+              "\t,A.FILA_ATENDIMENTO",
+              "\t,A.TIPO",
+              "\t,A.SUBTIPO",
+              "\t,CAST(A.DATA_CRIACAO AS smalldatetime) AS DATA_CRIACAO",
+              "\t,A.FLAG_ESCALADO",
+              "\t,A.EMAIL_ENCAMINHADO",
+              "\t,A.PRIORIDADE",
+              "\t,B.NOME AS AGENTE",
+              "\t,C.NOME AS CLIENTE",
+              "\t,C.EMAIL AS EMAIL_CLIENTE",
+              "\t,C.TITULO AS TITULO_CLIENTE",
+              "\t,C.CPF AS CPF_CLIENTE",
+              "\t,A.ORIGEM",
+              "\t,A.STATUS",
+              "FROM VAGAS_DW.FRESHDESK_TICKETS AS A",
+              "\tLEFT JOIN VAGAS_DW.FRESHDESK_AGENTES AS B ON A.ID_ATENDENTE = B.ID_AGENTE",
+              "\tLEFT JOIN VAGAS_DW.FRESHDESK_CONTATOS AS C ON A.ID_CLIENTE = C.ID_CONTATO</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CHAMADOS FRESHDESK DATA DE CRIACAO",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATA DE CRIAÇÃO",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "Short Date",
+            "sourceProviderType": "DBTimeStamp",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CHAMADOS FRESHDESK DATA DE CRIACAO",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].[DATAALTKEY],[VAGAS_DW].[DATAS].[DIA],[VAGAS_DW].[DATAS].[MES],[VAGAS_DW].[DATAS].[NOMEMES],[VAGAS_DW].[DATAS].[ANO],[VAGAS_DW].[DATAS].[SEMANA] FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            },
+            "annotations": [
+              {
+                "name": "TableWidgetSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"TableWidgetSerialization\"><AnnotationContent><![CDATA[<?xml version=\"1.0\"?>",
+                  "<TableWidgetGridSerialization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">",
+                  "  <ColumnSuggestedType />",
+                  "  <ColumnFormat />",
+                  "  <ColumnAccuracy />",
+                  "  <ColumnCurrencySymbol />",
+                  "  <ColumnPositivePattern />",
+                  "  <ColumnNegativePattern />",
+                  "  <ColumnWidths>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>75</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAALTKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>137</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DIA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>48</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>MES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>50</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOMEMES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>79</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>ANO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>52</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEMANA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>71</int>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnWidths>",
+                  "  <ColumnDisplayIndex>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>0</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAALTKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>1</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DIA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>2</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>MES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>3</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOMEMES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>4</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>ANO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>5</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEMANA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>6</int>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnDisplayIndex>",
+                  "  <ColumnFrozen />",
+                  "  <ColumnChecked>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>false</boolean>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnChecked>",
+                  "  <ColumnFilter />",
+                  "  <SelectionFilter />",
+                  "  <FilterParameters />",
+                  "  <IsSortDescending>false</IsSortDescending>",
+                  "</TableWidgetGridSerialization>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].[DATAALTKEY],[VAGAS_DW].[DATAS].[DIA],[VAGAS_DW].[DATAS].[MES],[VAGAS_DW].[DATAS].[NOMEMES],[VAGAS_DW].[DATAS].[ANO],[VAGAS_DW].[DATAS].[SEMANA] FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          },
+          {
+            "name": "TableWidgetSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"TableWidgetSerialization\"><AnnotationContent><![CDATA[<?xml version=\"1.0\"?>",
+              "<TableWidgetGridSerialization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">",
+              "  <ColumnSuggestedType />",
+              "  <ColumnFormat />",
+              "  <ColumnAccuracy />",
+              "  <ColumnCurrencySymbol />",
+              "  <ColumnPositivePattern />",
+              "  <ColumnNegativePattern />",
+              "  <ColumnWidths>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>75</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAALTKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>137</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DIA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>48</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>MES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>50</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOMEMES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>79</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>ANO</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>52</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEMANA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>71</int>",
+              "      </value>",
+              "    </item>",
+              "  </ColumnWidths>",
+              "  <ColumnDisplayIndex>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>0</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAALTKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>1</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DIA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>2</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>MES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>3</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOMEMES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>4</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>ANO</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>5</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEMANA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>6</int>",
+              "      </value>",
+              "    </item>",
+              "  </ColumnDisplayIndex>",
+              "  <ColumnFrozen />",
+              "  <ColumnChecked>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>false</boolean>",
+              "      </value>",
+              "    </item>",
+              "  </ColumnChecked>",
+              "  <ColumnFilter />",
+              "  <SelectionFilter />",
+              "  <FilterParameters />",
+              "  <IsSortDescending>false</IsSortDescending>",
+              "</TableWidgetGridSerialization>]]></AnnotationContent></Gemini>"
+            ]
+          }
+        ]
       }
     ],
     "relationships": [
@@ -69804,6 +70398,13 @@
         "toTable": "CANDIDATOS",
         "toColumn": "COD_CAND",
         "crossFilteringBehavior": "bothDirections"
+      },
+      {
+        "name": "d3f5278d-bdd7-45b8-8f3d-364712669a12",
+        "fromTable": "CHAMADOS FRESHDESK",
+        "fromColumn": "DATA_CRIACAO_NORMALIZADA",
+        "toTable": "CHAMADOS FRESHDESK DATA DE CRIACAO",
+        "toColumn": "DATA DE CRIAÇÃO"
       }
     ],
     "perspectives": [
@@ -70300,14 +70901,6 @@
         "modelPermission": "administrator",
         "members": [
           {
-            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
-            "memberId": "S-1-5-20"
-          },
-          {
-            "memberName": "Todos",
-            "memberId": "S-1-1-0"
-          },
-          {
             "memberName": "VAGASTEC\\sylvia.fernandez",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-6302"
           },
@@ -70326,6 +70919,14 @@
           {
             "memberName": "VAGASTEC\\mario",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7635"
+          },
+          {
+            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
+            "memberId": "S-1-5-20"
+          },
+          {
+            "memberName": "Todos",
+            "memberId": "S-1-1-0"
           }
         ]
       }
