@@ -34780,6 +34780,26 @@
             "name": "HORA_MINUTO",
             "dataType": "string",
             "sourceColumn": "HORA_MINUTO"
+          },
+          {
+            "name": "HORAS_SOURCE",
+            "dataType": "double",
+            "isHidden": true,
+            "sourceColumn": "HORAS"
+          },
+          {
+            "name": "MINUTO_SOURCE",
+            "dataType": "double",
+            "isHidden": true,
+            "sourceColumn": "MINUTO"
+          },
+          {
+            "type": "calculated",
+            "name": "HORA_MINUTO_GASTO_SOURCE",
+            "dataType": "double",
+            "isDataTypeInferred": false,
+            "isHidden": true,
+            "expression": "CONCATENATE(CONCATENATE([HORAS_SOURCE],\",\"),[MINUTO_SOURCE])"
           }
         ],
         "partitions": [
@@ -34863,6 +34883,10 @@
           {
             "name": "HORAS_TREINAMENTO",
             "expression": "SUM([HORAS_TREINAMENTO_SOURCE])"
+          },
+          {
+            "name": "HORAS_MINUTO_GASTO",
+            "expression": "SUM([HORA_MINUTO_GASTO_SOURCE])"
           }
         ],
         "annotations": [
