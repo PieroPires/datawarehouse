@@ -34771,10 +34771,35 @@
             "sourceColumn": "SEGMENTO_SC"
           },
           {
-            "name": "HORAS_TREINAMENTO_SOUCE",
+            "name": "HORAS_TREINAMENTO_SOURCE",
             "dataType": "double",
             "isHidden": true,
             "sourceColumn": "HORAS_TREINAMENTO_SOUCE"
+          },
+          {
+            "name": "HORA_MINUTO",
+            "dataType": "string",
+            "sourceColumn": "HORA_MINUTO"
+          },
+          {
+            "name": "HORAS_SOURCE",
+            "dataType": "double",
+            "isHidden": true,
+            "sourceColumn": "HORAS"
+          },
+          {
+            "name": "MINUTO_SOURCE",
+            "dataType": "double",
+            "isHidden": true,
+            "sourceColumn": "MINUTO"
+          },
+          {
+            "type": "calculated",
+            "name": "HORA_MINUTO_GASTO_SOURCE",
+            "dataType": "double",
+            "isDataTypeInferred": false,
+            "isHidden": true,
+            "expression": "CONCATENATE(CONCATENATE([HORAS_SOURCE],\",\"),[MINUTO_SOURCE])"
           }
         ],
         "partitions": [
@@ -34805,7 +34830,10 @@
                 "A.[TIPO_ACADEMIA_VAGAS],",
                 "A.[MERCADO],",
                 "A.[SEGMENTO_SC] ,",
-                "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE",
+                "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE ,",
+                "FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) AS HORAS ,",
+                "ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1) AS MINUTO ,",
+                "CONCAT(FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24), ':',ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1)) AS HORA_MINUTO",
                 "FROM [VAGAS_DW].[TREINAMENTOS_CRM] AS A ;"
               ],
               "dataSource": "VAGAS_DW"
@@ -34837,7 +34865,10 @@
                   "A.[TIPO_ACADEMIA_VAGAS],",
                   "A.[MERCADO],",
                   "A.[SEGMENTO_SC] ,",
-                  "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE",
+                  "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE ,",
+                  "FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) AS HORAS ,",
+                  "ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1) AS MINUTO ,",
+                  "CONCAT(FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24), ':',ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1)) AS HORA_MINUTO",
                   "FROM [VAGAS_DW].[TREINAMENTOS_CRM] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
                 ]
               }
@@ -34851,7 +34882,11 @@
           },
           {
             "name": "HORAS_TREINAMENTO",
-            "expression": "SUM([HORAS_TREINAMENTO_SOUCE])"
+            "expression": "SUM([HORAS_TREINAMENTO_SOURCE])"
+          },
+          {
+            "name": "HORAS_MINUTO_GASTO",
+            "expression": "SUM([HORA_MINUTO_GASTO_SOURCE])"
           }
         ],
         "annotations": [
@@ -34889,7 +34924,10 @@
               "A.[TIPO_ACADEMIA_VAGAS],",
               "A.[MERCADO],",
               "A.[SEGMENTO_SC] ,",
-              "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE",
+              "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE ,",
+              "FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) AS HORAS ,",
+              "ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1) AS MINUTO ,",
+              "CONCAT(FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24), ':',ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1)) AS HORA_MINUTO",
               "FROM [VAGAS_DW].[TREINAMENTOS_CRM] AS A ;"
             ]
           },
@@ -34919,7 +34957,10 @@
               "A.[TIPO_ACADEMIA_VAGAS],",
               "A.[MERCADO],",
               "A.[SEGMENTO_SC] ,",
-              "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE",
+              "ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) AS HORAS_TREINAMENTO_SOUCE ,",
+              "FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) AS HORAS ,",
+              "ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1) AS MINUTO ,",
+              "CONCAT(FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24), ':',ROUND((ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24 * 60) - (FLOOR(ISNULL(CONVERT(FLOAT, DATEDIFF(SECOND, A.DATA_REALIZACAO_INICIO, A.DATA_REALIZACAO_FIM))/3600/24,0) * 24) * 60),1)) AS HORA_MINUTO",
               "FROM [VAGAS_DW].[TREINAMENTOS_CRM] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
             ]
           }
@@ -45235,6 +45276,10 @@
             "expression": " SUM(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
           },
           {
+            "name": "TEMPO_HORAS_MEDIA",
+            "expression": " AVERAGE(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
+          },
+          {
             "name": "TEMPO_HORAS_MEDIANA",
             "expression": " MEDIAN(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
           },
@@ -45261,10 +45306,6 @@
           {
             "name": "TEMPO_DIAS_MEDIA",
             "expression": " AVERAGE([TEMPO_DIAS_SOURCE])"
-          },
-          {
-            "name": "TEMPO_HORAS_MEDIA",
-            "expression": " AVERAGE(LINKS_TRANSICAO_STATUS[TEMPO_HORAS_SOURCE])"
           }
         ],
         "annotations": [
@@ -68945,6 +68986,181 @@
             ]
           }
         ]
+      },
+      {
+        "name": "PBI_AUDIT_LOG",
+        "columns": [
+          {
+            "name": "ID",
+            "dataType": "string",
+            "sourceColumn": "ID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "CREATIONTIME",
+            "dataType": "dateTime",
+            "sourceColumn": "CREATIONTIME",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "CREATIONTIMEUTC",
+            "dataType": "dateTime",
+            "sourceColumn": "CREATIONTIMEUTC",
+            "formatString": "General Date",
+            "sourceProviderType": "146"
+          },
+          {
+            "name": "RECORDTYPE",
+            "dataType": "string",
+            "sourceColumn": "RECORDTYPE",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "OPERATION",
+            "dataType": "string",
+            "sourceColumn": "OPERATION",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ORGANIZATIONID",
+            "dataType": "string",
+            "sourceColumn": "ORGANIZATIONID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "USERTYPE",
+            "dataType": "string",
+            "sourceColumn": "USERTYPE",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "USERKEY",
+            "dataType": "string",
+            "sourceColumn": "USERKEY",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "WORKLOAD",
+            "dataType": "string",
+            "sourceColumn": "WORKLOAD",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "USERID",
+            "dataType": "string",
+            "sourceColumn": "USERID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "CLIENTIP",
+            "dataType": "string",
+            "sourceColumn": "CLIENTIP",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "USERAGENT",
+            "dataType": "string",
+            "sourceColumn": "USERAGENT",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ACTIVITY",
+            "dataType": "string",
+            "sourceColumn": "ACTIVITY",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ITEMNAME",
+            "dataType": "string",
+            "sourceColumn": "ITEMNAME",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "WORKSPACENAME",
+            "dataType": "string",
+            "sourceColumn": "WORKSPACENAME",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "DASHBOARDNAME",
+            "dataType": "string",
+            "sourceColumn": "DASHBOARDNAME",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "DATASETNAME",
+            "dataType": "string",
+            "sourceColumn": "DATASETNAME",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "REPORTNAME",
+            "dataType": "string",
+            "sourceColumn": "REPORTNAME",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "WORKSPACEID",
+            "dataType": "string",
+            "sourceColumn": "WORKSPACEID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "OBJECTID",
+            "dataType": "string",
+            "sourceColumn": "OBJECTID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "DASHBOARDID",
+            "dataType": "string",
+            "sourceColumn": "DASHBOARDID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "DATASETID",
+            "dataType": "string",
+            "sourceColumn": "DATASETID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "REPORTID",
+            "dataType": "string",
+            "sourceColumn": "REPORTID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ORGAPPPERMISSION",
+            "dataType": "string",
+            "sourceColumn": "ORGAPPPERMISSION",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "PBI_AUDIT_LOG",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[PBI_AUDIT_LOG].* FROM [VAGAS_DW].[PBI_AUDIT_LOG] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[PBI_AUDIT_LOG].* FROM [VAGAS_DW].[PBI_AUDIT_LOG] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "PBI_AUDIT_LOG"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -70901,6 +71117,14 @@
         "modelPermission": "administrator",
         "members": [
           {
+            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
+            "memberId": "S-1-5-20"
+          },
+          {
+            "memberName": "Todos",
+            "memberId": "S-1-1-0"
+          },
+          {
             "memberName": "VAGASTEC\\sylvia.fernandez",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-6302"
           },
@@ -70919,14 +71143,6 @@
           {
             "memberName": "VAGASTEC\\mario",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7635"
-          },
-          {
-            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
-            "memberId": "S-1-5-20"
-          },
-          {
-            "memberName": "Todos",
-            "memberId": "S-1-1-0"
           }
         ]
       }
