@@ -22,7 +22,7 @@ CREATE TABLE #TMP_LOG_ERRO (ID_LOG_ERRO SMALLINT IDENTITY PRIMARY KEY,
 							ERRO VARCHAR(8000) )	
 
 -- Carregar tabela baseado na Planilha do Google Drive 
-SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 			' "' + '193' + '" "TMP_PLANILHA_RENTABILIDADE" "1"'
 
 INSERT INTO #TMP_LOG_ERRO (ERRO)

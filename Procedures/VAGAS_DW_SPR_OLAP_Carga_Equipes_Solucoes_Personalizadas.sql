@@ -30,7 +30,7 @@ SET NOCOUNT ON
 								ERRO VARCHAR(8000) )	
 
 	-- Carregar tabela baseado na Planilha do Google Drive 
-	SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+	SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 				' "' + '181' + '" "TMP_DEMANDAS_SOLUCOES_PERSONALIZADAS" "1"'
 
 	INSERT INTO #TMP_LOG_ERRO (ERRO)
@@ -60,7 +60,7 @@ SET NOCOUNT ON
 	BEGIN
 		
 		-- Carregar tabela baseado na Planilha do Google Drive
-		SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+		SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 				' "' + CONVERT(VARCHAR,@ID_CONTROLE_SPREADSHEET) + '" "TMP_DEMANDAS_SOLUCOES_PERSONALIZADAS_' + @SHEET_NAME + '" "1"'
 
 		INSERT INTO #TMP_LOG_ERRO (ERRO)

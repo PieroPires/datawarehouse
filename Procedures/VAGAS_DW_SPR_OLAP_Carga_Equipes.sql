@@ -24,7 +24,7 @@ CREATE TABLE #TMP_ARQUIVO (ID_ARQUIVO SMALLINT IDENTITY PRIMARY KEY,
 DECLARE @CMD VARCHAR(8000)
 
 -- Transformar Planilha do Google Drive em arquivo .csv
-SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py "1" "Z:\\Scripts\\TMP\\Google_SpreadSheets_CSV\\"'
+SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py "1" "Z:\\Scripts\\TMP\\Google_SpreadSheets_CSV\\"'
 EXEC MASTER.DBO.XP_CMDSHELL @CMD
 
 -- Buscar arquivos relacionados à planilha 

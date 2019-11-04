@@ -24,7 +24,7 @@ SET NOCOUNT ON
 DECLARE @CMD VARCHAR(8000)
 
 -- CHAMADA DO SCRIPT PYTHON QUE BUSCA OS ARQUIVOS DO GOOGLE SPREADSHEET E GERA EM FORMATO .CSV
-SET @CMD = 'C:\Python27\python.exe M:\Projetos\Scripts_Python\LerPlanilhaGoogleDrive.py ' + 
+SET @CMD = 'C:\Python3\python.exe M:\Projetos\Scripts_Python\LerPlanilhaGoogleDrive.py ' + 
 			@URL + ' ' + @ABA + ' ' + @PATH_OUT
 
 PRINT @CMD

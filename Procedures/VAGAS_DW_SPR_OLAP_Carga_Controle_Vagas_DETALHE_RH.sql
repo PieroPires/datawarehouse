@@ -22,7 +22,7 @@ SET NOCOUNT ON
 								ERRO VARCHAR(8000) )	
 
 	-- Carregar tabela baseado na Planilha do Google Drive 
-	SET @CMD = 'set PYTHONIOENCODING=cp437 & Z:\Scripts\Python27\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
+	SET @CMD = 'Z:\Scripts\Python3\python Z:\Scripts\Scripts_Python\Exportacao_Arquivos_Google_Drive\LerPlanilhaGoogleDrive.py ' + 
 				' "' + '209' + '" "TMP_CONTROLE_VAGAS_DETALHE_RH" "1"'
 
 	INSERT INTO #TMP_LOG_ERRO (ERRO)
