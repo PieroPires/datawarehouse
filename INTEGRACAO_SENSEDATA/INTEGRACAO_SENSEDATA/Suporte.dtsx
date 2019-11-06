@@ -12,8 +12,8 @@
   DTS:ObjectName="Suporte"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="54"
-  DTS:VersionGUID="{505CF287-2C12-4DA9-ADB4-A6E8D02F6731}">
+  DTS:VersionBuild="55"
+  DTS:VersionGUID="{F984FDE7-0851-4CFF-B055-01EC381A51FD}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -23,7 +23,7 @@
       DTS:DTSID="{66F5F6DB-4AEF-4BF3-B301-38677B4A7692}"
       DTS:ObjectName="CSV Suporte">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::CSV_DIR] +  "\\" + @[$Package::CSV_NAME]</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::CSV_DIR] + "\\" + REPLACE(SUBSTRING((DT_STR,30,1252)GETDATE(),1,10),"-","_") +  "\\" + @[$Package::CSV_NAME]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\suporte.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2019_11_06\suporte.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
