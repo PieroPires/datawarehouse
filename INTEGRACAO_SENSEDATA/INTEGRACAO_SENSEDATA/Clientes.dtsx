@@ -12,8 +12,8 @@
   DTS:ObjectName="Clientes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="77"
-  DTS:VersionGUID="{3F915F71-D75B-432D-8FF4-D27A4A2A404E}">
+  DTS:VersionBuild="82"
+  DTS:VersionGUID="{C8FDD3B8-502D-411D-9087-E7B83B1A247C}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2019_11_06\clientes.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2019_11_07\clientes.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -236,7 +236,7 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:FileUsageType="3"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2019_11_06" />
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2019_11_07" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -738,6 +738,27 @@ from SA1010</property>
               startId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB]" />
           </paths>
         </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Excluir arquivos com mais de 7 dias"
+      DTS:CreationName="Microsoft.ExecuteProcess"
+      DTS:Description="Execute Process Task"
+      DTS:DTSID="{35C9517B-2F8E-4434-BFE6-48B77931DCFC}"
+      DTS:ExecutableType="Microsoft.ExecuteProcess"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Excluir arquivos com mais de 7 dias"
+      DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2017; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="WorkingDirectory">@[$Project::CSV_DIR]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ExecuteProcessData
+          Executable="%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe"
+          Arguments="Get-ChildItem -Recurse | Where-Object {($_.LastWriteTime -lt (Get-Date).AddDays(-7))}| Remove-Item"
+          WorkingDirectory="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp"
+          WindowStyle="Hidden" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -1765,6 +1786,14 @@ from SA1010</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 5"
       DTS:To="Package\TUNCATE TABLE Clientes_DadosERP" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{F225ABF3-59C5-4254-A202-A9C8B7526B9D}"
+      DTS:From="Package\Excluir arquivos com mais de 7 dias"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 6"
+      DTS:To="Package\Criar diretório do dia" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -1779,32 +1808,36 @@ from SA1010</property>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="176,42"
+          Id="Package\Criar diretório do dia"
+          TopLeft="111,26" />
+        <NodeLayout
           Size="263,42"
           Id="Package\Criar tabelas temporárias - VAGAS_DW"
-          TopLeft="395.5,225.5" />
+          TopLeft="412.5,225.5" />
         <NodeLayout
           Size="171,42"
           Id="Package\ERP -&gt; VAGAS_DW"
-          TopLeft="441.5,122.5" />
+          TopLeft="458.5,122.5" />
         <NodeLayout
           Size="206,42"
           Id="Package\Excluir tabelas temporárias"
-          TopLeft="424,429.5" />
+          TopLeft="441,429.5" />
         <NodeLayout
           Size="141,42"
           Id="Package\Exportar CSV"
-          TopLeft="456.5,326.5" />
+          TopLeft="473.5,326.5" />
         <NodeLayout
           Size="252,42"
           Id="Package\TUNCATE TABLE Clientes_DadosERP"
-          TopLeft="401,21.5" />
+          TopLeft="418,21.5" />
         <NodeLayout
           Size="162,42"
           Id="Package\Upload S3 Bucket"
-          TopLeft="446,531.5" />
+          TopLeft="463,531.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="527,267.5">
+          TopLeft="544,267.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1826,7 +1859,7 @@ from SA1010</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="527,368.5">
+          TopLeft="544,368.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1848,7 +1881,7 @@ from SA1010</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="527,471.5">
+          TopLeft="544,471.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1870,7 +1903,7 @@ from SA1010</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="527,63.5">
+          TopLeft="544,63.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1892,7 +1925,7 @@ from SA1010</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="527,164.5">
+          TopLeft="544,164.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1912,24 +1945,46 @@ from SA1010</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="176,42"
-          Id="Package\Criar diretório do dia"
-          TopLeft="68,29" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="244,46.25">
+          TopLeft="287,44.75">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="157,0"
+              EndConnector="131,0"
               Start="0,0"
-              End="149.5,0">
+              End="123.5,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="149.5,0" />
+                    End="123.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="247,42"
+          Id="Package\Excluir arquivos com mais de 7 dias"
+          TopLeft="76,150" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 6]"
+          TopLeft="199.25,150">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,-82"
+              Start="0,0"
+              End="0,-74.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-74.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1945,7 +2000,7 @@ from SA1010</property>
     design-time-name="Package\ERP -&gt; VAGAS_DW">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="97,42"
           Id="Package\ERP -&gt; VAGAS_DW\ERP"
@@ -1973,7 +2028,9 @@ from SA1010</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -2004,7 +2061,7 @@ from SA1010</property>
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="98,42"
           Id="Package\Exportar CSV\CSV"
@@ -2032,7 +2089,9 @@ from SA1010</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
