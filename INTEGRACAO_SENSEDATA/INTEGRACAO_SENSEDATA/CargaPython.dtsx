@@ -12,8 +12,8 @@
   DTS:ObjectName="CargaPython"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="9"
-  DTS:VersionGUID="{38B16AF4-0AF9-4E73-B95B-8E0FDDDCDFC5}">
+  DTS:VersionBuild="10"
+  DTS:VersionGUID="{6E87236B-E956-47C7-9A5B-6B10445893E6}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:PackageParameters>
@@ -41,13 +41,13 @@
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:PropertyExpression
-        DTS:Name="Arguments">@[$Project::UPLOAD_S3_SCRIPT] + " " +  "\"" + @[$Project::CSV_DIR] + "\" \"" +  @[$Package::CSV_NAME] + "\""</DTS:PropertyExpression>
+        DTS:Name="Arguments">@[$Project::UPLOAD_S3_SCRIPT] + " " +  "\"" + @[$Project::CSV_DIR] + "\\" + REPLACE(SUBSTRING((DT_STR,30,1252)GETDATE(),1,10),"-","_") + "\" \"" +  @[$Package::CSV_NAME] + "\""</DTS:PropertyExpression>
       <DTS:PropertyExpression
         DTS:Name="Executable">@[$Project::PYTHON_EXE]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <ExecuteProcessData
           Executable="C:\Python27\python.exe"
-          Arguments="C:\Users\diego.gatto\Documents\integracao_sensedata\upload_s3_sensedata.py &quot;C:\Users\diego.gatto\Documents\integracao_sensedata\ftp&quot; &quot;teste-clientes.csv&quot;" />
+          Arguments="C:\Users\diego.gatto\Documents\integracao_sensedata\upload_s3_sensedata.py &quot;C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2019_11_07&quot; &quot;teste-clientes.csv&quot;" />
       </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
