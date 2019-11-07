@@ -58,18 +58,18 @@ OPTION (MAXRECURSION 8000);
 -- TRATAR DADOS DO IPCA
 SELECT CONVERT(SMALLDATETIME,
 	   RIGHT(mes_ano,4) + 
-	   CASE WHEN LEFT(mes_ano,3) = 'Jan' THEN '01'
-		    WHEN LEFT(mes_ano,3) = 'Fev' THEN '02'
-			WHEN LEFT(mes_ano,3) = 'Mar' THEN '03'
-			WHEN LEFT(mes_ano,3) = 'Abr' THEN '04'
-			WHEN LEFT(mes_ano,3) = 'Mai' THEN '05'
-			WHEN LEFT(mes_ano,3) = 'Jun' THEN '06'
-			WHEN LEFT(mes_ano,3) = 'Jul' THEN '07'
-			WHEN LEFT(mes_ano,3) = 'Ago' THEN '08'
-			WHEN LEFT(mes_ano,3) = 'Set' THEN '09'
-			WHEN LEFT(mes_ano,3) = 'Out' THEN '10'
-			WHEN LEFT(mes_ano,3) = 'Nov' THEN '11'
-			WHEN LEFT(mes_ano,3) = 'Dez' THEN '12'
+	   CASE WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Jan' THEN '01'
+		    WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Fev' THEN '02'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Mar' THEN '03'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Abr' THEN '04'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Mai' THEN '05'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Jun' THEN '06'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Jul' THEN '07'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Ago' THEN '08'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Set' THEN '09'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Out' THEN '10'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Nov' THEN '11'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Dez' THEN '12'
 		END +
 		'01') AS DATA,
 		CONVERT(FLOAT,REPLACE(REPLACE(indice_mes,',','.'),'- ','-')) / 100 AS INDICE_MES_IPCA,
@@ -87,18 +87,18 @@ INNER JOIN #TMP_INDICADORES_IPCA B ON B.DATA = A.DATA
 -- TRATAR DADOS DO IGP-M
 SELECT CONVERT(SMALLDATETIME,
 	   RIGHT(mes_ano,4) + 
-	   CASE WHEN LEFT(mes_ano,3) = 'Jan' THEN '01'
-		    WHEN LEFT(mes_ano,3) = 'Fev' THEN '02'
-			WHEN LEFT(mes_ano,3) = 'Mar' THEN '03'
-			WHEN LEFT(mes_ano,3) = 'Abr' THEN '04'
-			WHEN LEFT(mes_ano,3) = 'Mai' THEN '05'
-			WHEN LEFT(mes_ano,3) = 'Jun' THEN '06'
-			WHEN LEFT(mes_ano,3) = 'Jul' THEN '07'
-			WHEN LEFT(mes_ano,3) = 'Ago' THEN '08'
-			WHEN LEFT(mes_ano,3) = 'Set' THEN '09'
-			WHEN LEFT(mes_ano,3) = 'Out' THEN '10'
-			WHEN LEFT(mes_ano,3) = 'Nov' THEN '11'
-			WHEN LEFT(mes_ano,3) = 'Dez' THEN '12'
+	   CASE WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Jan' THEN '01'
+		    WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Fev' THEN '02'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Mar' THEN '03'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Abr' THEN '04'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Mai' THEN '05'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Jun' THEN '06'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Jul' THEN '07'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Ago' THEN '08'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Set' THEN '09'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Out' THEN '10'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Nov' THEN '11'
+			WHEN LEFT(REPLACE(REPLACE(REPLACE(mes_ano,CHAR(32),''),CHAR(9),''),CHAR(10),''),3) = 'Dez' THEN '12'
 		END +
 		'01') AS DATA,
 		CONVERT(FLOAT,REPLACE(REPLACE(REPLACE(REPLACE(indice_mes,',','.'),'- ','-'),'&nbsp;',''),' ','')) / 100 AS INDICE_MES_IGPM,
