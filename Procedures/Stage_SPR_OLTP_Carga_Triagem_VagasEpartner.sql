@@ -18,8 +18,8 @@ TRUNCATE TABLE [STAGE].[VAGAS_DW].[TMP_Triagem_VagasEpartner] ;
 
 DECLARE	@Max_Triagem INT = (SELECT MAX(Cod_triagem) FROM [VAGAS_DW].[VAGAS_DW].[Triagem_VagasEpartner]),
 		@Max_Triagem_Temp INT = (SELECT MAX(Cod_triagem) FROM [STAGE].[VAGAS_DW].[TMP_Triagem_VagasEpartner]),
-		@Min_Triagem_Dump INT = (SELECT MIN(Cod_debTri) FROM [hrh-dump].[dbo].[DebugTriagem]) ,
-		@Max_Triagem_Dump INT = (SELECT MAX(Cod_debTri) FROM [hrh-dump].[dbo].[DebugTriagem]) ,
+		@Min_Triagem_Dump INT = (SELECT MIN(Cod_debTri) FROM [SRV-SQLSERVER].[hrh-dump].[dbo].[DebugTriagem] WITH(NOLOCK)) ,
+		@Max_Triagem_Dump INT = (SELECT MAX(Cod_debTri) FROM [SRV-SQLSERVER].[hrh-dump].[dbo].[DebugTriagem] WITH(NOLOCK)) ,
 		@Min_Triagem_Data INT = (SELECT MIN(Cod_debTri) FROM [hrh-data].[dbo].[DebugTriagem]) ,
 		@Max_Triagem_Data INT = (SELECT MAX(Cod_debTri) FROM [hrh-data].[dbo].[DebugTriagem]) ;
 
@@ -44,9 +44,9 @@ BEGIN
 				END AS Versao_Triagem ,
 				C.IdContaCRM_cli AS IdConta_CRM ,
 				C.Cod_cli
-	FROM	[hrh-dump].[dbo].[DebugTriagem] AS A		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.CodUsu_debTri = B.Cod_func
-														INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
-														LEFT OUTER JOIN [hrh-data].[dbo].[Vagas] AS D ON A.CodVaga_debTri = D.Cod_vaga
+	FROM	[SRV-SQLSERVER].[hrh-dump].[dbo].[DebugTriagem] AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.CodUsu_debTri = B.Cod_func
+																					INNER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli
+																					LEFT OUTER JOIN [hrh-data].[dbo].[Vagas] AS D ON A.CodVaga_debTri = D.Cod_vaga
 	WHERE	A.Cod_debTri > ISNULL(@Max_Triagem, 0)
 			AND A.Cod_debTri > ISNULL(@Max_Triagem_Temp, 0)
 			AND A.Cod_debTri <= @Max_Triagem_Dump
