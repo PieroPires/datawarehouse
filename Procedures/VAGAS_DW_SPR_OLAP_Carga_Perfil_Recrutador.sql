@@ -15,22 +15,22 @@ AS
 SET NOCOUNT ON
 
 -- Remove os registros existentes na tabela temporária:
-DELETE FROM [VAGAS_DW].[Perfil_Recrutador]
-FROM [VAGAS_DW].[Perfil_Recrutador] AS A
+DELETE FROM [VAGAS_DW].[PERFIL_RECRUTADOR]
+FROM [VAGAS_DW].[PERFIL_RECRUTADOR] AS A
 WHERE EXISTS (SELECT	*
-			  FROM	[VAGAS_DW].[TMP_Perfil_Recrutador] AS A1
+			  FROM	[VAGAS_DW].[TMP_PERFIL_RECRUTADOR] AS A1
 			  WHERE	A.ID = A1.ID) ;
 
 
 -- Insere os registros na tabela OLAP:
-INSERT INTO [VAGAS_DW].[Perfil_Recrutador] (ID,Status_Assinatura,Plano,DtProx_Credito,Qtd_Credito_Contratado,Vigencia_contrato,Renovacao,DtUltAtualizacao_Perfil,Cod_cli)
+INSERT INTO [VAGAS_DW].[PERFIL_RECRUTADOR] (ID,STATUS_ASSINATURA,PLANO,DTPROX_CREDITO,QTD_CREDITO_CONTRATADO,VIGENCIA_CONTRATO,RENOVACAO,DTULTATUALIZACAO_PERFIL,COD_CLI)
 SELECT	A.ID ,
-		A.Status_Assinatura ,
-		A.Plano ,
-		A.DtProx_Credito ,
-		A.Qtd_Credito_Contratado ,
-		A.Vigencia_contrato ,
-		A.Renovacao ,
-		A.DtUltAtualizacao_Perfil ,
-		A.Cod_cli
-FROM	[VAGAS_DW].[TMP_Perfil_Recrutador] AS A ;
+		A.STATUS_ASSINATURA ,
+		A.PLANO ,
+		A.DTPROX_CREDITO ,
+		A.QTD_CREDITO_CONTRATADO ,
+		A.VIGENCIA_CONTRATO ,
+		A.RENOVACAO ,
+		A.DTULTATUALIZACAO_PERFIL ,
+		A.COD_CLI
+FROM	[VAGAS_DW].[TMP_PERFIL_RECRUTADOR] AS A ;
