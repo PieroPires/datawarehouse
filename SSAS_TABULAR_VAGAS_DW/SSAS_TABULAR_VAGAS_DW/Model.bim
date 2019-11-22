@@ -69017,53 +69017,25 @@
             "sourceProviderType": "Char"
           },
           {
-            "name": "CREATIONTIME",
+            "name": "CREATIONTIME_SOURCE",
             "dataType": "dateTime",
+            "isHidden": true,
             "sourceColumn": "CREATIONTIME",
             "formatString": "General Date",
             "sourceProviderType": "DBTimeStamp"
           },
           {
-            "name": "CREATIONTIMEUTC",
+            "name": "CREATIONTIMEUTC_SOURCE",
             "dataType": "dateTime",
+            "isHidden": true,
             "sourceColumn": "CREATIONTIMEUTC",
             "formatString": "General Date",
             "sourceProviderType": "146"
           },
           {
-            "name": "RECORDTYPE",
-            "dataType": "string",
-            "sourceColumn": "RECORDTYPE",
-            "sourceProviderType": "Char"
-          },
-          {
             "name": "OPERATION",
             "dataType": "string",
             "sourceColumn": "OPERATION",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "ORGANIZATIONID",
-            "dataType": "string",
-            "sourceColumn": "ORGANIZATIONID",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "USERTYPE",
-            "dataType": "string",
-            "sourceColumn": "USERTYPE",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "USERKEY",
-            "dataType": "string",
-            "sourceColumn": "USERKEY",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "WORKLOAD",
-            "dataType": "string",
-            "sourceColumn": "WORKLOAD",
             "sourceProviderType": "Char"
           },
           {
@@ -69121,40 +69093,12 @@
             "sourceProviderType": "Char"
           },
           {
-            "name": "WORKSPACEID",
-            "dataType": "string",
-            "sourceColumn": "WORKSPACEID",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "OBJECTID",
-            "dataType": "string",
-            "sourceColumn": "OBJECTID",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "DASHBOARDID",
-            "dataType": "string",
-            "sourceColumn": "DASHBOARDID",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "DATASETID",
-            "dataType": "string",
-            "sourceColumn": "DATASETID",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "REPORTID",
-            "dataType": "string",
-            "sourceColumn": "REPORTID",
-            "sourceProviderType": "Char"
-          },
-          {
-            "name": "ORGAPPPERMISSION",
-            "dataType": "string",
-            "sourceColumn": "ORGAPPPERMISSION",
-            "sourceProviderType": "Char"
+            "type": "calculated",
+            "name": "DATA_LOG",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEVALUE(PBI_AUDIT_LOG[CREATIONTIME_SOURCE])"
           }
         ],
         "partitions": [
@@ -69167,6 +69111,12 @@
             }
           }
         ],
+        "measures": [
+          {
+            "name": "QTD_LOG",
+            "expression": "COUNT(PBI_AUDIT_LOG[ID])"
+          }
+        ],
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
@@ -69175,6 +69125,254 @@
           {
             "name": "_TM_ExtProp_DbTableName",
             "value": "PBI_AUDIT_LOG"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "TRIAGEM_VAGAS_EPARTNER",
+        "columns": [
+          {
+            "name": "COD_TRIAGEM_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "COD_TRIAGEM",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_TRIAGEM_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_TRIAGEM",
+            "formatString": "General Date",
+            "sourceProviderType": "DBDate"
+          },
+          {
+            "name": "DURACAOSEGUNDOS_TRIAGEM",
+            "dataType": "int64",
+            "sourceColumn": "DURACAOSEGUNDOS_TRIAGEM",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "COD_VAGA",
+            "dataType": "int64",
+            "sourceColumn": "COD_VAGA",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "COD_FUNC",
+            "dataType": "int64",
+            "sourceColumn": "COD_FUNC",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "CONTEXTO_TRIAGEM",
+            "dataType": "string",
+            "sourceColumn": "CONTEXTO_TRIAGEM",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "VERSAO_TRIAGEM",
+            "dataType": "string",
+            "sourceColumn": "VERSAO_TRIAGEM",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "CONTA_ID",
+            "dataType": "string",
+            "sourceColumn": "CONTA_ID",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "COD_CLI",
+            "dataType": "int64",
+            "sourceColumn": "COD_CLI",
+            "sourceProviderType": "Integer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "TRIAGEM_VAGAS_EPARTNER",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "QTD_TRIAGEM",
+            "expression": " COUNT([COD_TRIAGEM_SOURCE])"
+          },
+          {
+            "name": "DURACAO_TRIAGEM",
+            "expression": "SUM([DURACAOSEGUNDOS_TRIAGEM])"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "TRIAGEM_VAGAS_EPARTNER"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "TRIAGEM_VAGAS_EPARTNER - DATA_TRIAGEM",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_TRIAGEM",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "TRIAGEM_VAGAS_EPARTNER - DATA_TRIAGEM",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "PBI_AUDIT_LOG - DATA_LOG",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_LOG",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "int64",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "PBI_AUDIT_LOG - DATA_LOG",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
           },
           {
             "name": "_TM_ExtProp_DbSchemaName",
@@ -70641,6 +70839,20 @@
         "fromColumn": "DATA_CRIACAO_NORMALIZADA",
         "toTable": "CHAMADOS FRESHDESK DATA DE CRIACAO",
         "toColumn": "DATA DE CRIAÇÃO"
+      },
+      {
+        "name": "ea641ba0-3b74-4951-972d-f4a98f2248de",
+        "fromTable": "TRIAGEM_VAGAS_EPARTNER",
+        "fromColumn": "DATA_TRIAGEM_SOURCE",
+        "toTable": "TRIAGEM_VAGAS_EPARTNER - DATA_TRIAGEM",
+        "toColumn": "DATA_TRIAGEM"
+      },
+      {
+        "name": "b37cd8cf-ae31-4415-b75c-ef5a46c50e8d",
+        "fromTable": "PBI_AUDIT_LOG",
+        "fromColumn": "DATA_LOG",
+        "toTable": "PBI_AUDIT_LOG - DATA_LOG",
+        "toColumn": "DATA_LOG"
       }
     ],
     "perspectives": [
