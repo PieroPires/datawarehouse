@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Perfil_Recrutador"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="78"
-  DTS:VersionGUID="{4DC7651C-02F7-454E-B695-A1D61685E71F}">
+  DTS:VersionBuild="83"
+  DTS:VersionGUID="{8837D646-D4B0-4023-9002-A90F71AB86F4}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -39,6 +39,16 @@
         DTS:DataType="8"
         xml:space="preserve"></DTS:VariableValue>
     </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F5217F2D-7BF9-415D-89CB-AE59B382A2F1}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastUpdateTransaction">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
   </DTS:Variables>
   <DTS:Executables>
     <DTS:Executable
@@ -55,18 +65,443 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_Perfil_Recrutador] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_Perfil_Recrutador] ;&#xA;TRUNCATE TABLE [VAGAS_DW].[TMP_CREDITOS_LANC_RECRUTADOR] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\McDuck --&gt; Perfil_Recrutador"
+      DTS:refId="Package\McDuck --&gt; Lançamentos MCDUCK"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DelayValidation="True"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{b183e6e4-8999-4ef9-bd96-3143fa080cbf}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="McDuck --&gt; Lançamentos MCDUCK"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[MCDUCK].[SqlCommand]">"SELECT	A.id AS ID, 
+        A.company_id AS COD_CLI, 
+        A.credit_quantity AS QTD_CREDITO, 
+        CAST(created_at AS DATE) AS DATA_LANCAMENTO, 
+        CAST(updated_at AS DATE) AS DATA_ATUALIZACAO, 
+        CASE
+            WHEN plan_model = 0	THEN 'Avulso'
+            WHEN plan_model = 1 THEN 'Mensal'
+            ELSE NULL
+        END AS TIPO_COMPRA
+FROM 	public.credit_transactions AS A
+WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" +  @[User::LastUpdateTransaction]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="CREDITOS_LANC_RECRUTADOR"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[TMP_CREDITOS_LANC_RECRUTADOR]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].Columns[id]"
+                      cachedDataType="i8"
+                      cachedName="id"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[ID]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[id]" />
+                    <inputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].Columns[cod_cli]"
+                      cachedDataType="i4"
+                      cachedName="cod_cli"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CLI]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[cod_cli]" />
+                    <inputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].Columns[qtd_credito]"
+                      cachedDataType="i4"
+                      cachedName="qtd_credito"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[QTD_CREDITO]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[qtd_credito]" />
+                    <inputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].Columns[data_lancamento]"
+                      cachedDataType="dbDate"
+                      cachedName="data_lancamento"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_LANCAMENTO]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[data_lancamento]" />
+                    <inputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].Columns[data_atualizacao]"
+                      cachedDataType="dbDate"
+                      cachedName="data_atualizacao"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_ATUALIZACAO]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[data_atualizacao]" />
+                    <inputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].Columns[tipo_compra]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="tipo_compra"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[TIPO_COMPRA]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[tipo_compra]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[ID]"
+                      dataType="i4"
+                      name="ID" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CLI]"
+                      dataType="i4"
+                      name="COD_CLI" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[QTD_CREDITO]"
+                      dataType="ui1"
+                      name="QTD_CREDITO" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_LANCAMENTO]"
+                      dataType="dbDate"
+                      name="DATA_LANCAMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_ATUALIZACAO]"
+                      dataType="dbDate"
+                      name="DATA_ATUALIZACAO" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB].ExternalColumns[TIPO_COMPRA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="TIPO_COMPRA" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="MCDUCK"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	A.id AS ID, 
+        A.company_id AS COD_CLI, 
+        A.credit_quantity AS QTD_CREDITO, 
+        CAST(created_at AS DATE) AS DATA_LANCAMENTO, 
+        CAST(updated_at AS DATE) AS DATA_ATUALIZACAO, 
+        CASE
+            WHEN plan_model = 0	THEN 'Avulso'
+            WHEN plan_model = 1 THEN 'Mensal'
+            ELSE NULL
+        END AS TIPO_COMPRA
+FROM 	public.credit_transactions AS A
+WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Connections[ODBCConnection]"
+                  connectionManagerID="Package.ConnectionManagers[PG_Mcduck]"
+                  connectionManagerRefId="Package.ConnectionManagers[PG_Mcduck]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      name="cod_cli" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[qtd_credito]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[qtd_credito]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[qtd_credito]"
+                      name="qtd_credito" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[data_lancamento]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[data_lancamento]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[data_lancamento]"
+                      name="data_lancamento" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[data_atualizacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[data_atualizacao]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[data_atualizacao]"
+                      name="data_atualizacao" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[tipo_compra]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[tipo_compra]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].Columns[tipo_compra]"
+                      name="tipo_compra" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      dataType="i8"
+                      name="id" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      dataType="i4"
+                      name="cod_cli" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[qtd_credito]"
+                      dataType="i4"
+                      name="qtd_credito" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[data_lancamento]"
+                      dataType="dbDate"
+                      name="data_lancamento" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[data_atualizacao]"
+                      dataType="dbDate"
+                      name="data_atualizacao" />
+                    <externalMetadataColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[tipo_compra]"
+                      codePage="1252"
+                      dataType="text"
+                      name="tipo_compra" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      name="cod_cli" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[qtd_credito]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[qtd_credito]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[qtd_credito]"
+                      name="qtd_credito" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[data_lancamento]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[data_lancamento]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[data_lancamento]"
+                      name="data_lancamento" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[data_atualizacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[data_atualizacao]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[data_atualizacao]"
+                      name="data_atualizacao" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[tipo_compra]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output].ExternalColumns[tipo_compra]"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[tipo_compra]"
+                      name="tipo_compra" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\McDuck --&gt; Lançamentos MCDUCK.Paths[ODBC Source Output]"
+              endId="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MCDUCK --&gt; Perfil_Recrutador"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
       DTS:Description="Tarefa Fluxo de Dados"
       DTS:DTSID="{72311FE6-5746-4009-B6C3-3ED7CE305EB1}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
-      DTS:ObjectName="McDuck --&gt; Perfil_Recrutador"
+      DTS:ObjectName="MCDUCK --&gt; Perfil_Recrutador"
       DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:Variables />
       <DTS:PropertyExpression
@@ -79,7 +514,7 @@
             ELSE NULL
 		END AS Status ,
         CASE
-        	WHEN A.plan_type = 1
+        	WHEN A.plan_type = 2
             	THEN 'Anual'
             WHEN A.plan_type = 0
             	THEN 'Mensal'
@@ -104,7 +539,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
           version="1">
           <components>
             <component
-              refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados"
+              refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados"
               componentClassID="Microsoft.DataConvert"
               contactInfo="Conversão de Dados;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;0"
               description="Conversão de Dados"
@@ -112,75 +547,75 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
               usesDispositions="true">
               <inputs>
                 <input
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]"
                   name="Entrada de Conversão de Dados">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[id]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[id]"
                       cachedDataType="i8"
                       cachedName="id"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[status]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[status]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="status"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[plano]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[plano]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="plano"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[dtprox_credito]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[dtprox_credito]"
                       cachedDataType="dbDate"
                       cachedName="dtprox_credito"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[qtd_credito_contratado]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[qtd_credito_contratado]"
                       cachedDataType="i4"
                       cachedName="qtd_credito_contratado"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[vigencia_contrato]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[vigencia_contrato]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="vigencia_contrato"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[renovacao]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[renovacao]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="renovacao"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[dtultatualizacao_perfil]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[dtultatualizacao_perfil]"
                       cachedDataType="dbDate"
                       cachedName="dtultatualizacao_perfil"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]" />
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[cod_cli]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[cod_cli]"
                       cachedDataType="i4"
                       cachedName="cod_cli"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]" />
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados]"
                   exclusionGroup="1"
                   name="Saída de Conversão de Dados"
-                  synchronousInputId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]">
+                  synchronousInputId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_id]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_id]"
                       dataType="i8"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_id]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_id]"
                       name="Convert_id"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -188,7 +623,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -196,13 +631,13 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_status]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_status]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       length="50"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_status]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_status]"
                       name="Convert_status"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -210,7 +645,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -218,13 +653,13 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_plano]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_plano]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       length="50"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_plano]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_plano]"
                       name="Convert_plano"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -232,7 +667,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -240,11 +675,11 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtprox_credito]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtprox_credito]"
                       dataType="dbDate"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtprox_credito]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtprox_credito]"
                       name="Convert_dtprox_credito"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -252,7 +687,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -260,11 +695,11 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_qtd_credito_contratado]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_qtd_credito_contratado]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_qtd_credito_contratado]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_qtd_credito_contratado]"
                       name="Convert_qtd_credito_contratado"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -272,7 +707,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -280,13 +715,13 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_vigencia_contrato]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_vigencia_contrato]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       length="50"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_vigencia_contrato]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_vigencia_contrato]"
                       name="Convert_vigencia_contrato"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -294,7 +729,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -302,13 +737,13 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_renovacao]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_renovacao]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       length="50"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_renovacao]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_renovacao]"
                       name="Convert_renovacao"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -316,7 +751,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -324,11 +759,11 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtultatualizacao_perfil]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtultatualizacao_perfil]"
                       dataType="dbDate"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtultatualizacao_perfil]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtultatualizacao_perfil]"
                       name="Convert_dtultatualizacao_perfil"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -336,7 +771,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -344,11 +779,11 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_cod_cli]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_cod_cli]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_cod_cli]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_cod_cli]"
                       name="Convert_cod_cli"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -356,7 +791,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                           containsID="true"
                           dataType="System.Int32"
                           description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
-                          name="SourceInputColumnLineageID">#{Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]}</property>
+                          name="SourceInputColumnLineageID">#{Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]}</property>
                         <property
                           dataType="System.Boolean"
                           description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
@@ -367,22 +802,22 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="Saída de Erro de Conversão de Dados"
-                  synchronousInputId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]">
+                  synchronousInputId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -391,7 +826,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
               </outputs>
             </component>
             <component
-              refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck"
+              refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck"
               componentClassID="Attunity.SSISODBCSrc"
               contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
               description="ODBC Source"
@@ -417,7 +852,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;" + 
             ELSE NULL
 		END AS Status ,
         CASE
-        	WHEN A.plan_type = 1
+        	WHEN A.plan_type = 2
             	THEN 'Anual'
             WHEN A.plan_type = 0
             	THEN 'Mensal'
@@ -488,7 +923,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
               </properties>
               <connections>
                 <connection
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Connections[ODBCConnection]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Connections[ODBCConnection]"
                   connectionManagerID="Package.ConnectionManagers[PG_Mcduck]"
                   connectionManagerRefId="Package.ConnectionManagers[PG_Mcduck]"
                   description="The ODBC runtime connection"
@@ -496,187 +931,187 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
               </connections>
               <outputs>
                 <output
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output]"
                   errorRowDisposition="FailComponent"
                   name="ODBC Source Output"
                   truncationRowDisposition="FailComponent">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]"
                       dataType="i8"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[id]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[id]"
                       name="id" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[status]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[status]"
                       name="status" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[plano]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[plano]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[plano]"
                       name="plano" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]"
                       dataType="dbDate"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtprox_credito]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtprox_credito]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtprox_credito]"
                       name="dtprox_credito" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[qtd_credito_contratado]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[qtd_credito_contratado]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[qtd_credito_contratado]"
                       name="qtd_credito_contratado" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[vigencia_contrato]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[vigencia_contrato]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[vigencia_contrato]"
                       name="vigencia_contrato" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[renovacao]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[renovacao]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[renovacao]"
                       name="renovacao" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]"
                       dataType="dbDate"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtultatualizacao_perfil]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtultatualizacao_perfil]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[dtultatualizacao_perfil]"
                       name="dtultatualizacao_perfil" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].Columns[cod_cli]"
                       name="cod_cli" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[id]"
                       dataType="i8"
                       name="id" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[status]"
                       codePage="1252"
                       dataType="text"
                       name="status" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[plano]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[plano]"
                       codePage="1252"
                       dataType="text"
                       name="plano" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtprox_credito]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtprox_credito]"
                       dataType="dbDate"
                       name="dtprox_credito" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[qtd_credito_contratado]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[qtd_credito_contratado]"
                       dataType="i4"
                       name="qtd_credito_contratado" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[vigencia_contrato]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[vigencia_contrato]"
                       codePage="1252"
                       dataType="text"
                       name="vigencia_contrato" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[renovacao]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[renovacao]"
                       codePage="1252"
                       dataType="text"
                       name="renovacao" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtultatualizacao_perfil]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtultatualizacao_perfil]"
                       dataType="dbDate"
                       name="dtultatualizacao_perfil" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
                       dataType="i4"
                       name="cod_cli" />
                   </externalMetadataColumns>
                 </output>
                 <output
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output]"
                   isErrorOut="true"
                   name="ODBC Source Error Output">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[id]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[id]"
                       dataType="i8"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[id]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[id]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[id]"
                       name="id" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[status]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[status]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[status]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[status]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[status]"
                       name="status" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[plano]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[plano]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[plano]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[plano]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[plano]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[plano]"
                       name="plano" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtprox_credito]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtprox_credito]"
                       dataType="dbDate"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtprox_credito]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtprox_credito]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtprox_credito]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtprox_credito]"
                       name="dtprox_credito" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[qtd_credito_contratado]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[qtd_credito_contratado]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[qtd_credito_contratado]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[qtd_credito_contratado]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[qtd_credito_contratado]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[qtd_credito_contratado]"
                       name="qtd_credito_contratado" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[vigencia_contrato]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[vigencia_contrato]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[vigencia_contrato]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[vigencia_contrato]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[vigencia_contrato]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[vigencia_contrato]"
                       name="vigencia_contrato" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[renovacao]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[renovacao]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[renovacao]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[renovacao]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[renovacao]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[renovacao]"
                       name="renovacao" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtultatualizacao_perfil]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtultatualizacao_perfil]"
                       dataType="dbDate"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtultatualizacao_perfil]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtultatualizacao_perfil]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[dtultatualizacao_perfil]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[dtultatualizacao_perfil]"
                       name="dtultatualizacao_perfil" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[cod_cli]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[cod_cli]"
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output].ExternalColumns[cod_cli]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[cod_cli]"
                       name="cod_cli" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -685,7 +1120,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
               </outputs>
             </component>
             <component
-              refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador"
+              refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
               description="Destino OLE DB"
@@ -742,7 +1177,7 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
               </properties>
               <connections>
                 <connection
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Connections[OleDbConnection]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Connections[OleDbConnection]"
                   connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
                   connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
                   description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
@@ -750,142 +1185,86 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
               </connections>
               <inputs>
                 <input
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB]"
                   errorOrTruncationOperation="Inserir"
                   errorRowDisposition="FailComponent"
                   hasSideEffects="true"
                   name="Entrada de Destino OLE DB">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_id]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_id]"
                       cachedDataType="i8"
                       cachedName="Convert_id"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[ID]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_id]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_status]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Convert_status"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Status_Assinatura]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_status]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_plano]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Convert_plano"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Plano]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_plano]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_dtprox_credito]"
-                      cachedDataType="dbDate"
-                      cachedName="Convert_dtprox_credito"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtProx_Credito]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtprox_credito]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_qtd_credito_contratado]"
-                      cachedDataType="i4"
-                      cachedName="Convert_qtd_credito_contratado"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Qtd_Credito_Contratado]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_qtd_credito_contratado]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_vigencia_contrato]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Convert_vigencia_contrato"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Vigencia_contrato]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_vigencia_contrato]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_renovacao]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Convert_renovacao"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Renovacao]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_renovacao]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_dtultatualizacao_perfil]"
-                      cachedDataType="dbDate"
-                      cachedName="Convert_dtultatualizacao_perfil"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtUltAtualizacao_Perfil]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_dtultatualizacao_perfil]" />
-                    <inputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].Columns[Convert_cod_cli]"
-                      cachedDataType="i4"
-                      cachedName="Convert_cod_cli"
-                      externalMetadataColumnId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_cli]"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_cod_cli]" />
+                      externalMetadataColumnId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[ID]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Convert_id]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[ID]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[ID]"
                       dataType="i4"
                       name="ID" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Status_Assinatura]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[STATUS_ASSINATURA]"
                       codePage="1252"
                       dataType="str"
                       length="7"
-                      name="Status_Assinatura" />
+                      name="STATUS_ASSINATURA" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Plano]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[PLANO]"
                       codePage="1252"
                       dataType="str"
                       length="6"
-                      name="Plano" />
+                      name="PLANO" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtProx_Credito]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[DTPROX_CREDITO]"
                       dataType="dbDate"
-                      name="DtProx_Credito" />
+                      name="DTPROX_CREDITO" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Qtd_Credito_Contratado]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[QTD_CREDITO_CONTRATADO]"
                       dataType="i2"
-                      name="Qtd_Credito_Contratado" />
+                      name="QTD_CREDITO_CONTRATADO" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Vigencia_contrato]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[VIGENCIA_CONTRATO]"
                       codePage="1252"
                       dataType="str"
                       length="30"
-                      name="Vigencia_contrato" />
+                      name="VIGENCIA_CONTRATO" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Renovacao]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[RENOVACAO]"
                       codePage="1252"
                       dataType="str"
                       length="10"
-                      name="Renovacao" />
+                      name="RENOVACAO" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[DtUltAtualizacao_Perfil]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[DTULTATUALIZACAO_PERFIL]"
                       dataType="dbDate"
-                      name="DtUltAtualizacao_Perfil" />
+                      name="DTULTATUALIZACAO_PERFIL" />
                     <externalMetadataColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[Cod_cli]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CLI]"
                       dataType="i4"
-                      name="Cod_cli" />
+                      name="COD_CLI" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB]"
+                  refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="Saída de Erro de Destino OLE DB"
-                  synchronousInputId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB]">
+                  synchronousInputId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      refId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      lineageId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -896,15 +1275,15 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
           </components>
           <paths>
             <path
-              refId="Package\McDuck --&gt; Perfil_Recrutador.Paths[ODBC Source Output]"
-              endId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]"
+              refId="Package\MCDUCK --&gt; Perfil_Recrutador.Paths[ODBC Source Output]"
+              endId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Inputs[Entrada de Conversão de Dados]"
               name="ODBC Source Output"
-              startId="Package\McDuck --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output]" />
+              startId="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck.Outputs[ODBC Source Output]" />
             <path
-              refId="Package\McDuck --&gt; Perfil_Recrutador.Paths[Saída de Conversão de Dados]"
-              endId="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB]"
+              refId="Package\MCDUCK --&gt; Perfil_Recrutador.Paths[Saída de Conversão de Dados]"
+              endId="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador.Inputs[Entrada de Destino OLE DB]"
               name="Saída de Conversão de Dados"
-              startId="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados]" />
+              startId="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados.Outputs[Saída de Conversão de Dados]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -927,13 +1306,35 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Última data de carga"
+      DTS:refId="Package\Última data de carga - LANC_RECRUTADOR"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa executar SQL"
+      DTS:DTSID="{cff245ce-05b3-48b1-b188-e8175a1208a6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Última data de carga - LANC_RECRUTADOR"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="SELECT&#x9;CONVERT(VARCHAR, ISNULL(DATEADD(DAY, -1, CONVERT(DATE, MAX(DATA_ATUALIZACAO))), '1900-01-01'), 112) AS LastUpdateTransaction&#xA;FROM&#x9;[VAGAS_DW].[CREDITOS_LANC_RECRUTADOR] AS A ;"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="LastUpdateTransaction"
+            SQLTask:DtsVariableName="User::LastUpdateTransaction" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Última data de carga - PERFIL"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Tarefa executar SQL"
       DTS:DTSID="{8EFD5D51-6BBF-4559-94EF-05A5BF820A7F}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Última data de carga"
+      DTS:ObjectName="Última data de carga - PERFIL"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
@@ -954,10 +1355,10 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
       DTS:refId="Package.PrecedenceConstraints[Restrição]"
       DTS:CreationName=""
       DTS:DTSID="{52F75BDB-AB0E-4E11-85B9-ABD59123C4A3}"
-      DTS:From="Package\Última data de carga"
+      DTS:From="Package\Última data de carga - PERFIL"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição"
-      DTS:To="Package\McDuck --&gt; Perfil_Recrutador" />
+      DTS:To="Package\MCDUCK --&gt; Perfil_Recrutador" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
       DTS:CreationName=""
@@ -965,15 +1366,31 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
       DTS:From="Package\Limpar tabela temporária"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição 1"
-      DTS:To="Package\Última data de carga" />
+      DTS:To="Package\Última data de carga - PERFIL" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Restrição 2]"
       DTS:CreationName=""
       DTS:DTSID="{13A2F7C5-CB00-4767-AD69-20374B004324}"
-      DTS:From="Package\McDuck --&gt; Perfil_Recrutador"
+      DTS:From="Package\MCDUCK --&gt; Perfil_Recrutador"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição 2"
       DTS:To="Package\SPR_OLAP_Carga_Perfil_Recrutador" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{7B28C5E1-044A-4CEC-82A5-015402E9F265}"
+      DTS:From="Package\SPR_OLAP_Carga_Perfil_Recrutador"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 3"
+      DTS:To="Package\Última data de carga - LANC_RECRUTADOR" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{AD9AC80C-5D4F-4921-B6DC-BB53B3AF2A53}"
+      DTS:From="Package\Última data de carga - LANC_RECRUTADOR"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 4"
+      DTS:To="Package\McDuck --&gt; Lançamentos MCDUCK" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
@@ -986,44 +1403,26 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="219,42"
-          Id="Package\McDuck --&gt; Perfil_Recrutador"
-          TopLeft="438,258" />
+          Size="198,42"
+          Id="Package\Limpar tabela temporária"
+          TopLeft="141,70" />
         <NodeLayout
-          Size="177,42"
-          Id="Package\Última data de carga"
-          TopLeft="460,159" />
+          Size="224,42"
+          Id="Package\MCDUCK --&gt; Perfil_Recrutador"
+          TopLeft="119,246" />
+        <NodeLayout
+          Size="248,42"
+          Id="Package\SPR_OLAP_Carga_Perfil_Recrutador"
+          TopLeft="109,331" />
+        <NodeLayout
+          Size="221,42"
+          Id="Package\Última data de carga - PERFIL"
+          TopLeft="122,163" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição]"
-          TopLeft="548,201">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,57"
-              Start="0,0"
-              End="0,49.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,49.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="207,42"
-          Id="Package\Limpar tabela temporária"
-          TopLeft="446,76" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição 1]"
-          TopLeft="549,118">
+          TopLeft="231.75,205">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1043,55 +1442,9 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="248,42"
-          Id="Package\SPR_OLAP_Carga_Perfil_Recrutador"
-          TopLeft="428,354" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição 2]"
-          TopLeft="549.75,300">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,54"
-              Start="0,0"
-              End="0,46.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,46.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </Package>
-  <TaskHost
-    design-time-name="Package\McDuck --&gt; Perfil_Recrutador">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="160,42"
-          Id="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador"
-          TopLeft="555,325" />
-        <NodeLayout
-          Size="116,42"
-          Id="Package\McDuck --&gt; Perfil_Recrutador\McDuck"
-          TopLeft="564,111" />
-        <NodeLayout
-          Size="176,42"
-          Id="Package\McDuck --&gt; Perfil_Recrutador\Conversão de Dados"
-          TopLeft="540,204" />
-        <EdgeLayout
-          Id="Package\McDuck --&gt; Perfil_Recrutador.Paths[ODBC Source Output]"
-          TopLeft="625,153">
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="236.25,112">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1112,7 +1465,101 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\McDuck --&gt; Perfil_Recrutador.Paths[Saída de Conversão de Dados]"
+          Id="Package.PrecedenceConstraints[Restrição 2]"
+          TopLeft="232,288">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="245,42"
+          Id="Package\McDuck --&gt; Lançamentos MCDUCK"
+          TopLeft="113,502" />
+        <NodeLayout
+          Size="285,42"
+          Id="Package\Última data de carga - LANC_RECRUTADOR"
+          TopLeft="87,422" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 3]"
+          TopLeft="231.25,373">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49"
+              Start="0,0"
+              End="0,41.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 4]"
+          TopLeft="232.5,464">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38"
+              Start="0,0"
+              End="0,30.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\MCDUCK --&gt; Perfil_Recrutador">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="160,42"
+          Id="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador"
+          TopLeft="555,325" />
+        <NodeLayout
+          Size="116,42"
+          Id="Package\MCDUCK --&gt; Perfil_Recrutador\McDuck"
+          TopLeft="564,111" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\MCDUCK --&gt; Perfil_Recrutador\Conversão de Dados"
+          TopLeft="540,204" />
+        <EdgeLayout
+          Id="Package\MCDUCK --&gt; Perfil_Recrutador.Paths[Saída de Conversão de Dados]"
           TopLeft="631.5,246">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -1133,11 +1580,84 @@ WHERE	CAST(REPLACE(CAST(A.updated_at AS CHAR(10)), '-', '') AS INTEGER) &gt;</pr
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MCDUCK --&gt; Perfil_Recrutador.Paths[ODBC Source Output]"
+          TopLeft="625,153">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51"
+              Start="0,0"
+              End="0,43.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\McDuck --&gt; Perfil_Recrutador\Perfil_Recrutador">
+    design-time-name="Package\MCDUCK --&gt; Perfil_Recrutador\Perfil_Recrutador">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\McDuck --&gt; Lançamentos MCDUCK">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="232,42"
+          Id="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR"
+          TopLeft="509,222" />
+        <NodeLayout
+          Size="121,42"
+          Id="Package\McDuck --&gt; Lançamentos MCDUCK\MCDUCK"
+          TopLeft="564,111" />
+        <EdgeLayout
+          Id="Package\McDuck --&gt; Lançamentos MCDUCK.Paths[ODBC Source Output]"
+          TopLeft="624.75,153">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,69"
+              Start="0,0"
+              End="0,61.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,61.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\McDuck --&gt; Lançamentos MCDUCK\CREDITOS_LANC_RECRUTADOR">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
