@@ -1,0 +1,29 @@
+-- =============================================
+-- Author: Fiama
+-- Create date: 26/11/2019
+-- Description: Script com a rotina OLAP do lançamento de créditos no MCDUCK.
+-- =============================================
+
+USE [VAGAS_DW] ;
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW' AND NAME = 'SPR_OLAP_Carga_Creditos_Lanc_Recrutador')
+DROP PROCEDURE [VAGAS_DW].[SPR_OLAP_Carga_Creditos_Lanc_Recrutador]
+GO
+
+CREATE PROCEDURE [VAGAS_DW].[SPR_OLAP_Carga_Creditos_Lanc_Recrutador]
+AS
+SET NOCOUNT ON
+
+DELETE FROM [VAGAS_DW].[CREDITOS_LANC_RECRUTADOR]
+WHERE EXISTS (SELECT *
+			  FROM	[VAGAS_DW].[TMP_CREDITOS_LANC_RECRUTADOR] AS A1
+			  WHERE	ID = A1.ID) ;
+
+INSERT [VAGAS_DW].[CREDITOS_LANC_RECRUTADOR](ID,COD_CLI,QTD_CREDITO,DATA_LANCAMENTO,DATA_ATUALIZACAO,TIPO_COMPRA)
+SELECT	A.ID,
+		A.COD_CLI,
+		A.QTD_CREDITO,
+		A.DATA_LANCAMENTO,
+		A.DATA_ATUALIZACAO,
+		A.TIPO_COMPRA
+FROM	[VAGAS_DW].[TMP_CREDITOS_LANC_RECRUTADOR] AS A ;
