@@ -13564,6 +13564,54 @@
             "name": "ANO",
             "dataType": "int64",
             "sourceColumn": "ANO"
+          },
+          {
+            "type": "calculated",
+            "name": "Quarter",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "ROUNDUP(MONTH('CASOS - DATA FECHAMENTO'[DATA FECHAMENTO])/3,0)"
+          },
+          {
+            "type": "calculated",
+            "name": "Year-Month",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "expression": "EOMONTH('CASOS - DATA FECHAMENTO'[DATA FECHAMENTO],0)"
+          },
+          {
+            "type": "calculated",
+            "name": "Year Quarter Number",
+            "dataType": "int64",
+            "isDataTypeInferred": false,
+            "isHidden": true,
+            "expression": "CONCATENATE('CASOS - DATA FECHAMENTO'[ANO],'CASOS - DATA FECHAMENTO'[Quarter])"
+          },
+          {
+            "type": "calculated",
+            "name": "Year-Quarter-Date",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "expression": [
+              "CALCULATE(",
+              "\tMAX('CASOS - DATA FECHAMENTO'[DATA FECHAMENTO]),",
+              "\tALLEXCEPT('CASOS - DATA FECHAMENTO','CASOS - DATA FECHAMENTO'[Year Quarter Number]))"
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Quarter-Year",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": [
+              "SWITCH(MONTH('CASOS - DATA FECHAMENTO'[Year-Quarter-Date]),",
+              "3,CONCATENATE(\"1ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])),",
+              "6,CONCATENATE(\"2ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])),",
+              "9,CONCATENATE(\"3ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])),",
+              "12,CONCATENATE(\"4ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])))"
+            ],
+            "sortByColumn": "Year-Quarter-Date"
           }
         ],
         "partitions": [
