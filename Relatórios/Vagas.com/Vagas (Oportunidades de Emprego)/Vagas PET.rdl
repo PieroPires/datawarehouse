@@ -35,8 +35,8 @@ SELECT  Subquery.[ID do Cliente no Manut],
 		Subquery.[Local da Vaga], 
 		Subquery.[Quantidade de candidaturas], 
 		Subquery.[Pageviews na vaga], 
-		ISNULL(B.QTD_EMAILS_RECOMENDACAO, 0) AS [E-mails recomendação], 
-		ISNULL(B.QTD_ALERTA_DISPARADO, 0) AS [Quantidade de alerta disparado], 
+		ISNULL(RECOMEND.QTD_EMAILS_RECOMENDACAO,0) AS [E-mails recomendação],
+		ISNULL(ALERTA.QTD_ENVIO, 0) AS [Quantidade de alerta disparado], 
 		Subquery.[Data abertura], 
 		Subquery.[Data expiração], 
 		B.DATA_VALIDACAO AS [Data validação], 
@@ -45,9 +45,9 @@ SELECT  Subquery.[ID do Cliente no Manut],
 		Subquery.[Quantidade Máx Candidaturas],
 		B.QTD_POSICOES ,
 		B.VAGA_ATIVA ,
-		B.VEICULACAO_SUSPENSA ,
-		B.ATINGIU_LIMITE_CANDIDATURAS ,
-		B.EXIBE_VAGAS_COM
+		Subquery.VEICULACAO_SUSPENSA ,
+		Subquery.ATINGIU_LIMITE_CANDIDATURAS ,
+		Subquery.EXIBE_VAGAS_COM
 FROM            OPENQUERY([SRV-SQLSERVER], 
         'SELECT	A.ident_cli AS [ID do Cliente no Manut] ,
 						B.Cargo_vaga AS [Cargo da vaga] ,
@@ -67,7 +67,12 @@ FROM            OPENQUERY([SRV-SQLSERVER],
 							AND F2.Cod_fic IS NULL 
 							AND F3.Cod_fic IS NULL 
 							AND F4.Cod_fic IS NULL, ''Não'', ''Sim'') AS [Contém Ficha] ,
-						B.QtdeMaxResp_vaga AS [Quantidade Máx Candidaturas]
+						B.QtdeMaxResp_vaga AS [Quantidade Máx Candidaturas] ,
+						CASE WHEN B.VeiculacaoSuspensa_vaga = 1 THEN ''SIM'' ELSE ''NÃO'' END AS VEICULACAO_SUSPENSA,
+						CASE WHEN B.QtdeRespCand_vaga &lt; B.QtdeMaxResp_vaga THEN ''NÃO''
+							 ELSE CASE WHEN B.Tipo_vaga = 2 THEN ''NÃO'' ELSE ''SIM'' END 
+							  END AS ATINGIU_LIMITE_CANDIDATURAS,
+						CASE WHEN B.DivulgacaoVAGAScombr_vaga = 1 THEN ''SIM'' ELSE ''NÃO'' END AS EXIBE_VAGAS_COM
 				FROM	[hrh-data].[dbo].[Clientes] AS A WITH(NOLOCK)		INNER JOIN [hrh-data].[dbo].[Vagas] AS B WITH(NOLOCK)
 																			ON A.Cod_cli = B.CodCliente_vaga
 																			LEFT OUTER JOIN [hrh-data].[dbo].[Fichas-DescrGeral] AS T1 WITH(NOLOCK)
@@ -100,6 +105,20 @@ FROM            OPENQUERY([SRV-SQLSERVER],
 						AND B.VagaModelo_vaga = 0
 						AND LEFT(B.Cargo_vaga,5) not in (''demo '', ''demo-'')
 						AND ISNULL(B.VagaComExt_vaga, 0) = 0') AS Subquery INNER JOIN	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS B ON Subquery.[Código da vaga] = B.VAGAS_Cod_Vaga
+																		   LEFT OUTER JOIN (SELECT	A1.CodVaga_czMonitVagaCand ,
+																									COUNT(*) AS QTD_EMAILS_RECOMENDACAO
+																							FROM	[Recomendacao-Data].[dbo].[cruzamentoMonitxVagaXCand] AS A1
+																							GROUP BY
+																									A1.CodVaga_czMonitVagaCand) AS RECOMEND
+																			ON RECOMEND.CodVaga_czMonitVagaCand = Subquery.[Código da vaga]
+																			LEFT OUTER JOIN (SELECT	A2.CodVaga_czMonitVagaCand AS COD_VAGA ,
+																									COUNT(*) AS QTD_ENVIO
+																							 FROM	[recomendacao-data].[dbo].[cruzamentoMonit] AS A1	
+																							 INNER JOIN [recomendacao-data].[dbo].[cruzamentoMonitxVagaXCand] AS A2
+																							 ON A1.Cod_CzMonit = A2.CodCzMonit_czMonitVagaCand
+																							 GROUP BY
+																									A2.CodVaga_czMonitVagaCand) AS ALERTA
+																			ON Subquery.[Código da vaga] = ALERTA.COD_VAGA
 WHERE	(Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[ID do Cliente no Manut]) + '%') 
 		 AND (Subquery.[Data abertura] &gt;= ISNULL(@Data_inicio, Subquery.[Data abertura])) 
 		 AND (Subquery.[Data abertura] &lt;= ISNULL(@Data_Fim, Subquery.[Data abertura]))</CommandText>
@@ -135,7 +154,7 @@ WHERE	(Subquery.[ID do Cliente no Manut] LIKE '%' + ISNULL(@IdVagas, Subquery.[I
         </Field>
         <Field Name="Quantidade_de_alerta_disparado">
           <DataField>Quantidade de alerta disparado</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="Data_abertura">
           <DataField>Data abertura</DataField>
