@@ -69239,6 +69239,52 @@
             "dataType": "int64",
             "sourceColumn": "COD_CLI",
             "sourceProviderType": "Integer"
+          },
+          {
+            "type": "calculated",
+            "name": "DURACAO_TRIAGEM_HORAS",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "FLOOR('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600,1)",
+            "formatString": "0"
+          },
+          {
+            "type": "calculated",
+            "name": "DURACAO_TRIAGEM_MINUTOS",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "FLOOR(('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600 - FLOOR('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600,1)) * 60,1)"
+          },
+          {
+            "type": "calculated",
+            "name": "DURACAO_TRIAGEM_SEGUNDOS",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "ROUND(('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/60 - FLOOR('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/60,1))*60,0)"
+          },
+          {
+            "type": "calculated",
+            "name": "DURACAO_TRIAGEM_SOURCE",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "'TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600"
+          },
+          {
+            "type": "calculated",
+            "name": "FAIXA_DURACAO_MINUT_TRIAGEM",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": [
+              "IF([DURACAOSEGUNDOS_TRIAGEM] <= 239, \"0 A 3\",",
+              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 239 && [DURACAOSEGUNDOS_TRIAGEM] <= 479, \"4 A 7\",",
+              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 479 && [DURACAOSEGUNDOS_TRIAGEM] <= 719,\"8 A 11\",",
+              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 719 && [DURACAOSEGUNDOS_TRIAGEM] <= 959,\"12 A 15\",",
+              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 959,\"Mais de 15\", \"Não classificado\")))))"
+            ]
           }
         ],
         "partitions": [
@@ -69246,9 +69292,15 @@
             "name": "TRIAGEM_VAGAS_EPARTNER",
             "dataView": "full",
             "source": {
-              "query": " SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] ",
+              "query": "SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]",
               "dataSource": "VAGAS_DW"
-            }
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+              }
+            ]
           }
         ],
         "measures": [
@@ -69258,13 +69310,13 @@
           },
           {
             "name": "DURACAO_TRIAGEM",
-            "expression": "SUM([DURACAOSEGUNDOS_TRIAGEM])"
+            "expression": "SUM([DURACAO_TRIAGEM_SOURCE])"
           }
         ],
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
-            "value": " SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] "
+            "value": "SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]"
           },
           {
             "name": "_TM_ExtProp_DbTableName",
@@ -69273,6 +69325,10 @@
           {
             "name": "_TM_ExtProp_DbSchemaName",
             "value": "VAGAS_DW"
+          },
+          {
+            "name": "QueryEditorSerialization",
+            "value": "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
           }
         ]
       },
@@ -69303,7 +69359,7 @@
           },
           {
             "name": "MES",
-            "dataType": "string",
+            "dataType": "int64",
             "sourceColumn": "MES",
             "sourceProviderType": "Char"
           },
@@ -69421,6 +69477,47 @@
           {
             "name": "_TM_ExtProp_DbTableName",
             "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "Clientes_VAGAS",
+        "columns": [
+          {
+            "name": "Cod_cli",
+            "dataType": "int64",
+            "sourceColumn": "Cod_cli",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "VersaoUsoTriagem_cli",
+            "dataType": "string",
+            "sourceColumn": "VersaoUsoTriagem_cli",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Clientes_VAGAS",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[Clientes_VAGAS].* FROM [VAGAS_DW].[Clientes_VAGAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[Clientes_VAGAS].* FROM [VAGAS_DW].[Clientes_VAGAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "Clientes_VAGAS"
           },
           {
             "name": "_TM_ExtProp_DbSchemaName",
@@ -70901,6 +70998,20 @@
         "fromColumn": "DATA_LOG",
         "toTable": "PBI_AUDIT_LOG - DATA_LOG",
         "toColumn": "DATA_LOG"
+      },
+      {
+        "name": "b8181e7d-5457-4e26-88e3-8efeaeced11e",
+        "fromTable": "TRIAGEM_VAGAS_EPARTNER",
+        "fromColumn": "COD_CLI",
+        "toTable": "CLIENTES",
+        "toColumn": "COD_CLI"
+      },
+      {
+        "name": "d64850d5-bb0a-42d8-a246-e5b30fa4a70b",
+        "fromTable": "TRIAGEM_VAGAS_EPARTNER",
+        "fromColumn": "COD_CLI",
+        "toTable": "Clientes_VAGAS",
+        "toColumn": "Cod_cli"
       }
     ],
     "perspectives": [
