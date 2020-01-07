@@ -64,7 +64,9 @@
 				THEN 'Com acesso --&gt; Funcionário pode fazer triagem no BCE e BCC'
 		END AS TRIAGEM_CONTEXTO ,
 		C.UF ,
-		C.CIDADE
+		C.CIDADE ,
+		A.Cod_func AS COD_FUNC ,
+		B.Cod_cli AS COD_CLI
 FROM	[hrh-data].[dbo].[Funcionarios] AS A	INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.CodCli_func = B.Cod_cli
 												INNER JOIN [VAGAS_DW].[VAGAS_DW].[CLIENTES] AS C ON A.CodCli_func = C.COD_CLI
 WHERE	A.Removido_func = 0
@@ -142,6 +144,14 @@ ORDER BY
           <DataField>CIDADE</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="COD_FUNC">
+          <DataField>COD_FUNC</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="COD_CLI">
+          <DataField>COD_CLI</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="DATA_INICIO">
@@ -177,51 +187,57 @@ ORDER BY
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.58333in</Width>
+                  <Width>1.05208in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.70833in</Width>
+                  <Width>1.0625in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.89583in</Width>
+                  <Width>0.89583in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.02083in</Width>
+                  <Width>0.66666in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.6875in</Width>
+                  <Width>0.95833in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.58333in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.85417in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.78125in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.91667in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.92708in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.66667in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.80208in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.32292in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.83333in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.88542in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.8125in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.23958in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>3.67708in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.44792in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>2.55208in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.22in</Height>
+                  <Height>0.53583in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -232,7 +248,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Nome</Value>
+                                  <Value>NOME</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -272,7 +288,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>E-mail</Value>
+                                  <Value>EMAIL</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -312,7 +328,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data cadastro usuário</Value>
+                                  <Value>DATA CADASTRO</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -352,7 +368,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Usuário treinou</Value>
+                                  <Value>TREINOU</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -392,7 +408,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data treinamento usuário</Value>
+                                  <Value>DATA TREINAMENTO</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -432,7 +448,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Usuário ADMIN</Value>
+                                  <Value>ADMIN</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -472,7 +488,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Nome conta</Value>
+                                  <Value>CONTA</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -512,7 +528,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Segmento SC</Value>
+                                  <Value>SEGMENTO</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -552,7 +568,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Total de casos (Mês anterior)</Value>
+                                  <Value>CASOS (MÊS PASSADO)</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -595,7 +611,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Criar/Editar VAGA</Value>
+                                  <Value>PERMISSÃO DE CRIAR E EDITAR A VAGA</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -635,7 +651,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Triagem</Value>
+                                  <Value>PERMISSÃO TRIAGEM</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -675,7 +691,7 @@ ORDER BY
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Triagem contexto</Value>
+                                  <Value>PERMISSÃO TRIAGEM POR CONTEXTO</Value>
                                   <Style>
                                     <FontFamily>Trebuchet MS</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -767,6 +783,84 @@ ORDER BY
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox17">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>COD_FUNC</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox17</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <BackgroundColor>#006eb6</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox14">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>COD CLI</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox14</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1316,12 +1410,88 @@ ORDER BY
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="COD_FUNC">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!COD_FUNC.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>COD_FUNC</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="COD_CLI">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!COD_CLI.Value</Value>
+                                  <Style>
+                                    <FontFamily>Trebuchet MS</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>COD_CLI</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
               </TablixRows>
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -1362,15 +1532,15 @@ ORDER BY
             <PageBreak>
               <BreakLocation>End</BreakLocation>
             </PageBreak>
-            <Height>0.43in</Height>
-            <Width>21.5104in</Width>
+            <Height>0.74583in</Height>
+            <Width>13.3229in</Width>
             <Style />
           </Tablix>
         </ReportItems>
-        <Height>0.43in</Height>
+        <Height>0.74583in</Height>
         <Style />
       </Body>
-      <Width>21.5104in</Width>
+      <Width>13.3229in</Width>
       <Page>
         <LeftMargin>1in</LeftMargin>
         <RightMargin>1in</RightMargin>
