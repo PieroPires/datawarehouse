@@ -13568,54 +13568,6 @@
             "name": "ANO",
             "dataType": "int64",
             "sourceColumn": "ANO"
-          },
-          {
-            "type": "calculated",
-            "name": "Quarter",
-            "dataType": "double",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": "ROUNDUP(MONTH('CASOS - DATA FECHAMENTO'[DATA FECHAMENTO])/3,0)"
-          },
-          {
-            "type": "calculated",
-            "name": "Year-Month",
-            "dataType": "dateTime",
-            "isDataTypeInferred": true,
-            "expression": "EOMONTH('CASOS - DATA FECHAMENTO'[DATA FECHAMENTO],0)"
-          },
-          {
-            "type": "calculated",
-            "name": "Year Quarter Number",
-            "dataType": "int64",
-            "isDataTypeInferred": false,
-            "isHidden": true,
-            "expression": "CONCATENATE('CASOS - DATA FECHAMENTO'[ANO],'CASOS - DATA FECHAMENTO'[Quarter])"
-          },
-          {
-            "type": "calculated",
-            "name": "Year-Quarter-Date",
-            "dataType": "dateTime",
-            "isDataTypeInferred": true,
-            "expression": [
-              "CALCULATE(",
-              "\tMAX('CASOS - DATA FECHAMENTO'[DATA FECHAMENTO]),",
-              "\tALLEXCEPT('CASOS - DATA FECHAMENTO','CASOS - DATA FECHAMENTO'[Year Quarter Number]))"
-            ]
-          },
-          {
-            "type": "calculated",
-            "name": "Quarter-Year",
-            "dataType": "string",
-            "isDataTypeInferred": true,
-            "expression": [
-              "SWITCH(MONTH('CASOS - DATA FECHAMENTO'[Year-Quarter-Date]),",
-              "3,CONCATENATE(\"1ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])),",
-              "6,CONCATENATE(\"2ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])),",
-              "9,CONCATENATE(\"3ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])),",
-              "12,CONCATENATE(\"4ª - Trim\",YEAR('CASOS - DATA FECHAMENTO'[Year-Quarter-Date])))"
-            ],
-            "sortByColumn": "Year-Quarter-Date"
           }
         ],
         "partitions": [
@@ -55104,17 +55056,12 @@
             "sourceProviderType": "SmallInt"
           },
           {
-            "name": "DATA EXTRACAO",
+            "name": "DATA_EXTRACAO_SOURCE",
             "dataType": "dateTime",
+            "isHidden": true,
             "sourceColumn": "DATA_EXTRACAO",
-            "formatString": "dd/MM/yyyy",
-            "sourceProviderType": "DBTimeStamp",
-            "annotations": [
-              {
-                "name": "Format",
-                "value": "<Format Format=\"DateTimeCustom\"><DateTimes><DateTime LCID=\"1046\" Group=\"ShortDate\" FormatString=\"dd/MM/yyyy\" /></DateTimes></Format>"
-              }
-            ]
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
           }
         ],
         "partitions": [
@@ -69532,52 +69479,6 @@
             "dataType": "int64",
             "sourceColumn": "COD_CLI",
             "sourceProviderType": "Integer"
-          },
-          {
-            "type": "calculated",
-            "name": "DURACAO_TRIAGEM_HORAS",
-            "dataType": "int64",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": "FLOOR('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600,1)",
-            "formatString": "0"
-          },
-          {
-            "type": "calculated",
-            "name": "DURACAO_TRIAGEM_MINUTOS",
-            "dataType": "int64",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": "FLOOR(('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600 - FLOOR('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600,1)) * 60,1)"
-          },
-          {
-            "type": "calculated",
-            "name": "DURACAO_TRIAGEM_SEGUNDOS",
-            "dataType": "double",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": "ROUND(('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/60 - FLOOR('TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/60,1))*60,0)"
-          },
-          {
-            "type": "calculated",
-            "name": "DURACAO_TRIAGEM_SOURCE",
-            "dataType": "double",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": "'TRIAGEM_VAGAS_EPARTNER'[DURACAOSEGUNDOS_TRIAGEM]/3600"
-          },
-          {
-            "type": "calculated",
-            "name": "FAIXA_DURACAO_MINUT_TRIAGEM",
-            "dataType": "string",
-            "isDataTypeInferred": true,
-            "expression": [
-              "IF([DURACAOSEGUNDOS_TRIAGEM] <= 239, \"0 A 3\",",
-              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 239 && [DURACAOSEGUNDOS_TRIAGEM] <= 479, \"4 A 7\",",
-              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 479 && [DURACAOSEGUNDOS_TRIAGEM] <= 719,\"8 A 11\",",
-              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 719 && [DURACAOSEGUNDOS_TRIAGEM] <= 959,\"12 A 15\",",
-              "\tIF([DURACAOSEGUNDOS_TRIAGEM] > 959,\"Mais de 15\", \"Não classificado\")))))"
-            ]
           }
         ],
         "partitions": [
@@ -69585,15 +69486,9 @@
             "name": "TRIAGEM_VAGAS_EPARTNER",
             "dataView": "full",
             "source": {
-              "query": "SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]",
+              "query": " SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] ",
               "dataSource": "VAGAS_DW"
-            },
-            "annotations": [
-              {
-                "name": "QueryEditorSerialization",
-                "value": "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
-              }
-            ]
+            }
           }
         ],
         "measures": [
@@ -69603,13 +69498,13 @@
           },
           {
             "name": "DURACAO_TRIAGEM",
-            "expression": "SUM([DURACAO_TRIAGEM_SOURCE])"
+            "expression": "SUM([DURACAOSEGUNDOS_TRIAGEM])"
           }
         ],
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
-            "value": "SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]"
+            "value": " SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] "
           },
           {
             "name": "_TM_ExtProp_DbTableName",
@@ -69618,10 +69513,6 @@
           {
             "name": "_TM_ExtProp_DbSchemaName",
             "value": "VAGAS_DW"
-          },
-          {
-            "name": "QueryEditorSerialization",
-            "value": "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER].* FROM [VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
           }
         ]
       },
@@ -69652,7 +69543,7 @@
           },
           {
             "name": "MES",
-            "dataType": "int64",
+            "dataType": "string",
             "sourceColumn": "MES",
             "sourceProviderType": "Char"
           },
@@ -69778,43 +69669,413 @@
         ]
       },
       {
-        "name": "Clientes_VAGAS",
+        "name": "EXTRACOES_RELATORIOS_VEP - DATA EXTRACAO",
+        "dataCategory": "Time",
         "columns": [
           {
-            "name": "Cod_cli",
-            "dataType": "int64",
-            "sourceColumn": "Cod_cli",
-            "sourceProviderType": "Integer"
+            "name": "DATA",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
           },
           {
-            "name": "VersaoUsoTriagem_cli",
+            "name": "NOMEMES",
             "dataType": "string",
-            "sourceColumn": "VersaoUsoTriagem_cli",
+            "sourceColumn": "NOMEMES",
             "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA"
           }
         ],
         "partitions": [
           {
-            "name": "Clientes_VAGAS",
+            "name": "DATAS",
             "dataView": "full",
             "source": {
-              "query": " SELECT [VAGAS_DW].[Clientes_VAGAS].* FROM [VAGAS_DW].[Clientes_VAGAS] ",
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
               "dataSource": "VAGAS_DW"
-            }
+            },
+            "annotations": [
+              {
+                "name": "TableWidgetSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"TableWidgetSerialization\"><AnnotationContent><![CDATA[<?xml version=\"1.0\"?>",
+                  "<TableWidgetGridSerialization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">",
+                  "  <ColumnSuggestedType />",
+                  "  <ColumnFormat />",
+                  "  <ColumnAccuracy />",
+                  "  <ColumnCurrencySymbol />",
+                  "  <ColumnPositivePattern />",
+                  "  <ColumnNegativePattern />",
+                  "  <ColumnWidths>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>75</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAALTKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>93</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DIA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>48</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>MES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>50</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOMEMES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>79</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>ANO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>52</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEMANA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>71</int>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnWidths>",
+                  "  <ColumnDisplayIndex>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>0</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAALTKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>1</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DIA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>2</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>MES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>3</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOMEMES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>4</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>ANO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>5</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEMANA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>6</int>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnDisplayIndex>",
+                  "  <ColumnFrozen />",
+                  "  <ColumnChecked>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DATAKEY</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>DIA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>MES</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>SEMANA</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnChecked>",
+                  "  <ColumnFilter />",
+                  "  <SelectionFilter />",
+                  "  <FilterParameters />",
+                  "  <IsSortDescending>false</IsSortDescending>",
+                  "</TableWidgetGridSerialization>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
           }
         ],
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
-            "value": " SELECT [VAGAS_DW].[Clientes_VAGAS].* FROM [VAGAS_DW].[Clientes_VAGAS] "
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
           },
           {
             "name": "_TM_ExtProp_DbTableName",
-            "value": "Clientes_VAGAS"
+            "value": "DATAS"
           },
           {
             "name": "_TM_ExtProp_DbSchemaName",
             "value": "VAGAS_DW"
+          },
+          {
+            "name": "TableWidgetSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"TableWidgetSerialization\"><AnnotationContent><![CDATA[<?xml version=\"1.0\"?>",
+              "<TableWidgetGridSerialization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">",
+              "  <ColumnSuggestedType />",
+              "  <ColumnFormat />",
+              "  <ColumnAccuracy />",
+              "  <ColumnCurrencySymbol />",
+              "  <ColumnPositivePattern />",
+              "  <ColumnNegativePattern />",
+              "  <ColumnWidths>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>75</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAALTKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>93</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DIA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>48</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>MES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>50</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOMEMES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>79</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>ANO</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>52</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEMANA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>71</int>",
+              "      </value>",
+              "    </item>",
+              "  </ColumnWidths>",
+              "  <ColumnDisplayIndex>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>0</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAALTKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>1</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DIA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>2</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>MES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>3</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOMEMES</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>4</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>ANO</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>5</int>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEMANA</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>6</int>",
+              "      </value>",
+              "    </item>",
+              "  </ColumnDisplayIndex>",
+              "  <ColumnFrozen />",
+              "  <ColumnChecked>",
+              "    <item>",
+              "      <key>",
+              "        <string>DATAKEY</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>DIA</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>MES</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>SEMANA</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
+              "      </value>",
+              "    </item>",
+              "  </ColumnChecked>",
+              "  <ColumnFilter />",
+              "  <SelectionFilter />",
+              "  <FilterParameters />",
+              "  <IsSortDescending>false</IsSortDescending>",
+              "</TableWidgetGridSerialization>]]></AnnotationContent></Gemini>"
+            ]
           }
         ]
       }
@@ -70884,6 +71145,14 @@
         "toColumn": "DATA_PREENCHIMENTO"
       },
       {
+        "name": "545d80f5-a49f-482f-81cb-e87d859e3f52",
+        "fromTable": "REQUISICOES_VAGAS",
+        "fromColumn": "COD_VAGA",
+        "toTable": "VAGAS",
+        "toColumn": "COD_VAGA",
+        "crossFilteringBehavior": "bothDirections"
+      },
+      {
         "name": "2f97b35e-fa23-4f52-a2b3-a0988e20718c",
         "fromTable": "TRIAGENS_VAGAS",
         "fromColumn": "DATA_TRIAGEM_SOURCE",
@@ -70950,7 +71219,7 @@
       {
         "name": "f5e55da1-19bb-4259-837d-deee49ed0455",
         "fromTable": "EXTRACOES_RELATORIOS_VEP",
-        "fromColumn": "DATA EXTRACAO",
+        "fromColumn": "DATA_EXTRACAO_SOURCE",
         "toTable": "ER_VEP - DATA_EXTRACAO",
         "toColumn": "DATA_EXTRACAO"
       },
@@ -71270,26 +71539,26 @@
         "toColumn": "DATA_LOG"
       },
       {
-        "name": "a8f17eba-85e2-49b3-a9de-bef775f23e60",
-        "fromTable": "REQUISICOES_VAGAS",
-        "fromColumn": "COD_VAGA",
-        "toTable": "VAGAS",
-        "toColumn": "COD_VAGA"
-      },
-      {
-        "name": "2616402d-97d8-44d0-9dbf-158c9dc2fdf8",
+        "name": "92d87ade-efd3-4ef2-8027-41a035c45d7a",
         "fromTable": "TRIAGENS_VAGAS",
         "fromColumn": "COD_VAGA",
         "toTable": "VAGAS",
         "toColumn": "COD_VAGA"
       },
       {
-        "name": "c3cd34e2-d168-4c23-aabf-711caf8de5f4",
+        "name": "585e062b-ec7e-4edb-a934-adf5f5204604",
         "fromTable": "VAGAS",
         "fromColumn": "COD_CLI",
         "toTable": "CLIENTES",
         "toColumn": "COD_CLI",
         "crossFilteringBehavior": "bothDirections"
+      },
+      {
+        "name": "c3181519-b17a-4eab-bf94-e72e72c44ac8",
+        "fromTable": "EXTRACOES_RELATORIOS_VEP",
+        "fromColumn": "DATA_EXTRACAO_SOURCE",
+        "toTable": "EXTRACOES_RELATORIOS_VEP - DATA EXTRACAO",
+        "toColumn": "DATA"
       }
     ],
     "perspectives": [
