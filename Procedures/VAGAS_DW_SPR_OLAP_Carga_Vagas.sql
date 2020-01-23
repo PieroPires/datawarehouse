@@ -348,7 +348,8 @@ WHERE	 (A.VAGAS_COD_VAGA = 853804
 	-- Código máximo para ser processado, evitando de pegar um processamento em andamento bem como um código maior do que um em andamento
 	DECLARE	@COD_MAX_CRUZAMENTO INT ;
 	SET	@COD_MAX_CRUZAMENTO = ( SELECT MIN(Cod_CzMonit) FROM [Recomendacao-Data].[dbo].[cruzamentoMonit] 
-								WHERE DataFim_czMonit IS NULL AND Cod_CzMonit > @COD_ULT_CRUZAMENTO ) ;								
+								WHERE Cod_CzMonit NOT IN (8021,8022)
+									AND DataFim_czMonit IS NULL AND Cod_CzMonit > @COD_ULT_CRUZAMENTO  ) ;								
 
 	SELECT	CodCzMonit_czMonitVagaCand ,
 			CodVaga_czMonitVagaCand
