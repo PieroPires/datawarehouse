@@ -64,3 +64,11 @@ WHERE	A.DATA_CONCLUSAO IS NOT NULL ;
 UPDATE	[VAGAS_DW].[VAGAS_DW].[LEADS]
 SET		CONTA = REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(ISNULL(A.CONTA, ''))), CHAR(9), ''), CHAR(10), ''), CHAR(10), '')
 FROM	[VAGAS_DW].[LEADS] AS A ;
+
+-------------------------------------------------------------------------
+-- Marcação se foi enviado e-mail de auto cadastro:
+-------------------------------------------------------------------------
+UPDATE VAGAS_DW.LEADS
+SET [Enviado E-mail de Auto Cadastro] = 'Sim'
+FROM VAGAS_DW.LEADS AS A
+	JOIN VAGAS_DW.LEADS_AUTO_CADASTRO AS B ON A.ID_LEAD = B.LEAD_ID;
