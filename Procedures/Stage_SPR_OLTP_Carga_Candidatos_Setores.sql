@@ -1,5 +1,3 @@
--- select * from vagas_dw.TMP_CANDIDATOS
--- EXEC VAGAS_DW.SPR_OLTP_Carga_Candidatos_Setores '19010101'
 USE STAGE
 GO
 
@@ -12,6 +10,12 @@ GO
 -- Create date: 29/09/2015
 -- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
 -- =============================================
+
+-- =============================================
+-- Alterações
+-- 05/02/2020 - Diego Gatto - Ajustado para utilizar as tabelas TMP na base de dados stage e não vagas_dw
+-- =============================================
+
 CREATE PROCEDURE VAGAS_DW.SPR_OLTP_Carga_Candidatos_Setores 
 @DT_ATUALIZACAO_INICIO SMALLDATETIME ,
 @DT_ATUALIZACAO_FIM SMALLDATETIME = NULL,
@@ -37,7 +41,7 @@ BEGIN
 	SELECT A.CODCAND_CARGO AS COD_CAND, 
    		   B.DESCR_SETOR AS SETOR, 
 		   C.DESCR_HIERARQUIA AS HIERARQUIA 
-	  FROM [HRH-DATA].DBO.[CandidatoxCargos] A
+	 FROM [HRH-DATA].DBO.[CandidatoxCargos] A
 	 INNER JOIN [HRH-DATA].DBO.[Cad_setores] B ON B.COD_SETOR = A.CODSETOR_CARGO
 	 INNER JOIN [HRH-DATA].DBO.Cad_hierarquias C ON C.COD_HIERARQUIA = A.CODHIERARQUIA_CARGO
 	 WHERE EXISTS ( SELECT * FROM VAGAS_DW.TMP_CANDIDATOS

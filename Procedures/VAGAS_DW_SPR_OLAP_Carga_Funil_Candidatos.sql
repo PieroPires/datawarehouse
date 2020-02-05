@@ -1,4 +1,3 @@
--- EXEC VAGAS_DW.SPR_OLAP_Carga_Funil_Candidatos
 USE VAGAS_DW
 GO
 
@@ -10,6 +9,11 @@ GO
 -- Author: Fiama
 -- Create date: 31/01/2017
 -- Description: Procedure para alimentação do DW
+-- =============================================
+
+-- =============================================
+-- Alterações
+-- 05/02/2020 - Diego Gatto - Ajustado para utilizar as tabelas TMP na base de dados stage e não vagas_dw
 -- =============================================
 
 
@@ -33,7 +37,7 @@ SELECT	@DATA_REFERENCIA AS DATA_REFERENCIA ,
 		CASE WHEN A.CURRICULO_NOVO = 1 THEN 'SIM' ELSE 'NÃO' END AS CURRICULO_NOVO ,
 		'BCC' AS TIPO
 INTO	#FUNIL_CANDIDATOS
-FROM	[VAGAS_DW].[VAGAS_DW].[TMP_FUNIL_CANDIDATOS] AS A
+FROM	[STAGE].[VAGAS_DW].[TMP_FUNIL_CANDIDATOS] AS A
 GROUP BY A.TIPO_CADASTRO ,
 		A.DATA_CADASTRO ,
 		CASE WHEN A.CURRICULO_NOVO = 1 THEN 'SIM' ELSE 'NÃO' END
@@ -44,7 +48,7 @@ SELECT	@DATA_REFERENCIA AS DATA_REFERENCIA ,
 		COUNT(*) AS QTD_CANDIDATOS ,
 		CASE WHEN A.CURRICULO_NOVO = 1 THEN 'SIM' ELSE 'NÃO' END AS CURRICULO_NOVO ,
 		'BCE' AS TIPO
-FROM	[VAGAS_DW].[VAGAS_DW].[TMP_FUNIL_CANDIDATOS_BCE] AS A
+FROM	[STAGE].[VAGAS_DW].[TMP_FUNIL_CANDIDATOS_BCE] AS A
 GROUP BY A.TIPO_CADASTRO ,
 		A.DATA_CADASTRO ,
 		CASE WHEN A.CURRICULO_NOVO = 1 THEN 'SIM' ELSE 'NÃO' END
