@@ -1,5 +1,5 @@
--- select * from vagas_dw.TMP_CANDIDATOS
--- EXEC VAGAS_DW.SPR_Carga_Candidatos
+USE VAGAS_DW
+GO
 
 IF EXISTS ( SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_OLAP_Carga_Candidatos_Setores' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')
 DROP PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Candidatos_Setores
