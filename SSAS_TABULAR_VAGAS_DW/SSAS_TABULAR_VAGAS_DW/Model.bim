@@ -69683,7 +69683,7 @@
           },
           {
             "name": "ANO",
-            "dataType": "string",
+            "dataType": "int64",
             "sourceColumn": "ANO",
             "sourceProviderType": "Char"
           },
@@ -69829,6 +69829,147 @@
           {
             "name": "_TM_ExtProp_DbTableName",
             "value": "Clientes_VAGAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "ABERTURA_CURRICULO - DATA_ABERTURA",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_ABERTURA",
+            "dataType": "dateTime",
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "string",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "ABERTURA_CURRICULOS - DATA_ABERTURA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "ABERTURA_CURRICULO",
+        "columns": [
+          {
+            "name": "DATA_ABERTURA_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_ABERTURA",
+            "formatString": "General Date",
+            "sourceProviderType": "DBDate"
+          },
+          {
+            "name": "CONTEXTO_ABERTURA",
+            "dataType": "string",
+            "sourceColumn": "CONTEXTO_ABERTURA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "COD_CAND",
+            "dataType": "int64",
+            "sourceColumn": "COD_CAND",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "COD_FUNC",
+            "dataType": "int64",
+            "sourceColumn": "COD_FUNC",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "COD_CLI",
+            "dataType": "int64",
+            "sourceColumn": "COD_CLI",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "COD_VAGA",
+            "dataType": "int64",
+            "sourceColumn": "COD_VAGA",
+            "sourceProviderType": "Integer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "ABERTURA_CURRICULO",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[ABERTURA_CURRICULO].* FROM [VAGAS_DW].[ABERTURA_CURRICULO] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[ABERTURA_CURRICULO].* FROM [VAGAS_DW].[ABERTURA_CURRICULO] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "ABERTURA_CURRICULO"
           },
           {
             "name": "_TM_ExtProp_DbSchemaName",
@@ -71308,6 +71449,20 @@
         "toTable": "CLIENTES",
         "toColumn": "COD_CLI",
         "crossFilteringBehavior": "bothDirections"
+      },
+      {
+        "name": "e26a7740-1837-4769-ba53-f5a3e8506d20",
+        "fromTable": "ABERTURA_CURRICULO",
+        "fromColumn": "DATA_ABERTURA_SOURCE",
+        "toTable": "ABERTURA_CURRICULO - DATA_ABERTURA",
+        "toColumn": "DATA_ABERTURA"
+      },
+      {
+        "name": "7f23135a-4b09-4e66-81f3-bf4cb1aa0e7a",
+        "fromTable": "TRIAGEM_VAGAS_EPARTNER",
+        "fromColumn": "COD_CLI",
+        "toTable": "CLIENTES",
+        "toColumn": "COD_CLI"
       }
     ],
     "perspectives": [
