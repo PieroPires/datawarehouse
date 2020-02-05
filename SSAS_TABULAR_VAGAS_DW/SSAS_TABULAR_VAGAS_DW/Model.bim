@@ -654,14 +654,15 @@
           },
           {
             "type": "calculated",
-            "name": "FAIXA_FASES_PROCESSO",
-            "dataType": "string",
+            "name": "FAIXA_FASES_PROCESSO_NUM",
+            "dataType": "int64",
             "isDataTypeInferred": true,
+            "isHidden": true,
             "expression": [
               "SWITCH([FASES_PROCESSO_SOURCE],",
-              "\t  \"UMA (NÃO MOVIMENTOU)\", \"2- UMA\",",
-              "\t  \"DUAS (MOVIMENTOU)\", \"3- DUAS\",",
-              "\t  \"MAIS DE DUAS (MOVIMENTOU)\", \"4- MAIS DE DUAS\", \"1- NENHUMA\")"
+              "\t  \"UMA (NÃO MOVIMENTOU)\", 0,",
+              "\t  \"DUAS (MOVIMENTOU)\", 1,",
+              "\t  \"MAIS DE DUAS (MOVIMENTOU)\",2,3)"
             ]
           },
           {
@@ -714,6 +715,14 @@
             "name": "ORIGEM_VAGA_MODELO",
             "dataType": "string",
             "sourceColumn": "ORIGEM_VAGA_MODELO"
+          },
+          {
+            "type": "calculated",
+            "name": "FAIXA_FASES_VAGA",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "SWITCH([FAIXA_FASES_PROCESSO_NUM],0,\"NENHUMA\",1,\"UMA\",2,\"DUAS\",\"MAIS DE DUAS\")",
+            "sortByColumn": "FAIXA_FASES_PROCESSO_NUM"
           }
         ],
         "partitions": [

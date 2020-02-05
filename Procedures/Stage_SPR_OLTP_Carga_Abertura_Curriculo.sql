@@ -15,16 +15,20 @@ CREATE PROCEDURE [VAGAS_DW].[SPR_OLTP_Carga_Abertura_Curriculo]
 AS
 SET NOCOUNT ON
 
-TRUNCATE TABLE [VAGAS_DW].[TMP_Abertura_Curriculo] ;
+TRUNCATE TABLE [VAGAS_DW].[TMP_ABERTURA_CURRICULO] ;
 
-DECLARE	@Data_Ult_Abertura DATE ; 
-SET	@Data_Ult_Abertura = (SELECT ISNULL(DATEADD(DAY, -1, MAX(A1.Data_Abertura_Curriculo)), '19000101')
-						  FROM [VAGAS_DW].[VAGAS_DW].[Abertura_Curriculo] AS A1) ;
+DECLARE	@DATA_ULT_ABERTURA DATE ; 
+SET	@DATA_ULT_ABERTURA = (SELECT ISNULL(DATEADD(DAY, -1, MAX(A1.DATA_ABERTURA_CURRICULO)), '19000101')
+						  FROM [VAGAS_DW].[VAGAS_DW].[ABERTURA_CURRICULO] AS A1) ;
 
-INSERT INTO [VAGAS_DW].[TMP_Abertura_Curriculo] (Data_Abertura_Curriculo,Cod_cand,Cod_func,Contexto_Abertura)
-SELECT	CONVERT(DATE, A.DtUltLeit_cvVisto) AS Data_Abertura_Curriculo ,
-		A.CodCand_cvVisto AS Cod_cand ,
-		A.CodFunc_cvVisto AS Cod_func ,
-		IIF(A.CodVaga_cvVisto = 0, 'BCE', 'VAGA') AS Contexto_Abertura
+WHILE EXISTS (SELECT TOP 1 1
+			  FROM	 [hrh-data].[dbo].[
+
+
+INSERT INTO [VAGAS_DW].[TMP_ABERTURA_CURRICULO] (DATA_ABERTURA_CURRICULO,COD_CAND,COD_FUNC,CONTEXTO_ABERTURA)
+SELECT	CONVERT(DATE, A.DtUltLeit_cvVisto) AS DATA_ABERTURA_CURRICULO ,
+		A.CodCand_cvVisto AS COD_CAND ,
+		A.CodFunc_cvVisto AS COD_FUNC ,
+		IIF(A.CodVaga_cvVisto = 0, 'BCE', 'VAGA') AS CONTEXTO_ABERTURA
 FROM	[hrh-data].[dbo].[Curriculo_Visto] AS A
-WHERE	A.DtUltLeit_cvVisto >= @Data_Ult_Abertura ;
+WHERE	A.DtUltLeit_cvVisto >= @DATA_ULT_ABERTURA ;
