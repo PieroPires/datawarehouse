@@ -4,6 +4,11 @@
 -- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
 -- =============================================
 
+-- =============================================
+-- Alterações
+-- 06/02/2020 - Diego Gatto - Ajustado para utilizar as tabelas TMP na base de dados stage e não vagas_dw
+-- =============================================
+
 USE [STAGE] ;
 GO
 

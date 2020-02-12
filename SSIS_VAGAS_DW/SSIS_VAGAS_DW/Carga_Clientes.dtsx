@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\luiz.braz"
   DTS:DTSID="{D3D3D5EA-F7C4-4ED7-AD29-C024F20A2138}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Clientes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="223"
-  DTS:VersionGUID="{C287A693-8FA3-46CB-A47C-88D710EF5432}">
+  DTS:VersionBuild="226"
+  DTS:VersionGUID="{653687CE-8DCD-433D-B947-B945FFF0C143}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -353,8 +353,8 @@ WHERE	NOT EXISTS (SELECT	1
               <connections>
                 <connection
                   refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Connections[OleDbConnection]"
-                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -600,7 +600,7 @@ WHERE	NOT EXISTS (SELECT	1
                     <externalMetadataColumn
                       refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CREDITOS_DISPONIVEL]"
                       dataType="wstr"
-                      length="10"
+                      length="20"
                       name="QTD_CREDITOS_DISPONIVEL" />
                     <externalMetadataColumn
                       refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_MENSALIDADE]"
@@ -1250,6 +1250,34 @@ WHERE	NOT EXISTS (SELECT	1
                       dataType="str"
                       length="3"
                       name="CONSULTORIA_RH" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[COD_CIDADE]"
+                      dataType="i4"
+                      name="COD_CIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[REGRA_EX_CLIENTE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="256"
+                      name="REGRA_EX_CLIENTE" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[CLASSIFICACAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CLASSIFICACAO" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[ATIVO_ERP]"
+                      dataType="i4"
+                      name="ATIVO_ERP" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[ATIVO_MANUT]"
+                      dataType="i4"
+                      name="ATIVO_MANUT" />
+                    <externalMetadataColumn
+                      refId="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES.Inputs[OLE DB Destination Input].ExternalColumns[ATIVO_CRM]"
+                      dataType="i4"
+                      name="ATIVO_CRM" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1310,7 +1338,6 @@ WHERE	NOT EXISTS (SELECT	1
       DTS:refId="Package\Carga VAGAS_DW - Clientes"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:Disabled="True"
       DTS:DTSID="{5d1a4616-9eec-41cc-94f2-bc780e53d98e}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -2088,8 +2115,8 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
-          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.VAGAS_DW.TMP_CLIENTES" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_CLIENTES" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -2226,12 +2253,12 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
       DTS:To="Package\DELETE FROM TMP_NUM_PED_FAT" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -2597,7 +2624,7 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
     design-time-name="Package\Carga CRM - TMP_CLIENTES">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="152,42"
           Id="Package\Carga CRM - TMP_CLIENTES\TMP_CLIENTES"
@@ -2625,9 +2652,7 @@ WHERE	SA1.D_E_L_E_T_ = ' '</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

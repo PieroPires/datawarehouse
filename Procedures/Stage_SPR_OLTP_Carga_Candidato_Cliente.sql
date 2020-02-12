@@ -1,5 +1,3 @@
--- select * from vagas_dw.TMP_CANDIDATOS
--- EXEC VAGAS_DW.SPR_OLTP_Carga_Candidato_Cliente'19010101'
 USE STAGE
 GO
 
@@ -12,16 +10,22 @@ GO
 -- Create date: 29/09/2015
 -- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
 -- =============================================
+
+-- =============================================
+-- Alterações
+-- 05/02/2020 - Diego Gatto - Ajustado para utilizar as tabelas TMP na base de dados stage e não vagas_dw
+-- =============================================
+
+
 CREATE PROCEDURE VAGAS_DW.SPR_OLTP_Carga_Candidato_Cliente
 @CODIGO INT = NULL
 
 AS
 SET NOCOUNT ON
 
--- NÃO VAMOS UTILIZAR O BD STAGE NESTE CASO
-TRUNCATE TABLE VAGAS_DW.VAGAS_DW.TMP_CANDIDATO_CLIENTE 
+TRUNCATE TABLE VAGAS_DW.TMP_CANDIDATO_CLIENTE 
 
-INSERT INTO VAGAS_DW.VAGAS_DW.TMP_CANDIDATO_CLIENTE 
+INSERT INTO VAGAS_DW.TMP_CANDIDATO_CLIENTE 
 SELECT A.ChaveSQL_candCli AS Cod_SQL,
 	   A.CodCliente_candCli AS CodCli,
 	   B.Ident_cli AS Cliente,

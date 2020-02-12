@@ -1,5 +1,3 @@
--- select * from vagas_dw.TMP_CANDIDATOS
--- EXEC VAGAS_DW.SPR_OLTP_Carga_Candidatos -- CARGA FULL
 USE STAGE
 GO
 
@@ -12,6 +10,13 @@ GO
 -- Create date: 29/09/2015
 -- Description: Procedure para carga das tabelas temporárias (BD Stage) para alimentação do DW
 -- =============================================
+
+
+-- =============================================
+-- Alterações
+-- 05/02/2020 - Diego Gatto - Ajustado para utilizar as tabelas TMP na base de dados stage e não vagas_dw
+-- =============================================
+
 CREATE PROCEDURE VAGAS_DW.SPR_OLTP_Carga_Candidatos 
 @DT_ATUALIZACAO_INICIO SMALLDATETIME = NULL,
 @DT_ATUALIZACAO_FIM SMALLDATETIME = NULL
@@ -19,15 +24,11 @@ CREATE PROCEDURE VAGAS_DW.SPR_OLTP_Carga_Candidatos
 AS
 SET NOCOUNT ON
 
---IF @DT_ATUALIZACAO_INICIO IS NULL
---SET @DT_ATUALIZACAO_INICIO = '19010101'
-
 -- SSIS passa neste formato quando NULO
 IF @DT_ATUALIZACAO_FIM < '19010101' 
 SET @DT_ATUALIZACAO_FIM = '20700101'
 
---TRUNCATE TABLE VAGAS_DW.TMP_CANDIDATOS 
-TRUNCATE TABLE VAGAS_DW.VAGAS_DW.TMP_CANDIDATOS 
+TRUNCATE TABLE VAGAS_DW.TMP_CANDIDATOS 
 
 CREATE TABLE #TMP_CANDIDATOS([Cod_Cand] [int] NOT NULL,[CodFormMax_cand] [smallint] NULL,
 	[DtNasc_cand] [datetime] NULL,[Masc_cand] [bit] NOT NULL,[ValSalPret_Cand] [int] NULL,
@@ -40,7 +41,7 @@ CREATE TABLE #TMP_CANDIDATOS([Cod_Cand] [int] NOT NULL,[CodFormMax_cand] [smalli
 
 IF @DT_ATUALIZACAO_INICIO IS NOT NULL -- TESTA SE É CARGA FULL
 BEGIN 
-	
+	-- CARGA INCREMENTAL
 	INSERT INTO #TMP_CANDIDATOS
 	SELECT Cod_Cand,
 		   CodFormMax_cand,
@@ -67,8 +68,6 @@ BEGIN
 		   MalaDireta_cand
 	FROM [hrh-data].dbo.Candidatos A
 	WHERE A.UltDtAtual_cand >= @DT_ATUALIZACAO_INICIO AND A.UltDtAtual_cand < @DT_ATUALIZACAO_FIM 
-	--AND A.Cod_cand = ( SELECT MAX(Cod_cand) FROM [hrh-data]..candidatos
-	--					WHERE CPF_cand = A.CPF_cand ) -- MAIOR CÓDIGO CANDIDATO
 END
 ELSE 
 BEGIN
@@ -99,24 +98,13 @@ BEGIN
 		   MalaDiretaSite_cand,
 		   MalaDireta_cand
 	FROM [hrh-data].dbo.Candidatos A	
-
 END
 
 DELETE FROM #TMP_CANDIDATOS WHERE ISNULL(Ficticio_cand, 0) <> 0
 
 CREATE CLUSTERED INDEX IDX_COD_CAND ON #TMP_CANDIDATOS (COD_CAND)
---CREATE TABLE #TMP_CANDIDATO_LOGIN (CodCand_logCand INT,Data_logCand DATETIME)
 
---INSERT INTO #TMP_CANDIDATO_LOGIN 
---SELECT CodCand_logCand,
---	MAX(Data_logCand) AS Data_logCand
---FROM [hrh-data].dbo.[Candidatos-Login] A
---WHERE EXISTS ( SELECT 1 FROM #TMP_CANDIDATOS
---				WHERE Cod_Cand = A.CodCand_logCand )
---GROUP BY CodCand_logCand
-
---INSERT INTO VAGAS_DW.TMP_CANDIDATOS 
-INSERT INTO VAGAS_DW.VAGAS_DW.TMP_CANDIDATOS 
+INSERT INTO VAGAS_DW.TMP_CANDIDATOS 
 SELECT A.Cod_Cand, 
 	  CONVERT(VARCHAR,ISNULL(ISNULL(ultCargoNormalizado_exp, UltCargo_exp),'Não Classificado'),100) AS ULTIMO_CARGO,
 	P.Descr_formMax AS FORMACAO,

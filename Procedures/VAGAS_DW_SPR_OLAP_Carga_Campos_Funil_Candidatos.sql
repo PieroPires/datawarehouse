@@ -11,6 +11,11 @@ GO
 -- Description: Procedure para alimentação do DW
 -- =============================================
 
+-- =============================================
+-- Alterações
+-- 05/02/2020 - Diego Gatto - Ajustado para utilizar as tabelas TMP na base de dados stage e não vagas_dw
+-- =============================================
+
 CREATE PROCEDURE VAGAS_DW.SPR_OLAP_Carga_Campos_Funil_Candidatos
 
 AS
@@ -50,7 +55,7 @@ FROM (
 			A.IDIOMA ,
 			A.ULTIMO_SALARIO ,
 			A.INF_COMPLEMENTARES
-	FROM	[VAGAS_DW].[VAGAS_DW].[TMP_FUNIL_CANDIDATOS] AS A
+	FROM	[STAGE].[VAGAS_DW].[TMP_FUNIL_CANDIDATOS] AS A
 ) AS PVT
 
 UNPIVOT (VALOR FOR CAMPO IN (PVT.NOME ,PVT.FOTO ,PVT.DADOS_PESSOAIS ,PVT.ENDERECO ,PVT.CONTATO ,PVT.LINKS_REDES_SOCIAIS ,PVT.OBJETIVO ,PVT.AREA_NIVEL_OBJETIVO ,PVT.PRETENSAO_SALARIAL ,PVT.REGIAO_INTERESSE ,	PVT.RESUMO_QUALIFIC ,PVT.NIVEL_ESCOLARIDADE ,PVT.EXPERIENCIA_PROFISSIONAL ,PVT.IDIOMA ,PVT.ULTIMO_SALARIO ,PVT.INF_COMPLEMENTARES)) AS UNPVT
