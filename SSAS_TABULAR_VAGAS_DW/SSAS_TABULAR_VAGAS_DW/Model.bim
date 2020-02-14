@@ -69392,6 +69392,22 @@
             "sourceProviderType": "Char"
           },
           {
+            "name": "CREATIONTIME_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "CREATIONTIME",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "CREATIONTIMEUTC_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "CREATIONTIMEUTC",
+            "formatString": "General Date",
+            "sourceProviderType": "146"
+          },
+          {
             "name": "OPERATION",
             "dataType": "string",
             "sourceColumn": "OPERATION",
@@ -69450,22 +69466,6 @@
             "dataType": "string",
             "sourceColumn": "REPORTNAME",
             "sourceProviderType": "Char"
-          },
-          {
-            "name": "CREATIONTIME_SOURCE",
-            "dataType": "dateTime",
-            "isHidden": true,
-            "sourceColumn": "CREATIONTIME",
-            "formatString": "General Date",
-            "sourceProviderType": "DBTimeStamp"
-          },
-          {
-            "name": "CREATIONTIMEUTC_SOURCE",
-            "dataType": "dateTime",
-            "isHidden": true,
-            "sourceColumn": "CREATIONTIMEUTC",
-            "formatString": "General Date",
-            "sourceProviderType": "146"
           },
           {
             "type": "calculated",
@@ -69986,6 +69986,55 @@
           {
             "name": "_TM_ExtProp_DbTableName",
             "value": "ABERTURA_CURRICULO"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "MOVIMENTACAO_CAND_VAGA",
+        "columns": [
+          {
+            "name": "DATA_MOVIMENTACAO_CAND_VAGA",
+            "dataType": "dateTime",
+            "sourceColumn": "DATA_MOVIMENTACAO_CAND_VAGA",
+            "formatString": "General Date",
+            "sourceProviderType": "DBDate"
+          },
+          {
+            "name": "COD_VAGA",
+            "dataType": "int64",
+            "sourceColumn": "COD_VAGA",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "QTD_CANDIDATOS_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "QTD_CANDIDATOS",
+            "sourceProviderType": "Integer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "MOVIMENTACAO_CAND_VAGA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[MOVIMENTACAO_CAND_VAGA].* FROM [VAGAS_DW].[MOVIMENTACAO_CAND_VAGA] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[MOVIMENTACAO_CAND_VAGA].* FROM [VAGAS_DW].[MOVIMENTACAO_CAND_VAGA] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "MOVIMENTACAO_CAND_VAGA"
           },
           {
             "name": "_TM_ExtProp_DbSchemaName",
