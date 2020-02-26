@@ -723,6 +723,13 @@
             "isDataTypeInferred": true,
             "expression": "SWITCH([FAIXA_FASES_PROCESSO_NUM],0,\"NENHUMA\",1,\"UMA\",2,\"DUAS\",\"MAIS DE DUAS\")",
             "sortByColumn": "FAIXA_FASES_PROCESSO_NUM"
+          },
+          {
+            "type": "calculated",
+            "name": "DATA_PRIMEIRA_VALIDACAO",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "expression": " MIN('VAGAS_VALIDACAO'[DATA_VALIDACAO_SOURCE_2])"
           }
         ],
         "partitions": [
@@ -69877,7 +69884,7 @@
           },
           {
             "name": "MES",
-            "dataType": "string",
+            "dataType": "int64",
             "sourceColumn": "MES",
             "sourceProviderType": "Char"
           },
@@ -69997,8 +70004,16 @@
         "name": "MOVIMENTACAO_CAND_VAGA",
         "columns": [
           {
-            "name": "DATA_MOVIMENTACAO_CAND_VAGA",
+            "name": "COD_MOVIMENTACAO_CAND_VAGA_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "COD_MOVIMENTACAO_CAND_VAGA",
+            "sourceProviderType": "BigInt"
+          },
+          {
+            "name": "DATA_MOVIMENTACAO_CAND_VAGA_SOURCE",
             "dataType": "dateTime",
+            "isHidden": true,
             "sourceColumn": "DATA_MOVIMENTACAO_CAND_VAGA",
             "formatString": "General Date",
             "sourceProviderType": "DBDate"
@@ -70010,11 +70025,16 @@
             "sourceProviderType": "Integer"
           },
           {
-            "name": "QTD_CANDIDATOS_SOURCE",
+            "name": "COD_CAND",
             "dataType": "int64",
-            "isHidden": true,
-            "sourceColumn": "QTD_CANDIDATOS",
+            "sourceColumn": "COD_CAND",
             "sourceProviderType": "Integer"
+          },
+          {
+            "name": "CONTEXTO_MOVIMENTACAO",
+            "dataType": "string",
+            "sourceColumn": "CONTEXTO_MOVIMENTACAO",
+            "sourceProviderType": "Char"
           }
         ],
         "partitions": [
@@ -70027,6 +70047,20 @@
             }
           }
         ],
+        "measures": [
+          {
+            "name": "QTD_CAND_MOVIMENTADO",
+            "expression": " DISTINCTCOUNT('MOVIMENTACAO_CAND_VAGA'[COD_CAND])"
+          },
+          {
+            "name": "QTD_CAND_MOVIMENTADO_BCC",
+            "expression": " CALCULATE(DISTINCTCOUNT('MOVIMENTACAO_CAND_VAGA'[COD_CAND]),FILTER('MOVIMENTACAO_CAND_VAGA', MOVIMENTACAO_CAND_VAGA[CONTEXTO_MOVIMENTACAO] = \"Currículo - BCC\"))"
+          },
+          {
+            "name": "QTD_CAND_MOVIMENTACAO_BCE",
+            "expression": "CALCULATE(DISTINCTCOUNT('MOVIMENTACAO_CAND_VAGA'[COD_CAND]),FILTER('MOVIMENTACAO_CAND_VAGA',MOVIMENTACAO_CAND_VAGA[CONTEXTO_MOVIMENTACAO]=\"Exclusivo de cliente - BCE\"))"
+          }
+        ],
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
@@ -70035,6 +70069,82 @@
           {
             "name": "_TM_ExtProp_DbTableName",
             "value": "MOVIMENTACAO_CAND_VAGA"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "MOVIMENT_CAND_VAGA - DATA_MOVIMENTACAO",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_MOVIMENTACAO",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "int64",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "MOVIMENT_CAND_VAGA - DATA_MOVIMENTACAO",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
           },
           {
             "name": "_TM_ExtProp_DbSchemaName",
@@ -71528,6 +71638,27 @@
         "fromColumn": "COD_CLI",
         "toTable": "CLIENTES",
         "toColumn": "COD_CLI"
+      },
+      {
+        "name": "99ddf1b3-b37a-4fc7-abe9-1ae185af148f",
+        "fromTable": "ABERTURA_CURRICULO",
+        "fromColumn": "COD_VAGA",
+        "toTable": "VAGAS",
+        "toColumn": "COD_VAGA"
+      },
+      {
+        "name": "bf81bbf4-3732-478d-94f1-e8a844a60a85",
+        "fromTable": "MOVIMENTACAO_CAND_VAGA",
+        "fromColumn": "DATA_MOVIMENTACAO_CAND_VAGA_SOURCE",
+        "toTable": "MOVIMENT_CAND_VAGA - DATA_MOVIMENTACAO",
+        "toColumn": "DATA_MOVIMENTACAO"
+      },
+      {
+        "name": "a5280887-631f-444a-a9bb-600fe587a46d",
+        "fromTable": "MOVIMENTACAO_CAND_VAGA",
+        "fromColumn": "COD_VAGA",
+        "toTable": "VAGAS",
+        "toColumn": "COD_VAGA"
       }
     ],
     "perspectives": [
