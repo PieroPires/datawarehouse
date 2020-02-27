@@ -13,8 +13,8 @@
   DTS:ObjectName="Clientes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="101"
-  DTS:VersionGUID="{D14D07F6-81F6-4A58-964D-F37D71E02D39}">
+  DTS:VersionBuild="105"
+  DTS:VersionGUID="{F6C7872B-9D82-432F-A637-B349E0DDDB65}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -24,7 +24,7 @@
       DTS:DTSID="{DAE5E7DF-5165-4A61-8F7E-360C30E4DD20}"
       DTS:ObjectName="CSV Clientes">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">"C:" + "\\"+ "Users"+ "\\"+ REPLACE(@[System::UserName], "VAGASTEC"+"\\", "") + "\\" + "Documents"+ "\\"+ "integracao_sensedata" + "\\" + "ftp" + "\\" + REPLACE(LEFT((DT_WSTR, 100)GETDATE(), 10), "-", "_") +"\\"+ @[$Package::CSV_NAME]</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::CSV_DIR] + "\\" + REPLACE(SUBSTRING((DT_STR,30,1252)GETDATE(),1,10),"-","_") +  "\\" + @[$Package::CSV_NAME]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -34,7 +34,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_02_11\clientes.csv">
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_02_12\clientes.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -242,11 +242,11 @@
       DTS:DTSID="{06AEBF27-5384-498D-B59E-1F750F8FD810}"
       DTS:ObjectName="Desktop">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">"C:" + "\\"+ "Users"+ "\\"+ REPLACE(@[System::UserName], "VAGASTEC"+"\\", "") + "\\" + "Documents"+ "\\"+ "integracao_sensedata" + "\\" + "ftp" + "\\" + REPLACE(LEFT((DT_WSTR, 100)GETDATE(), 10), "-", "_")</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::CSV_DIR] + "\\" + REPLACE(SUBSTRING((DT_STR,30,1252)GETDATE(),1,10),"-","_")</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:FileUsageType="3"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_02_11" />
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_02_12" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -786,7 +786,7 @@ from SA1010</property>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_Opp_DataFimUso;&#xA;DROP TABLE IF EXISTS TMP_Tab_Opp_Rescisao_Motivos;&#xA;DRO PTABLE IF EXISTS [VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_Opp_DataFimUso;&#xA;DROP TABLE IF EXISTS TMP_Tab_Opp_Rescisao_Motivos;&#xA;DROP TABLE IF EXISTS [VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -2105,15 +2105,15 @@ from SA1010</property>
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="98,42"
-          Id="Package\Exportar CSV\CSV"
-          TopLeft="426,247" />
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="281,42"
           Id="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA"
           TopLeft="338,43" />
+        <NodeLayout
+          Size="98,42"
+          Id="Package\Exportar CSV\CSV"
+          TopLeft="426,247" />
         <EdgeLayout
           Id="Package\Exportar CSV.Paths[Saída de Origem OLE DB]"
           TopLeft="476.75,85">
@@ -2133,7 +2133,9 @@ from SA1010</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

@@ -12,8 +12,8 @@
   DTS:ObjectName="Log_uso_vfb"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="115"
-  DTS:VersionGUID="{C8A93DA1-B8BA-44D0-962D-AF9A17553CD5}">
+  DTS:VersionBuild="126"
+  DTS:VersionGUID="{96768BA7-3B56-4F64-96D1-4C5D42DAB9E6}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -23,7 +23,7 @@
       DTS:DTSID="{E79C0104-E231-4804-A477-15482C834E51}"
       DTS:ObjectName="CSV Log uso VFB">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::CSV_DIR]  + "\\" + REPLACE(SUBSTRING((DT_STR,30,1252)GETDATE(),1,10),"-","_") +  "\\" + @[$Package::CSV_NAME]</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::CSV_DIR] + "\\" + REPLACE(SUBSTRING((DT_STR,30,1252)GETDATE(),1,10),"-","_") +  "\\" + @[$Package::CSV_NAME]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -33,41 +33,79 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_02_10\log_uso_vfb.csv">
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_02_20\log_uso_vfb.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x007C_"
-              DTS:DataType="3"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName="Cod_usuario_VFB"
-              DTS:DTSID="{C58740B0-628E-4567-914D-E99BD7B36A76}"
+              DTS:DTSID="{C598DEAF-0047-4CDF-82F5-FA596459288E}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x007C_"
-              DTS:MaximumWidth="10"
-              DTS:DataType="130"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName="Data_Log"
-              DTS:DTSID="{3DB04703-B4D5-421D-9B73-0C66FCA7BC8B}"
+              DTS:DTSID="{DC952706-9BB4-4A3C-B719-E083946CF0A1}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x007C_"
-              DTS:DataType="3"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
               DTS:TextQualified="True"
               DTS:ObjectName="Qtd_Log"
-              DTS:DTSID="{8C460C92-F1B6-4A8A-A9E3-4913DB28D936}"
+              DTS:DTSID="{9094F8CC-3041-45AD-AC1D-56C45F575EA9}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Item_Log"
+              DTS:DTSID="{DE2CA6F6-0CAA-481E-8834-4542DAA5E949}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Id_usuario_VFB"
+              DTS:DTSID="{66F22051-325D-4F76-AAAD-F078A717740A}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Nome_usuario_VFB"
+              DTS:DTSID="{D47CA3CB-8BA3-419C-BEB9-58B2866C4303}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x007C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Email_usuario_VFB"
+              DTS:DTSID="{4FF42089-E0C8-4375-BBDC-223CFAC203BC}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x000D__x000A_"
-              DTS:MaximumWidth="21"
+              DTS:MaximumWidth="50"
               DTS:DataType="129"
               DTS:TextQualified="True"
-              DTS:ObjectName="Item_Log"
-              DTS:DTSID="{43E8C283-616B-4472-AF57-1B5B4D57B11D}"
+              DTS:ObjectName="Id_ClienteCRM"
+              DTS:DTSID="{E00775E2-4FB6-49C8-93ED-A197678964E9}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -101,7 +139,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="IF OBJECT_ID ('VAGAS_DW.VAGAS_DW.TMP_LOG_USO_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA] ;&#xA;&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_CADASTRAMENTO) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Cadastramento de vaga' AS Item_Log&#xA;INTO&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA]&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A&#xA;WHERE&#x9;A.DATA_CADASTRAMENTO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;A.DATA_CADASTRAMENTO &#xA;UNION ALL&#xA;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Login no VFB' AS Item_Log&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A&#xA;WHERE&#x9;A.Data_login &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.Cod_func,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login)&#xA;UNION ALL&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Triagem no VFB' AS Item_Log&#xA;FROM&#x9;[VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] AS A&#xA;WHERE&#x9;A.DATA_TRIAGEM &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="IF OBJECT_ID ('VAGAS_DW.VAGAS_DW.TMP_LOG_USO_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA] ;&#xA;&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_CADASTRAMENTO) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Cadastramento de vaga' AS Item_Log&#xA;INTO&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA]&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_CADASTRAMENTO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;A.DATA_CADASTRAMENTO &#xA;UNION ALL&#xA;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Login no VFB' AS Item_Log&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.Data_login &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.Cod_func,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login)&#xA;UNION ALL&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Triagem no VFB' AS Item_Log&#xA;FROM&#x9;[VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_TRIAGEM &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -177,27 +215,85 @@
                       cachedName="Item_Log"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Item_Log]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Item_Log]" />
+                    <inputColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Id_usuario_VFB]"
+                      cachedDataType="wstr"
+                      cachedLength="60"
+                      cachedName="Id_usuario_VFB"
+                      externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Id_usuario_VFB]"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_usuario_VFB]" />
+                    <inputColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Nome_usuario_VFB]"
+                      cachedDataType="wstr"
+                      cachedLength="60"
+                      cachedName="Nome_usuario_VFB"
+                      externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Nome_usuario_VFB]"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Nome_usuario_VFB]" />
+                    <inputColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Email_usuario_VFB]"
+                      cachedDataType="wstr"
+                      cachedLength="4000"
+                      cachedName="Email_usuario_VFB"
+                      externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Email_usuario_VFB]"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Email_usuario_VFB]" />
+                    <inputColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Id_ClienteCRM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="40"
+                      cachedName="Id_ClienteCRM"
+                      externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Id_ClienteCRM]"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_ClienteCRM]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Cod_usuario_VFB]"
-                      dataType="i4"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
                       name="Cod_usuario_VFB" />
                     <externalMetadataColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Id_usuario_VFB]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Id_usuario_VFB" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Nome_usuario_VFB]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Nome_usuario_VFB" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Email_usuario_VFB]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Email_usuario_VFB" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Id_ClienteCRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Id_ClienteCRM" />
+                    <externalMetadataColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Data_Log]"
-                      dataType="wstr"
-                      length="10"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
                       name="Data_Log" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Qtd_Log]"
-                      dataType="i4"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
                       name="Qtd_Log" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Item_Log]"
                       codePage="1252"
                       dataType="str"
-                      length="21"
+                      length="50"
                       name="Item_Log" />
                   </externalMetadataColumns>
                 </input>
@@ -303,6 +399,47 @@
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Item_Log]"
                       name="Item_Log"
                       truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_usuario_VFB]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_usuario_VFB]"
+                      length="60"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_usuario_VFB]"
+                      name="Id_usuario_VFB"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Nome_usuario_VFB]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Nome_usuario_VFB]"
+                      length="60"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Nome_usuario_VFB]"
+                      name="Nome_usuario_VFB"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Email_usuario_VFB]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Email_usuario_VFB]"
+                      length="4000"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Email_usuario_VFB]"
+                      name="Email_usuario_VFB"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_ClienteCRM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_ClienteCRM]"
+                      length="40"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_ClienteCRM]"
+                      name="Id_ClienteCRM"
+                      truncationRowDisposition="FailComponent" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -325,6 +462,27 @@
                       dataType="str"
                       length="21"
                       name="Item_Log" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_usuario_VFB]"
+                      dataType="wstr"
+                      length="60"
+                      name="Id_usuario_VFB" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Nome_usuario_VFB]"
+                      dataType="wstr"
+                      length="60"
+                      name="Nome_usuario_VFB" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Email_usuario_VFB]"
+                      dataType="wstr"
+                      length="4000"
+                      name="Email_usuario_VFB" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_ClienteCRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="Id_ClienteCRM" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -337,6 +495,31 @@
                       dataType="i4"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Cod_usuario_VFB]"
                       name="Cod_usuario_VFB" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_usuario_VFB]"
+                      dataType="wstr"
+                      length="60"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_usuario_VFB]"
+                      name="Id_usuario_VFB" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Nome_usuario_VFB]"
+                      dataType="wstr"
+                      length="60"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Nome_usuario_VFB]"
+                      name="Nome_usuario_VFB" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Email_usuario_VFB]"
+                      dataType="wstr"
+                      length="4000"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Email_usuario_VFB]"
+                      name="Email_usuario_VFB" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_ClienteCRM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_ClienteCRM]"
+                      name="Id_ClienteCRM" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_Log]"
                       dataType="wstr"
@@ -498,7 +681,7 @@
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="304,42"
           Id="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA"
@@ -506,39 +689,29 @@
         <NodeLayout
           Size="98,42"
           Id="Package\Exportar CSV\CSV"
-          TopLeft="381,157" />
+          TopLeft="435,149" />
         <EdgeLayout
           Id="Package\Exportar CSV.Paths[Saída de Origem OLE DB]"
-          TopLeft="490,85">
+          TopLeft="487,85">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-60,72"
+              EndConnector="0,64"
               Start="0,0"
-              End="-60,64.5">
+              End="0,56.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,32"
-                    Point2="0,36"
-                    Point3="-4,36" />
-                  <mssgle:LineSegment
-                    End="-56,36" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-56,36"
-                    Point2="-60,36"
-                    Point3="-60,40" />
-                  <mssgle:LineSegment
-                    End="-60,64.5" />
+                    End="0,56.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
