@@ -726,11 +726,35 @@
           },
           {
             "type": "calculated",
-            "name": "TEMPO_DIAS_CADASTRO_PRIM_VALIDACAO_SOURCE",
+            "name": "TEMPO_DIAS_CADASTRO_PRIM_VALIDACAO",
             "dataType": "int64",
             "isDataTypeInferred": true,
-            "isHidden": true,
             "expression": "DATEDIFF(IF('VAGAS'[DATA_CADASTRAMENTO]>'VAGAS'[DATA_VALIDACAO],'VAGAS'[DATA_VALIDACAO],'VAGAS'[DATA_CADASTRAMENTO]),'VAGAS'[DATA_VALIDACAO],DAY)"
+          },
+          {
+            "type": "calculated",
+            "name": "TEVE_AJUSTE",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "LOOKUPVALUE('VAGAS_VALIDACAO'[TEVE_AJUSTE],'VAGAS_VALIDACAO'[COD_VAGA],VALUE('VAGAS'[COD_VAGA]))"
+          },
+          {
+            "name": "DATA_AJUSTE_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_AJUSTE"
+          },
+          {
+            "name": "QTD_CANDIDATURAS_ANTES_AJUSTE_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "QTD_CANDIDATURAS_ANTES_AJUSTE"
+          },
+          {
+            "name": "QTD_CANDIDATURAS_APOS_AJUSTE_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "QTD_CANDIDATURAS_APOS_AJUSTE"
           }
         ],
         "partitions": [
@@ -907,7 +931,25 @@
                 "\tELSE 10",
                 "END AS NIVEL_ORDEM,",
                 "A.[COD_CIDADE],",
-                "A.ORIGEM_VAGA_MODELO",
+                "A.ORIGEM_VAGA_MODELO,",
+                "(SELECT MIN(A1.DATA_VALIDACAO) AS DATA_AJUSTE",
+                "FROM\tVAGAS_DW.VAGAS_VALIDACAO AS A1",
+                "WHERE\tA.VAGAS_Cod_Vaga = A1.COD_VAGA",
+                "\t\tAND A1.TIPO_AJUSTE <> 'Sem Ajuste') AS DATA_AJUSTE,",
+                "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_ANTES_AJUSTE",
+                " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+                " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+                "\t\tAND A1.DATA_CANDIDATURA < (SELECT MIN(AA1.DATA_VALIDACAO)",
+                "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+                "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+                "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_ANTES_AJUSTE,",
+                "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+                " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+                " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+                "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
+                "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+                "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+                "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
                 "FROM [VAGAS_DW].[VAGAS] AS A ;"
               ],
               "dataSource": "VAGAS_DW"
@@ -1085,7 +1127,25 @@
                   "\tELSE 10",
                   "END AS NIVEL_ORDEM,",
                   "A.[COD_CIDADE],",
-                  "A.ORIGEM_VAGA_MODELO",
+                  "A.ORIGEM_VAGA_MODELO,",
+                  "(SELECT MIN(A1.DATA_VALIDACAO) AS DATA_AJUSTE",
+                  "FROM\tVAGAS_DW.VAGAS_VALIDACAO AS A1",
+                  "WHERE\tA.VAGAS_Cod_Vaga = A1.COD_VAGA",
+                  "\t\tAND A1.TIPO_AJUSTE <> 'Sem Ajuste') AS DATA_AJUSTE,",
+                  "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_ANTES_AJUSTE",
+                  " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+                  " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+                  "\t\tAND A1.DATA_CANDIDATURA < (SELECT MIN(AA1.DATA_VALIDACAO)",
+                  "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+                  "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+                  "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_ANTES_AJUSTE,",
+                  "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+                  " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+                  " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+                  "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
+                  "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+                  "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+                  "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
                   "FROM [VAGAS_DW].[VAGAS] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
                 ]
               }
@@ -1240,6 +1300,18 @@
           {
             "name": "Tempo médio de expiração em dias",
             "expression": " AVERAGEX(VAGAS, DATEDIFF([DATA_CADASTRAMENTO], [DATA_EXPIRACAO], DAY))"
+          },
+          {
+            "name": "MEDIA_DIAS_CADASTRO_VALIDACAO",
+            "expression": "AVERAGE('VAGAS'[TEMPO_DIAS_CADASTRO_PRIM_VALIDACAO])"
+          },
+          {
+            "name": "QTD_CANDIDATURAS_ANTES_AJUSTE",
+            "expression": "SUM('VAGAS'[QTD_CANDIDATURAS_ANTES_AJUSTE_SOURCE])"
+          },
+          {
+            "name": "QTD_CANDIDATURAS_APOS_AJUSTE",
+            "expression": "SUM('VAGAS'[QTD_CANDIDATURAS_APOS_AJUSTE_SOURCE])"
           }
         ],
         "annotations": [
@@ -1423,7 +1495,25 @@
               "\tELSE 10",
               "END AS NIVEL_ORDEM,",
               "A.[COD_CIDADE],",
-              "A.ORIGEM_VAGA_MODELO",
+              "A.ORIGEM_VAGA_MODELO,",
+              "(SELECT MIN(A1.DATA_VALIDACAO) AS DATA_AJUSTE",
+              "FROM\tVAGAS_DW.VAGAS_VALIDACAO AS A1",
+              "WHERE\tA.VAGAS_Cod_Vaga = A1.COD_VAGA",
+              "\t\tAND A1.TIPO_AJUSTE <> 'Sem Ajuste') AS DATA_AJUSTE,",
+              "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_ANTES_AJUSTE",
+              " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+              " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+              "\t\tAND A1.DATA_CANDIDATURA < (SELECT MIN(AA1.DATA_VALIDACAO)",
+              "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+              "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_ANTES_AJUSTE,",
+              "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+              " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+              " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+              "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
+              "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+              "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
               "FROM [VAGAS_DW].[VAGAS] AS A ;"
             ]
           },
@@ -1599,7 +1689,25 @@
               "\tELSE 10",
               "END AS NIVEL_ORDEM,",
               "A.[COD_CIDADE],",
-              "A.ORIGEM_VAGA_MODELO",
+              "A.ORIGEM_VAGA_MODELO,",
+              "(SELECT MIN(A1.DATA_VALIDACAO) AS DATA_AJUSTE",
+              "FROM\tVAGAS_DW.VAGAS_VALIDACAO AS A1",
+              "WHERE\tA.VAGAS_Cod_Vaga = A1.COD_VAGA",
+              "\t\tAND A1.TIPO_AJUSTE <> 'Sem Ajuste') AS DATA_AJUSTE,",
+              "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_ANTES_AJUSTE",
+              " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+              " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+              "\t\tAND A1.DATA_CANDIDATURA < (SELECT MIN(AA1.DATA_VALIDACAO)",
+              "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+              "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_ANTES_AJUSTE,",
+              "(SELECT\tCOUNT(*) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+              " FROM\t[VAGAS_DW].[CANDIDATURAS] AS A1",
+              " WHERE\tA.VAGAS_Cod_Vaga = A1.CodVaga_HistCand",
+              "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
+              "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
+              "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
+              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
               "FROM [VAGAS_DW].[VAGAS] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
             ]
           }
