@@ -70377,6 +70377,82 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_CANDIDATURA",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -71885,6 +71961,13 @@
         "fromColumn": "COD_VAGA",
         "toTable": "VAGAS",
         "toColumn": "COD_VAGA"
+      },
+      {
+        "name": "2f7514c0-9a46-420a-89b2-02850ba46873",
+        "fromTable": "VAGAS_CANDIDATURAS_AJUSTE_VAGA",
+        "fromColumn": "Data_candidatura_SOURCE",
+        "toTable": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
+        "toColumn": "DATA_CANDIDATURA"
       }
     ],
     "perspectives": [
