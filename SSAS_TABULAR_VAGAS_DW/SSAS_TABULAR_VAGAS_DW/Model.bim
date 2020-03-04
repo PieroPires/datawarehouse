@@ -70262,6 +70262,199 @@
         ]
       },
       {
+        "name": "VAGAS_CANDIDATURAS_AJUSTE_VAGA",
+        "columns": [
+          {
+            "name": "Hash_VagaDataCandidatura_SOURCE",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Hash_VagaDataCandidatura",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Cod_vaga",
+            "dataType": "string",
+            "sourceColumn": "Cod_vaga",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Data_candidatura_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Data_candidatura",
+            "formatString": "General Date",
+            "sourceProviderType": "DBDate"
+          },
+          {
+            "name": "Qtd_candidaturas_vaga_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Qtd_candidaturas_vaga",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "Classificacao",
+            "dataType": "string",
+            "sourceColumn": "Classificacao",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VAGAS_CANDIDATURAS_AJUSTE_VAGA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[VAGAS_CANDIDATURAS_AJUSTE_VAGA].* FROM [VAGAS_DW].[VAGAS_CANDIDATURAS_AJUSTE_VAGA] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Qtd_candidaturas_vaga",
+            "expression": "SUM('VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_candidaturas_vaga_SOURCE])"
+          },
+          {
+            "name": "Qtd_dias_candidaturas_vaga",
+            "expression": "COUNT('VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Hash_VagaDataCandidatura_SOURCE])"
+          },
+          {
+            "name": "Qtd_dias_candidaturas_vaga_anterior_Ajuste",
+            "expression": [
+              "COUNTX(",
+              "\tFILTER('VAGAS_CANDIDATURAS_AJUSTE_VAGA',",
+              "\t\t'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Classificacao]=\"Anterior\"),",
+              "\t\t'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Hash_VagaDataCandidatura_SOURCE])"
+            ]
+          },
+          {
+            "name": "Qtd_dias_candidaturas_vaga_posterior_Ajuste",
+            "expression": [
+              "COUNTX(",
+              "\tFILTER('VAGAS_CANDIDATURAS_AJUSTE_VAGA',",
+              "\t\t'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Classificacao]=\"Posterior\"),",
+              "\t\t'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Hash_VagaDataCandidatura_SOURCE])"
+            ]
+          },
+          {
+            "name": "Qtd_candidaturas_vaga_anterior_ajuste",
+            "expression": [
+              "",
+              "SUMX(",
+              "\tFILTER('VAGAS_CANDIDATURAS_AJUSTE_VAGA', 'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Classificacao] = \"Anterior\"),",
+              "\t'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_candidaturas_vaga_SOURCE])"
+            ]
+          },
+          {
+            "name": "Qtd_candidaturas_vaga_posterior_ajuste",
+            "expression": [
+              "",
+              "SUMX(",
+              "\tFILTER('VAGAS_CANDIDATURAS_AJUSTE_VAGA', 'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Classificacao] = \"Posterior\"),",
+              "\t'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_candidaturas_vaga_SOURCE])"
+            ]
+          },
+          {
+            "name": "Media_candidaturas_anterior_ajuste",
+            "expression": "'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_candidaturas_vaga_anterior_ajuste]/'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_dias_candidaturas_vaga_anterior_Ajuste]"
+          },
+          {
+            "name": "Media_candidaturas_posterior_ajuste",
+            "expression": "'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_candidaturas_vaga_posterior_ajuste]/'VAGAS_CANDIDATURAS_AJUSTE_VAGA'[Qtd_dias_candidaturas_vaga_posterior_Ajuste]"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[VAGAS_CANDIDATURAS_AJUSTE_VAGA].* FROM [VAGAS_DW].[VAGAS_CANDIDATURAS_AJUSTE_VAGA] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "VAGAS_CANDIDATURAS_AJUSTE_VAGA"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_CANDIDATURA",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "string",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "MES",
+            "dataType": "string",
+            "sourceColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
         "name": "FORMACOES_ACADEMICAS",
         "columns": [
           {
@@ -71953,6 +72146,13 @@
         "fromColumn": "COD_VAGA",
         "toTable": "VAGAS",
         "toColumn": "COD_VAGA"
+      },
+      {
+        "name": "2f7514c0-9a46-420a-89b2-02850ba46873",
+        "fromTable": "VAGAS_CANDIDATURAS_AJUSTE_VAGA",
+        "fromColumn": "Data_candidatura_SOURCE",
+        "toTable": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
+        "toColumn": "DATA_CANDIDATURA"
       }
     ],
     "perspectives": [
