@@ -654,19 +654,6 @@
           },
           {
             "type": "calculated",
-            "name": "FAIXA_FASES_PROCESSO_NUM",
-            "dataType": "int64",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": [
-              "SWITCH([FASES_PROCESSO_SOURCE],",
-              "\t  \"UMA (NÃO MOVIMENTOU)\", 0,",
-              "\t  \"DUAS (MOVIMENTOU)\", 1,",
-              "\t  \"MAIS DE DUAS (MOVIMENTOU)\",2,3)"
-            ]
-          },
-          {
-            "type": "calculated",
             "name": "DiasAberta_Source",
             "dataType": "int64",
             "isDataTypeInferred": true,
@@ -715,6 +702,19 @@
             "name": "ORIGEM_VAGA_MODELO",
             "dataType": "string",
             "sourceColumn": "ORIGEM_VAGA_MODELO"
+          },
+          {
+            "type": "calculated",
+            "name": "FAIXA_FASES_PROCESSO_NUM",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": [
+              "SWITCH([FASES_PROCESSO_SOURCE],",
+              "\t  \"UMA (NÃO MOVIMENTOU)\", 0,",
+              "\t  \"DUAS (MOVIMENTOU)\", 1,",
+              "\t  \"MAIS DE DUAS (MOVIMENTOU)\",2,3)"
+            ]
           },
           {
             "type": "calculated",
@@ -69508,22 +69508,6 @@
             "sourceProviderType": "Char"
           },
           {
-            "name": "CREATIONTIME_SOURCE",
-            "dataType": "dateTime",
-            "isHidden": true,
-            "sourceColumn": "CREATIONTIME",
-            "formatString": "General Date",
-            "sourceProviderType": "DBTimeStamp"
-          },
-          {
-            "name": "CREATIONTIMEUTC_SOURCE",
-            "dataType": "dateTime",
-            "isHidden": true,
-            "sourceColumn": "CREATIONTIMEUTC",
-            "formatString": "General Date",
-            "sourceProviderType": "146"
-          },
-          {
             "name": "OPERATION",
             "dataType": "string",
             "sourceColumn": "OPERATION",
@@ -69582,6 +69566,22 @@
             "dataType": "string",
             "sourceColumn": "REPORTNAME",
             "sourceProviderType": "Char"
+          },
+          {
+            "name": "CREATIONTIME_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "CREATIONTIME",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "CREATIONTIMEUTC_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "CREATIONTIMEUTC",
+            "formatString": "General Date",
+            "sourceProviderType": "146"
           },
           {
             "type": "calculated",
@@ -70258,6 +70258,191 @@
           {
             "name": "_TM_ExtProp_DbSchemaName",
             "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "FORMACOES_ACADEMICAS",
+        "columns": [
+          {
+            "name": "COD_CAND",
+            "dataType": "int64",
+            "sourceColumn": "COD_CAND",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "NIVEL_ID",
+            "dataType": "int64",
+            "sourceColumn": "NIVEL_ID",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "CURSO",
+            "dataType": "string",
+            "sourceColumn": "CURSO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "INSTITUICAO",
+            "dataType": "string",
+            "sourceColumn": "INSTITUICAO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "CONCLUIDA",
+            "dataType": "string",
+            "sourceColumn": "CONCLUIDA",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "NIVEL",
+            "dataType": "string",
+            "sourceColumn": "NIVEL",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "DURACAO",
+            "dataType": "string",
+            "sourceColumn": "DURACAO",
+            "sourceProviderType": "VarChar"
+          },
+          {
+            "name": "ANO_DE_CONCLUSAO",
+            "dataType": "int64",
+            "sourceColumn": "ANO_DE_CONCLUSAO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "CLASSIFICACAO_CURSO",
+            "dataType": "string",
+            "sourceColumn": "CLASSIFICACAO_CURSO",
+            "sourceProviderType": "VarChar"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Query",
+            "dataView": "full",
+            "source": {
+              "query": [
+                "SELECT",
+                "\t[COD_CAND]",
+                "\t,[NIVEL_ID]",
+                "\t,[CURSO]",
+                "\t,[INSTITUICAO]",
+                "\t,CASE [CONCLUIDA]",
+                "\t\tWHEN 1 THEN 'SIM'",
+                "\t\tWHEN 0 THEN 'NÃO'",
+                "\tEND CONCLUIDA",
+                "\t,CASE ",
+                "\t\tWHEN [GRADUACAO_ID] <> '-1' THEN 'Graduação'",
+                "\t\tWHEN [POS_GRADUACAO_ID] <> '-1' THEN 'Pós Graduação'",
+                "\t\tELSE 'Não especificado'",
+                "\tEND NIVEL",
+                "\t,CASE [DURACAO_DE_CURSO_ID]",
+                "\t\tWHEN 1 THEN 'Curta (até 40 horas)'",
+                "\t\tWHEN 40 THEN 'Média (acima de 40 horas, até 360 horas)'",
+                "\t\tWHEN 360 THEN 'Longa (acima de 360 horas)'",
+                "\t\tELSE 'Não especificado'",
+                "\tEND DURACAO",
+                "\t,[ANO_DE_CONCLUSAO]",
+                "\t,COALESCE([CLASSIFICACAO_CURSO],'Não especificado') [CLASSIFICACAO_CURSO]",
+                "FROM [VAGAS_DW].[FORMACOES_ACADEMICAS]"
+              ],
+              "dataSource": "VAGAS_DW"
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT",
+                  "\t[COD_CAND]",
+                  "\t,[NIVEL_ID]",
+                  "\t,[CURSO]",
+                  "\t,[INSTITUICAO]",
+                  "\t,CASE [CONCLUIDA]",
+                  "\t\tWHEN 1 THEN 'SIM'",
+                  "\t\tWHEN 0 THEN 'NÃO'",
+                  "\tEND CONCLUIDA",
+                  "\t,CASE ",
+                  "\t\tWHEN [GRADUACAO_ID] <> '-1' THEN 'Graduação'",
+                  "\t\tWHEN [POS_GRADUACAO_ID] <> '-1' THEN 'Pós Graduação'",
+                  "\t\tELSE 'Não especificado'",
+                  "\tEND NIVEL",
+                  "\t,CASE [DURACAO_DE_CURSO_ID]",
+                  "\t\tWHEN 1 THEN 'Curta (até 40 horas)'",
+                  "\t\tWHEN 40 THEN 'Média (acima de 40 horas, até 360 horas)'",
+                  "\t\tWHEN 360 THEN 'Longa (acima de 360 horas)'",
+                  "\t\tELSE 'Não especificado'",
+                  "\tEND DURACAO",
+                  "\t,[ANO_DE_CONCLUSAO]",
+                  "\t,COALESCE([CLASSIFICACAO_CURSO],'Não especificado') [CLASSIFICACAO_CURSO]",
+                  "FROM [VAGAS_DW].[FORMACOES_ACADEMICAS]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": [
+              "SELECT",
+              "\t[COD_CAND]",
+              "\t,[NIVEL_ID]",
+              "\t,[CURSO]",
+              "\t,[INSTITUICAO]",
+              "\t,CASE [CONCLUIDA]",
+              "\t\tWHEN 1 THEN 'SIM'",
+              "\t\tWHEN 0 THEN 'NÃO'",
+              "\tEND CONCLUIDA",
+              "\t,CASE ",
+              "\t\tWHEN [GRADUACAO_ID] <> '-1' THEN 'Graduação'",
+              "\t\tWHEN [POS_GRADUACAO_ID] <> '-1' THEN 'Pós Graduação'",
+              "\t\tELSE 'Não especificado'",
+              "\tEND NIVEL",
+              "\t,CASE [DURACAO_DE_CURSO_ID]",
+              "\t\tWHEN 1 THEN 'Curta (até 40 horas)'",
+              "\t\tWHEN 40 THEN 'Média (acima de 40 horas, até 360 horas)'",
+              "\t\tWHEN 360 THEN 'Longa (acima de 360 horas)'",
+              "\t\tELSE 'Não especificado'",
+              "\tEND DURACAO",
+              "\t,[ANO_DE_CONCLUSAO]",
+              "\t,COALESCE([CLASSIFICACAO_CURSO],'Não especificado') [CLASSIFICACAO_CURSO]",
+              "FROM [VAGAS_DW].[FORMACOES_ACADEMICAS]"
+            ]
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "Query"
+          },
+          {
+            "name": "QueryEditorSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT",
+              "\t[COD_CAND]",
+              "\t,[NIVEL_ID]",
+              "\t,[CURSO]",
+              "\t,[INSTITUICAO]",
+              "\t,CASE [CONCLUIDA]",
+              "\t\tWHEN 1 THEN 'SIM'",
+              "\t\tWHEN 0 THEN 'NÃO'",
+              "\tEND CONCLUIDA",
+              "\t,CASE ",
+              "\t\tWHEN [GRADUACAO_ID] <> '-1' THEN 'Graduação'",
+              "\t\tWHEN [POS_GRADUACAO_ID] <> '-1' THEN 'Pós Graduação'",
+              "\t\tELSE 'Não especificado'",
+              "\tEND NIVEL",
+              "\t,CASE [DURACAO_DE_CURSO_ID]",
+              "\t\tWHEN 1 THEN 'Curta (até 40 horas)'",
+              "\t\tWHEN 40 THEN 'Média (acima de 40 horas, até 360 horas)'",
+              "\t\tWHEN 360 THEN 'Longa (acima de 360 horas)'",
+              "\t\tELSE 'Não especificado'",
+              "\tEND DURACAO",
+              "\t,[ANO_DE_CONCLUSAO]",
+              "\t,COALESCE([CLASSIFICACAO_CURSO],'Não especificado') [CLASSIFICACAO_CURSO]",
+              "FROM [VAGAS_DW].[FORMACOES_ACADEMICAS]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+            ]
           }
         ]
       }
