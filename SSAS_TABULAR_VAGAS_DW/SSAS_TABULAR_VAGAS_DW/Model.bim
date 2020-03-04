@@ -7,7 +7,7 @@
     "dataSources": [
       {
         "name": "VAGAS_DW",
-        "connectionString": "Provider=SQLNCLI11;Data Source=BKO-SRV-PBI;Persist Security Info=false;Integrated Security=SSPI;Initial Catalog=VAGAS_DW",
+        "connectionString": "Provider=SQLNCLI11;Data Source=SRV-SQLSERVER-DW;Persist Security Info=false;Integrated Security=SSPI;Initial Catalog=VAGAS_DW",
         "impersonationMode": "impersonateServiceAccount",
         "maxConnections": 1000,
         "annotations": [
@@ -70638,6 +70638,142 @@
             ]
           }
         ]
+      },
+      {
+        "name": "VAGAS_RECOMENDACAO",
+        "columns": [
+          {
+            "name": "COD_VAGA",
+            "dataType": "int64",
+            "sourceColumn": "COD_VAGA",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_PRIMEIRA_RECOMENDACAO_SOURCE",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "DATA_PRIMEIRA_RECOMENDACAO",
+            "formatString": "General Date",
+            "sourceProviderType": "DBDate"
+          },
+          {
+            "name": "DIASCADASTROVAGA_RECOMENDACAO_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DIASCADASTROVAGA_RECOMENDACAO",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "VAGA_VALIDADA",
+            "dataType": "string",
+            "sourceColumn": "VAGA_VALIDADA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VAGAS_RECOMENDACAO",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[VAGAS_RECOMENDACAO].* FROM [VAGAS_DW].[VAGAS_RECOMENDACAO] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "TEMPO_DIAS_VAGA_RECOMENDADA",
+            "expression": "AVERAGE('VAGAS_RECOMENDACAO'[DIASCADASTROVAGA_RECOMENDACAO_SOURCE])"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[VAGAS_RECOMENDACAO].* FROM [VAGAS_DW].[VAGAS_RECOMENDACAO] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "VAGAS_RECOMENDACAO"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "VAGAS_RECOMENDACAO - DATA_PRIMEIRA_RECOMENDACAO",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_PRIMEIRA_RECOMENDACAO",
+            "dataType": "dateTime",
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "int64",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "MES",
+            "dataType": "int64",
+            "sourceColumn": "MES",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VAGAS_RECOMENDACAO - DATA_PRIMEIRA_RECOMENDACAO",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -72153,6 +72289,13 @@
         "fromColumn": "Data_candidatura_SOURCE",
         "toTable": "VAGAS_CANDIDATURAS_AJUSTES - DATA_CANDIDATURA",
         "toColumn": "DATA_CANDIDATURA"
+      },
+      {
+        "name": "c12263fc-eda2-44ea-8b48-cab9fd6752aa",
+        "fromTable": "VAGAS_RECOMENDACAO",
+        "fromColumn": "COD_VAGA",
+        "toTable": "VAGAS",
+        "toColumn": "COD_VAGA"
       }
     ],
     "perspectives": [
@@ -72649,14 +72792,6 @@
         "modelPermission": "administrator",
         "members": [
           {
-            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
-            "memberId": "S-1-5-20"
-          },
-          {
-            "memberName": "Todos",
-            "memberId": "S-1-1-0"
-          },
-          {
             "memberName": "VAGASTEC\\sylvia.fernandez",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-6302"
           },
@@ -72675,6 +72810,14 @@
           {
             "memberName": "VAGASTEC\\mario",
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7635"
+          },
+          {
+            "memberName": "NT AUTHORITY\\NETWORK SERVICE",
+            "memberId": "S-1-5-20"
+          },
+          {
+            "memberName": "Everyone",
+            "memberId": "S-1-1-0"
           }
         ]
       }
