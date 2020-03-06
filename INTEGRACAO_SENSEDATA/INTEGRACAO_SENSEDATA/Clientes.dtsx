@@ -8,13 +8,13 @@
   DTS:DelayValidation="True"
   DTS:DTSID="{89BAA9F3-114A-4A56-AC9B-D0AD31994B65}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.0800.90"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
   DTS:LocaleID="1046"
   DTS:ObjectName="Clientes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="107"
-  DTS:VersionGUID="{3539AC61-C8F7-42C5-8A4E-96C251BD75B8}">
+  DTS:VersionBuild="111"
+  DTS:VersionGUID="{446D8A53-67F3-4438-B50E-3694AA93EEC0}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -34,7 +34,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_03_06\clientes.csv">
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_03_06\clientes.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -246,7 +246,7 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:FileUsageType="3"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_03_06" />
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_03_06" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -263,6 +263,23 @@
   </DTS:PackageParameters>
   <DTS:Variables />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Atualização da informação do campo STATUS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{993E7BB1-38E4-4B18-80E8-1D7F8D9D51C0}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Atualização da informação do campo STATUS"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
+          SQLTask:SqlStatementSource="-- Carga dos novos registros:&#xA;INSERT INTO [VAGAS_DW].[SNAPSHOT_CLIENTES_SENSEDATA_STATUS](CONTA_ID,STATUS_CONTA_ID,DATA_CARGA,GrupoEconomico,ClienteCRM,DescricaoCliente,CNPJ,Cliente_desde,Municipio,Estado,Porte,Fase,Segmento,CSM,GR,Proprietario_Opp,Data_FimUso,Motivo_cancelamento,Concorrente_fusao,TIPO_CONTA,CATEGORIA_CONTA,HIERARQUIA_CONTA,Data_implantacao)&#xA;SELECT&#x9;Id_ClienteCRM,&#xA;&#x9;&#x9;[Status],&#xA;&#x9;&#x9;DATA_CARGA,&#xA;&#x9;&#x9;GrupoEconomico ,&#xA;&#x9;&#x9;ClienteCRM ,&#xA;&#x9;&#x9;DescricaoCliente ,&#xA;&#x9;&#x9;CNPJ ,&#xA;&#x9;&#x9;Cliente_desde ,&#xA;&#x9;&#x9;Municipio ,&#xA;&#x9;&#x9;Estado ,&#xA;&#x9;&#x9;Porte ,&#xA;&#x9;&#x9;Fase ,&#xA;&#x9;&#x9;Segmento ,&#xA;&#x9;&#x9;CSM ,&#xA;&#x9;&#x9;GR ,&#xA;&#x9;&#x9;Proprietario_Opp ,&#xA;&#x9;&#x9;Data_FimUso ,&#xA;&#x9;&#x9;Motivo_cancelamento ,&#xA;&#x9;&#x9;Concorrente_fusao ,&#xA;&#x9;&#x9;TIPO_CONTA ,&#xA;&#x9;&#x9;CATEGORIA_CONTA ,&#xA;&#x9;&#x9;HIERARQUIA_CONTA ,&#xA;&#x9;&#x9;Data_implantacao &#xA;FROM&#x9;[VAGAS_DW].[TMP_CLIENTES_SENSEDATA] AS A&#xA;WHERE&#x9;NOT EXISTS (SELECT *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;[VAGAS_DW].[SNAPSHOT_CLIENTES_SENSEDATA_STATUS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE&#x9;A.Id_ClienteCRM = A1.CONTA_ID) ;&#xA;&#xA;---- Inserção de registros pra validação da carga (ex-cliente), o registro existia numa carga anterior e passou a não existir na próxima carga na VAGAS_DW.TMP_CLIENTES_SENSEDATA&#xA;--INSERT INTO [VAGAS_DW].[SNAPSHOT_CLIENTES_SENSEDATA_STATUS](CONTA_ID,STATUS_CONTA_ID,DATA_CARGA)&#xA;--VALUES ('CONTA_ID_TESTE_INATIVO','ATIVO','20200305'); &#xA;--SELECT * FROM VAGAS_DW.SNAPSHOT_CLIENTES_SENSEDATA_STATUS WHERE CONTA_ID = 'CONTA_ID_TESTE_INATIVO' ;&#xA;&#xA;-- Atualização dos registros que viraram ex-clientes:&#xA;UPDATE&#x9;[VAGAS_DW].[SNAPSHOT_CLIENTES_SENSEDATA_STATUS]&#xA;SET&#x9;&#x9;STATUS_CONTA_ID = IIF(A.STATUS_CONTA_ID = 'ATIVO', 'INATIVO', 'INATIVO - Conta Filho'),&#xA;&#x9;&#x9;DATA_CARGA = CONVERT(DATE, GETDATE())&#xA;FROM&#x9;[VAGAS_DW].[SNAPSHOT_CLIENTES_SENSEDATA_STATUS] AS A&#xA;WHERE&#x9;NOT EXISTS (SELECT *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;[VAGAS_DW].[TMP_CLIENTES_SENSEDATA] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE&#x9;A.CONTA_ID = A1.Id_ClienteCRM) ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Criar diretório do dia"
       DTS:CreationName="Microsoft.FileSystemTask"
@@ -296,7 +313,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="-- Campos Rescisão Opp:&#xA;DROP TABLE IF EXISTS TMP_Tab_Opp_Rescisao_Motivos;&#xA;&#xA;SELECT&#x9;A.CONTAID ,&#xA;&#x9;&#x9;A.OportunidadeID ,&#xA;&#x9;&#x9;ISNULL(B.Concorrente_Outro, '') AS Concorrente_outro ,&#xA;&#x9;&#x9;ISNULL(B.Outra_empresa_cliente, '') AS Outra_empresa_cliente&#xA;INTO&#x9;TMP_Tab_Opp_Rescisao_Motivos&#xA;FROM&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A&#x9;&#x9;INNER JOIN OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A1.id_c AS OportunidadeID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.concorrente_outro_c AS Concorrente_Outro ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.outra_empresa_cliente_c AS Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;sugarcrm.opportunities_cstm AS A1') AS B&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A.OportunidadeID = B.OportunidadeID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;WHERE&#x9;EXISTS ( SELECT&#x9;1&#xA;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CONTAID = A1.CONTA_ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.EX_CLIENTE = 0)&#xA;&#x9;&#x9;AND A.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;AND A.Fase = 'fechado_e_ganho' &#xA;&#x9;&#x9;AND A.RECORRENTE = 1 ;&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_Opp_Rescisao_Motivos_OportunidadeID ON TMP_Tab_Opp_Rescisao_Motivos (OportunidadeID) ;&#xA;&#xA;-- Clientes implantados:&#xA;IF OBJECT_ID ('VAGAS_DW.VAGAS_DW.TMP_CLIENTES_IMPLANTADOS') IS NOT NULL&#xA;DROP TABLE [VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] ;&#xA;&#xA;SELECT&#x9;C.Id_ClienteCRM,&#xA;&#x9;&#x9;C.Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;C.Chave_Cliente_CRM_ContaID,&#xA;&#x9;&#x9;A.CLIENTE,&#xA;&#x9;&#x9;MAX(A.DATA_CONCLUSAO) AS DATA_IMPLANTACAO&#xA;INTO&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS]&#xA;FROM&#x9;[VAGAS_DW].[DEMANDAS_EQUIPES] AS A&#x9;&#x9;INNER JOIN OPENQUERY(MYSQLPROVIDER, &#xA;&#x9;'SELECT DISTINCT A.ID AS ID_DEMANDA ,&#xA;&#x9;&#x9;&#x9;A.issuenum AS NUMERO_DEMANDA ,&#xA;&#x9;&#x9;&#x9;CONVERT(A.SUMMARY USING Latin1) AS NOME_DEMANDA,&#xA;&#x9;&#x9;&#x9;CASE&#xA;&#x9;&#x9;&#x9;&#x9;WHEN  PP.customvalue IS NULL AND QQ.customvalue IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN LTRIM(RTRIM(QQ.customvalue))&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PP.customvalue IS NOT NULL AND QQ.customvalue IS NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN LTRIM(RTRIM(PP.customvalue))&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PP.customvalue IS NOT NULL AND QQ.customvalue IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN CONCAT(LTRIM(RTRIM(PP.customvalue)), '' - '', LTRIM(RTRIM(QQ.customvalue)))&#xA;&#x9;&#x9;&#x9;END AS TIPO_CLIENTE_IMPL&#xA;&#x9;FROM&#x9;jiradb.jiraissue AS A&#x9;&#x9;INNER JOIN jiradb.project AS B ON A.PROJECT = B.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN jiradb.issuetype AS C ON A.issuetype = C.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN jiradb.issuestatus D ON A.issuestatus = D.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.issuelink E ON E.DESTINATION = A.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.resolution F ON F.ID = A.RESOLUTION&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.nodeassociation G ON G.SOURCE_NODE_ID = A.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.projectversion H ON H.ID = G.SINK_NODE_ID AND H.PROJECT = 14701 #Kanban equipe Implantação&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.jiraissue I ON I.ID = E.SOURCE&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldvalue AS P ON A.id = P.ISSUE AND P.CUSTOMFIELD = 15200 AND P.PARENTKEY IS NULL &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldoption AS PP ON P.STRINGVALUE = PP.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldvalue AS Q ON A.id = Q.ISSUE AND Q.CUSTOMFIELD = 15200 AND Q.PARENTKEY IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldoption AS QQ ON Q.STRINGVALUE = QQ.id&#xA;                                    &#xA;&#x9;WHERE&#x9;A.project = 14701&#xA;&#x9;&#x9;&#x9;AND NOT (PP.customvalue IS NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; AND QQ.customvalue IS NULL)') AS B&#x9;ON A.ID_DEMANDA = B.ID_DEMANDA&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.CONTA_ID AS Id_ClienteCRM,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  A1.CLIENTE_VAGAS AS Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  A1.CLIENTE_CRM AS Chave_Cliente_CRM_ContaID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CLIENTE = ISNULL(A1.CLIENTE_VAGAS, A1.CLIENTE_CRM) COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_PRM_VAGA_PUBLICADA DESC) AS C&#xA;WHERE&#x9;A.NOME_PROJETO = 'Implantação'&#xA;&#x9;&#x9;AND A.TIPO_DEMANDA = 'Demanda'&#xA;&#x9;&#x9;AND A.STATUS_DEMANDA = 'Concluída'&#xA;&#x9;&#x9;AND&#x9;LEFT(B.TIPO_CLIENTE_IMPL, 12) = 'Novo Cliente'&#xA;GROUP BY&#xA;&#x9;&#x9;C.Id_ClienteCRM,&#xA;&#x9;&#x9;C.Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;C.Chave_Cliente_CRM_ContaID,&#xA;&#x9;&#x9;A.CLIENTE ;&#xA;&#xA;&#xA;-- Query TMP_CLIENTES_SENSEDATA:&#xA;TRUNCATE TABLE [VAGAS_DW].[TMP_CLIENTES_SENSEDATA];&#xA;&#xA;INSERT INTO [VAGAS_DW].[TMP_CLIENTES_SENSEDATA]&#xA;SELECT&#x9;&#xA;&#x9;&#x9;(SELECT CLIENTE_CRM FROM VAGAS_DW.CLIENTES WHERE CONTA_ID = G.CONTA_ID_PAI) AS GrupoEconomico ,&#xA;&#x9;&#x9;A.CONTA_ID AS Id_ClienteCRM ,&#xA;&#x9;&#x9;A.CLIENTE_CRM AS ClienteCRM ,&#xA;&#x9;&#x9;B.DescricaoCliente ,&#xA;&#x9;&#x9;C.CNPJ ,&#xA;&#x9;&#x9;CONVERT(DATE, D.DataFechamento) AS Cliente_desde ,&#xA;&#x9;&#x9;G.MUNICIPIO as Municipio,&#xA;&#x9;&#x9;CASE &#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Acre' OR G.UF = 'AC' THEN 'AC'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Alagoas' OR G.UF = 'AL' THEN 'AL'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Amapá' OR G.UF = 'AP' THEN 'AP'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Amazonas' OR G.UF = 'AM' THEN 'AM'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Bahia' OR G.UF = 'BA' THEN 'BA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Ceará' OR G.UF = 'CE' THEN 'CE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Distrito Federal' OR G.UF = 'DF' THEN 'DF'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Espírito Santo' OR G.UF = 'ES' THEN 'ES'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Goiás' OR G.UF = 'GO' THEN 'GO'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Maranhão' OR G.UF = 'MA' THEN 'MA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Mato Grosso' OR G.UF = 'MT' THEN 'MT'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Mato Grosso do Sul' OR G.UF = 'MS' THEN 'MS'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Minas Gerais' OR G.UF = 'MG' THEN 'MG'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Pará' OR G.UF = 'PA' THEN 'PA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Paraíba' OR G.UF = 'PB' THEN 'PB'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Paraná' OR G.UF = 'PR' THEN 'PR'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Pernambuco' OR G.UF = 'PE' THEN 'PE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Piauí' OR G.UF = 'PI' THEN 'PI'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio de Janeiro' OR G.UF = 'RJ' THEN 'RJ'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio Grande do Norte' OR G.UF = 'RN' THEN 'RN'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio Grande do Sul' OR G.UF = 'RS' THEN 'RS'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rondônia' OR G.UF = 'RO' THEN 'RO'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Roraima' OR G.UF = 'RR' THEN 'RR'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Santa Catarina' OR G.UF = 'SC' THEN 'SC'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'São Paulo' OR G.UF = 'SP' THEN 'SP'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Sergipe' OR G.UF = 'SE' THEN 'SE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Tocantins' OR G.UF = 'TO' THEN 'TO'&#xA;&#x9;&#x9;&#x9;ELSE NULL&#xA;&#x9;&#x9;END AS Estado,&#xA;&#x9;&#x9;A.SEGMENTO_SC AS Porte ,&#xA;&#x9;&#x9;NULL AS Fase ,&#xA;&#x9;&#x9;A.CNAE_SECAO AS Segmento ,&#xA;&#x9;&#x9;A.Classificacao AS [Status] ,&#xA;&#x9;&#x9;NULL AS CSM ,&#xA;&#x9;&#x9;IIF(CHARINDEX('.', GR) = 0, GR, UPPER(LEFT(GR, 1)) + LOWER(SUBSTRING(GR, 2, (LEN(SUBSTRING(GR, 1, CHARINDEX('.', GR)-1))-1))) + ' ' + UPPER(SUBSTRING(GR, (CHARINDEX('.', GR)+1), 1)) + LOWER(REVERSE(LEFT(SUBSTRING(REVERSE(GR), 1, CHARINDEX('.', REVERSE(GR))-1), LEN(SUBSTRING(REVERSE(GR), 1, CHARINDEX('.', REVERSE(GR))-1))-1)))) AS GR ,&#xA;&#x9;&#x9;IIF(CHARINDEX('.', D.Proprietario) = 0, D.Proprietario, UPPER(LEFT(D.Proprietario, 1)) + LOWER(SUBSTRING(D.Proprietario, 2, (LEN(SUBSTRING(D.Proprietario, 1, CHARINDEX('.', D.Proprietario)-1))-1))) + ' ' + UPPER(SUBSTRING(D.Proprietario, (CHARINDEX('.', D.Proprietario)+1), 1)) + LOWER(REVERSE(LEFT(SUBSTRING(REVERSE(D.Proprietario), 1, CHARINDEX('.', REVERSE(D.Proprietario))-1), LEN(SUBSTRING(REVERSE(D.Proprietario), 1, CHARINDEX('.', REVERSE(D.Proprietario))-1))-1)))) AS Proprietario_Opp ,&#xA;&#x9;&#x9;E.DataFimUso AS Data_FimUso ,&#xA;&#x9;&#x9;CONCAT_WS(' / ', F.MOTIVO_FECHAMENTO, F.MOTIVO_FECHAMENTO_DETALHE) AS Motivo_cancelamento,&#xA;&#x9;&#x9;CASE&#xA;&#x9;&#x9;&#x9;WHEN F.MOTIVO_FECHAMENTO = 'utiliza_outro_sistema'&#xA;&#x9;&#x9;&#x9;&#x9;THEN ISNULL(F.MOTIVO_CONCORRENTE, F.Concorrente_Outro)&#xA;&#x9;&#x9;&#x9;WHEN F.MOTIVO_FECHAMENTO = 'fusao_entre_empresas'&#xA;&#x9;&#x9;&#x9;&#x9;THEN F.Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;ELSE ''&#xA;&#x9;&#x9;END AS Concorrente_fusao ,&#xA;&#x9;&#x9;G.TIPO AS TIPO_CONTA ,&#xA;&#x9;&#x9;G.CATEGORIA AS CATEGORIA_CONTA,&#xA;&#x9;&#x9;IIF(A.CONTA_ID = G.CONTA_ID_PAI, 'Conta Pai', 'Conta Filha') AS HIERARQUIA_CONTA,&#xA;&#x9;&#x9;Subquery_Implantacao_Cliente.Data_implantacao&#xA;                                ,GETDATE() AS DATA_CARGA&#xA;FROM&#x9;[VAGAS_DW].[CLIENTES] AS A&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.RAZAO_SOCIAL AS DescricaoCliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[Clientes_DadosERP] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.IdCliente_CRM OR A.CONTA_ID = A1.IdCliente_CRM_Filho ) AS B&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.CNPJ&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[FATURAS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.COD_CLI_CRM&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_REFERENCIA DESC ) AS C&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria IN ('cliente_potencial', 'cliente_cotacao')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento ) AS D&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A2.id_c AS CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.data_fim_uso_c AS DataFimUso&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;oqc_offering_cstm AS A1&#x9;INNER JOIN accounts_cstm AS A2&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A1.id_c = A2.oqc_offering_id_c') AS E&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A.CONTA_ID = E.CONTA_ID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.OportunidadeID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.Oportunidade ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento AS DataUltRescisao ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_FECHAMENTO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_FECHAMENTO_DETALHE ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_CONCORRENTE ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A2.CONCORRENTE_OUTRO COLLATE SQL_Latin1_General_CP1_CI_AI AS CONCORRENTE_OUTRO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A2.Outra_empresa_cliente COLLATE SQL_Latin1_General_CP1_CI_AI AS Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#x9;INNER JOIN TMP_Tab_Opp_Rescisao_Motivos AS A2 &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A1.OportunidadeID = A2.OportunidadeID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.RECORRENTE = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento DESC ) AS F&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN ( SELECT A1.CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CONTA_ID AS CONTA_ID_PAI,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.TIPO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CATEGORIA ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MUNICIPIO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.UF&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CONTAS_CRM] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; UNION ALL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT A1.CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CONTA_ID_PAI,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.TIPO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CATEGORIA ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MUNICIPIO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.UF&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A1 ) AS G ON A.CONTA_ID = G.CONTA_ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.DATA_IMPLANTACAO AS Data_implantacao&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           FROM&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           WHERE&#x9;A.CONTA_ID = A1.Id_ClienteCRM&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           A1.DATA_IMPLANTACAO DESC) AS Subquery_Implantacao_Cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;WHERE&#x9;A.EX_CLIENTE = 0&#xA;&#x9;&#x9;AND G.TIPO IN ('cliente_fit','cliente_em_aviso_previo','cliente_vagas_redes','cliente_bloqueado','cliente_bloqueado_inadimplencia','cliente_recrutador')&#xA;&#x9;&#x9;AND G.CATEGORIA IN ('cliente_fit','cliente_em_aviso_previo','cliente_vagas_redes','cliente_bloqueado','cliente_bloqueado_inadimplencia','cliente_recrutador')&#xA;&#x9;&#x9;AND A.CLIENTE_CRM NOT IN ('ficticia')" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="-- Campos Rescisão Opp:&#xA;DROP TABLE IF EXISTS TMP_Tab_Opp_Rescisao_Motivos;&#xA;&#xA;SELECT&#x9;A.CONTAID ,&#xA;&#x9;&#x9;A.OportunidadeID ,&#xA;&#x9;&#x9;ISNULL(B.Concorrente_Outro, '') AS Concorrente_outro ,&#xA;&#x9;&#x9;ISNULL(B.Outra_empresa_cliente, '') AS Outra_empresa_cliente&#xA;INTO&#x9;TMP_Tab_Opp_Rescisao_Motivos&#xA;FROM&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A&#x9;&#x9;INNER JOIN OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A1.id_c AS OportunidadeID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.concorrente_outro_c AS Concorrente_Outro ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.outra_empresa_cliente_c AS Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;sugarcrm.opportunities_cstm AS A1') AS B&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A.OportunidadeID = B.OportunidadeID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;WHERE&#x9;EXISTS ( SELECT&#x9;1&#xA;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CONTAID = A1.CONTA_ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.EX_CLIENTE = 0)&#xA;&#x9;&#x9;AND A.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;AND A.Fase = 'fechado_e_ganho' &#xA;&#x9;&#x9;AND A.RECORRENTE = 1 ;&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_Opp_Rescisao_Motivos_OportunidadeID ON TMP_Tab_Opp_Rescisao_Motivos (OportunidadeID) ;&#xA;&#xA;-- Clientes implantados:&#xA;IF OBJECT_ID ('VAGAS_DW.VAGAS_DW.TMP_CLIENTES_IMPLANTADOS') IS NOT NULL&#xA;DROP TABLE [VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] ;&#xA;&#xA;SELECT&#x9;C.Id_ClienteCRM,&#xA;&#x9;&#x9;C.Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;C.Chave_Cliente_CRM_ContaID,&#xA;&#x9;&#x9;A.CLIENTE,&#xA;&#x9;&#x9;MAX(A.DATA_CONCLUSAO) AS DATA_IMPLANTACAO&#xA;INTO&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS]&#xA;FROM&#x9;[VAGAS_DW].[DEMANDAS_EQUIPES] AS A&#x9;&#x9;INNER JOIN OPENQUERY(MYSQLPROVIDER, &#xA;&#x9;'SELECT DISTINCT A.ID AS ID_DEMANDA ,&#xA;&#x9;&#x9;&#x9;A.issuenum AS NUMERO_DEMANDA ,&#xA;&#x9;&#x9;&#x9;CONVERT(A.SUMMARY USING Latin1) AS NOME_DEMANDA,&#xA;&#x9;&#x9;&#x9;CASE&#xA;&#x9;&#x9;&#x9;&#x9;WHEN  PP.customvalue IS NULL AND QQ.customvalue IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN LTRIM(RTRIM(QQ.customvalue))&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PP.customvalue IS NOT NULL AND QQ.customvalue IS NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN LTRIM(RTRIM(PP.customvalue))&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PP.customvalue IS NOT NULL AND QQ.customvalue IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN CONCAT(LTRIM(RTRIM(PP.customvalue)), '' - '', LTRIM(RTRIM(QQ.customvalue)))&#xA;&#x9;&#x9;&#x9;END AS TIPO_CLIENTE_IMPL&#xA;&#x9;FROM&#x9;jiradb.jiraissue AS A&#x9;&#x9;INNER JOIN jiradb.project AS B ON A.PROJECT = B.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN jiradb.issuetype AS C ON A.issuetype = C.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN jiradb.issuestatus D ON A.issuestatus = D.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.issuelink E ON E.DESTINATION = A.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.resolution F ON F.ID = A.RESOLUTION&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.nodeassociation G ON G.SOURCE_NODE_ID = A.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.projectversion H ON H.ID = G.SINK_NODE_ID AND H.PROJECT = 14701 #Kanban equipe Implantação&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.jiraissue I ON I.ID = E.SOURCE&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldvalue AS P ON A.id = P.ISSUE AND P.CUSTOMFIELD = 15200 AND P.PARENTKEY IS NULL &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldoption AS PP ON P.STRINGVALUE = PP.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldvalue AS Q ON A.id = Q.ISSUE AND Q.CUSTOMFIELD = 15200 AND Q.PARENTKEY IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldoption AS QQ ON Q.STRINGVALUE = QQ.id&#xA;                                    &#xA;&#x9;WHERE&#x9;A.project = 14701&#xA;&#x9;&#x9;&#x9;AND NOT (PP.customvalue IS NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; AND QQ.customvalue IS NULL)') AS B&#x9;ON A.ID_DEMANDA = B.ID_DEMANDA&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.CONTA_ID AS Id_ClienteCRM,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  A1.CLIENTE_VAGAS AS Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  A1.CLIENTE_CRM AS Chave_Cliente_CRM_ContaID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CLIENTE = ISNULL(A1.CLIENTE_VAGAS, A1.CLIENTE_CRM) COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_PRM_VAGA_PUBLICADA DESC) AS C&#xA;WHERE&#x9;A.NOME_PROJETO = 'Implantação'&#xA;&#x9;&#x9;AND A.TIPO_DEMANDA = 'Demanda'&#xA;&#x9;&#x9;AND A.STATUS_DEMANDA = 'Concluída'&#xA;&#x9;&#x9;AND&#x9;LEFT(B.TIPO_CLIENTE_IMPL, 12) = 'Novo Cliente'&#xA;GROUP BY&#xA;&#x9;&#x9;C.Id_ClienteCRM,&#xA;&#x9;&#x9;C.Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;C.Chave_Cliente_CRM_ContaID,&#xA;&#x9;&#x9;A.CLIENTE ;&#xA;&#xA;&#xA;-- Query TMP_CLIENTES_SENSEDATA:&#xA;TRUNCATE TABLE [VAGAS_DW].[TMP_CLIENTES_SENSEDATA];&#xA;&#xA;INSERT INTO [VAGAS_DW].[TMP_CLIENTES_SENSEDATA]&#xA;SELECT&#x9;&#xA;&#x9;&#x9;(SELECT CLIENTE_CRM FROM VAGAS_DW.CLIENTES WHERE CONTA_ID = G.CONTA_ID_PAI) AS GrupoEconomico ,&#xA;&#x9;&#x9;A.CONTA_ID AS Id_ClienteCRM ,&#xA;&#x9;&#x9;A.CLIENTE_CRM AS ClienteCRM ,&#xA;&#x9;&#x9;B.DescricaoCliente ,&#xA;&#x9;&#x9;C.CNPJ ,&#xA;&#x9;&#x9;CONVERT(DATE, D.DataFechamento) AS Cliente_desde ,&#xA;&#x9;&#x9;G.MUNICIPIO as Municipio,&#xA;&#x9;&#x9;CASE &#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Acre' OR G.UF = 'AC' THEN 'AC'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Alagoas' OR G.UF = 'AL' THEN 'AL'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Amapá' OR G.UF = 'AP' THEN 'AP'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Amazonas' OR G.UF = 'AM' THEN 'AM'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Bahia' OR G.UF = 'BA' THEN 'BA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Ceará' OR G.UF = 'CE' THEN 'CE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Distrito Federal' OR G.UF = 'DF' THEN 'DF'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Espírito Santo' OR G.UF = 'ES' THEN 'ES'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Goiás' OR G.UF = 'GO' THEN 'GO'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Maranhão' OR G.UF = 'MA' THEN 'MA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Mato Grosso' OR G.UF = 'MT' THEN 'MT'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Mato Grosso do Sul' OR G.UF = 'MS' THEN 'MS'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Minas Gerais' OR G.UF = 'MG' THEN 'MG'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Pará' OR G.UF = 'PA' THEN 'PA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Paraíba' OR G.UF = 'PB' THEN 'PB'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Paraná' OR G.UF = 'PR' THEN 'PR'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Pernambuco' OR G.UF = 'PE' THEN 'PE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Piauí' OR G.UF = 'PI' THEN 'PI'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio de Janeiro' OR G.UF = 'RJ' THEN 'RJ'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio Grande do Norte' OR G.UF = 'RN' THEN 'RN'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio Grande do Sul' OR G.UF = 'RS' THEN 'RS'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rondônia' OR G.UF = 'RO' THEN 'RO'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Roraima' OR G.UF = 'RR' THEN 'RR'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Santa Catarina' OR G.UF = 'SC' THEN 'SC'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'São Paulo' OR G.UF = 'SP' THEN 'SP'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Sergipe' OR G.UF = 'SE' THEN 'SE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Tocantins' OR G.UF = 'TO' THEN 'TO'&#xA;&#x9;&#x9;&#x9;ELSE NULL&#xA;&#x9;&#x9;END AS Estado,&#xA;&#x9;&#x9;A.SEGMENTO_SC AS Porte ,&#xA;&#x9;&#x9;NULL AS Fase ,&#xA;&#x9;&#x9;A.CNAE_SECAO AS Segmento ,&#xA;&#x9;&#x9;IIF(A.CONTA_ID = G.CONTA_ID_PAI, 'ATIVA', 'ATIVA - Conta Filha') AS [Status] ,&#xA;&#x9;&#x9;NULL AS CSM ,&#xA;&#x9;&#x9;IIF(CHARINDEX('.', GR) = 0, GR, UPPER(LEFT(GR, 1)) + LOWER(SUBSTRING(GR, 2, (LEN(SUBSTRING(GR, 1, CHARINDEX('.', GR)-1))-1))) + ' ' + UPPER(SUBSTRING(GR, (CHARINDEX('.', GR)+1), 1)) + LOWER(REVERSE(LEFT(SUBSTRING(REVERSE(GR), 1, CHARINDEX('.', REVERSE(GR))-1), LEN(SUBSTRING(REVERSE(GR), 1, CHARINDEX('.', REVERSE(GR))-1))-1)))) AS GR ,&#xA;&#x9;&#x9;IIF(CHARINDEX('.', D.Proprietario) = 0, D.Proprietario, UPPER(LEFT(D.Proprietario, 1)) + LOWER(SUBSTRING(D.Proprietario, 2, (LEN(SUBSTRING(D.Proprietario, 1, CHARINDEX('.', D.Proprietario)-1))-1))) + ' ' + UPPER(SUBSTRING(D.Proprietario, (CHARINDEX('.', D.Proprietario)+1), 1)) + LOWER(REVERSE(LEFT(SUBSTRING(REVERSE(D.Proprietario), 1, CHARINDEX('.', REVERSE(D.Proprietario))-1), LEN(SUBSTRING(REVERSE(D.Proprietario), 1, CHARINDEX('.', REVERSE(D.Proprietario))-1))-1)))) AS Proprietario_Opp ,&#xA;&#x9;&#x9;E.DataFimUso AS Data_FimUso ,&#xA;&#x9;&#x9;CONCAT_WS(' / ', F.MOTIVO_FECHAMENTO, F.MOTIVO_FECHAMENTO_DETALHE) AS Motivo_cancelamento,&#xA;&#x9;&#x9;CASE&#xA;&#x9;&#x9;&#x9;WHEN F.MOTIVO_FECHAMENTO = 'utiliza_outro_sistema'&#xA;&#x9;&#x9;&#x9;&#x9;THEN ISNULL(F.MOTIVO_CONCORRENTE, F.Concorrente_Outro)&#xA;&#x9;&#x9;&#x9;WHEN F.MOTIVO_FECHAMENTO = 'fusao_entre_empresas'&#xA;&#x9;&#x9;&#x9;&#x9;THEN F.Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;ELSE ''&#xA;&#x9;&#x9;END AS Concorrente_fusao ,&#xA;&#x9;&#x9;G.TIPO AS TIPO_CONTA ,&#xA;&#x9;&#x9;G.CATEGORIA AS CATEGORIA_CONTA,&#xA;&#x9;&#x9;IIF(A.CONTA_ID = G.CONTA_ID_PAI, 'Conta Pai', 'Conta Filha') AS HIERARQUIA_CONTA,&#xA;&#x9;&#x9;Subquery_Implantacao_Cliente.Data_implantacao&#xA;        ,CONVERT(DATE, GETDATE()) AS DATA_CARGA&#xA;FROM&#x9;[VAGAS_DW].[CLIENTES] AS A&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.RAZAO_SOCIAL AS DescricaoCliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[Clientes_DadosERP] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.IdCliente_CRM OR A.CONTA_ID = A1.IdCliente_CRM_Filho ) AS B&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.CNPJ&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[FATURAS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.COD_CLI_CRM&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_REFERENCIA DESC ) AS C&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria IN ('cliente_potencial', 'cliente_cotacao')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento ) AS D&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A2.id_c AS CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.data_fim_uso_c AS DataFimUso&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;oqc_offering_cstm AS A1&#x9;INNER JOIN accounts_cstm AS A2&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A1.id_c = A2.oqc_offering_id_c') AS E&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A.CONTA_ID = E.CONTA_ID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.OportunidadeID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.Oportunidade ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento AS DataUltRescisao ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_FECHAMENTO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_FECHAMENTO_DETALHE ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_CONCORRENTE ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A2.CONCORRENTE_OUTRO COLLATE SQL_Latin1_General_CP1_CI_AI AS CONCORRENTE_OUTRO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A2.Outra_empresa_cliente COLLATE SQL_Latin1_General_CP1_CI_AI AS Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#x9;INNER JOIN TMP_Tab_Opp_Rescisao_Motivos AS A2 &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A1.OportunidadeID = A2.OportunidadeID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.RECORRENTE = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento DESC ) AS F&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN ( SELECT A1.CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CONTA_ID AS CONTA_ID_PAI,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.TIPO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CATEGORIA ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MUNICIPIO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.UF&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CONTAS_CRM] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; UNION ALL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT A1.CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CONTA_ID_PAI,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.TIPO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CATEGORIA ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MUNICIPIO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.UF&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A1 ) AS G ON A.CONTA_ID = G.CONTA_ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.DATA_IMPLANTACAO AS Data_implantacao&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           FROM&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           WHERE&#x9;A.CONTA_ID = A1.Id_ClienteCRM&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           A1.DATA_IMPLANTACAO DESC) AS Subquery_Implantacao_Cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;WHERE&#x9;A.EX_CLIENTE = 0&#xA;&#x9;&#x9;AND G.TIPO IN ('cliente_fit','cliente_em_aviso_previo','cliente_vagas_redes','cliente_bloqueado','cliente_bloqueado_inadimplencia','cliente_recrutador')&#xA;&#x9;&#x9;AND G.CATEGORIA IN ('cliente_fit','cliente_em_aviso_previo','cliente_vagas_redes','cliente_bloqueado','cliente_bloqueado_inadimplencia','cliente_recrutador')&#xA;&#x9;&#x9;AND A.CLIENTE_CRM NOT IN ('ficticia')" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -768,7 +785,7 @@ from SA1010</property>
         <ExecuteProcessData
           Executable="%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe"
           Arguments="Get-ChildItem -Recurse | Where-Object {($_.LastWriteTime -lt (Get-Date).AddDays(-7))}| Remove-Item"
-          WorkingDirectory="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\"
+          WorkingDirectory="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\"
           WindowStyle="Hidden" />
       </DTS:ObjectData>
     </DTS:Executable>
@@ -1161,7 +1178,56 @@ from SA1010</property>
                   dataType="System.String"
                   description="O comando SQL a ser executado."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT	GrupoEconomico,
+		Id_ClienteCRM,
+		ClienteCRM,
+		DescricaoCliente,
+		CNPJ,
+		Cliente_desde,
+		Municipio,
+		Estado,
+		Porte,
+		Fase,
+		Segmento,
+		Status,
+		CSM,
+		GR,
+		Proprietario_Opp,
+		Data_FimUso,
+		Motivo_cancelamento,
+		Concorrente_fusao,
+		TIPO_CONTA,
+		CATEGORIA_CONTA,
+		HIERARQUIA_CONTA,
+		Data_implantacao,
+		DATA_CARGA
+FROM	[VAGAS_DW].[TMP_CLIENTES_SENSEDATA] AS A
+UNION ALL
+SELECT	GrupoEconomico,
+		CONTA_ID,
+		ClienteCRM,
+		DescricaoCliente,
+		CNPJ,
+		Cliente_desde,
+		Municipio,
+		Estado,
+		Porte,
+		Fase,
+		Segmento,
+		STATUS_CONTA_ID,
+		CSM,
+		GR,
+		Proprietario_Opp,
+		Data_FimUso,
+		Motivo_cancelamento,
+		Concorrente_fusao,
+		TIPO_CONTA,
+		CATEGORIA_CONTA,
+		HIERARQUIA_CONTA,
+		Data_implantacao,
+		DATA_CARGA
+FROM	[VAGAS_DW].[SNAPSHOT_CLIENTES_SENSEDATA_STATUS]
+WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
                 <property
                   dataType="System.String"
                   description="A variável que contém o comando SQL a ser executado."
@@ -1178,7 +1244,7 @@ from SA1010</property>
                   dataType="System.Int32"
                   description="Especifica o modo usado para acessar o banco de dados."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">2</property>
                 <property
                   dataType="System.String"
                   description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
@@ -1432,6 +1498,16 @@ from SA1010</property>
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Data_implantacao]"
                       name="Data_implantacao"
                       truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[DATA_CARGA]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[DATA_CARGA]"
+                      length="10"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[DATA_CARGA]"
+                      name="DATA_CARGA"
+                      truncationRowDisposition="FailComponent" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1445,7 +1521,7 @@ from SA1010</property>
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_ClienteCRM]"
                       codePage="1252"
                       dataType="str"
-                      length="55"
+                      length="300"
                       name="Id_ClienteCRM" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[ClienteCRM]"
@@ -1560,6 +1636,11 @@ from SA1010</property>
                       dataType="wstr"
                       length="10"
                       name="Data_implantacao" />
+                    <externalMetadataColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[DATA_CARGA]"
+                      dataType="wstr"
+                      length="10"
+                      name="DATA_CARGA" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1578,7 +1659,7 @@ from SA1010</property>
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_ClienteCRM]"
                       codePage="1252"
                       dataType="str"
-                      length="55"
+                      length="300"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_ClienteCRM]"
                       name="Id_ClienteCRM" />
                     <outputColumn
@@ -1715,6 +1796,12 @@ from SA1010</property>
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_implantacao]"
                       name="Data_implantacao" />
                     <outputColumn
+                      refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[DATA_CARGA]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[DATA_CARGA]"
+                      name="DATA_CARGA" />
+                    <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
                       dataType="i4"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
@@ -1763,7 +1850,6 @@ from SA1010</property>
       DTS:refId="Package\Upload S3 Bucket"
       DTS:CreationName="Microsoft.ExecutePackageTask"
       DTS:Description="Tarefa Executar Pacote"
-      DTS:Disabled="True"
       DTS:DTSID="{794DEDBA-4182-497D-8A7F-CAF4BC484490}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
@@ -1816,14 +1902,6 @@ from SA1010</property>
       DTS:ObjectName="Constraint 3"
       DTS:To="Package\ERP -&gt; VAGAS_DW" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
-      DTS:CreationName=""
-      DTS:DTSID="{4819BB4B-43E5-4537-8585-E68ABEAD011C}"
-      DTS:From="Package\ERP -&gt; VAGAS_DW"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 4"
-      DTS:To="Package\Criar tabelas temporárias - VAGAS_DW" />
-    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
       DTS:CreationName=""
       DTS:DTSID="{1C97220A-DCBE-4662-ACCB-C39E5DD9C8BE}"
@@ -1839,19 +1917,35 @@ from SA1010</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 6"
       DTS:To="Package\Criar diretório do dia" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{6A745400-8B17-4514-9906-BC737C4DC9B0}"
+      DTS:From="Package\ERP -&gt; VAGAS_DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\Atualização da informação do campo STATUS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{BCDD1D2B-A63F-4742-99C6-3EAEE523DEFD}"
+      DTS:From="Package\Atualização da informação do campo STATUS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\Criar tabelas temporárias - VAGAS_DW" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="176,42"
           Id="Package\Criar diretório do dia"
@@ -1859,7 +1953,7 @@ from SA1010</property>
         <NodeLayout
           Size="263,42"
           Id="Package\Criar tabelas temporárias - VAGAS_DW"
-          TopLeft="412.5,225.5" />
+          TopLeft="415.5,343.5" />
         <NodeLayout
           Size="171,42"
           Id="Package\ERP -&gt; VAGAS_DW"
@@ -1871,11 +1965,11 @@ from SA1010</property>
         <NodeLayout
           Size="206,42"
           Id="Package\Excluir tabelas temporárias"
-          TopLeft="440,429.5" />
+          TopLeft="443,546.5" />
         <NodeLayout
           Size="141,42"
           Id="Package\Exportar CSV"
-          TopLeft="473.5,326.5" />
+          TopLeft="476.5,443.5" />
         <NodeLayout
           Size="252,42"
           Id="Package\TUNCATE TABLE Clientes_DadosERP"
@@ -1883,21 +1977,21 @@ from SA1010</property>
         <NodeLayout
           Size="162,42"
           Id="Package\Upload S3 Bucket"
-          TopLeft="463,531.5" />
+          TopLeft="466,648.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="544,267.5">
+          TopLeft="547,385.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59"
+              EndConnector="0,58"
               Start="0,0"
-              End="0,51.5">
+              End="0,50.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,51.5" />
+                    End="0,50.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1908,7 +2002,7 @@ from SA1010</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="543.5,368.5">
+          TopLeft="546.5,485.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1930,7 +2024,7 @@ from SA1010</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="543.5,471.5">
+          TopLeft="546.5,588.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -1964,28 +2058,6 @@ from SA1010</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,51.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="544,164.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,61"
-              Start="0,0"
-              End="0,53.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2030,6 +2102,54 @@ from SA1010</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,-74.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="293,42"
+          Id="Package\Atualização da informação do campo STATUS"
+          TopLeft="395,229" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="542.75,164.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64.5"
+              Start="0,0"
+              End="0,57">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,57" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="544.25,271">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,72.5"
+              Start="0,0"
+              End="0,65">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,65" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2106,7 +2226,7 @@ from SA1010</property>
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="281,42"
           Id="Package\Exportar CSV\VAGAS_DW - TMP_CLIENTES_SENSEDATA"
@@ -2134,9 +2254,7 @@ from SA1010</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
