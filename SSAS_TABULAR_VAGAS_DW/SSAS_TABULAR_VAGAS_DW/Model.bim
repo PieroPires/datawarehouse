@@ -7,7 +7,7 @@
     "dataSources": [
       {
         "name": "VAGAS_DW",
-        "connectionString": "Provider=SQLNCLI11;Data Source=SRV-SQLSERVER-DW;Persist Security Info=false;Integrated Security=SSPI;Initial Catalog=VAGAS_DW",
+        "connectionString": "Provider=SQLNCLI11;Data Source=BKO-SRV-PBI;Persist Security Info=false;Integrated Security=SSPI;Initial Catalog=VAGAS_DW",
         "impersonationMode": "impersonateServiceAccount",
         "maxConnections": 1000,
         "annotations": [
@@ -755,6 +755,12 @@
             "dataType": "int64",
             "isHidden": true,
             "sourceColumn": "QTD_CANDIDATURAS_APOS_AJUSTE"
+          },
+          {
+            "name": "LIMITE_CANDIDATURAS_SOURCE",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "LIMITE_CANDIDATURAS_SOURCE"
           }
         ],
         "partitions": [
@@ -949,7 +955,8 @@
                 "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
                 "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
                 "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
-                "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+                "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE,",
+                "A.LIMITE_CANDIDATURAS AS LIMITE_CANDIDATURAS_SOURCE",
                 "FROM [VAGAS_DW].[VAGAS] AS A ;"
               ],
               "dataSource": "VAGAS_DW"
@@ -1145,7 +1152,8 @@
                   "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
                   "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
                   "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
-                  "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+                  "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE,",
+                  "A.LIMITE_CANDIDATURAS AS LIMITE_CANDIDATURAS_SOURCE",
                   "FROM [VAGAS_DW].[VAGAS] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
                 ]
               }
@@ -1312,6 +1320,10 @@
           {
             "name": "QTD_CANDIDATURAS_APOS_AJUSTE",
             "expression": "SUM('VAGAS'[QTD_CANDIDATURAS_APOS_AJUSTE_SOURCE])"
+          },
+          {
+            "name": "LIMITE_CANDIDATURAS",
+            "expression": "AVERAGE([LIMITE_CANDIDATURAS_SOURCE])"
           }
         ],
         "annotations": [
@@ -1513,7 +1525,8 @@
               "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
               "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
               "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
-              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE,",
+              "A.LIMITE_CANDIDATURAS AS LIMITE_CANDIDATURAS_SOURCE",
               "FROM [VAGAS_DW].[VAGAS] AS A ;"
             ]
           },
@@ -1707,7 +1720,8 @@
               "\t\tAND A1.DATA_CANDIDATURA >= (SELECT MIN(AA1.DATA_VALIDACAO)",
               "\t\t\t\t\t\t\t\t   FROM\t  [VAGAS_DW].[VAGAS_VALIDACAO] AS AA1",
               "\t\t\t\t\t\t\t\t   WHERE  A1.CodVaga_HistCand = AA1.COD_VAGA",
-              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE",
+              "\t\t\t\t\t\t\t\t\t\t  AND AA1.TIPO_AJUSTE <> 'Sem Ajuste')) AS QTD_CANDIDATURAS_APOS_AJUSTE,",
+              "A.LIMITE_CANDIDATURAS AS LIMITE_CANDIDATURAS_SOURCE",
               "FROM [VAGAS_DW].[VAGAS] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
             ]
           }
@@ -72819,11 +72833,11 @@
             "memberId": "S-1-5-21-243640632-756488964-2366565561-7635"
           },
           {
-            "memberName": "AUTORIDADE NT\\SERVIÇO DE REDE",
+            "memberName": "NT AUTHORITY\\NETWORK SERVICE",
             "memberId": "S-1-5-20"
           },
           {
-            "memberName": "Todos",
+            "memberName": "Everyone",
             "memberId": "S-1-1-0"
           }
         ]
