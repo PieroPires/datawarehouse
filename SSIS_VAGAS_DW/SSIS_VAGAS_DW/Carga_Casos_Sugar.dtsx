@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Casos_Sugar"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="244"
-  DTS:VersionGUID="{613F3D45-52CF-4A2D-B17C-55C7F3D15C4A}">
+  DTS:VersionBuild="246"
+  DTS:VersionGUID="{229B5356-CA84-4191-A108-FCEFDAC8A32B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -61,7 +61,11 @@
         DTS:Name="[MySQL].[SqlCommand]">"SELECT  CONVERT(A.id USING Latin1) AS ID_CASO,
 	     CONVERT(A.case_number USING Latin1) AS NUMERO_CASO,
 	     CONVERT(C.name USING Latin1) AS CONTA,
-         CONVERT(A.type USING Latin1) AS FILA_ATENDIMENTO,
+		 CASE
+            WHEN (B.hist_primeira_interv_c like \"suporte empresas%\" OR B.hist_fechamento_c like \"suporte empresas%\")
+                THEN CONVERT(\"suporte_empresas\" USING Latin1)
+            ELSE CONVERT(A.type USING Latin1)
+         END AS FILA_ATENDIMENTO,
          CONVERT(A.status USING Latin1) AS STATUS,
          CONVERT(A.priority USING Latin1) AS PRIORIDADE,
          CONVERT(B.criticidade_c USING Latin1) AS CRITICIDADE,
@@ -141,7 +145,11 @@ FROM cases A
                   name="SqlCommand">SELECT  CONVERT(A.id USING Latin1) AS ID_CASO,
 	     CONVERT(A.case_number USING Latin1) AS NUMERO_CASO,
 	     CONVERT(C.name USING Latin1) AS CONTA,
-         CONVERT(A.type USING Latin1) AS FILA_ATENDIMENTO,
+		 CASE
+            WHEN (B.hist_primeira_interv_c like "suporte empresas%" OR B.hist_fechamento_c like "suporte empresas%")
+                THEN CONVERT("suporte_empresas" USING Latin1)
+            ELSE CONVERT(A.type USING Latin1)
+         END AS FILA_ATENDIMENTO,
          CONVERT(A.status USING Latin1) AS STATUS,
          CONVERT(A.priority USING Latin1) AS PRIORIDADE,
          CONVERT(B.criticidade_c USING Latin1) AS CRITICIDADE,
@@ -1291,7 +1299,7 @@ FROM cases A
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="SELECT CONVERT(VARCHAR,DATEADD(DAY,-1,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,ISNULL(MAX(DATA_MODIFICACAO),'19010101'),112))) ,112) AS DATA_ALTERACAO&#xA;FROM VAGAS_DW.CASOS"
+          SQLTask:SqlStatementSource="--SELECT CONVERT(VARCHAR,DATEADD(DAY,-1,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,ISNULL(MAX(DATA_MODIFICACAO),'19010101'),112))) ,112) AS DATA_ALTERACAO&#xA;--FROM VAGAS_DW.CASOS&#xA;&#xA;SELECT&#x9;CONVERT(VARCHAR, '20191029', 112) AS DATA_ALTERACAO"
           SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ResultBinding
             SQLTask:ResultName="DATA_ALTERACAO"
