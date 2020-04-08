@@ -5,7 +5,7 @@
 -- =============================================
 -- 27/02/2019: Removido o critério de recorte dos Novos clientes a partir de 01/01/2018.
 
-USE [VAGAS_DW] ;
+USE [STAGE] ;
 
 IF EXISTS ( SELECT	* FROM SYS.OBJECTS WHERE SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW' AND NAME = 'Stage_SPR_OLTP_Carga_New_Customer_Trained')
 DROP PROCEDURE [VAGAS_DW].[Stage_SPR_OLTP_Carga_New_Customer_Trained] ;
@@ -48,9 +48,9 @@ SELECT	DISTINCT A.CONTAID AS Id_ContaCRM ,
 			IIF(IIF(C.DATA_REALIZACAO_INICIO IS NULL, DATEDIFF(MONTH, CONVERT(DATE, A.DATAFECHAMENTO), CONVERT(DATE, GETDATE())), 0)=1, 2,
 			IIF(IIF(C.DATA_REALIZACAO_INICIO IS NULL, DATEDIFF(MONTH, CONVERT(DATE, A.DATAFECHAMENTO), CONVERT(DATE, GETDATE())), 0)=2, 3,
 			IIF(IIF(C.DATA_REALIZACAO_INICIO IS NULL, DATEDIFF(MONTH, CONVERT(DATE, A.DATAFECHAMENTO), CONVERT(DATE, GETDATE())), 0)>2, 4, 0)))), 0) AS FAIXA
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A		LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS B ON A.CONTAID = B.CONTA_ID
+FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS A		LEFT OUTER JOIN [VAGAS_DW].[VAGAS_DW].[CLIENTES] AS B ON A.CONTAID = B.CONTA_ID
 											OUTER APPLY(SELECT	TOP 1 *
-														FROM	[VAGAS_DW].[TREINAMENTOS_CRM] AS A1
+														FROM	[VAGAS_DW].[VAGAS_DW].[TREINAMENTOS_CRM] AS A1
 														WHERE	A.CONTAID = A1.CONTA_ID
 																AND A1.[STATUS] = 'REALIZADO'
 																AND A1.DATA_REALIZACAO_INICIO >= DATEADD(DAY, 1, DATEADD(DAY, DATEPART(DAY, A.DATAFECHAMENTO) * -1,																				A.DATAFECHAMENTO))
@@ -58,7 +58,7 @@ FROM	[VAGAS_DW].[OPORTUNIDADES] AS A		LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS B
 																	A1.DATA_REALIZACAO_INICIO ASC ) AS C
 
 											OUTER APPLY(SELECT	TOP 1 *
-														FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
+														FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS A1
 														WHERE	A.CONTAID = A1.CONTAID
 																AND A1.Fase = 'fechado_e_ganho'
 														ORDER BY
@@ -70,7 +70,7 @@ WHERE	A.Fase = 'fechado_e_ganho'
 		--AND A.DataFechamento >= '20180101'
 		AND D.OportunidadeCategoria <> 'rescisão' -- Exclui contas onde a última oportunidade é de rescisão.
 		AND NOT EXISTS (SELECT	1
-						FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
+						FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS A1
 						WHERE	A.CONTAID = A1.CONTAID
 							AND A1.Fase = 'fechado_e_ganho'
 							AND A1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'VREDES')
@@ -79,7 +79,7 @@ WHERE	A.Fase = 'fechado_e_ganho'
 							AND A1.OportunidadeCategoria = 'rescisão'
 							AND A1.DataFechamento > A.DataFechamento )
 		AND A.DataFechamento = (SELECT	MIN(A1.DataFechamento)
-								FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
+								FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS A1
 								WHERE	A.CONTAID = A1.CONTAID
 										AND A1.Fase = 'fechado_e_ganho'
 										AND A1.OportunidadeCategoria IN ('cliente_potencial', 'cliente_cotacao')
@@ -88,7 +88,7 @@ WHERE	A.Fase = 'fechado_e_ganho'
 										--AND A1.DataFechamento >= '20180101'
 										AND D.OportunidadeCategoria <> 'rescisão' -- Exclui contas onde a última oportunidade é de rescisão.
 										AND NOT EXISTS (SELECT	1
-														FROM	[VAGAS_DW].[OPORTUNIDADES] AS AA1
+														FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS AA1
 														WHERE	A1.CONTAID = AA1.CONTAID
 																AND AA1.Fase = 'fechado_e_ganho'
 																AND AA1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'VREDES')

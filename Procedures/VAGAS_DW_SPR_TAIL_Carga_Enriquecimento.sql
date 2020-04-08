@@ -46,7 +46,7 @@ BEGIN
 						'PROFILE' + CONVERT(VARCHAR,@CONTADOR) + '_' + @CODIGO + ',  ' +
 						'CAST(''<XMLRoot><RowData>'' + REPLACE(REPLACE(REPLACE(PROFILE' + CONVERT(VARCHAR,@CONTADOR) + '_' + @CODIGO + ',''['',''''),'']'','''')' +
 						','','',''</RowData><RowData>'') + ''</RowData></XMLRoot>'' AS XML) AS x ' +
-						'FROM VAGAS_DW.TMP_ARQUIVO_ENRIQUECIDO_TAIL A ' +
+						'FROM STAGE.VAGAS_DW.TMP_ARQUIVO_ENRIQUECIDO_TAIL A ' +
 					  ') t ' +
 				'CROSS APPLY x.nodes(''/XMLRoot/RowData'')m(n) ' +
 				' WHERE PROFILE' + CONVERT(VARCHAR,@CONTADOR) + '_' + @CODIGO + ' <> '''''
