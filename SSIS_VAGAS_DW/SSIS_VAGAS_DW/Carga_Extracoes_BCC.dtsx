@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\luiz.braz"
   DTS:DTSID="{523E8894-1C59-46BA-BE63-0E0B65E0736E}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Extracoes_BCC"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="27"
-  DTS:VersionGUID="{7413DFBC-9304-4D7D-ABF4-8B235955366A}">
+  DTS:VersionBuild="28"
+  DTS:VersionGUID="{7DBCEE8A-7E9F-4A87-8EBB-58E27AACA420}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -70,23 +70,6 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Limpar Tabela TMP DW"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Execute SQL Task"
-      DTS:DTSID="{c987deab-d73f-4419-a113-37541235c36d}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="Limpar Tabela TMP DW"
-      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="1">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_EXTRACOES_BCC" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
       DTS:refId="Package\Pegar Último COD_PEDIDO"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
@@ -122,334 +105,6 @@
         <ASProcessingData
           ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
           ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;EXTRACOES_BCC&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;EXTRACOES_BCC - DT_PEDIDO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
-      DTS:refId="Package\Transferir dados TMP -&gt; DW"
-      DTS:CreationName="Microsoft.Pipeline"
-      DTS:Description="Data Flow Task"
-      DTS:DTSID="{8f075fe9-e7eb-48bc-ba4c-c77009378018}"
-      DTS:ExecutableType="Microsoft.Pipeline"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="Transferir dados TMP -&gt; DW"
-      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <pipeline
-          version="1">
-          <components>
-            <component
-              refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror"
-              componentClassID="Microsoft.OLEDBSource"
-              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
-              description="OLE DB Source"
-              name="Stage - Mirror"
-              usesDispositions="true"
-              version="7">
-              <properties>
-                <property
-                  dataType="System.Int32"
-                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
-                  name="CommandTimeout">0</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[VAGAS_DW].[TMP_EXTRACOES_BCC]</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies the variable that contains the name of the database object used to open a rowset."
-                  name="OpenRowsetVariable"></property>
-                <property
-                  dataType="System.String"
-                  description="The SQL command to be executed."
-                  name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
-                <property
-                  dataType="System.String"
-                  description="The variable that contains the SQL command to be executed."
-                  name="SqlCommandVariable"></property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the column code page to use when code page information is unavailable from the data source."
-                  name="DefaultCodePage">1252</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Forces the use of the DefaultCodePage property value when describing character data."
-                  name="AlwaysUseDefaultCodePage">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the mode used to access the database."
-                  name="AccessMode"
-                  typeConverter="AccessMode">0</property>
-                <property
-                  dataType="System.String"
-                  description="The mappings between the parameters in the SQL command and variables."
-                  name="ParameterMapping"></property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Connections[OleDbConnection]"
-                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
-                  description="The OLE DB runtime connection used to access the database."
-                  name="OleDbConnection" />
-              </connections>
-              <outputs>
-                <output
-                  refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output]"
-                  name="OLE DB Source Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[COD_CLI]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[COD_CLI]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[COD_CLI]"
-                      name="COD_CLI"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[COD_PEDIDO]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[COD_PEDIDO]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[COD_PEDIDO]"
-                      name="COD_PEDIDO"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[DT_PEDIDO]"
-                      dataType="dbTimeStamp"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[DT_PEDIDO]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[DT_PEDIDO]"
-                      name="DT_PEDIDO"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[QTD_CVS]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[QTD_CVS]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[QTD_CVS]"
-                      name="QTD_CVS"
-                      truncationRowDisposition="FailComponent" />
-                  </outputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[COD_CLI]"
-                      dataType="i4"
-                      name="COD_CLI" />
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[COD_PEDIDO]"
-                      dataType="i4"
-                      name="COD_PEDIDO" />
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[DT_PEDIDO]"
-                      dataType="dbTimeStamp"
-                      name="DT_PEDIDO" />
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].ExternalColumns[QTD_CVS]"
-                      dataType="i4"
-                      name="QTD_CVS" />
-                  </externalMetadataColumns>
-                </output>
-                <output
-                  refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output]"
-                  isErrorOut="true"
-                  name="OLE DB Source Error Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[COD_PEDIDO]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[COD_PEDIDO]"
-                      name="COD_PEDIDO" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[COD_CLI]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[COD_CLI]"
-                      name="COD_CLI" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[DT_PEDIDO]"
-                      dataType="dbTimeStamp"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[DT_PEDIDO]"
-                      name="DT_PEDIDO" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[QTD_CVS]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[QTD_CVS]"
-                      name="QTD_CVS" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP"
-              componentClassID="Microsoft.OLEDBDestination"
-              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
-              description="OLE DB Destination"
-              name="VagasDW - TMP"
-              usesDispositions="true"
-              version="4">
-              <properties>
-                <property
-                  dataType="System.Int32"
-                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
-                  name="CommandTimeout">0</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[VAGAS_DW].[TMP_EXTRACOES_BCC]</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies the variable that contains the name of the database object used to open a rowset."
-                  name="OpenRowsetVariable"></property>
-                <property
-                  dataType="System.String"
-                  description="The SQL command to be executed."
-                  name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the column code page to use when code page information is unavailable from the data source."
-                  name="DefaultCodePage">1252</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Forces the use of the DefaultCodePage property value when describing character data."
-                  name="AlwaysUseDefaultCodePage">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the mode used to access the database."
-                  name="AccessMode"
-                  typeConverter="AccessMode">3</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepNulls">false</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
-                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
-                  name="FastLoadMaxInsertCommitSize">2147483647</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Connections[OleDbConnection]"
-                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
-                  description="The OLE DB runtime connection used to access the database."
-                  name="OleDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]"
-                  errorOrTruncationOperation="Insert"
-                  errorRowDisposition="FailComponent"
-                  hasSideEffects="true"
-                  name="OLE DB Destination Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[COD_CLI]"
-                      cachedDataType="i4"
-                      cachedName="COD_CLI"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[COD_CLI]" />
-                    <inputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[COD_PEDIDO]"
-                      cachedDataType="i4"
-                      cachedName="COD_PEDIDO"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_PEDIDO]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[COD_PEDIDO]" />
-                    <inputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[DT_PEDIDO]"
-                      cachedDataType="dbTimeStamp"
-                      cachedName="DT_PEDIDO"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DT_PEDIDO]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[DT_PEDIDO]" />
-                    <inputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].Columns[QTD_CVS]"
-                      cachedDataType="i4"
-                      cachedName="QTD_CVS"
-                      externalMetadataColumnId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CVS]"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output].Columns[QTD_CVS]" />
-                  </inputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_CLI]"
-                      dataType="i4"
-                      name="COD_CLI" />
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[COD_PEDIDO]"
-                      dataType="i4"
-                      name="COD_PEDIDO" />
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[DT_PEDIDO]"
-                      dataType="dbTimeStamp"
-                      name="DT_PEDIDO" />
-                    <externalMetadataColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input].ExternalColumns[QTD_CVS]"
-                      dataType="i4"
-                      name="QTD_CVS" />
-                  </externalMetadataColumns>
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="OLE DB Destination Error Output"
-                  synchronousInputId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-          </components>
-          <paths>
-            <path
-              refId="Package\Transferir dados TMP -&gt; DW.Paths[OLE DB Source Output]"
-              endId="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP.Inputs[OLE DB Destination Input]"
-              name="OLE DB Source Output"
-              startId="Package\Transferir dados TMP -&gt; DW\Stage - Mirror.Outputs[OLE DB Source Output]" />
-          </paths>
-        </pipeline>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -498,26 +153,10 @@
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
-      DTS:DTSID="{3CCB897D-F737-4825-8E14-F4A9D51877B7}"
+      DTS:DTSID="{5A0410C7-FC87-4200-A735-8163791809A5}"
       DTS:From="Package\Carga Stage Mirror -TMP_EXTRACOES_BCC"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
-      DTS:To="Package\Limpar Tabela TMP DW" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
-      DTS:CreationName=""
-      DTS:DTSID="{783F5A59-0092-4CBA-8612-AC4E027D29EF}"
-      DTS:From="Package\Limpar Tabela TMP DW"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 4"
-      DTS:To="Package\Transferir dados TMP -&gt; DW" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
-      DTS:CreationName=""
-      DTS:DTSID="{B9F5C003-AAAA-4E62-888C-95434A07A930}"
-      DTS:From="Package\Transferir dados TMP -&gt; DW"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 5"
       DTS:To="Package\Carga VAGAS_DW - Extrações BCC" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
@@ -547,11 +186,7 @@
         <NodeLayout
           Size="243,42"
           Id="Package\Carga VAGAS_DW - Extrações BCC"
-          TopLeft="163.666666666667,373.999999999999" />
-        <NodeLayout
-          Size="190,42"
-          Id="Package\Limpar Tabela TMP DW"
-          TopLeft="162.666666666667,230.999999999999" />
+          TopLeft="130.666666666667,276.999999999999" />
         <NodeLayout
           Size="208,42"
           Id="Package\Pegar Último COD_PEDIDO"
@@ -559,11 +194,7 @@
         <NodeLayout
           Size="155,42"
           Id="Package\Processar CUBO"
-          TopLeft="210,443" />
-        <NodeLayout
-          Size="215,42"
-          Id="Package\Transferir dados TMP -&gt; DW"
-          TopLeft="144.666666666667,305.999999999999" />
+          TopLeft="179,373" />
         <NodeLayout
           Size="250,42"
           Id="Package\Validar se COD_PEDIDO foi passado"
@@ -675,97 +306,41 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="256.416666666667,204.999999999999">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,26"
-              Start="0,0"
-              End="0,18.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,18.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="254.916666666667,272.999999999999">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,33"
-              Start="0,0"
-              End="0,25.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,25.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="252.166666666667,347.999999999999">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="33,26"
-              Start="0,0"
-              End="33,18.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,9" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,9"
-                    Point2="0,13"
-                    Point3="4,13" />
-                  <mssgle:LineSegment
-                    End="29,13" />
-                  <mssgle:CubicBezierSegment
-                    Point1="29,13"
-                    Point2="33,13"
-                    Point3="33,17" />
-                  <mssgle:LineSegment
-                    End="33,18.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="286.333333333333,415.999999999999">
+          TopLeft="254.333333333333,318.999999999999">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,27.000000000001"
+              EndConnector="0,54.000000000001"
               Start="0,0"
-              End="0,19.500000000001">
+              End="0,46.500000000001">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,19.500000000001" />
+                    End="0,46.500000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="253.666666666667,204.999999999999">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,72"
+              Start="0,0"
+              End="0,64.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,64.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -777,81 +352,5 @@
       </GraphLayout>
     </LayoutInfo>
   </Package>
-  <TaskHost
-    design-time-name="Package\Transferir dados TMP -&gt; DW">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="144,42"
-          Id="Package\Transferir dados TMP -&gt; DW\Stage - Mirror"
-          TopLeft="113,41" />
-        <NodeLayout
-          Size="155,42"
-          Id="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP"
-          TopLeft="156,130" />
-        <EdgeLayout
-          Id="Package\Transferir dados TMP -&gt; DW.Paths[OLE DB Source Output]"
-          TopLeft="185,83">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="48.5,47"
-              Start="0,0"
-              End="48.5,39.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,19.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,19.5"
-                    Point2="0,23.5"
-                    Point3="4,23.5" />
-                  <mssgle:LineSegment
-                    End="44.5,23.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="44.5,23.5"
-                    Point2="48.5,23.5"
-                    Point3="48.5,27.5" />
-                  <mssgle:LineSegment
-                    End="48.5,39.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Transferir dados TMP -&gt; DW\Stage - Mirror">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Transferir dados TMP -&gt; DW\VagasDW - TMP">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
