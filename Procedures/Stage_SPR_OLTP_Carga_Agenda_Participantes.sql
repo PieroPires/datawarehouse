@@ -1,6 +1,6 @@
 -- select * from vagas_dw.TMP_VAGAS
 -- EXEC VAGAS_DW.SPR_OLTP_Carga_Agenda_Participantes '19010101'
-USE VAGAS_DW
+USE STAGE
 GO
 
 IF EXISTS ( SELECT * FROM SYS.OBJECTS WHERE NAME = 'SPR_OLTP_Carga_Agenda_Participantes' AND SCHEMA_NAME(SCHEMA_ID) = 'VAGAS_DW')

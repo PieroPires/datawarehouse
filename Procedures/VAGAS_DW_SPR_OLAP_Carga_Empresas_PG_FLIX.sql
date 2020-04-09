@@ -24,7 +24,7 @@ SET NOCOUNT ON
 	SELECT	A.DATA_ENTRADA ,
 			REPLACE(TRANSLATE(A.CNPJ, '.-/','   '),' ','') AS CNPJ,
 			'PostgreSQL - Termo de Aceite' AS FONTE_CNPJ
-	FROM	[VAGAS_DW].[TMP_EMPRESAS_PG_VAGAS_FLIX] AS A ;
+	FROM	[STAGE].[VAGAS_DW].[TMP_EMPRESAS_PG_VAGAS_FLIX] AS A ;
 
 
 	-- Customização para o gráfico do PIPELINE: DATA_ENTRADA no mesmo Ano e mês da última DATA_REFERENCIA:
