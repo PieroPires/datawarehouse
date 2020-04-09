@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\diego.gatto"
   DTS:DTSID="{1C0C9BEA-CC2D-4F75-8346-4CF16319BDD7}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1046"
   DTS:ObjectName="Usuarios_vfb"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="112"
-  DTS:VersionGUID="{C12B6213-E1E0-40BE-9D77-DB7B6F13EDCC}">
+  DTS:VersionBuild="114"
+  DTS:VersionGUID="{5D2B8096-E033-471B-A402-6E1FBA9C42F5}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_03_20\usuarios_vfb.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_04_09\usuarios_vfb.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -155,7 +155,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="USE [VAGAS_DW] ;&#xA;&#xA;IF OBJECT_ID ('VAGAS_DW.VAGAS_DW.TMP_USUARIOS_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE VAGAS_DW.VAGAS_DW.TMP_USUARIOS_VFB_SENSEDATA ;&#xA;&#xA;SELECT&#x9;Subquery.Cod_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Id_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Nome_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Email_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Data_cadastro_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Novo_usuario_Ult3Meses_VFB,&#xA;&#x9;&#x9;Subquery.CodContato_CRM,&#xA;&#x9;&#x9;(SELECT&#x9;TOP 1 CONVERT(DATE, A1.DATA_CRIACAO) AS Data_ult_treinamento_contato_CRM&#xA;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[VAGAS_DW].[TREINAMENTOS_PARTICIPANTES_CRM] AS A1&#xA;&#x9;&#x9; WHERE&#x9;Subquery.CodContato_CRM = A1.COD_CONTATO_TREINAMENTO&#xA;&#x9;&#x9;&#x9;&#x9;AND A1.STATUS_PARTICIPANTE = 'PARTICIPOU'&#xA;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;A1.DATA_CRIACAO DESC) AS Data_ult_treinamento_contato_CRM,&#xA;&#x9;&#x9;Subquery.Id_ClienteCRM,&#xA;&#x9;&#x9;Subquery.COD_CLI&#xA;INTO&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_USUARIOS_VFB_SENSEDATA]&#xA;FROM&#x9;(&#xA;&#x9;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;&#x9;A.Ident_func  AS Id_usuario_VFB,&#xA;&#x9;&#x9;&#x9;A.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(A.Email_func)),CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;&#x9;(SELECT CONVERT(DATE, MIN(A1.Data_log)) AS Data_cadastro_usuario_VFB&#xA;&#x9;&#x9;&#x9; FROM&#x9;[hrh-data].[dbo].[Clientes-Login] AS A1&#xA;&#x9;&#x9;&#x9; WHERE&#x9;A.Cod_func = A1.CodFunc_log&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Op_log = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CodUsuManut_log &lt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Data_log &gt; A.DTUltAcessoOK_func) AS Data_cadastro_usuario_VFB,&#xA;&#x9;&#x9;&#x9;B.IdContaCRM_cli AS IdConta_CRM,&#xA;&#x9;&#x9;&#x9;IIF((SELECT CONVERT(DATE, MIN(A1.Data_log)) AS Data_prim_login&#xA;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[hrh-data].[dbo].[Clientes-Login] AS A1&#xA;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.Cod_func = A1.CodFunc_log&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Op_log = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CodUsuManut_log &lt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Data_log &gt; A.DTUltAcessoOK_func) &gt;= DATEADD(MONTH, -3, CONVERT(DATE, GETDATE())), 'Sim', 'Não') AS Novo_usuario_Ult3Meses_VFB,&#xA;&#x9;&#x9;&#x9;(SELECT&#x9;TOP 1 COD_CONTATO&#xA;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[VAGAS_DW].[CONTATOS_CRM] AS A1&#xA;&#x9;&#x9;&#x9; WHERE&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(A.Email_func)),CHAR(9),''),CHAR(10),''),CHAR(13),'') = &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(A1.EMAIL)),CHAR(9),''),CHAR(10),''),CHAR(13),'')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.FUNCIONARIO_DESLIGADO = 'NÃO'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND B.IdContaCRM_cli = A1.COD_CONTA_CRM COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_MODIFICACAO DESC) AS CodContato_CRM,&#xA;&#x9;&#x9;&#x9;B.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;&#x9;A.Codcli_func AS COD_CLI&#xA;&#x9;FROM&#x9;[hrh-data].[dbo].[Funcionarios] AS A&#x9;INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.CodCli_func = B.Cod_cli&#xA;&#x9;WHERE&#x9;A.Removido_func = 0&#xA;&#x9;&#x9;&#x9;AND EXISTS (SELECT *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;[hrh-data].[dbo].[Clientes-Login] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE&#x9;A.Cod_func = A1.CodFunc_log&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Op_log = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CodUsuManut_log &lt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Data_log &gt;= DATEADD(YEAR, -1, CONVERT(DATE, GETDATE())))&#xA;&#x9;&#x9;&#x9;AND EXISTS (SELECT *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_CLIENTES_SENSEDATA] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE&#x9;B.IdContaCRM_cli = A1.Id_ClienteCRM COLLATE SQL_Latin1_General_CP1_CI_AI)&#xA;&#x9;&#x9;&#x9;AND A.Email_func NOT LIKE '%@vagas.com%') AS Subquery ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="USE [VAGAS_DW] ;&#xA;&#xA;IF OBJECT_ID ('STAGE.VAGAS_DW.TMP_USUARIOS_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE STAGE.VAGAS_DW.TMP_USUARIOS_VFB_SENSEDATA ;&#xA;&#xA;SELECT&#x9;Subquery.Cod_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Id_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Nome_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Email_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Data_cadastro_usuario_VFB,&#xA;&#x9;&#x9;Subquery.Novo_usuario_Ult3Meses_VFB,&#xA;&#x9;&#x9;Subquery.CodContato_CRM,&#xA;&#x9;&#x9;(SELECT&#x9;TOP 1 CONVERT(DATE, A1.DATA_CRIACAO) AS Data_ult_treinamento_contato_CRM&#xA;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[VAGAS_DW].[TREINAMENTOS_PARTICIPANTES_CRM] AS A1&#xA;&#x9;&#x9; WHERE&#x9;Subquery.CodContato_CRM = A1.COD_CONTATO_TREINAMENTO&#xA;&#x9;&#x9;&#x9;&#x9;AND A1.STATUS_PARTICIPANTE = 'PARTICIPOU'&#xA;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;A1.DATA_CRIACAO DESC) AS Data_ult_treinamento_contato_CRM,&#xA;&#x9;&#x9;Subquery.Id_ClienteCRM,&#xA;&#x9;&#x9;Subquery.COD_CLI&#xA;INTO&#x9;[STAGE].[VAGAS_DW].[TMP_USUARIOS_VFB_SENSEDATA]&#xA;FROM&#x9;(&#xA;&#x9;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;&#x9;A.Ident_func  AS Id_usuario_VFB,&#xA;&#x9;&#x9;&#x9;A.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(A.Email_func)),CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;&#x9;(SELECT CONVERT(DATE, MIN(A1.Data_log)) AS Data_cadastro_usuario_VFB&#xA;&#x9;&#x9;&#x9; FROM&#x9;[hrh-data].[dbo].[Clientes-Login] AS A1&#xA;&#x9;&#x9;&#x9; WHERE&#x9;A.Cod_func = A1.CodFunc_log&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Op_log = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CodUsuManut_log &lt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Data_log &gt; A.DTUltAcessoOK_func) AS Data_cadastro_usuario_VFB,&#xA;&#x9;&#x9;&#x9;B.IdContaCRM_cli AS IdConta_CRM,&#xA;&#x9;&#x9;&#x9;IIF((SELECT CONVERT(DATE, MIN(A1.Data_log)) AS Data_prim_login&#xA;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[hrh-data].[dbo].[Clientes-Login] AS A1&#xA;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.Cod_func = A1.CodFunc_log&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Op_log = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CodUsuManut_log &lt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Data_log &gt; A.DTUltAcessoOK_func) &gt;= DATEADD(MONTH, -3, CONVERT(DATE, GETDATE())), 'Sim', 'Não') AS Novo_usuario_Ult3Meses_VFB,&#xA;&#x9;&#x9;&#x9;(SELECT&#x9;TOP 1 COD_CONTATO&#xA;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[VAGAS_DW].[CONTATOS_CRM] AS A1&#xA;&#x9;&#x9;&#x9; WHERE&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(A.Email_func)),CHAR(9),''),CHAR(10),''),CHAR(13),'') = &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(A1.EMAIL)),CHAR(9),''),CHAR(10),''),CHAR(13),'')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.FUNCIONARIO_DESLIGADO = 'NÃO'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;AND B.IdContaCRM_cli = A1.COD_CONTA_CRM COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_MODIFICACAO DESC) AS CodContato_CRM,&#xA;&#x9;&#x9;&#x9;B.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;&#x9;A.Codcli_func AS COD_CLI&#xA;&#x9;FROM&#x9;[hrh-data].[dbo].[Funcionarios] AS A&#x9;INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.CodCli_func = B.Cod_cli&#xA;&#x9;WHERE&#x9;A.Removido_func = 0&#xA;&#x9;&#x9;&#x9;AND EXISTS (SELECT *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;[hrh-data].[dbo].[Clientes-Login] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE&#x9;A.Cod_func = A1.CodFunc_log&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Op_log = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.CodUsuManut_log &lt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Data_log &gt;= DATEADD(YEAR, -1, CONVERT(DATE, GETDATE())))&#xA;&#x9;&#x9;&#x9;AND EXISTS (SELECT *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM&#x9;[STAGE].[VAGAS_DW].[TMP_CLIENTES_SENSEDATA] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE&#x9;B.IdContaCRM_cli = A1.Id_ClienteCRM COLLATE SQL_Latin1_General_CP1_CI_AI)&#xA;&#x9;&#x9;&#x9;AND A.Email_func NOT LIKE '%@vagas.com%') AS Subquery ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -384,8 +384,8 @@
               <connections>
                 <connection
                   refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Connections[OleDbConnection]"
-                  connectionManagerID="{01D8D567-93B2-4E49-A51A-28782164D7C4}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[VAGAS_DW]"
+                  connectionManagerID="{C9C5C2E3-4F23-4A32-8949-107BB2A1C923}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[STAGE]"
                   description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
                   name="OleDbConnection" />
               </connections>
@@ -519,8 +519,7 @@
                       name="Email_usuario_VFB" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_cadastro_usuario_VFB]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       name="Data_cadastro_usuario_VFB" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Novo_usuario_Ult3Meses_VFB]"
@@ -536,8 +535,7 @@
                       name="CodContato_CRM" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_ult_treinamento_contato_CRM]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       name="Data_ult_treinamento_contato_CRM" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_ClienteCRM]"
@@ -581,8 +579,7 @@
                       name="Email_usuario_VFB" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_cadastro_usuario_VFB]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_cadastro_usuario_VFB]"
                       name="Data_cadastro_usuario_VFB" />
                     <outputColumn
@@ -601,8 +598,7 @@
                       name="CodContato_CRM" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_ult_treinamento_contato_CRM]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_ult_treinamento_contato_CRM]"
                       name="Data_ult_treinamento_contato_CRM" />
                     <outputColumn
@@ -686,12 +682,12 @@
       DTS:To="Package\Upload S3 Bucket" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -760,7 +756,7 @@
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="308,42"
           Id="Package\Exportar CSV\VAGAS_DW - TMP_USUARIOS_VFB_SENSEDATA"
@@ -800,9 +796,7 @@
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

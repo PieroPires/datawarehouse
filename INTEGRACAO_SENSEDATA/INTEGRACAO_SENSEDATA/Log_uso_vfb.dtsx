@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\diego.gatto"
   DTS:DTSID="{FC4ABF69-E174-4195-B786-EDAE25674327}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1046"
   DTS:ObjectName="Log_uso_vfb"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="133"
-  DTS:VersionGUID="{B49D060A-B92F-49D4-9934-F4903C5F58E5}">
+  DTS:VersionBuild="134"
+  DTS:VersionGUID="{AF767989-3B85-4512-A491-67921F9A974B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_03_20\log_uso_vfb.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_04_09\log_uso_vfb.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -145,7 +145,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="IF OBJECT_ID ('VAGAS_DW.VAGAS_DW.TMP_LOG_USO_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE [VAGAS_DW].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA] ;&#xA;&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_CADASTRAMENTO) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Cadastramento de vaga' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;INTO&#x9;[VAGAS_DW].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA]&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_CADASTRAMENTO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;A.DATA_CADASTRAMENTO ,&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Login no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.Data_login &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.Cod_func,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login),&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Triagem no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_TRIAGEM &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM),&#xA;&#x9;&#x9;A.COD_CLI ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="IF OBJECT_ID ('STAGE.VAGAS_DW.TMP_LOG_USO_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE STAGE.[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA] ;&#xA;&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_CADASTRAMENTO) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Cadastramento de vaga' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;INTO&#x9;[STAGE].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA]&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_CADASTRAMENTO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;A.DATA_CADASTRAMENTO ,&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Login no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.Data_login &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.Cod_func,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login),&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Triagem no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_TRIAGEM &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM),&#xA;&#x9;&#x9;A.COD_CLI ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -358,8 +358,8 @@
               <connections>
                 <connection
                   refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Connections[OleDbConnection]"
-                  connectionManagerID="{01D8D567-93B2-4E49-A51A-28782164D7C4}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[VAGAS_DW]"
+                  connectionManagerID="{C9C5C2E3-4F23-4A32-8949-107BB2A1C923}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[STAGE]"
                   description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
                   name="OleDbConnection" />
               </connections>
@@ -466,8 +466,7 @@
                       name="Cod_usuario_VFB" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_Log]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       name="Data_Log" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Qtd_Log]"
@@ -543,8 +542,7 @@
                       name="Id_ClienteCRM" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_Log]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_Log]"
                       name="Data_Log" />
                     <outputColumn
@@ -633,12 +631,12 @@
       DTS:To="Package\Upload S3 Bucket" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -707,7 +705,7 @@
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="304,42"
           Id="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA"
@@ -735,9 +733,7 @@
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
