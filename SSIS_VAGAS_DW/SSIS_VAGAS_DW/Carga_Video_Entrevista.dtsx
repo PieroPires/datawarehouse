@@ -13,8 +13,8 @@
   DTS:ObjectName="Carga_Video_Entrevista"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="72"
-  DTS:VersionGUID="{E6D6EE65-33E1-4785-BA4C-C4A08A2CE546}">
+  DTS:VersionBuild="80"
+  DTS:VersionGUID="{4888DA9A-8A7E-4205-81F7-FFD77529EE36}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -36,6 +36,16 @@
       DTS:IncludeInDebugDump="2345"
       DTS:Namespace="User"
       DTS:ObjectName="Ult_gravacao_video_entrevista">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{84D88CD1-9F74-44FA-8AE0-AE5799552213}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Ult_participante">
       <DTS:VariableValue
         DTS:DataType="8"
         xml:space="preserve"></DTS:VariableValue>
@@ -1445,6 +1455,662 @@ WHERE	A.id &gt;</property>
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\Vídeo-entrevistas (participantes)"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DelayValidation="True"
+      DTS:Description="Contêiner da Sequência"
+      DTS:DTSID="{A84AEE15-DC3B-4F37-8707-7BC6E39B91FB}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Vídeo-entrevistas (participantes)">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Vídeo-entrevistas (participantes)\Código do último participante"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{2B78EB77-F2C4-4725-BDF9-05B056621377}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Código do último participante"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+              SQLTask:SqlStatementSource="select&#x9;isnull(max(cod_participante), 0) as ult_participante&#xA;from&#x9;[vagas_dw].[video_entrevistas_participantes] as a"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="Ult_participante"
+                SQLTask:DtsVariableName="User::Ult_participante" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Vídeo-entrevistas (participantes)\Limpar tabela TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{1651CAEE-40FF-48A3-BA9F-4EC396F64C76}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Limpar tabela TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+              SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[TMP_VIDEO_ENTREVISTAS_PARTICIPANTES] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Tarefa Fluxo de Dados"
+          DTS:DTSID="{501BA8A4-05EE-4F11-B838-49F24AF7CB01}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="[Participantes (PostgreSQL)].[SqlCommand]">"SELECT	A.cod_participante AS COD_PARTICIPANTE,
+		A.codvideoentr_participante AS COD_VIDEOENTREVISTA,
+        A.codprocessoseletivo_participante AS COD_VAGA,
+        A.codcandidato_participante AS COD_CAND,
+        CAST(A.dtcriacao_participante AS DATE) AS DATA_SOLICITACAO,
+        A.ativo_participante AS ATIVO,
+        A.estornado AS ESTORNADO,
+        C.cod_pergunta AS COD_PERGUNTA,
+        CAST(C.descr_pergunta AS VARCHAR(100)) AS DESCRICAO_PERGUNTA,
+        C.tipo_pergunta AS TIPO_PERGUNTA,
+        C.temporesposta_pergunta AS TEMPO_RESPOSTA
+FROM	video_entrevista.public.participantes AS A		INNER JOIN video_entrevista.public.respostas AS B
+														ON A.cod_participante = B.codparticipante_resposta 
+                                                        INNER JOIN video_entrevista.public.perguntas AS C
+                                                        ON B.codpergunta_resposta = C.cod_pergunta
+WHERE	A.cod_participante &gt;" +  @[User::Ult_participante]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL)"
+                  componentClassID="Attunity.SSISODBCSrc"
+                  contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+                  description="ODBC Source"
+                  name="Participantes (PostgreSQL)"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="The name of the table to be fetched."
+                      expressionType="Notify"
+                      name="TableName"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      expressionType="Notify"
+                      name="SqlCommand">SELECT	A.cod_participante AS COD_PARTICIPANTE,
+		A.codvideoentr_participante AS COD_VIDEOENTREVISTA,
+        A.codprocessoseletivo_participante AS COD_VAGA,
+        A.codcandidato_participante AS COD_CAND,
+        CAST(A.dtcriacao_participante AS DATE) AS DATA_SOLICITACAO,
+        A.ativo_participante AS ATIVO,
+        A.estornado AS ESTORNADO,
+        C.cod_pergunta AS COD_PERGUNTA,
+        CAST(C.descr_pergunta AS VARCHAR(100)) AS DESCRICAO_PERGUNTA,
+        C.tipo_pergunta AS TIPO_PERGUNTA,
+        C.temporesposta_pergunta AS TEMPO_RESPOSTA
+FROM	video_entrevista.public.participantes AS A		INNER JOIN video_entrevista.public.respostas AS B
+														ON A.cod_participante = B.codparticipante_resposta 
+                                                        INNER JOIN video_entrevista.public.perguntas AS C
+                                                        ON B.codpergunta_resposta = C.cod_pergunta
+WHERE	A.cod_participante &gt;</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specify the number of rows fetched per batch."
+                      expressionType="Notify"
+                      name="BatchSize">1000</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Determines the chunk size allocation for LOB columns"
+                      expressionType="Notify"
+                      name="LobChunkSize">32768</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                      expressionType="Notify"
+                      name="ExposeCharColumnsAsUnicode">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                      expressionType="Notify"
+                      name="StatementTimeout">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="The code page to use when code page information is unavailable from the data source."
+                      expressionType="Notify"
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Int32"
+                      description="The mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="The method used for fetching data."
+                      expressionType="Notify"
+                      name="FetchMethod"
+                      typeConverter="FetchMethod">1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="The ODBC C data type for binding numeric data."
+                      expressionType="Notify"
+                      name="BindNumericAs"
+                      typeConverter="BindNumericAs">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                      expressionType="Notify"
+                      name="BindCharColumnsAs"
+                      typeConverter="BindCharColumnsAs">0</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Connections[ODBCConnection]"
+                      connectionManagerID="{19F25722-3D9A-4D15-8D1F-9AE8DEC55B50}:external"
+                      connectionManagerRefId="Project.ConnectionManagers[PG_VideoEntrevista]"
+                      description="The ODBC runtime connection"
+                      name="ODBCConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output]"
+                      errorRowDisposition="FailComponent"
+                      name="ODBC Source Output"
+                      truncationRowDisposition="FailComponent">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_participante]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_participante]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_participante]"
+                          name="cod_participante" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_videoentrevista]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_videoentrevista]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_videoentrevista]"
+                          name="cod_videoentrevista" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_vaga]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_vaga]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_vaga]"
+                          name="cod_vaga" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_cand]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_cand]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_cand]"
+                          name="cod_cand" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[data_solicitacao]"
+                          dataType="dbDate"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_solicitacao]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[data_solicitacao]"
+                          name="data_solicitacao" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[ativo]"
+                          codePage="1252"
+                          dataType="str"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[ativo]"
+                          length="5"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[ativo]"
+                          name="ativo" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[estornado]"
+                          codePage="1252"
+                          dataType="str"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[estornado]"
+                          length="5"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[estornado]"
+                          name="estornado" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_pergunta]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_pergunta]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_pergunta]"
+                          name="cod_pergunta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[descricao_pergunta]"
+                          codePage="1252"
+                          dataType="str"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[descricao_pergunta]"
+                          length="200"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[descricao_pergunta]"
+                          name="descricao_pergunta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[tipo_pergunta]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[tipo_pergunta]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[tipo_pergunta]"
+                          name="tipo_pergunta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[tempo_resposta]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[tempo_resposta]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[tempo_resposta]"
+                          name="tempo_resposta" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_participante]"
+                          dataType="i4"
+                          name="cod_participante" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_videoentrevista]"
+                          dataType="i4"
+                          name="cod_videoentrevista" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_vaga]"
+                          dataType="i4"
+                          name="cod_vaga" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_cand]"
+                          dataType="i4"
+                          name="cod_cand" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_solicitacao]"
+                          dataType="dbDate"
+                          name="data_solicitacao" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[ativo]"
+                          codePage="1252"
+                          dataType="str"
+                          length="5"
+                          name="ativo" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[estornado]"
+                          codePage="1252"
+                          dataType="str"
+                          length="5"
+                          name="estornado" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_pergunta]"
+                          dataType="i4"
+                          name="cod_pergunta" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[descricao_pergunta]"
+                          codePage="1252"
+                          dataType="str"
+                          length="200"
+                          name="descricao_pergunta" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[tipo_pergunta]"
+                          dataType="i4"
+                          name="tipo_pergunta" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[tempo_resposta]"
+                          dataType="i4"
+                          name="tempo_resposta" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output]"
+                      isErrorOut="true"
+                      name="ODBC Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_participante]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_participante]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_participante]"
+                          name="cod_participante" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_videoentrevista]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_videoentrevista]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_videoentrevista]"
+                          name="cod_videoentrevista" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_vaga]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_vaga]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_vaga]"
+                          name="cod_vaga" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_cand]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_cand]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_cand]"
+                          name="cod_cand" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[data_solicitacao]"
+                          dataType="dbDate"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_solicitacao]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[data_solicitacao]"
+                          name="data_solicitacao" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ativo]"
+                          codePage="1252"
+                          dataType="str"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[ativo]"
+                          length="5"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ativo]"
+                          name="ativo" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[estornado]"
+                          codePage="1252"
+                          dataType="str"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[estornado]"
+                          length="5"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[estornado]"
+                          name="estornado" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_pergunta]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_pergunta]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_pergunta]"
+                          name="cod_pergunta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[descricao_pergunta]"
+                          codePage="1252"
+                          dataType="str"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[descricao_pergunta]"
+                          length="200"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[descricao_pergunta]"
+                          name="descricao_pergunta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[tipo_pergunta]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[tipo_pergunta]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[tipo_pergunta]"
+                          name="tipo_pergunta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[tempo_resposta]"
+                          dataType="i4"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[tempo_resposta]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[tempo_resposta]"
+                          name="tempo_resposta" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+                  description="Destino OLE DB"
+                  name="TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                      name="OpenRowset">[VAGAS_DW].[TMP_VIDEO_ENTREVISTAS_PARTICIPANTES]</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="O comando SQL a ser executado."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica o modo usado para acessar o banco de dados."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Connections[OleDbConnection]"
+                      connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                      connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                      description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB]"
+                      errorOrTruncationOperation="Inserir"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="Entrada de Destino OLE DB">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[cod_participante]"
+                          cachedDataType="i4"
+                          cachedName="cod_participante"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_PARTICIPANTE]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_participante]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[cod_videoentrevista]"
+                          cachedDataType="i4"
+                          cachedName="cod_videoentrevista"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_VIDEOENTREVISTA]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_videoentrevista]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[cod_vaga]"
+                          cachedDataType="i4"
+                          cachedName="cod_vaga"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_VAGA]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_vaga]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[cod_cand]"
+                          cachedDataType="i4"
+                          cachedName="cod_cand"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CAND]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_cand]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[data_solicitacao]"
+                          cachedDataType="dbDate"
+                          cachedName="data_solicitacao"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_SOLICITACAO]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[data_solicitacao]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[ativo]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="5"
+                          cachedName="ativo"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[ATIVO]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[ativo]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[estornado]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="5"
+                          cachedName="estornado"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[ESTORNADO]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[estornado]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[cod_pergunta]"
+                          cachedDataType="i4"
+                          cachedName="cod_pergunta"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_PERGUNTA]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_pergunta]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[descricao_pergunta]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="200"
+                          cachedName="descricao_pergunta"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[DESCRICAO_PERGUNTA]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[descricao_pergunta]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[tipo_pergunta]"
+                          cachedDataType="i4"
+                          cachedName="tipo_pergunta"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[TIPO_PERGUNTA]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[tipo_pergunta]" />
+                        <inputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].Columns[tempo_resposta]"
+                          cachedDataType="i4"
+                          cachedName="tempo_resposta"
+                          externalMetadataColumnId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[TEMPO_RESPOSTA]"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output].Columns[tempo_resposta]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_PARTICIPANTE]"
+                          dataType="i4"
+                          name="COD_PARTICIPANTE" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_VIDEOENTREVISTA]"
+                          dataType="i4"
+                          name="COD_VIDEOENTREVISTA" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_VAGA]"
+                          dataType="i4"
+                          name="COD_VAGA" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_CAND]"
+                          dataType="i4"
+                          name="COD_CAND" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_SOLICITACAO]"
+                          dataType="dbDate"
+                          name="DATA_SOLICITACAO" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[ATIVO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="3"
+                          name="ATIVO" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[ESTORNADO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="3"
+                          name="ESTORNADO" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[COD_PERGUNTA]"
+                          dataType="i4"
+                          name="COD_PERGUNTA" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[DESCRICAO_PERGUNTA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="300"
+                          name="DESCRICAO_PERGUNTA" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[TIPO_PERGUNTA]"
+                          dataType="ui1"
+                          name="TIPO_PERGUNTA" />
+                        <externalMetadataColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB].ExternalColumns[TEMPO_RESPOSTA]"
+                          dataType="i4"
+                          name="TEMPO_RESPOSTA" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Outputs[Saída de Erro de Destino OLE DB]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Saída de Erro de Destino OLE DB"
+                      synchronousInputId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Paths[ODBC Source Output]"
+                  endId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Inputs[Entrada de Destino OLE DB]"
+                  name="ODBC Source Output"
+                  startId="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL).Outputs[ODBC Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Vídeo-entrevistas (participantes).PrecedenceConstraints[Restrição 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{EF006384-6EDD-4304-ABF1-7B88937EE31D}"
+          DTS:From="Package\Vídeo-entrevistas (participantes)\Código do último participante"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restrição 2"
+          DTS:To="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Vídeo-entrevistas (participantes).PrecedenceConstraints[Restrição 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{A0903F23-DFAC-4522-863C-1E99C738C8F5}"
+          DTS:From="Package\Vídeo-entrevistas (participantes)\Limpar tabela TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restrição 4"
+          DTS:To="Package\Vídeo-entrevistas (participantes)\Código do último participante" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Vídeo-entrevistas (processamento)"
       DTS:CreationName="STOCK:SEQUENCE"
       DTS:DelayValidation="True"
@@ -2078,11 +2744,11 @@ WHERE	A.id &gt;</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Restrição 2]"
       DTS:CreationName=""
-      DTS:DTSID="{91B1C645-D04A-4659-94D5-6E47438CBBEF}"
+      DTS:DTSID="{1D3A8E80-DDCC-4A29-BD17-59561179DA75}"
       DTS:From="Package\Vídeo-entrevistas (processamento)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição 2"
-      DTS:To="Package\Video-entrevistas (saldo)" />
+      DTS:To="Package\Vídeo-entrevistas (participantes)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Restrição 3]"
       DTS:CreationName=""
@@ -2091,6 +2757,14 @@ WHERE	A.id &gt;</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição 3"
       DTS:To="Package\Processar Cubos" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{EE8AC1EB-A187-48E2-969E-6BE55B094D09}"
+      DTS:From="Package\Vídeo-entrevistas (participantes)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 4"
+      DTS:To="Package\Video-entrevistas (saldo)" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
@@ -2103,11 +2777,11 @@ WHERE	A.id &gt;</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="156,42"
           Id="Package\Processar Cubos"
-          TopLeft="306.833333333334,373.833333333333" />
+          TopLeft="290.833333333334,418.833333333333" />
         <NodeLayout
           Size="256,42"
           Id="Package\Video-entrevistas\Código da últ videoentrevista (criada)"
@@ -2143,7 +2817,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2165,7 +2841,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2187,7 +2865,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
@@ -2232,7 +2912,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2254,7 +2936,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2276,7 +2960,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
@@ -2286,6 +2972,69 @@ WHERE	A.id &gt;</property>
           Size="237,43"
           Id="Package\Vídeo-entrevistas (gravação)"
           TopLeft="263.833333333333,97.4999999999999" />
+        <NodeLayout
+          Size="217,42"
+          Id="Package\Vídeo-entrevistas (participantes)\Código do último participante"
+          TopLeft="116.5,93.5" />
+        <NodeLayout
+          Size="359,42"
+          Id="Package\Vídeo-entrevistas (participantes)\Limpar tabela TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          TopLeft="48.5,5.5" />
+        <NodeLayout
+          Size="454,42"
+          Id="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          TopLeft="5.5,169.5" />
+        <EdgeLayout
+          Id="Package\Vídeo-entrevistas (participantes).PrecedenceConstraints[Restrição 2]"
+          TopLeft="228.75,135.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,34"
+              Start="0,0"
+              End="0,26.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Vídeo-entrevistas (participantes).PrecedenceConstraints[Restrição 4]"
+          TopLeft="226.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="False"
+          PanelSize="464,267"
+          Size="255,43"
+          Id="Package\Vídeo-entrevistas (participantes)"
+          TopLeft="249,260" />
         <NodeLayout
           Size="236,42"
           Id="Package\Vídeo-entrevistas (processamento)\Código do úlltimo processamento"
@@ -2321,7 +3070,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2343,7 +3094,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2365,7 +3118,9 @@ WHERE	A.id &gt;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
@@ -2385,7 +3140,7 @@ WHERE	A.id &gt;</property>
           PanelSize="234,102"
           Size="219,43"
           Id="Package\Video-entrevistas (saldo)"
-          TopLeft="270.166666666667,282.5" />
+          TopLeft="267.166666666667,328.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição]"
           TopLeft="380.166666666667,56.5">
@@ -2414,36 +3169,14 @@ WHERE	A.id &gt;</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50"
+              EndConnector="0,50.0000000000001"
               Start="0,0"
-              End="0,42.5">
+              End="0,42.5000000000001">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição 2]"
-          TopLeft="380.416666666667,233.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,49.0000000000001"
-              Start="0,0"
-              End="0,41.5000000000001">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,41.5000000000001" />
+                    End="0,42.5000000000001" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2454,18 +3187,62 @@ WHERE	A.id &gt;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 3]"
-          TopLeft="382.25,325.5">
+          TopLeft="372.750000000001,371.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,48.3333333333333"
+              EndConnector="0,47.333333333333"
               Start="0,0"
-              End="0,40.8333333333333">
+              End="0,39.833333333333">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,40.8333333333333" />
+                    End="0,39.833333333333" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 2]"
+          TopLeft="378.833333333333,233.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,26.5"
+              Start="0,0"
+              End="0,19">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 4]"
+          TopLeft="376.583333333333,303">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,25.5"
+              Start="0,0"
+              End="0,18">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2572,6 +3349,57 @@ WHERE	A.id &gt;</property>
   </TaskHost>
   <PipelineComponentMetadata
     design-time-name="Package\Vídeo-entrevistas (gravação)\Video-entrevistas (gravação) -&gt; TMP_VIDEO_ENTREVISTAS_GRAVACAO\TMP_VIDEO_ENTREVISTAS_GRAVACAO">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="292,42"
+          Id="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES"
+          TopLeft="364,238" />
+        <NodeLayout
+          Size="205,42"
+          Id="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\Participantes (PostgreSQL)"
+          TopLeft="401,74" />
+        <EdgeLayout
+          Id="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES.Paths[ODBC Source Output]"
+          TopLeft="506.75,116">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,122"
+              Start="0,0"
+              End="0,114.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,114.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\TMP_VIDEO_ENTREVISTAS_PARTICIPANTES">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
