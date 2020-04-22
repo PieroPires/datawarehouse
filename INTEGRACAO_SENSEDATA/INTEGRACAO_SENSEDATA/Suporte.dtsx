@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\diego.gatto"
   DTS:DTSID="{E762FAA5-A3D3-4569-995D-DD39CBDE8686}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1046"
   DTS:ObjectName="Suporte"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="64"
-  DTS:VersionGUID="{74D4A5B0-9586-45F8-BE35-89ED664A7B46}">
+  DTS:VersionBuild="68"
+  DTS:VersionGUID="{6066CB69-92CE-4E4A-A243-111FBB9CDA2D}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_03_20\suporte.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_04_09\suporte.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -230,7 +230,7 @@ GO
 CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)
 GO
 
-DROP TABLE IF EXISTS VAGAS_DW.TMP_CASOS_SENSEDATA
+DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA
 GO
 
 SELECT	
@@ -250,20 +250,20 @@ SELECT
 	A.CRITICIDADE AS Criticidade ,
 	CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,
 	C.COD_CLI
-INTO VAGAS_DW.TMP_CASOS_SENSEDATA
+INTO STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA
 FROM	
 	[VAGAS_DW].[CASOS] AS A		LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI
 								LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID
 WHERE
 	A.FILA_ATENDIMENTO = 'suporte_empresas'
 	AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')
-	AND A.conta_id in (SELECT id_clientecrm FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA)
+	AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)
 	AND A.DATA_FECHAMENTO &gt; '" + @[User::DATA_CARGA_INICIO] + "'
 GO"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE B.data_fechamento_c &gt; ''2018-03-09'' ') AS A&#xA;GO&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO&#xA;&#xA;SELECT&#x9;&#xA;&#x9;A.CONTA_ID AS IdConta_CRM ,&#xA;&#x9;A.NUMERO_CASO AS Ticket ,&#xA;&#x9;A.EMAIL_CONTATO AS Contato ,&#xA;&#x9;A.USUARIO_RESPONSAVEL AS Responsavel ,&#xA;&#x9;B.Assunto AS Assunto ,&#xA;&#x9;A.MOTIVO_CONTATO AS Motivo_contato ,&#xA;&#x9;A.ORIGEM_SUPORTE AS Origem ,&#xA;&#x9;NULL AS Categoria ,&#xA;&#x9;CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,&#xA;&#x9;CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,&#xA;&#x9;CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,&#xA;&#x9;NULL AS Data_SLA ,&#xA;&#x9;CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,&#xA;&#x9;A.CRITICIDADE AS Criticidade ,&#xA;&#x9;CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,&#xA;&#x9;C.COD_CLI&#xA;INTO VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;FROM&#x9;&#xA;&#x9;[VAGAS_DW].[CASOS] AS A&#x9;&#x9;LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID&#xA;WHERE&#xA;&#x9;A.FILA_ATENDIMENTO = 'suporte_empresas'&#xA;&#x9;AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')&#xA;&#x9;AND A.conta_id in (SELECT id_clientecrm FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA)&#xA;&#x9;AND A.DATA_FECHAMENTO &gt; '2018-03-09'&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE B.data_fechamento_c &gt; ''2018-03-09'' ') AS A&#xA;GO&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO&#xA;&#xA;SELECT&#x9;&#xA;&#x9;A.CONTA_ID AS IdConta_CRM ,&#xA;&#x9;A.NUMERO_CASO AS Ticket ,&#xA;&#x9;A.EMAIL_CONTATO AS Contato ,&#xA;&#x9;A.USUARIO_RESPONSAVEL AS Responsavel ,&#xA;&#x9;B.Assunto AS Assunto ,&#xA;&#x9;A.MOTIVO_CONTATO AS Motivo_contato ,&#xA;&#x9;A.ORIGEM_SUPORTE AS Origem ,&#xA;&#x9;NULL AS Categoria ,&#xA;&#x9;CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,&#xA;&#x9;CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,&#xA;&#x9;CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,&#xA;&#x9;NULL AS Data_SLA ,&#xA;&#x9;CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,&#xA;&#x9;A.CRITICIDADE AS Criticidade ,&#xA;&#x9;CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,&#xA;&#x9;C.COD_CLI&#xA;INTO STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;FROM&#x9;&#xA;&#x9;[VAGAS_DW].[CASOS] AS A&#x9;&#x9;LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID&#xA;WHERE&#xA;&#x9;A.FILA_ATENDIMENTO = 'suporte_empresas'&#xA;&#x9;AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')&#xA;&#x9;AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)&#xA;&#x9;AND A.DATA_FECHAMENTO &gt; '2018-03-09'&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -280,7 +280,7 @@ GO"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -617,8 +617,8 @@ WHERE
               <connections>
                 <connection
                   refId="Package\Exportar CSV\Origem OLE DB.Connections[OleDbConnection]"
-                  connectionManagerID="{01D8D567-93B2-4E49-A51A-28782164D7C4}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[VAGAS_DW]"
+                  connectionManagerID="{C9C5C2E3-4F23-4A32-8949-107BB2A1C923}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[STAGE]"
                   description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
                   name="OleDbConnection" />
               </connections>
@@ -852,13 +852,11 @@ WHERE
                       name="Classificacao" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_abertura]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       name="Data_abertura" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_conclusao]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       name="Data_conclusao" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_SLA]"
@@ -956,14 +954,12 @@ WHERE
                       name="Classificacao" />
                     <outputColumn
                       refId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_abertura]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       lineageId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_abertura]"
                       name="Data_abertura" />
                     <outputColumn
                       refId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_conclusao]"
-                      dataType="wstr"
-                      length="10"
+                      dataType="dbDate"
                       lineageId="Package\Exportar CSV\Origem OLE DB.Outputs[Saída de Erro de Origem OLE DB].Columns[Data_conclusao]"
                       name="Data_conclusao" />
                     <outputColumn
@@ -1061,7 +1057,7 @@ WHERE
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="UPDATE [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;SET VALOR = (SELECT MAX(DATA_CONCLUSAO) FROM VAGAS_DW.TMP_CASOS_SENSEDATA)&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="UPDATE [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;SET VALOR = (SELECT MAX(DATA_CONCLUSAO) FROM STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA)&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -1129,12 +1125,12 @@ WHERE
       DTS:To="Package\Criar tabelas temporárias" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -1281,7 +1277,7 @@ WHERE
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="152,42"
           Id="Package\Exportar CSV\Origem OLE DB"
@@ -1309,9 +1305,7 @@ WHERE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

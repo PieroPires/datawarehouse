@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\diego.gatto"
   DTS:DTSID="{830351F0-556B-4631-882A-C10812314E77}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1046"
   DTS:ObjectName="Contatos"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="32"
-  DTS:VersionGUID="{73D0B84B-7C2F-42FA-A4BB-6F07E3C1C6FB}">
+  DTS:VersionBuild="34"
+  DTS:VersionGUID="{C961E01D-E65A-4C3B-8575-3B24CB174F95}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_03_20\contatos.csv">
+          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_04_09\contatos.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -287,7 +287,7 @@ FROM	[VAGAS_DW].[CONTAS_CRM] AS A		INNER JOIN [VAGAS_DW].[CONTATOS_CRM] AS B ON 
 											LEFT OUTER JOIN TMP_Tab_MainSponsor AS C ON B.COD_CONTATO = C.IdContato_CRM COLLATE SQL_Latin1_General_CP1_CI_AI
 											LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS D ON A.CONTA_ID = D.CONTA_ID
 WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO'
-		AND B.COD_CONTA_CRM IN (SELECT ID_CLIENTECRM FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA)
+		AND B.COD_CONTA_CRM IN (SELECT ID_CLIENTECRM FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)
 UNION ALL
 SELECT	A.CONTA_ID AS Id_ClienteCRM ,
 		B.COD_CONTATO AS IdContato_CRM ,
@@ -315,7 +315,7 @@ FROM	[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A		INNER JOIN [VAGAS_DW].[CONTATOS_CRM] A
 												LEFT OUTER JOIN TMP_Tab_MainSponsor AS C ON B.COD_CONTATO = C.IdContato_CRM COLLATE SQL_Latin1_General_CP1_CI_AI
 												LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS D ON A.CONTA_ID = D.CONTA_ID
 WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO' 
-		AND B.COD_CONTA_CRM IN (SELECT ID_CLIENTECRM FROM VAGAS_DW.TMP_CLIENTES_SENSEDATA);</property>
+		AND B.COD_CONTA_CRM IN (SELECT ID_CLIENTECRM FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA);</property>
                 <property
                   dataType="System.String"
                   description="A variável que contém o comando SQL a ser executado."
@@ -1011,12 +1011,12 @@ WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO'
       DTS:To="Package\Upload S3 Bucket" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
-<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
-<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
 <Objects
   Version="8">
-  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -1111,7 +1111,7 @@ WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO'
     design-time-name="Package\Exportação CSV">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="142,42"
           Id="Package\Exportação CSV\CSV Contatos"
@@ -1139,9 +1139,7 @@ WHERE	B.FUNCIONARIO_DESLIGADO = 'NÃO'
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
