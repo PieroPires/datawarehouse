@@ -71416,6 +71416,322 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "Vídeo-Entrevistas-Participantes",
+        "columns": [
+          {
+            "name": "idParticipante",
+            "dataType": "int64",
+            "sourceColumn": "idParticipante"
+          },
+          {
+            "name": "idVideoEntrevista",
+            "dataType": "int64",
+            "sourceColumn": "idVideoEntrevista"
+          },
+          {
+            "name": "idVaga",
+            "dataType": "int64",
+            "sourceColumn": "idVaga"
+          },
+          {
+            "name": "idCand",
+            "dataType": "int64",
+            "sourceColumn": "idCand"
+          },
+          {
+            "name": "flagAtivo",
+            "dataType": "string",
+            "sourceColumn": "flagAtivo"
+          },
+          {
+            "name": "flagEstornado",
+            "dataType": "string",
+            "sourceColumn": "flagEstornado"
+          },
+          {
+            "name": "idPergunta",
+            "dataType": "int64",
+            "sourceColumn": "idPergunta"
+          },
+          {
+            "name": "descricaoPergunta",
+            "dataType": "string",
+            "sourceColumn": "descricaoPergunta"
+          },
+          {
+            "name": "tipoPergunta",
+            "dataType": "int64",
+            "sourceColumn": "tipoPergunta"
+          },
+          {
+            "name": "tempoResposta_source",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "tempoResposta"
+          },
+          {
+            "name": "idCli",
+            "dataType": "int64",
+            "sourceColumn": "idCli"
+          },
+          {
+            "name": "idVagasCli",
+            "dataType": "string",
+            "sourceColumn": "idVagasCli"
+          },
+          {
+            "name": "data_participante_source",
+            "dataType": "dateTime",
+            "sourceColumn": "data_participante"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VIDEO_ENTREVISTAS_PARTICIPANTES",
+            "dataView": "full",
+            "source": {
+              "query": [
+                "SELECT\tVP.idParticipante",
+                "\t\t, VP.idVideoEntrevista",
+                "\t\t, VP.idVaga",
+                "\t\t, VP.idCand",
+                "\t\t, VP.data_participante",
+                "\t\t, VP.flagAtivo",
+                "\t\t, VP.flagEstornado",
+                "\t\t, VP.idPergunta",
+                "\t\t, VP.descricaoPergunta",
+                "\t\t, VP.tipoPergunta",
+                "\t\t, VP.tempoResposta",
+                "\t\t, V.COD_CLI AS idCli",
+                "\t\t, V.ID_VAGAS AS idVagasCli ",
+                " from\tvagas_dw.video_entrevistas_participantes as VP\tinner join vagas_dw.VIDEO_ENTREVISTAS as V\ton VP.idVideoEntrevista = V.COD_VIDEOENTREVISTA ;"
+              ],
+              "dataSource": "VAGAS_DW"
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT\tVP.idParticipante",
+                  "\t\t, VP.idVideoEntrevista",
+                  "\t\t, VP.idVaga",
+                  "\t\t, VP.idCand",
+                  "\t\t, VP.data_participante",
+                  "\t\t, VP.flagAtivo",
+                  "\t\t, VP.flagEstornado",
+                  "\t\t, VP.idPergunta",
+                  "\t\t, VP.descricaoPergunta",
+                  "\t\t, VP.tipoPergunta",
+                  "\t\t, VP.tempoResposta",
+                  "\t\t, V.COD_CLI AS idCli",
+                  "\t\t, V.ID_VAGAS AS idVagasCli ",
+                  " from\tvagas_dw.video_entrevistas_participantes as VP\tinner join vagas_dw.VIDEO_ENTREVISTAS as V\ton VP.idVideoEntrevista = V.COD_VIDEOENTREVISTA ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "name": "Tempo de resposta em minutos",
+            "expression": "SUM('Vídeo-Entrevistas-Participantes'[tempoResposta_source])/60"
+          },
+          {
+            "name": "Qtd candidatos que responderam",
+            "expression": "DISTINCTCOUNT('Vídeo-Entrevistas-Participantes'[idCand])"
+          },
+          {
+            "name": "Qtd respostas",
+            "expression": "COUNT('Vídeo-Entrevistas-Participantes'[idParticipante])"
+          },
+          {
+            "name": "Qtd vídeo-entrevistas com resposta",
+            "expression": "DISTINCTCOUNT([idVideoEntrevista])"
+          },
+          {
+            "name": "Qtde perguntas com respostas",
+            "expression": "DISTINCTCOUNT('Vídeo-Entrevistas-Participantes'[idPergunta])"
+          },
+          {
+            "name": "Qtd vagas com resposta de vídeo-entrevista",
+            "expression": "DISTINCTCOUNT('Vídeo-Entrevistas-Participantes'[idVaga])"
+          },
+          {
+            "name": "Qtd clientes com resposta de vídeo-entrevista",
+            "expression": "DISTINCTCOUNT('Vídeo-Entrevistas-Participantes'[idCli])"
+          },
+          {
+            "name": "Qtd de participantes com resposta de vídeo-entrevista",
+            "expression": "DISTINCTCOUNT('Vídeo-Entrevistas-Participantes'[idParticipante])"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": [
+              "SELECT\tVP.idParticipante",
+              "\t\t, VP.idVideoEntrevista",
+              "\t\t, VP.idVaga",
+              "\t\t, VP.idCand",
+              "\t\t, VP.data_participante",
+              "\t\t, VP.flagAtivo",
+              "\t\t, VP.flagEstornado",
+              "\t\t, VP.idPergunta",
+              "\t\t, VP.descricaoPergunta",
+              "\t\t, VP.tipoPergunta",
+              "\t\t, VP.tempoResposta",
+              "\t\t, V.COD_CLI AS idCli",
+              "\t\t, V.ID_VAGAS AS idVagasCli ",
+              " from\tvagas_dw.video_entrevistas_participantes as VP\tinner join vagas_dw.VIDEO_ENTREVISTAS as V\ton VP.idVideoEntrevista = V.COD_VIDEOENTREVISTA ;"
+            ]
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "VIDEO_ENTREVISTAS_PARTICIPANTES"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          },
+          {
+            "name": "QueryEditorSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT\tVP.idParticipante",
+              "\t\t, VP.idVideoEntrevista",
+              "\t\t, VP.idVaga",
+              "\t\t, VP.idCand",
+              "\t\t, VP.data_participante",
+              "\t\t, VP.flagAtivo",
+              "\t\t, VP.flagEstornado",
+              "\t\t, VP.idPergunta",
+              "\t\t, VP.descricaoPergunta",
+              "\t\t, VP.tipoPergunta",
+              "\t\t, VP.tempoResposta",
+              "\t\t, V.COD_CLI AS idCli",
+              "\t\t, V.ID_VAGAS AS idVagasCli ",
+              " from\tvagas_dw.video_entrevistas_participantes as VP\tinner join vagas_dw.VIDEO_ENTREVISTAS as V\ton VP.idVideoEntrevista = V.COD_VIDEOENTREVISTA ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Vídeo-Entrevistas-Participantes - data_solicitacao",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "data_solicitacao",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "dia",
+            "dataType": "int64",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "numMes",
+            "dataType": "int64",
+            "sourceColumn": "MES",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "mes",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "numMes",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ano",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "semana",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Vídeo-Entrevistas-Participantes - Data_solicitacao",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "VideoEntrevistas_Empresas",
+        "columns": [
+          {
+            "name": "Cod_cli",
+            "dataType": "int64",
+            "sourceColumn": "Cod_cli",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "Id_ClienteVagas",
+            "dataType": "string",
+            "sourceColumn": "Id_ClienteVagas",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VideoEntrevistas_Empresas",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[VideoEntrevistas_Empresas].* FROM [VAGAS_DW].[VideoEntrevistas_Empresas] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[VideoEntrevistas_Empresas].* FROM [VAGAS_DW].[VideoEntrevistas_Empresas] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "VideoEntrevistas_Empresas"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -72973,6 +73289,13 @@
         "fromColumn": "DATA_ENVIO_SOURCE",
         "toTable": "VIDEO_ENTREVISTAS_GRAVACAO - DATA_ENVIO",
         "toColumn": "DATA_ENVIO"
+      },
+      {
+        "name": "d100a5de-ef73-42b9-a277-a598c7ad3bab",
+        "fromTable": "Vídeo-Entrevistas-Participantes",
+        "fromColumn": "data_participante_source",
+        "toTable": "Vídeo-Entrevistas-Participantes - data_solicitacao",
+        "toColumn": "data_solicitacao"
       }
     ],
     "perspectives": [
