@@ -71715,6 +71715,82 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "VIDEO_ENTREVISTAS - DATA_CRIACAO_PARTICIPANTE",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DATA_CRIACAO_PARTICIPANTE",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "DIA",
+            "dataType": "int64",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "MES",
+            "dataType": "int64",
+            "sourceColumn": "MES",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "NOMEMES",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "MES",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ANO",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "VIDEO_ENTREVISTAS - DATA_CRIACAO_PARTICIPANTE",
+            "dataView": "full",
+            "source": {
+              "query": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " SELECT [VAGAS_DW].[DATAS].* FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -73279,6 +73355,13 @@
         "fromColumn": "DATA_RESPOSTA_SOURCE",
         "toTable": "VIDEO_ENTREVISTAS - DATA_RESPOSTA",
         "toColumn": "DATA_RESPOSTA"
+      },
+      {
+        "name": "72d20e10-33d1-41e8-a000-4330b0cd8ba2",
+        "fromTable": "VIDEO_ENTREVISTAS",
+        "fromColumn": "DATA_CRIACAO_PARTICIPANTE_SOURCE",
+        "toTable": "VIDEO_ENTREVISTAS - DATA_CRIACAO_PARTICIPANTE",
+        "toColumn": "DATA_CRIACAO_PARTICIPANTE"
       }
     ],
     "perspectives": [
