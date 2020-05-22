@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\luiz.braz"
   DTS:DTSID="{D2E5F9B4-4CE1-419F-9FF3-CE2492DCAA98}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LastModifiedProductVersion="14.0.0800.90"
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Demandas_Equipes_Worklog"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="311"
-  DTS:VersionGUID="{70E2999F-EC3B-491D-A2BE-6301B4D2AF65}">
+  DTS:VersionBuild="315"
+  DTS:VersionGUID="{ED749B02-5010-4C93-82E7-55385E7BCAF4}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -49,9 +49,8 @@
     <DTS:Executable
       DTS:refId="Package\MySQL -&gt; SQL Server (JIRA)"
       DTS:CreationName="Microsoft.Pipeline"
-      DTS:DelayValidation="True"
       DTS:Description="Data Flow Task"
-      DTS:DTSID="{20FEF151-99D0-4E52-AE6A-CFC8DF32A325}"
+      DTS:DTSID="{CD3BFD9C-EC5A-45CD-AC4E-922CC060756A}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
       DTS:ObjectName="MySQL -&gt; SQL Server (JIRA)"
@@ -62,84 +61,9 @@
           version="1">
           <components>
             <component
-              refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion"
-              componentClassID="Microsoft.DataConvert"
-              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
-              description="Data Conversion"
-              name="Data Conversion"
-              usesDispositions="true">
-              <inputs>
-                <input
-                  refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Inputs[Data Conversion Input]"
-                  name="Data Conversion Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Inputs[Data Conversion Input].Columns[NUMERO_DEMANDA]"
-                      cachedDataType="ui8"
-                      cachedName="NUMERO_DEMANDA"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]" />
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Output]"
-                  exclusionGroup="1"
-                  name="Data Conversion Output"
-                  synchronousInputId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Inputs[Data Conversion Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Output].Columns[NUMERO_DEMANDA_Conv]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Output].Columns[NUMERO_DEMANDA_Conv]"
-                      name="NUMERO_DEMANDA_Conv"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the input column used as the source of data for the conversion."
-                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]}</property>
-                        <property
-                          dataType="System.Boolean"
-                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
-                          name="FastParse">false</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-                <output
-                  refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Error Output]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="Data Conversion Error Output"
-                  synchronousInputId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Inputs[Data Conversion Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
               refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb"
               componentClassID="Attunity.SSISODBCSrc"
-              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;2"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
               description="ODBC Source"
               name="MySQL jiradb"
               usesDispositions="true"
@@ -157,7 +81,7 @@
                   name="SqlCommand">SELECT CONVERT("DSM" USING Latin1) AS NOME_EQUIPE,
 	   CONVERT(A.AUTHOR USING Latin1) AS RESPONSAVEL,
 	   A.STARTDATE AS DATA_WORKLOG,
-       CAST(B.issuenum AS UNSIGNED) AS NUMERO_DEMANDA,
+       TRUNCATE(B.issuenum,0) AS NUMERO_DEMANDA,
        CONVERT(B.SUMMARY USING Latin1) AS NOME_DEMANDA,
        (((A.timeworked / 60) / 60) *60*60)/60/60/24 AS TEMPO,
        CONVERT(CAST(A.worklogbody AS char(8000)) USING Latin1) AS DESCRICAO
@@ -238,17 +162,26 @@ AND B.CREATED &gt;= "20170101"</property>
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NOME_EQUIPE]"
                       name="NOME_EQUIPE" />
                     <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
-                      dataType="ui8"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
-                      name="NUMERO_DEMANDA" />
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[RESPONSAVEL]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[RESPONSAVEL]"
+                      name="RESPONSAVEL" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[DATA_WORKLOG]"
                       dataType="dbTimeStamp"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[DATA_WORKLOG]"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[DATA_WORKLOG]"
                       name="DATA_WORKLOG" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]"
+                      name="NUMERO_DEMANDA"
+                      precision="18" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NOME_DEMANDA]"
                       codePage="1252"
@@ -257,14 +190,6 @@ AND B.CREATED &gt;= "20170101"</property>
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NOME_DEMANDA]"
                       name="NOME_DEMANDA" />
-                    <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[RESPONSAVEL]"
-                      codePage="1252"
-                      dataType="str"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[RESPONSAVEL]"
-                      length="255"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[RESPONSAVEL]"
-                      name="RESPONSAVEL" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[TEMPO]"
                       dataType="r8"
@@ -300,8 +225,9 @@ AND B.CREATED &gt;= "20170101"</property>
                       name="DATA_WORKLOG" />
                     <externalMetadataColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
-                      dataType="ui8"
-                      name="NUMERO_DEMANDA" />
+                      dataType="numeric"
+                      name="NUMERO_DEMANDA"
+                      precision="18" />
                     <externalMetadataColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[NOME_DEMANDA]"
                       codePage="1252"
@@ -334,17 +260,26 @@ AND B.CREATED &gt;= "20170101"</property>
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NOME_EQUIPE]"
                       name="NOME_EQUIPE" />
                     <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
-                      dataType="ui8"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
-                      name="NUMERO_DEMANDA" />
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[RESPONSAVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[RESPONSAVEL]"
+                      length="255"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[RESPONSAVEL]"
+                      name="RESPONSAVEL" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[DATA_WORKLOG]"
                       dataType="dbTimeStamp"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[DATA_WORKLOG]"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[DATA_WORKLOG]"
                       name="DATA_WORKLOG" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[NUMERO_DEMANDA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NUMERO_DEMANDA]"
+                      name="NUMERO_DEMANDA"
+                      precision="18" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NOME_DEMANDA]"
                       codePage="1252"
@@ -353,14 +288,6 @@ AND B.CREATED &gt;= "20170101"</property>
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[NOME_DEMANDA]"
                       name="NOME_DEMANDA" />
-                    <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[RESPONSAVEL]"
-                      codePage="1252"
-                      dataType="str"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].ExternalColumns[RESPONSAVEL]"
-                      length="255"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[RESPONSAVEL]"
-                      name="RESPONSAVEL" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Error Output].Columns[TEMPO]"
                       dataType="r8"
@@ -393,11 +320,11 @@ AND B.CREATED &gt;= "20170101"</property>
               </outputs>
             </component>
             <component
-              refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG"
+              refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
               description="OLE DB Destination"
-              name="VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG"
+              name="OLE DB Destination"
               usesDispositions="true"
               version="4">
               <properties>
@@ -450,7 +377,7 @@ AND B.CREATED &gt;= "20170101"</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Connections[OleDbConnection]"
+                  refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
                   connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
                   description="The OLE DB runtime connection used to access the database."
@@ -458,97 +385,98 @@ AND B.CREATED &gt;= "20170101"</property>
               </connections>
               <inputs>
                 <input
-                  refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input]"
+                  refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input]"
                   errorOrTruncationOperation="Insert"
                   errorRowDisposition="FailComponent"
                   hasSideEffects="true"
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[DATA_WORKLOG]"
-                      cachedDataType="dbTimeStamp"
-                      cachedName="DATA_WORKLOG"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[DATA_WORKLOG]"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[DATA_WORKLOG]" />
-                    <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[NOME_DEMANDA]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="255"
-                      cachedName="NOME_DEMANDA"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[NOME_DEMANDA]"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NOME_DEMANDA]" />
-                    <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[RESPONSAVEL]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RESPONSAVEL]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="255"
                       cachedName="RESPONSAVEL"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[RESPONSAVEL]"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RESPONSAVEL]"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[RESPONSAVEL]" />
                     <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[TEMPO]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DATA_WORKLOG]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_WORKLOG"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_WORKLOG]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[DATA_WORKLOG]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[NOME_DEMANDA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="NOME_DEMANDA"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NOME_DEMANDA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NOME_DEMANDA]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TEMPO]"
                       cachedDataType="r8"
                       cachedName="TEMPO"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO]"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO]"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[TEMPO]" />
                     <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[DESCRICAO]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DESCRICAO]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="8000"
                       cachedName="DESCRICAO"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[DESCRICAO]"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRICAO]"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[DESCRICAO]" />
                     <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[NOME_EQUIPE]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[NOME_EQUIPE]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="3"
                       cachedName="NOME_EQUIPE"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[NOME_PROJETO]"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NOME_PROJETO]"
                       lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NOME_EQUIPE]" />
                     <inputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].Columns[NUMERO_DEMANDA_Conv]"
-                      cachedDataType="i4"
-                      cachedName="NUMERO_DEMANDA_Conv"
-                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Output].Columns[NUMERO_DEMANDA_Conv]" />
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[NUMERO_DEMANDA]"
+                      cachedDataType="numeric"
+                      cachedName="NUMERO_DEMANDA"
+                      cachedPrecision="18"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output].Columns[NUMERO_DEMANDA]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[NOME_PROJETO]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NOME_PROJETO]"
                       codePage="1252"
                       dataType="str"
                       length="100"
                       name="NOME_PROJETO" />
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[RESPONSAVEL]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RESPONSAVEL]"
                       codePage="1252"
                       dataType="str"
                       length="100"
                       name="RESPONSAVEL" />
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NUMERO_DEMANDA]"
                       dataType="i4"
                       name="NUMERO_DEMANDA" />
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[NOME_DEMANDA]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NOME_DEMANDA]"
                       codePage="1252"
                       dataType="str"
                       length="300"
                       name="NOME_DEMANDA" />
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[DATA_WORKLOG]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_WORKLOG]"
                       dataType="dbTimeStamp"
                       name="DATA_WORKLOG" />
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TEMPO]"
                       dataType="r8"
                       name="TEMPO" />
                     <externalMetadataColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input].ExternalColumns[DESCRICAO]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DESCRICAO]"
                       codePage="1252"
                       dataType="str"
                       length="8000"
@@ -558,22 +486,22 @@ AND B.CREATED &gt;= "20170101"</property>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Outputs[OLE DB Destination Error Output]"
+                  refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="OLE DB Destination Error Output"
-                  synchronousInputId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input]">
+                  synchronousInputId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      refId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -584,13 +512,8 @@ AND B.CREATED &gt;= "20170101"</property>
           </components>
           <paths>
             <path
-              refId="Package\MySQL -&gt; SQL Server (JIRA).Paths[Data Conversion Output]"
-              endId="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG.Inputs[OLE DB Destination Input]"
-              name="Data Conversion Output"
-              startId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Outputs[Data Conversion Output]" />
-            <path
               refId="Package\MySQL -&gt; SQL Server (JIRA).Paths[ODBC Source Output]"
-              endId="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion.Inputs[Data Conversion Input]"
+              endId="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination.Inputs[OLE DB Destination Input]"
               name="ODBC Source Output"
               startId="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb.Outputs[ODBC Source Output]" />
           </paths>
@@ -600,12 +523,12 @@ AND B.CREATED &gt;= "20170101"</property>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{D924C819-E9B2-48D4-9B5B-B805231A5A95}"
+      DTS:DTSID="{24BA4B49-1A9B-42DD-8783-E1C8E6DA365B}"
       DTS:From="Package\Limpar  VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 1"
+      DTS:ObjectName="Constraint"
       DTS:To="Package\MySQL -&gt; SQL Server (JIRA)" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
@@ -625,35 +548,23 @@ AND B.CREATED &gt;= "20170101"</property>
           Id="Package\Limpar  VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG"
           TopLeft="49,54" />
         <NodeLayout
-          Size="215,42"
+          Size="151,42"
           Id="Package\MySQL -&gt; SQL Server (JIRA)"
-          TopLeft="81,122" />
+          TopLeft="146,228" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="217.5,96">
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="219.5,96">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-29,26"
+              EndConnector="0,132"
               Start="0,0"
-              End="-29,18.5">
+              End="0,124.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,9" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,9"
-                    Point2="0,13"
-                    Point3="-4,13" />
-                  <mssgle:LineSegment
-                    End="-25,13" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-25,13"
-                    Point2="-29,13"
-                    Point3="-29,17" />
-                  <mssgle:LineSegment
-                    End="-29,18.5" />
+                    End="0,124.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -669,79 +580,29 @@ AND B.CREATED &gt;= "20170101"</property>
     design-time-name="Package\MySQL -&gt; SQL Server (JIRA)">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="141,42"
           Id="Package\MySQL -&gt; SQL Server (JIRA)\MySQL jiradb"
-          TopLeft="98,56" />
+          TopLeft="440,60" />
         <NodeLayout
-          Size="156,42"
-          Id="Package\MySQL -&gt; SQL Server (JIRA)\Data Conversion"
-          TopLeft="313,78" />
+          Size="171,42"
+          Id="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination"
+          TopLeft="430,327" />
         <EdgeLayout
           Id="Package\MySQL -&gt; SQL Server (JIRA).Paths[ODBC Source Output]"
-          TopLeft="239,77">
+          TopLeft="513,102">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="74,22"
+              EndConnector="0,225"
               Start="0,0"
-              End="66.5,22">
+              End="0,217.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="33,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="33,0"
-                    Point2="37,0"
-                    Point3="37,4" />
-                  <mssgle:LineSegment
-                    End="37,18" />
-                  <mssgle:CubicBezierSegment
-                    Point1="37,18"
-                    Point2="37,22"
-                    Point3="41,22" />
-                  <mssgle:LineSegment
-                    End="66.5,22" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="298,42"
-          Id="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG"
-          TopLeft="511,215" />
-        <EdgeLayout
-          Id="Package\MySQL -&gt; SQL Server (JIRA).Paths[Data Conversion Output]"
-          TopLeft="391,120">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="269,95"
-              Start="0,0"
-              End="269,87.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,43.5"
-                    Point2="0,47.5"
-                    Point3="4,47.5" />
-                  <mssgle:LineSegment
-                    End="265,47.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="265,47.5"
-                    Point2="269,47.5"
-                    Point3="269,51.5" />
-                  <mssgle:LineSegment
-                    End="269,87.5" />
+                    End="0,217.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -754,7 +615,7 @@ AND B.CREATED &gt;= "20170101"</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\MySQL -&gt; SQL Server (JIRA)\VAGAS_DW_DEMANDAS_EQUIPES_WORKLOG">
+    design-time-name="Package\MySQL -&gt; SQL Server (JIRA)\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
