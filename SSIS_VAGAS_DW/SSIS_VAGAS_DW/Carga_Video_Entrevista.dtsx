@@ -13,8 +13,8 @@
   DTS:ObjectName="Carga_Video_Entrevista"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="114"
-  DTS:VersionGUID="{D78210FB-124F-4121-A5EE-F3F8D18A8416}">
+  DTS:VersionBuild="117"
+  DTS:VersionGUID="{BEB52332-C758-4032-A62E-958B1502D973}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -82,6 +82,39 @@
   </DTS:Variables>
   <DTS:Executables>
     <DTS:Executable
+      DTS:refId="Package\Limpar tabela VIDEO_ENTREVISTAS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{39D2D002-EA47-4BB4-8DD5-3D7993A9EA0E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar tabela VIDEO_ENTREVISTAS"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.VIDEO_ENTREVISTAS ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar Cubo"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Tarefa Processamento do Analysis Services"
+      DTS:DTSID="{890DDB11-3C33-4810-B485-BDB4ECFBC7E6}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar Cubo"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_CRIACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_RESPOSTA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_CRIACAO_PARTICIPANTE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_ENTRADA_CLIENTE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Processar Cubos"
       DTS:CreationName="Microsoft.DTSProcessingTask"
       DTS:Description="Tarefa Processamento do Analysis Services"
@@ -96,22 +129,6 @@
         <ASProcessingData
           ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
           ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Vídeo-Entrevistas-Participantes - data_solicitacao&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_CRIACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VideoEntrevistas_Empresas&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS_GRAVACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS_GRAVACAO - DATA_ENVIO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Vídeo-Entrevistas-Participantes&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
-      DTS:refId="Package\Processsar Cubo"
-      DTS:CreationName="Microsoft.DTSProcessingTask"
-      DTS:Description="Tarefa Processamento do Analysis Services"
-      DTS:DTSID="{890DDB11-3C33-4810-B485-BDB4ECFBC7E6}"
-      DTS:ExecutableType="Microsoft.DTSProcessingTask"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="Processsar Cubo"
-      DTS:ThreadHint="1">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <ASProcessingData
-          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
-          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_CRIACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_RESPOSTA&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VIDEO_ENTREVISTAS - DATA_ENTRADA_CLIENTE&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -4052,7 +4069,15 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
       DTS:From="Package\Video-Entrevistas"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição 6"
-      DTS:To="Package\Processsar Cubo" />
+      DTS:To="Package\Processar Cubo" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 7]"
+      DTS:CreationName=""
+      DTS:DTSID="{203AC703-773C-4BB5-B208-F388CA76E2D1}"
+      DTS:From="Package\Limpar tabela VIDEO_ENTREVISTAS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 7"
+      DTS:To="Package\Video-Entrevistas" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
@@ -4069,7 +4094,11 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
         <NodeLayout
           Size="156,42"
           Id="Package\Processar Cubos"
-          TopLeft="304.833333333334,507.833333333333" />
+          TopLeft="304.833333333334,519.833333333333" />
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Processar Cubo"
+          TopLeft="737,180" />
         <NodeLayout
           Size="256,42"
           Id="Package\Video-entrevistas\Código da últ videoentrevista (criada)"
@@ -4164,11 +4193,11 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
           PanelSize="314,408"
           Size="183,43"
           Id="Package\Video-entrevistas"
-          TopLeft="286.5,13.5" />
+          TopLeft="286.5,25.5" />
         <NodeLayout
           Size="160,42"
           Id="Package\Video-Entrevistas"
-          TopLeft="613,25" />
+          TopLeft="731,100" />
         <NodeLayout
           Size="204,42"
           Id="Package\Vídeo-entrevistas (gravação)\Código da última gravação"
@@ -4263,7 +4292,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
           PanelSize="432,408"
           Size="237,43"
           Id="Package\Vídeo-entrevistas (gravação)"
-          TopLeft="259.833333333333,176.5" />
+          TopLeft="259.833333333333,188.5" />
         <NodeLayout
           Size="217,42"
           Id="Package\Vídeo-entrevistas (participantes)\Código do último participante"
@@ -4358,7 +4387,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
           PanelSize="464,354"
           Size="464,43"
           Id="Package\Vídeo-entrevistas (participantes)"
-          TopLeft="250,343" />
+          TopLeft="250,355" />
         <NodeLayout
           Size="236,42"
           Id="Package\Vídeo-entrevistas (processamento)\Código do úlltimo processamento"
@@ -4453,7 +4482,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
           PanelSize="486,408"
           Size="266,43"
           Id="Package\Vídeo-entrevistas (processamento)"
-          TopLeft="248.166666666667,274.5" />
+          TopLeft="248.166666666667,286.5" />
         <NodeLayout
           Size="223,42"
           Id="Package\Video-entrevistas (saldo)\PostgreSQL -&gt; Saldo_Segudos"
@@ -4464,14 +4493,14 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
           PanelSize="234,102"
           Size="219,43"
           Id="Package\Video-entrevistas (saldo)"
-          TopLeft="268.166666666667,416.5" />
+          TopLeft="268.166666666667,428.5" />
         <NodeLayout
           Size="201,42"
           Id="Package\Vídeo-entrevistas-Clientes"
-          TopLeft="275,89" />
+          TopLeft="275,101" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição]"
-          TopLeft="376.916666666667,131">
+          TopLeft="376.916666666667,143">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4493,7 +4522,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 1]"
-          TopLeft="379.75,219.5">
+          TopLeft="379.75,231.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4515,7 +4544,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 2]"
-          TopLeft="381.166666666667,317.5">
+          TopLeft="381.166666666667,329.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4549,7 +4578,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 3]"
-          TopLeft="380.250000000001,459.5">
+          TopLeft="380.250000000001,471.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4571,7 +4600,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 4]"
-          TopLeft="482,386">
+          TopLeft="482,398">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4605,7 +4634,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 5]"
-          TopLeft="376.75,56.5">
+          TopLeft="376.75,68.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4625,36 +4654,46 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="156,42"
-          Id="Package\Processsar Cubo"
-          TopLeft="600,105" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restrição 6]"
-          TopLeft="693,67">
+          TopLeft="811.75,142">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-15,38"
+              EndConnector="0,38"
               Start="0,0"
-              End="-15,30.5">
+              End="0,30.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,15" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,15"
-                    Point2="0,19"
-                    Point3="-4,19" />
+                    End="0,30.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="250,42"
+          Id="Package\Limpar tabela VIDEO_ENTREVISTAS"
+          TopLeft="684,5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 7]"
+          TopLeft="810,47">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53"
+              Start="0,0"
+              End="0,45.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-11,19" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-11,19"
-                    Point2="-15,19"
-                    Point3="-15,23" />
-                  <mssgle:LineSegment
-                    End="-15,30.5" />
+                    End="0,45.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4723,7 +4762,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
     design-time-name="Package\Video-Entrevistas">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="160,42"
           Id="Package\Video-Entrevistas\Vídeo-entrevistas"
@@ -4763,7 +4802,9 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -4839,7 +4880,7 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
     design-time-name="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="251,42"
           Id="Package\Vídeo-entrevistas (participantes)\Vídeo-entrevistas participantes -&gt; TMP_VIDEO_ENTREVISTAS_PARTICIPANTES\tmp_video_entrevistas_participantes"
@@ -4879,7 +4920,9 @@ WHERE	A.Recurso_libRec = 'video-entrevista' ;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

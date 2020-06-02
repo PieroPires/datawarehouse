@@ -71494,6 +71494,11 @@
             "sourceColumn": "DATA_RESPOSTA",
             "formatString": "General Date",
             "sourceProviderType": "DBDate"
+          },
+          {
+            "name": "ENVIOU_CONVITE_GRAVACAO",
+            "dataType": "string",
+            "sourceColumn": "ENVIOU_CONVITE_GRAVACAO"
           }
         ],
         "partitions": [
@@ -71501,9 +71506,79 @@
             "name": "VIDEO_ENTREVISTAS",
             "dataView": "full",
             "source": {
-              "query": " SELECT [VAGAS_DW].[VIDEO_ENTREVISTAS].* FROM [VAGAS_DW].[VIDEO_ENTREVISTAS] ",
+              "query": [
+                "SELECT\tA.CONTA_CLI,",
+                "\t\tA.COD_CLI,",
+                "\t\tA.SALDOSEGUNDOS_CLI,",
+                "\t\tA.DATA_ENTRADA_CLI,",
+                "\t\tA.COD_VIDEOENTREVISTA,",
+                "\t\tA.DATA_CRIACAO_VIDEO_ENTREVISTA,",
+                "\t\tA.VIDEOENTREVISTA,",
+                "\t\tA.TEMPOLEITURA_VIDEOENTREVISTA,",
+                "\t\tA.CODPARTICIPANTE_VIDEOENTREVISTA,",
+                "\t\tA.COD_VAGA_VIDEOENTREVISTA,",
+                "\t\tA.COD_CAND_VIDEOENTREVISTA,",
+                "\t\tA.DATALIMITE_PREENCHIMENTOVIDEO,",
+                "\t\tA.DATA_CRIACAO_PARTICIPANTE,",
+                "\t\tA.STATUS_PARTICIPANTE,",
+                "\t\tA.ESTORNADO_PARTICIPANTE,",
+                "\t\tA.COD_RESPOSTA,",
+                "\t\tA.DATA_RESPOSTA,",
+                "\t\tA.COD_PERGUNTA,",
+                "\t\tA.PERGUNTA,",
+                "\t\tA.TERMOS_RELEVANTES_PERGUNTA,",
+                "\t\tA.TIPO_PERGUNTA,",
+                "\t\tA.TEMPO_RESPOSTA_PERGUNTA,",
+                "\t\tA.ORDEM_PERGUNTA,",
+                "\t\tISNULL( (SELECT TOP 1 'NÃO'",
+                "\t\t\t\t FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A1",
+                "\t\t\t\t WHERE\tA.COD_CLI = A1.COD_CLI",
+                "\t\t\t\t\t\tAND NOT EXISTS (SELECT *",
+                "\t\t\t\t\t\t\t\t\t\tFROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS AA1",
+                "\t\t\t\t\t\t\t\t\t\tWHERE\tA1.COD_CLI = AA1.COD_CLI",
+                "\t\t\t\t\t\t\t\t\t\t\t\tAND AA1.CODPARTICIPANTE_VIDEOENTREVISTA > 0)), 'SIM') AS ENVIOU_CONVITE_GRAVACAO",
+                "FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A"
+              ],
               "dataSource": "VAGAS_DW"
-            }
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT\tA.CONTA_CLI,",
+                  "\t\tA.COD_CLI,",
+                  "\t\tA.SALDOSEGUNDOS_CLI,",
+                  "\t\tA.DATA_ENTRADA_CLI,",
+                  "\t\tA.COD_VIDEOENTREVISTA,",
+                  "\t\tA.DATA_CRIACAO_VIDEO_ENTREVISTA,",
+                  "\t\tA.VIDEOENTREVISTA,",
+                  "\t\tA.TEMPOLEITURA_VIDEOENTREVISTA,",
+                  "\t\tA.CODPARTICIPANTE_VIDEOENTREVISTA,",
+                  "\t\tA.COD_VAGA_VIDEOENTREVISTA,",
+                  "\t\tA.COD_CAND_VIDEOENTREVISTA,",
+                  "\t\tA.DATALIMITE_PREENCHIMENTOVIDEO,",
+                  "\t\tA.DATA_CRIACAO_PARTICIPANTE,",
+                  "\t\tA.STATUS_PARTICIPANTE,",
+                  "\t\tA.ESTORNADO_PARTICIPANTE,",
+                  "\t\tA.COD_RESPOSTA,",
+                  "\t\tA.DATA_RESPOSTA,",
+                  "\t\tA.COD_PERGUNTA,",
+                  "\t\tA.PERGUNTA,",
+                  "\t\tA.TERMOS_RELEVANTES_PERGUNTA,",
+                  "\t\tA.TIPO_PERGUNTA,",
+                  "\t\tA.TEMPO_RESPOSTA_PERGUNTA,",
+                  "\t\tA.ORDEM_PERGUNTA,",
+                  "\t\tISNULL( (SELECT TOP 1 'NÃO'",
+                  "\t\t\t\t FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A1",
+                  "\t\t\t\t WHERE\tA.COD_CLI = A1.COD_CLI",
+                  "\t\t\t\t\t\tAND NOT EXISTS (SELECT *",
+                  "\t\t\t\t\t\t\t\t\t\tFROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS AA1",
+                  "\t\t\t\t\t\t\t\t\t\tWHERE\tA1.COD_CLI = AA1.COD_CLI",
+                  "\t\t\t\t\t\t\t\t\t\t\t\tAND AA1.CODPARTICIPANTE_VIDEOENTREVISTA > 0)), 'SIM') AS ENVIOU_CONVITE_GRAVACAO",
+                  "FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
           }
         ],
         "measures": [
@@ -71552,7 +71627,39 @@
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
-            "value": " SELECT [VAGAS_DW].[VIDEO_ENTREVISTAS].* FROM [VAGAS_DW].[VIDEO_ENTREVISTAS] "
+            "value": [
+              "SELECT\tA.CONTA_CLI,",
+              "\t\tA.COD_CLI,",
+              "\t\tA.SALDOSEGUNDOS_CLI,",
+              "\t\tA.DATA_ENTRADA_CLI,",
+              "\t\tA.COD_VIDEOENTREVISTA,",
+              "\t\tA.DATA_CRIACAO_VIDEO_ENTREVISTA,",
+              "\t\tA.VIDEOENTREVISTA,",
+              "\t\tA.TEMPOLEITURA_VIDEOENTREVISTA,",
+              "\t\tA.CODPARTICIPANTE_VIDEOENTREVISTA,",
+              "\t\tA.COD_VAGA_VIDEOENTREVISTA,",
+              "\t\tA.COD_CAND_VIDEOENTREVISTA,",
+              "\t\tA.DATALIMITE_PREENCHIMENTOVIDEO,",
+              "\t\tA.DATA_CRIACAO_PARTICIPANTE,",
+              "\t\tA.STATUS_PARTICIPANTE,",
+              "\t\tA.ESTORNADO_PARTICIPANTE,",
+              "\t\tA.COD_RESPOSTA,",
+              "\t\tA.DATA_RESPOSTA,",
+              "\t\tA.COD_PERGUNTA,",
+              "\t\tA.PERGUNTA,",
+              "\t\tA.TERMOS_RELEVANTES_PERGUNTA,",
+              "\t\tA.TIPO_PERGUNTA,",
+              "\t\tA.TEMPO_RESPOSTA_PERGUNTA,",
+              "\t\tA.ORDEM_PERGUNTA,",
+              "\t\tISNULL( (SELECT TOP 1 'NÃO'",
+              "\t\t\t\t FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A1",
+              "\t\t\t\t WHERE\tA.COD_CLI = A1.COD_CLI",
+              "\t\t\t\t\t\tAND NOT EXISTS (SELECT *",
+              "\t\t\t\t\t\t\t\t\t\tFROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS AA1",
+              "\t\t\t\t\t\t\t\t\t\tWHERE\tA1.COD_CLI = AA1.COD_CLI",
+              "\t\t\t\t\t\t\t\t\t\t\t\tAND AA1.CODPARTICIPANTE_VIDEOENTREVISTA > 0)), 'SIM') AS ENVIOU_CONVITE_GRAVACAO",
+              "FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A"
+            ]
           },
           {
             "name": "_TM_ExtProp_DbTableName",
@@ -71561,6 +71668,42 @@
           {
             "name": "_TM_ExtProp_DbSchemaName",
             "value": "VAGAS_DW"
+          },
+          {
+            "name": "QueryEditorSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT\tA.CONTA_CLI,",
+              "\t\tA.COD_CLI,",
+              "\t\tA.SALDOSEGUNDOS_CLI,",
+              "\t\tA.DATA_ENTRADA_CLI,",
+              "\t\tA.COD_VIDEOENTREVISTA,",
+              "\t\tA.DATA_CRIACAO_VIDEO_ENTREVISTA,",
+              "\t\tA.VIDEOENTREVISTA,",
+              "\t\tA.TEMPOLEITURA_VIDEOENTREVISTA,",
+              "\t\tA.CODPARTICIPANTE_VIDEOENTREVISTA,",
+              "\t\tA.COD_VAGA_VIDEOENTREVISTA,",
+              "\t\tA.COD_CAND_VIDEOENTREVISTA,",
+              "\t\tA.DATALIMITE_PREENCHIMENTOVIDEO,",
+              "\t\tA.DATA_CRIACAO_PARTICIPANTE,",
+              "\t\tA.STATUS_PARTICIPANTE,",
+              "\t\tA.ESTORNADO_PARTICIPANTE,",
+              "\t\tA.COD_RESPOSTA,",
+              "\t\tA.DATA_RESPOSTA,",
+              "\t\tA.COD_PERGUNTA,",
+              "\t\tA.PERGUNTA,",
+              "\t\tA.TERMOS_RELEVANTES_PERGUNTA,",
+              "\t\tA.TIPO_PERGUNTA,",
+              "\t\tA.TEMPO_RESPOSTA_PERGUNTA,",
+              "\t\tA.ORDEM_PERGUNTA,",
+              "\t\tISNULL( (SELECT TOP 1 'NÃO'",
+              "\t\t\t\t FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A1",
+              "\t\t\t\t WHERE\tA.COD_CLI = A1.COD_CLI",
+              "\t\t\t\t\t\tAND NOT EXISTS (SELECT *",
+              "\t\t\t\t\t\t\t\t\t\tFROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS AA1",
+              "\t\t\t\t\t\t\t\t\t\tWHERE\tA1.COD_CLI = AA1.COD_CLI",
+              "\t\t\t\t\t\t\t\t\t\t\t\tAND AA1.CODPARTICIPANTE_VIDEOENTREVISTA > 0)), 'SIM') AS ENVIOU_CONVITE_GRAVACAO",
+              "FROM\t[VAGAS_DW].[VIDEO_ENTREVISTAS] AS A</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+            ]
           }
         ]
       },
