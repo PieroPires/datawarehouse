@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\diego.gatto"
   DTS:DTSID="{FC4ABF69-E174-4195-B786-EDAE25674327}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.0800.90"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
   DTS:LocaleID="1046"
   DTS:ObjectName="Log_uso_vfb"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="134"
-  DTS:VersionGUID="{AF767989-3B85-4512-A491-67921F9A974B}">
+  DTS:VersionBuild="149"
+  DTS:VersionGUID="{495A10F7-F5C1-4ED8-86E4-EC53BCF86106}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_04_09\log_uso_vfb.csv">
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_08_18\log_uso_vfb.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -132,20 +132,20 @@
   <DTS:Variables />
   <DTS:Executables>
     <DTS:Executable
-      DTS:refId="Package\Criar tabelas temporárias - VAGAS_DW"
+      DTS:refId="Package\Carga das linhas na tabela temporária"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
       DTS:DTSID="{5CE80818-FA81-4AAA-BF47-2666397D1ECB}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Criar tabelas temporárias - VAGAS_DW"
+      DTS:ObjectName="Carga das linhas na tabela temporária"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="IF OBJECT_ID ('STAGE.VAGAS_DW.TMP_LOG_USO_VFB_SENSEDATA') IS NOT NULL&#xA;DROP TABLE STAGE.[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA] ;&#xA;&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_CADASTRAMENTO) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Cadastramento de vaga' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;INTO&#x9;[STAGE].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA]&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_CADASTRAMENTO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;A.DATA_CADASTRAMENTO ,&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Login no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.Data_login &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.Cod_func,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login),&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Triagem no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_TRIAGEM &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM),&#xA;&#x9;&#x9;A.COD_CLI ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="INSERT INTO [STAGE].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA]&#xA;-- Cadastro de vaga&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_CADASTRAMENTO) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Cadastramento de vaga' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[VAGAS] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_CADASTRAMENTO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;A.DATA_CADASTRAMENTO ,&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;&#xA;-- Login&#xA;SELECT&#x9;A.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Login no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.Data_login &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.Cod_func,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.Data_login),&#xA;&#x9;&#x9;A.COD_CLI&#xA;UNION ALL&#xA;&#xA;-- Triagem&#xA;SELECT&#x9;A.COD_FUNC AS Cod_usuario_VFB,&#xA;&#x9;&#x9;B.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;B.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;C.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM) AS Data_Log,&#xA;&#x9;&#x9;COUNT(*) AS Qtd_Log,&#xA;&#x9;&#x9;'Triagem no VFB' AS Item_Log,&#xA;&#x9;&#x9;A.COD_CLI&#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[TRIAGEM_VAGAS_EPARTNER] AS A&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Funcionarios] AS B ON A.COD_FUNC = B.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [hrh-data].[dbo].[Clientes] AS C ON B.CodCli_func = C.Cod_cli&#xA;WHERE&#x9;A.DATA_TRIAGEM &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;A.COD_FUNC,&#xA;&#x9;&#x9;B.Ident_func,&#xA;&#x9;&#x9;B.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(B.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;C.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.DATA_TRIAGEM),&#xA;&#x9;&#x9;A.COD_CLI &#xA;&#xA;UNION ALL&#xA;&#xA;-- Extração BCC&#xA;SELECT&#x9;B.CodFunc_pedido AS Cod_usuario_VFB,&#xA;&#x9;&#x9;C.Ident_func AS Id_usuario_VFB,&#xA;&#x9;&#x9;C.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(C.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;D.IdContaCRM_cli AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, A.DT_PEDIDO) AS Data_Log,&#xA;&#x9;&#x9;SUM(A.QTD_CVS) AS Qtd_Log,&#xA;&#x9;&#x9;'Extração no BCC' AS Item_Log,&#xA;&#x9;&#x9;D.COD_CLI&#xA;FROM&#x9;VAGAS_DW.VAGAS_DW.EXTRACOES_BCC AS A&#x9;&#x9;INNER JOIN [hrh-data].[dbo].[Pedidos] AS B&#x9;ON A.COD_PEDIDO = B.Cod_pedido&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN [hrh-data].[dbo].[Funcionarios] AS C ON B.CodFunc_pedido = C.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN [hrh-data].[dbo].[Clientes] AS D ON C.CodCli_func = D.Cod_cli&#xA;WHERE&#x9;A.DT_PEDIDO &gt;= '20200101'&#xA;GROUP BY&#xA;&#x9;&#x9;B.CodFunc_pedido,&#xA;&#x9;&#x9;C.Ident_func,&#xA;&#x9;&#x9;C.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(C.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;D.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, A.DT_PEDIDO),&#xA;&#x9;&#x9;D.COD_CLI  &#xA;&#xA;&#xA;UNION ALL&#xA;&#xA;-- Chat:&#xA;SELECT&#x9;Func.Cod_func AS Cod_usuario_VFB,&#xA;&#x9;&#x9;Func.Ident_func&#x9;AS Id_usuario_VFB,&#xA;&#x9;&#x9;Func.Nome_func AS Nome_usuario_VFB,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(Func.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),'') AS Email_usuario_VFB,&#xA;&#x9;&#x9;Cli.IdContaCRM_cli&#x9;AS Id_ClienteCRM,&#xA;&#x9;&#x9;CONVERT(DATE, Chat_EM.Data_envio_mensagem)&#x9;AS Data_log,&#xA;&#x9;&#x9;COUNT(DISTINCT Chat_EM.Id_chat)&#x9;AS Qtd_log,&#xA;&#x9;&#x9;'Chat - ' + Chat_EM.Ambiente_mensagem AS Item_log,&#xA;&#x9;&#x9;Chat_EM.CodCli_chat AS COD_CLI&#xA;FROM&#x9;[vagas_dw].[VAGAS_DW].[Chat_envio_mensagem] AS Chat_EM&#x9;INNER JOIN [hrh-data].[dbo].[Funcionarios] AS Func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON Chat_EM.CodFunc_chat = Func.Cod_func&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN [hrh-data].[dbo].[Clientes] AS Cli&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON Chat_EM.Codcli_chat = Cli.Cod_cli&#xA;WHERE&#x9;Chat_EM.Origem_mensagem = 'Empresa'&#xA;&#x9;&#x9;AND Chat_EM.Destino_mensagem IN ('Candidato', 'Candidato em navegação exclusiva')&#xA;GROUP BY&#xA;&#x9;&#x9;Func.Cod_func,&#xA;&#x9;&#x9;Func.Ident_func,&#xA;&#x9;&#x9;Func.Nome_func,&#xA;&#x9;&#x9;REPLACE(REPLACE(REPLACE(LTRIM(RTRIM(Func.Email_func)), CHAR(9),''),CHAR(10),''),CHAR(13),''),&#xA;&#x9;&#x9;Cli.IdContaCRM_cli,&#xA;&#x9;&#x9;CONVERT(DATE, Chat_EM.Data_envio_mensagem),&#xA;&#x9;&#x9;'Chat - ' + Chat_EM.Ambiente_mensagem,&#xA;&#x9;&#x9;Chat_EM.CodCli_chat ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -202,8 +202,7 @@
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Cod_usuario_VFB]" />
                     <inputColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Data_Log]"
-                      cachedDataType="wstr"
-                      cachedLength="10"
+                      cachedDataType="dbDate"
                       cachedName="Data_Log"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Data_Log]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Data_Log]" />
@@ -217,28 +216,31 @@
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Item_Log]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="21"
+                      cachedLength="100"
                       cachedName="Item_Log"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Item_Log]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Item_Log]" />
                     <inputColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Id_usuario_VFB]"
-                      cachedDataType="wstr"
-                      cachedLength="60"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
                       cachedName="Id_usuario_VFB"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Id_usuario_VFB]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_usuario_VFB]" />
                     <inputColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Nome_usuario_VFB]"
-                      cachedDataType="wstr"
-                      cachedLength="60"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
                       cachedName="Nome_usuario_VFB"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Nome_usuario_VFB]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Nome_usuario_VFB]" />
                     <inputColumn
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Email_usuario_VFB]"
-                      cachedDataType="wstr"
-                      cachedLength="4000"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
                       cachedName="Email_usuario_VFB"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Email_usuario_VFB]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Email_usuario_VFB]" />
@@ -246,7 +248,7 @@
                       refId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].Columns[Id_ClienteCRM]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="40"
+                      cachedLength="100"
                       cachedName="Id_ClienteCRM"
                       externalMetadataColumnId="Package\Exportar CSV\CSV.Inputs[Entrada de Destino de Arquivo Simples].ExternalColumns[Id_ClienteCRM]"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_ClienteCRM]" />
@@ -332,7 +334,9 @@
                   dataType="System.String"
                   description="O comando SQL a ser executado."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select *
+from vagas_dw.tmp_log_uso_vfb_sensedata
+where data_log &lt; convert(date, getdate()) ;</property>
                 <property
                   dataType="System.String"
                   description="A variável que contém o comando SQL a ser executado."
@@ -349,7 +353,7 @@
                   dataType="System.Int32"
                   description="Especifica o modo usado para acessar o banco de dados."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">2</property>
                 <property
                   dataType="System.String"
                   description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
@@ -379,11 +383,10 @@
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Data_Log]"
-                      dataType="wstr"
+                      dataType="dbDate"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Data_Log]"
-                      length="10"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Data_Log]"
                       name="Data_Log"
                       truncationRowDisposition="FailComponent" />
@@ -403,37 +406,40 @@
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Item_Log]"
-                      length="21"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Item_Log]"
                       name="Item_Log"
-                      truncationRowDisposition="FailComponent" />
+                      truncationRowDisposition="IgnoreFailure" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_usuario_VFB]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_usuario_VFB]"
-                      length="60"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_usuario_VFB]"
                       name="Id_usuario_VFB"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Nome_usuario_VFB]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Nome_usuario_VFB]"
-                      length="60"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Nome_usuario_VFB]"
                       name="Nome_usuario_VFB"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Email_usuario_VFB]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Email_usuario_VFB]"
-                      length="4000"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Email_usuario_VFB]"
                       name="Email_usuario_VFB"
                       truncationRowDisposition="FailComponent" />
@@ -444,7 +450,7 @@
                       errorOrTruncationOperation="Conversão"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_ClienteCRM]"
-                      length="40"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].Columns[Id_ClienteCRM]"
                       name="Id_ClienteCRM"
                       truncationRowDisposition="FailComponent" />
@@ -476,28 +482,31 @@
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Item_Log]"
                       codePage="1252"
                       dataType="str"
-                      length="21"
+                      length="100"
                       name="Item_Log" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_usuario_VFB]"
-                      dataType="wstr"
-                      length="60"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
                       name="Id_usuario_VFB" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Nome_usuario_VFB]"
-                      dataType="wstr"
-                      length="60"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
                       name="Nome_usuario_VFB" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Email_usuario_VFB]"
-                      dataType="wstr"
-                      length="4000"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
                       name="Email_usuario_VFB" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[Id_ClienteCRM]"
                       codePage="1252"
                       dataType="str"
-                      length="40"
+                      length="100"
                       name="Id_ClienteCRM" />
                     <externalMetadataColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Origem OLE DB].ExternalColumns[COD_CLI]"
@@ -517,27 +526,30 @@
                       name="Cod_usuario_VFB" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_usuario_VFB]"
-                      dataType="wstr"
-                      length="60"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_usuario_VFB]"
                       name="Id_usuario_VFB" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Nome_usuario_VFB]"
-                      dataType="wstr"
-                      length="60"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Nome_usuario_VFB]"
                       name="Nome_usuario_VFB" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Email_usuario_VFB]"
-                      dataType="wstr"
-                      length="4000"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Email_usuario_VFB]"
                       name="Email_usuario_VFB" />
                     <outputColumn
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_ClienteCRM]"
                       codePage="1252"
                       dataType="str"
-                      length="40"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Id_ClienteCRM]"
                       name="Id_ClienteCRM" />
                     <outputColumn
@@ -554,7 +566,7 @@
                       refId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Item_Log]"
                       codePage="1252"
                       dataType="str"
-                      length="21"
+                      length="100"
                       lineageId="Package\Exportar CSV\VAGAS_DW - TMP_LOG_USO_VFB_SENSEDATA.Outputs[Saída de Erro de Origem OLE DB].Columns[Item_Log]"
                       name="Item_Log" />
                     <outputColumn
@@ -591,6 +603,23 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\Limpar tabela Log_uso_vfb_sensedata"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{C42E30DE-3FD9-4A47-AE89-51A0ADF9218E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar tabela Log_uso_vfb_sensedata"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C9C5C2E3-4F23-4A32-8949-107BB2A1C923}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [stage].[VAGAS_DW].[TMP_LOG_USO_VFB_SENSEDATA] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Upload S3 Bucket"
       DTS:CreationName="Microsoft.ExecutePackageTask"
       DTS:Description="Tarefa Executar Pacote"
@@ -617,7 +646,7 @@
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
       DTS:DTSID="{F9990ECA-436A-44A8-A385-436D70CB272D}"
-      DTS:From="Package\Criar tabelas temporárias - VAGAS_DW"
+      DTS:From="Package\Carga das linhas na tabela temporária"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
       DTS:To="Package\Exportar CSV" />
@@ -629,23 +658,31 @@
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição"
       DTS:To="Package\Upload S3 Bucket" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{51FA9994-DE74-458A-954E-410C54BB311E}"
+      DTS:From="Package\Limpar tabela Log_uso_vfb_sensedata"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\Carga das linhas na tabela temporária" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="263,42"
-          Id="Package\Criar tabelas temporárias - VAGAS_DW"
-          TopLeft="398.5,102.5" />
+          Size="258,42"
+          Id="Package\Carga das linhas na tabela temporária"
+          TopLeft="398.5,103.5" />
         <NodeLayout
           Size="141,42"
           Id="Package\Exportar CSV"
@@ -656,18 +693,18 @@
           TopLeft="445,302.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="529.5,144.5">
+          TopLeft="528.25,145.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59"
+              EndConnector="0,58"
               Start="0,0"
-              End="0,51.5">
+              End="0,50.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,51.5" />
+                    End="0,50.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -690,6 +727,32 @@
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="259,42"
+          Id="Package\Limpar tabela Log_uso_vfb_sensedata"
+          TopLeft="405,15" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="531,57">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46.5"
+              Start="0,0"
+              End="0,39">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

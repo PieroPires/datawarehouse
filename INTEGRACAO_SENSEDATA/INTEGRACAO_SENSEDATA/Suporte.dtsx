@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\diego.gatto"
   DTS:DTSID="{E762FAA5-A3D3-4569-995D-DD39CBDE8686}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.0800.90"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
   DTS:LocaleID="1046"
   DTS:ObjectName="Suporte"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="68"
-  DTS:VersionGUID="{6066CB69-92CE-4E4A-A243-111FBB9CDA2D}">
+  DTS:VersionBuild="81"
+  DTS:VersionGUID="{8F9FB8AA-FE24-4F0D-A291-02D99727F279}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\diego.gatto\Documents\integracao_sensedata\ftp\2020_04_09\suporte.csv">
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_07_06\suporte.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -224,7 +224,71 @@ SELECT	*
 INTO	TMP_Tab_casos
 FROM	OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto
 									FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id
-									WHERE B.data_fechamento_c &gt; ''" + @[User::DATA_CARGA_INICIO] + "'' ') AS A
+									WHERE A.date_modified &gt; ''" + @[User::DATA_CARGA_INICIO] + "'' ') AS A
+GO
+
+CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)
+GO
+
+DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA
+GO
+
+SELECT	
+	A.CONTA_ID AS IdConta_CRM ,
+	A.NUMERO_CASO AS Ticket ,
+	A.EMAIL_CONTATO AS Contato ,
+	A.USUARIO_RESPONSAVEL AS Responsavel ,
+	B.Assunto AS Assunto ,
+	A.MOTIVO_CONTATO AS Motivo_contato ,
+	A.ORIGEM_SUPORTE AS Origem ,
+	NULL AS Categoria ,
+	CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,
+	CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,
+	CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,
+	NULL AS Data_SLA ,
+	CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,
+	A.CRITICIDADE AS Criticidade ,
+	CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,
+	C.COD_CLI,
+	A.DATA_MODIFICACAO
+INTO STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA
+FROM	
+	[VAGAS_DW].[CASOS] AS A		LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI
+								LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID
+WHERE
+	A.FILA_ATENDIMENTO = 'suporte_empresas'
+	AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')
+	AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)
+	AND A.DATA_MODIFICACAO &gt; '" + @[User::DATA_CARGA_INICIO] + "'
+GO"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE A.date_modified &gt; ''2018-03-09'' ') AS A&#xA;GO&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO&#xA;&#xA;SELECT&#x9;&#xA;&#x9;A.CONTA_ID AS IdConta_CRM ,&#xA;&#x9;A.NUMERO_CASO AS Ticket ,&#xA;&#x9;A.EMAIL_CONTATO AS Contato ,&#xA;&#x9;A.USUARIO_RESPONSAVEL AS Responsavel ,&#xA;&#x9;B.Assunto AS Assunto ,&#xA;&#x9;A.MOTIVO_CONTATO AS Motivo_contato ,&#xA;&#x9;A.ORIGEM_SUPORTE AS Origem ,&#xA;&#x9;NULL AS Categoria ,&#xA;&#x9;CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,&#xA;&#x9;CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,&#xA;&#x9;CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,&#xA;&#x9;NULL AS Data_SLA ,&#xA;&#x9;CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,&#xA;&#x9;A.CRITICIDADE AS Criticidade ,&#xA;&#x9;CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,&#xA;&#x9;C.COD_CLI,&#xA;&#x9;A.DATA_MODIFICACAO&#xA;INTO STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;FROM&#x9;&#xA;&#x9;[VAGAS_DW].[CASOS] AS A&#x9;&#x9;LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID&#xA;WHERE&#xA;&#x9;A.FILA_ATENDIMENTO = 'suporte_empresas'&#xA;&#x9;AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')&#xA;&#x9;AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)&#xA;&#x9;AND A.DATA_MODIFICACAO &gt; '2018-03-09'&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Criar tabelas temporárias  bkp"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{c1e05b21-be38-4277-8bfa-71e612760954}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Criar tabelas temporárias  bkp"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="SqlStatementSource">"DROP TABLE IF EXISTS TMP_Tab_casos
+GO
+
+SELECT	*
+INTO	TMP_Tab_casos
+FROM	OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto
+									FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id
+									WHERE A.date_modified &gt; ''" + @[User::DATA_CARGA_INICIO] + "'' ') AS A
 GO
 
 CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)
@@ -258,12 +322,12 @@ WHERE
 	A.FILA_ATENDIMENTO = 'suporte_empresas'
 	AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')
 	AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)
-	AND A.DATA_FECHAMENTO &gt; '" + @[User::DATA_CARGA_INICIO] + "'
+	AND A.DATA_MODIFICACAO &gt; '" + @[User::DATA_CARGA_INICIO] + "'
 GO"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE B.data_fechamento_c &gt; ''2018-03-09'' ') AS A&#xA;GO&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO&#xA;&#xA;SELECT&#x9;&#xA;&#x9;A.CONTA_ID AS IdConta_CRM ,&#xA;&#x9;A.NUMERO_CASO AS Ticket ,&#xA;&#x9;A.EMAIL_CONTATO AS Contato ,&#xA;&#x9;A.USUARIO_RESPONSAVEL AS Responsavel ,&#xA;&#x9;B.Assunto AS Assunto ,&#xA;&#x9;A.MOTIVO_CONTATO AS Motivo_contato ,&#xA;&#x9;A.ORIGEM_SUPORTE AS Origem ,&#xA;&#x9;NULL AS Categoria ,&#xA;&#x9;CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,&#xA;&#x9;CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,&#xA;&#x9;CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,&#xA;&#x9;NULL AS Data_SLA ,&#xA;&#x9;CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,&#xA;&#x9;A.CRITICIDADE AS Criticidade ,&#xA;&#x9;CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,&#xA;&#x9;C.COD_CLI&#xA;INTO STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;FROM&#x9;&#xA;&#x9;[VAGAS_DW].[CASOS] AS A&#x9;&#x9;LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID&#xA;WHERE&#xA;&#x9;A.FILA_ATENDIMENTO = 'suporte_empresas'&#xA;&#x9;AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')&#xA;&#x9;AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)&#xA;&#x9;AND A.DATA_FECHAMENTO &gt; '2018-03-09'&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="DROP TABLE IF EXISTS TMP_Tab_casos&#xA;GO&#xA;&#xA;SELECT&#x9;*&#xA;INTO&#x9;TMP_Tab_casos&#xA;FROM&#x9;OPENQUERY(MYSQLPROVIDER, 'SELECT A.id AS Id , A.name AS Assunto&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM cases A LEFT OUTER JOIN cases_cstm B ON B.id_c = A.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE A.date_modified &gt; ''2018-03-09'' ') AS A&#xA;GO&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_casos_Id ON TMP_Tab_casos (Id)&#xA;GO&#xA;&#xA;DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;GO&#xA;&#xA;SELECT&#x9;&#xA;&#x9;A.CONTA_ID AS IdConta_CRM ,&#xA;&#x9;A.NUMERO_CASO AS Ticket ,&#xA;&#x9;A.EMAIL_CONTATO AS Contato ,&#xA;&#x9;A.USUARIO_RESPONSAVEL AS Responsavel ,&#xA;&#x9;B.Assunto AS Assunto ,&#xA;&#x9;A.MOTIVO_CONTATO AS Motivo_contato ,&#xA;&#x9;A.ORIGEM_SUPORTE AS Origem ,&#xA;&#x9;NULL AS Categoria ,&#xA;&#x9;CONCAT(A.TIPO, ' --&gt; ' ,A.SUB_TIPO) AS Classificacao ,&#xA;&#x9;CONVERT(DATE, A.DATA_INCLUSAO_NORMALIZADA) AS Data_abertura ,&#xA;&#x9;CONVERT(DATE, A.DATA_FECHAMENTO) AS Data_conclusao ,&#xA;&#x9;NULL AS Data_SLA ,&#xA;&#x9;CAST(A.STATUS AS VARCHAR(100)) AS [Status] ,&#xA;&#x9;A.CRITICIDADE AS Criticidade ,&#xA;&#x9;CONCAT('https://crm.vagas.com.br/index.php?module=Cases&amp;action=DetailView&amp;record=', A.ID_CASO) AS Link_ticket,&#xA;&#x9;C.COD_CLI&#xA;INTO STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA&#xA;FROM&#x9;&#xA;&#x9;[VAGAS_DW].[CASOS] AS A&#x9;&#x9;LEFT OUTER JOIN TMP_Tab_casos AS B ON A.ID_CASO = B.Id COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN [VAGAS_DW].[CLIENTES] AS C ON A.CONTA_ID = C.CONTA_ID&#xA;WHERE&#xA;&#x9;A.FILA_ATENDIMENTO = 'suporte_empresas'&#xA;&#x9;AND A.[STATUS] IN ('fechado', 'fechado_sem_resposta')&#xA;&#x9;AND A.conta_id in (SELECT id_clientecrm FROM STAGE.VAGAS_DW.TMP_CLIENTES_SENSEDATA)&#xA;&#x9;AND A.DATA_MODIFICACAO &gt; '2018-03-09'&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -1035,7 +1099,7 @@ WHERE
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="--SELECT VALOR &#xA;--FROM [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;--WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'&#xA;&#xA;&#xA;SELECT&#x9;CONVERT(DATE, '19000101') AS VALOR"
+          SQLTask:SqlStatementSource="-- Carrega os dados do layout de suporte (com 7 dias de atraso) em caso de erros na carga da sensedata:&#xA;SELECT CONVERT(DATE, DATEADD(DAY, -7, VALOR )) AS VALOR&#xA;FROM [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA' ;"
           SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ResultBinding
             SQLTask:ResultName="VALOR"
@@ -1057,7 +1121,7 @@ WHERE
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
-          SQLTask:SqlStatementSource="UPDATE [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;SET VALOR = (SELECT MAX(DATA_CONCLUSAO) FROM STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA)&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="UPDATE [VAGAS_DW].[INTEGRACAO_SENSEDATA]&#xA;SET VALOR = (SELECT MAX(DATA_MODIFICACAO) FROM STAGE.VAGAS_DW.TMP_CASOS_SENSEDATA)&#xA;WHERE PACOTE = 'SUPORTE' AND ATRIBUTO = 'ULTIMA_DATA'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -1125,12 +1189,12 @@ WHERE
       DTS:To="Package\Criar tabelas temporárias" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -1139,7 +1203,11 @@ WHERE
         <NodeLayout
           Size="197,42"
           Id="Package\Criar tabelas temporárias"
-          TopLeft="376,113.5" />
+          TopLeft="376,114.5" />
+        <NodeLayout
+          Size="221,42"
+          Id="Package\Criar tabelas temporárias  bkp"
+          TopLeft="667,217" />
         <NodeLayout
           Size="206,42"
           Id="Package\Excluir tabelas temporárias"
@@ -1162,18 +1230,18 @@ WHERE
           TopLeft="391.5,318.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="474.5,155.5">
+          TopLeft="474.5,156.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60"
+              EndConnector="0,59"
               Start="0,0"
-              End="0,52.5">
+              End="0,51.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5" />
+                    End="0,51.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1254,14 +1322,14 @@ WHERE
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60"
+              EndConnector="0,61"
               Start="0,0"
-              End="0,52.5">
+              End="0,53.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5" />
+                    End="0,53.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
