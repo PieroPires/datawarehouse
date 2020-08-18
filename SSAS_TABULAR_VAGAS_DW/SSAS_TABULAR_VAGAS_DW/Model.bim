@@ -71934,6 +71934,360 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "Chat_envio_mensagem",
+        "columns": [
+          {
+            "name": "Tipo_mensagem",
+            "dataType": "string",
+            "sourceColumn": "Tipo_mensagem",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Origem_destino",
+            "dataType": "string",
+            "sourceColumn": "Origem_destino",
+            "sourceProviderType": "Char"
+          },
+          {
+            "type": "calculated",
+            "name": "Data_envio_source",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEVALUE([Data_envio_mensagem_hhmmss_source])"
+          },
+          {
+            "name": "CodCli_chat",
+            "dataType": "int64",
+            "sourceColumn": "CodCli_chat"
+          },
+          {
+            "name": "Mensagem_lida",
+            "dataType": "string",
+            "sourceColumn": "Mensagem_lida"
+          },
+          {
+            "name": "CodFunc_chat",
+            "dataType": "int64",
+            "sourceColumn": "CodFunc_chat"
+          },
+          {
+            "name": "CodCand_chat",
+            "dataType": "int64",
+            "sourceColumn": "CodCand_chat"
+          },
+          {
+            "name": "Id_mensagem",
+            "dataType": "int64",
+            "sourceColumn": "Id_mensagem"
+          },
+          {
+            "name": "Id_chat",
+            "dataType": "int64",
+            "sourceColumn": "Id_chat"
+          },
+          {
+            "name": "Data_envio_mensagem_hhmmss_source",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Data_envio_mensagem"
+          },
+          {
+            "name": "Data_leitura_mensagem",
+            "dataType": "dateTime",
+            "sourceColumn": "Data_leitura_mensagem"
+          },
+          {
+            "name": "Id_origem_mensagem",
+            "dataType": "int64",
+            "sourceColumn": "Id_origem_mensagem"
+          },
+          {
+            "name": "Origem_mensagem",
+            "dataType": "string",
+            "sourceColumn": "Origem_mensagem"
+          },
+          {
+            "name": "Id_destino_mensagem",
+            "dataType": "int64",
+            "sourceColumn": "Id_destino_mensagem"
+          },
+          {
+            "name": "Destino_mensagem",
+            "dataType": "string",
+            "sourceColumn": "Destino_mensagem"
+          },
+          {
+            "name": "Resposta_candidato_chat",
+            "dataType": "string",
+            "sourceColumn": "Resposta_candidato_chat"
+          },
+          {
+            "name": "Chat_lido",
+            "dataType": "string",
+            "sourceColumn": "Chat_lido"
+          },
+          {
+            "name": "Ambiente_chat",
+            "dataType": "string",
+            "sourceColumn": "Ambiente_chat"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Chat_envio_mensagem",
+            "dataView": "full",
+            "source": {
+              "query": [
+                "SELECT\tDW_Chat.*,",
+                "\t\tISNULL((  SELECT TOP 1 ISNULL(CONVERT(VARCHAR, DW_Chat_A1.Data_leitura_mensagem), 'Não')",
+                "\t\t\t\t  FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat_A1",
+                "\t\t\t\t  WHERE\tDW_Chat.Id_chat = DW_Chat_A1.Id_chat",
+                "\t\t\t\t\t\tAND DW_Chat_A1.Data_leitura_mensagem IS NULL), 'Sim') AS Chat_lido,",
+                "\t\tCASE",
+                "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato' AND DW_Chat.Destino_mensagem = 'Empresa'",
+                "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato'",
+                "\t\t\t\tTHEN 'VAGAS.com'",
+                "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato em navegação exlusiva' AND DW_Chat.Destino_mensagem = 'Empresa'",
+                "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato em navegação exlusiva'",
+                "\t\t\t\tTHEN 'Navegação exclusiva'",
+                "\t\t\tELSE 'Outros'",
+                "\t\tEND AS Ambiente_chat",
+                "FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat"
+              ],
+              "dataSource": "VAGAS_DW"
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT\tDW_Chat.*,",
+                  "\t\tISNULL((  SELECT TOP 1 ISNULL(CONVERT(VARCHAR, DW_Chat_A1.Data_leitura_mensagem), 'Não')",
+                  "\t\t\t\t  FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat_A1",
+                  "\t\t\t\t  WHERE\tDW_Chat.Id_chat = DW_Chat_A1.Id_chat",
+                  "\t\t\t\t\t\tAND DW_Chat_A1.Data_leitura_mensagem IS NULL), 'Sim') AS Chat_lido,",
+                  "\t\tCASE",
+                  "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato' AND DW_Chat.Destino_mensagem = 'Empresa'",
+                  "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato'",
+                  "\t\t\t\tTHEN 'VAGAS.com'",
+                  "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato em navegação exlusiva' AND DW_Chat.Destino_mensagem = 'Empresa'",
+                  "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato em navegação exlusiva'",
+                  "\t\t\t\tTHEN 'Navegação exclusiva'",
+                  "\t\t\tELSE 'Outros'",
+                  "\t\tEND AS Ambiente_chat",
+                  "FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "name": "Quantidade de chats com mensagens enviadas [Empresa > Candidato]",
+            "expression": [
+              "",
+              "\tCALCULATE(",
+              "\t\tDISTINCTCOUNT('Chat_envio_mensagem'[Id_chat]),",
+              "\t\tFILTER('Chat_envio_mensagem', ",
+              "\t\t\tAND ([Origem_mensagem] = \"Empresa\" , ",
+              "\t\t\tOR([Destino_mensagem] = \"Candidato\", [Destino_mensagem] = \"Candidato em navegação exclusiva\"))))"
+            ]
+          },
+          {
+            "name": "Quantidade de chats respondidos pelos candidatos [Candidato > Empresa]",
+            "expression": [
+              "",
+              "\tCALCULATE(",
+              "\t\tDISTINCTCOUNT('Chat_envio_mensagem'[Id_chat]),",
+              "\t\tFILTER('Chat_envio_mensagem', ",
+              "\t\t\t[Resposta_candidato_chat] = \"Sim\" && ",
+              "\t\t\t[Origem_mensagem] = \"Empresa\" &&",
+              "\t\t\tOR   ([Destino_mensagem] = \"Candidato\", [Destino_mensagem] = \"Candidato em navegação exclusiva\")))"
+            ]
+          },
+          {
+            "name": "Quantidade de empresas que enviaram mensagem [Empresa > Candidato]",
+            "expression": [
+              "",
+              "\tCALCULATE(",
+              "\t\tDISTINCTCOUNT('Chat_envio_mensagem'[CodCli_chat]),",
+              "\t\tFILTER('Chat_envio_mensagem', ",
+              "\t\t\t[Origem_mensagem]=\"Empresa\" && ",
+              "\t\t\tOR ([Destino_mensagem] = \"Candidato\", [Destino_mensagem] = \"Candidato em navegação exclusiva\")))"
+            ]
+          },
+          {
+            "name": "Quantidade de usuários que enviaram mensagem [Empresa > Candidato]",
+            "expression": [
+              "",
+              "\tCALCULATE(DISTINCTCOUNT('Chat_envio_mensagem'[Id_origem_mensagem]),",
+              "\t\t\tFILTER('Chat_envio_mensagem',",
+              "\t\t\tAND ([Origem_mensagem]=\"Empresa\" , OR([Destino_mensagem] = \"Candidato\", [Destino_mensagem] = \"Candidato em navegação exclusiva\"))))"
+            ]
+          },
+          {
+            "name": "Quantidade de candidatos que receberam mensagens [Empresa > Candidato]",
+            "expression": [
+              "",
+              "\tCALCULATE(DISTINCTCOUNT('Chat_envio_mensagem'[Id_destino_mensagem]),",
+              "\t\tFILTER('Chat_envio_mensagem',",
+              "\t\t\t[Origem_mensagem] = \"Empresa\" &&",
+              "\t\t\tOR ([Destino_mensagem] = \"Candidato\", [Destino_mensagem] = \"Candidato em navegação exclusiva\")))"
+            ]
+          },
+          {
+            "name": "Quantidade de candidatos que responderam chats [Candidato > Empresa]",
+            "expression": [
+              "",
+              "\tCALCULATE(DISTINCTCOUNT('Chat_envio_mensagem'[Id_origem_mensagem]),",
+              "\t\tFILTER('Chat_envio_mensagem',",
+              "\t\t\t([Origem_mensagem] = \"Candidato\" || [Origem_mensagem] = \"Candidato em navegação exclusiva\") &&",
+              "\t\t\t[Destino_mensagem] = \"Empresa\"))"
+            ]
+          },
+          {
+            "name": "Quantidade de mensagens enviadas",
+            "expression": " COUNT('Chat_envio_mensagem'[Id_mensagem])"
+          },
+          {
+            "name": "Quantidade de mensagens lidas",
+            "expression": [
+              " ",
+              "\tCALCULATE(COUNT('Chat_envio_mensagem'[Id_mensagem]),",
+              "\t\tFILTER('Chat_envio_mensagem',",
+              "\t\t\t[Mensagem_lida] = \"Sim\"))"
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": [
+              "SELECT\tDW_Chat.*,",
+              "\t\tISNULL((  SELECT TOP 1 ISNULL(CONVERT(VARCHAR, DW_Chat_A1.Data_leitura_mensagem), 'Não')",
+              "\t\t\t\t  FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat_A1",
+              "\t\t\t\t  WHERE\tDW_Chat.Id_chat = DW_Chat_A1.Id_chat",
+              "\t\t\t\t\t\tAND DW_Chat_A1.Data_leitura_mensagem IS NULL), 'Sim') AS Chat_lido,",
+              "\t\tCASE",
+              "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato' AND DW_Chat.Destino_mensagem = 'Empresa'",
+              "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato'",
+              "\t\t\t\tTHEN 'VAGAS.com'",
+              "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato em navegação exlusiva' AND DW_Chat.Destino_mensagem = 'Empresa'",
+              "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato em navegação exlusiva'",
+              "\t\t\t\tTHEN 'Navegação exclusiva'",
+              "\t\t\tELSE 'Outros'",
+              "\t\tEND AS Ambiente_chat",
+              "FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat"
+            ]
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "Chat_envio_mensagem"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          },
+          {
+            "name": "QueryEditorSerialization",
+            "value": [
+              "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>SELECT\tDW_Chat.*,",
+              "\t\tISNULL((  SELECT TOP 1 ISNULL(CONVERT(VARCHAR, DW_Chat_A1.Data_leitura_mensagem), 'Não')",
+              "\t\t\t\t  FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat_A1",
+              "\t\t\t\t  WHERE\tDW_Chat.Id_chat = DW_Chat_A1.Id_chat",
+              "\t\t\t\t\t\tAND DW_Chat_A1.Data_leitura_mensagem IS NULL), 'Sim') AS Chat_lido,",
+              "\t\tCASE",
+              "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato' AND DW_Chat.Destino_mensagem = 'Empresa'",
+              "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato'",
+              "\t\t\t\tTHEN 'VAGAS.com'",
+              "\t\t\tWHEN DW_Chat.Origem_mensagem = 'Candidato em navegação exlusiva' AND DW_Chat.Destino_mensagem = 'Empresa'",
+              "\t\t\t\t OR DW_Chat.Origem_mensagem = 'Empresa' AND DW_Chat.Destino_mensagem = 'Candidato em navegação exlusiva'",
+              "\t\t\t\tTHEN 'Navegação exclusiva'",
+              "\t\t\tELSE 'Outros'",
+              "\t\tEND AS Ambiente_chat",
+              "FROM\t[VAGAS_DW].[Chat_envio_mensagem] AS DW_Chat</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chat_envio_mensagem - Data_envio",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "Data_envio",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "Dia",
+            "dataType": "int64",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "Mes_source",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "MES",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "Mês",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "Mes_source",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Ano",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "Semana",
+            "dataType": "string",
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Data",
+            "dataView": "full",
+            "source": {
+              "query": " \t\t\t\tSELECT [VAGAS_DW].[DATAS].*   FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [VAGAS_DW].[DATAS].*   FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -73321,14 +73675,6 @@
         "toColumn": "COD_CIDADE"
       },
       {
-        "name": "3dfaa01b-0592-4e5a-b054-70749f6564b7",
-        "fromTable": "CANDIDATURAS",
-        "fromColumn": "CodCand_HistCand",
-        "toTable": "CANDIDATOS",
-        "toColumn": "COD_CAND",
-        "crossFilteringBehavior": "bothDirections"
-      },
-      {
         "name": "40db6d29-6656-4195-bc45-94f1cd49ff05",
         "fromTable": "OPORTUNIDADES",
         "fromColumn": "DATA_PROPOSTA_SOURCE",
@@ -73505,6 +73851,34 @@
         "fromColumn": "DATA_CRIACAO_PARTICIPANTE_SOURCE",
         "toTable": "VIDEO_ENTREVISTAS - DATA_CRIACAO_PARTICIPANTE",
         "toColumn": "DATA_CRIACAO_PARTICIPANTE"
+      },
+      {
+        "name": "5aaeef85-12a9-4536-90fb-1d115a7712b4",
+        "fromTable": "Chat_envio_mensagem",
+        "fromColumn": "Data_envio_source",
+        "toTable": "Chat_envio_mensagem - Data_envio",
+        "toColumn": "Data_envio"
+      },
+      {
+        "name": "0deb7afe-46eb-4b67-8c3e-0841bcc006c8",
+        "fromTable": "Chat_envio_mensagem",
+        "fromColumn": "CodCli_chat",
+        "toTable": "CLIENTES",
+        "toColumn": "COD_CLI"
+      },
+      {
+        "name": "f88604f8-2e1c-4c3d-b9b8-aa8bbc4a8241",
+        "fromTable": "CANDIDATURAS",
+        "fromColumn": "CodCand_HistCand",
+        "toTable": "CANDIDATOS",
+        "toColumn": "COD_CAND"
+      },
+      {
+        "name": "33fe5fed-acbb-48eb-83ee-1bad3ed165ca",
+        "fromTable": "Chat_envio_mensagem",
+        "fromColumn": "CodCand_chat",
+        "toTable": "CANDIDATOS",
+        "toColumn": "COD_CAND"
       }
     ],
     "perspectives": [
