@@ -18,7 +18,7 @@ TRUNCATE TABLE [VAGAS_DW].[TMP_Login_VagasEpartner_Clientes] ;
 
 DECLARE	@Max_Login INT = (SELECT MAX(Cod_login) FROM [VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes]) ,
 		@Max_LoginTemp INT = (SELECT MAX(Cod_login) FROM [VAGAS_DW].[TMP_Login_VagasEpartner_Clientes]) ,
-		@Max_LoginData INT = (SELECT MAX(Cod_log) FROM [SRV-SQLSERVER].[hrh-data].[dbo].[Clientes-Login] WITH(NOLOCK)) ;
+		@Max_LoginData INT = (SELECT MAX(Cod_log) FROM [hrh-data].[dbo].[Clientes-Login] WITH(NOLOCK)) ;
 
 WHILE ISNULL(@Max_Login, 0) < @Max_LoginData AND ISNULL(@Max_LoginTemp, 0) < @Max_LoginData
 BEGIN
@@ -29,7 +29,7 @@ BEGIN
 			A.CodFunc_log AS Cod_func ,
 			CONVERT(DATE, A.Data_log) AS Data_login ,
 			IIF(A.Op_log = 1, 'Login', 'Logout') AS Tipo
-	FROM	[SRV-SQLSERVER].[hrh-data].[dbo].[Clientes-Login] AS A		INNER JOIN [SRV-SQLSERVER].[hrh-data].[dbo].[Clientes] AS B ON A.CodCli_log = B.Cod_cli
+	FROM	[hrh-data].[dbo].[Clientes-Login] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.CodCli_log = B.Cod_cli
 	WHERE	A.Cod_log > ISNULL(@Max_Login, 0)
 			AND A.Cod_log > ISNULL(@Max_LoginTemp, 0)
 	ORDER BY
