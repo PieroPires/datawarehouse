@@ -335,6 +335,7 @@ INNER JOIN [hrh-data].dbo.Clientes A2 ON A2.Cod_Cli = A1.CodCliente_vaga
 LEFT OUTER JOIN [hrh-data].dbo.ManutUsuarios B ON B.Cod_usuman = A.CodUsuMan_vagaVal
 WHERE A.AjusteDtDivergentes_vagaVal = 1
 
+
 UNION ALL
 
 SELECT A.Cod_vagaVal AS COD_VALIDACAO,
@@ -343,11 +344,26 @@ SELECT A.Cod_vagaVal AS COD_VALIDACAO,
 	   DATEADD(HOUR,DATEPART(HOUR,A.DataValidacao_vagaVal ),CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DataValidacao_vagaVal ,112))) AS DATA_VALIDACAO,	
 	   B.Ident_usuman AS USUARIO,
 	   A2.Ident_Cli AS CLIENTE,
-	   'Divergência de conteúdo/filtros' AS TIPO_AJUSTE
+	   'Vários perfis/Aumento de banco' AS TIPO_AJUSTE
 FROM [hrh-data].dbo.[Vagas-Validacao] A
 INNER JOIN [hrh-data].dbo.Vagas A1 ON A1.Cod_Vaga = A.CodVaga_vagaVal
 INNER JOIN [hrh-data].dbo.Clientes A2 ON A2.Cod_Cli = A1.CodCliente_vaga
 LEFT OUTER JOIN [hrh-data].dbo.ManutUsuarios B ON B.Cod_usuman = A.CodUsuMan_vagaVal
-WHERE A.AjusteDtDivergentes_vagaVal = 1
+WHERE A.AjusteVariosPerfisAumentoBanco_vagaVal = 1
+
+UNION ALL
+
+SELECT A.Cod_vagaVal AS COD_VALIDACAO,
+	   A.CodVaga_vagaVal AS COD_VAGA,
+	   DATEADD(HOUR,DATEPART(HOUR,A.DataEntrada_vagaVal),CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DataEntrada_vagaVal,112))) AS DATA_ENTRADA,
+	   DATEADD(HOUR,DATEPART(HOUR,A.DataValidacao_vagaVal ),CONVERT(SMALLDATETIME,CONVERT(VARCHAR,A.DataValidacao_vagaVal ,112))) AS DATA_VALIDACAO,	
+	   B.Ident_usuman AS USUARIO,
+	   A2.Ident_Cli AS CLIENTE,
+	   'Aumento de banco' AS TIPO_AJUSTE
+FROM [hrh-data].dbo.[Vagas-Validacao] A
+INNER JOIN [hrh-data].dbo.Vagas A1 ON A1.Cod_Vaga = A.CodVaga_vagaVal
+INNER JOIN [hrh-data].dbo.Clientes A2 ON A2.Cod_Cli = A1.CodCliente_vaga
+LEFT OUTER JOIN [hrh-data].dbo.ManutUsuarios B ON B.Cod_usuman = A.CodUsuMan_vagaVal
+WHERE A.AjusteAumentoBanco_vagaVal = 1
 
 GO
