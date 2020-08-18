@@ -24,7 +24,7 @@ DECLARE	@PROFILE_NAME VARCHAR(256) ,
 
 SET	@PROFILE_NAME = N'SQL SERVER AGENT' ;
 SET	@RECIPIENTS = 'fiama.cristi@vagas.com.br' ;
-SET @COPY_RECIPIENTS = 'diego.gatto@vagas.com.br;rafael.urbano@vagas.com.br'
+SET @COPY_RECIPIENTS = NULL ;
 
 -- Envia um alerta para notificar erro no JOB 'PKG - Executar Carga DW - (D-1)':
 IF EXISTS (SELECT TOP 1 1
