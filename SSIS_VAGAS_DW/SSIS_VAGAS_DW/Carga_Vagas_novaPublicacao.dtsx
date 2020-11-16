@@ -1,0 +1,1267 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/21/2020 8:59:56 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="2WNP172"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{A5380D44-7FAF-4AFB-9284-E8423AFDE422}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Carga_Vagas_novaPublicacao1"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="22"
+  DTS:VersionGUID="{D18D7EB9-12C1-4BCF-B8C5-147512063605}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PostgreSQL_dbs_vfb]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{43606E30-A7C1-42A8-AFD5-7AA271EAC1BF}"
+      DTS:ObjectName="PostgreSQL_dbs_vfb">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Dsn=PostgreSQL_dbs_vfb;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PostgreSQL_novaPublicacao_vaga]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{C448BBED-3301-4F1D-99A3-E0FAD4276402}"
+      DTS:ObjectName="PostgreSQL_novaPublicacao_vaga">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Dsn=PostgreSQL_novaPublicacao_vaga;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PostgreSQL_Painel_vaga]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{46DA8A52-3C68-42F8-A91D-97D8D9C1B5C8}"
+      DTS:ObjectName="PostgreSQL_Painel_vaga">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Dsn=PostgreSQL_Painel_vaga;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{F69955C5-1A86-4D08-B36F-58DA8667E33A}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL)"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="Anuncios (PostgreSQL)"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT	CAST(id AS INT) AS id,
+	CAST(funcionario_id AS INT) AS funcionario_id,
+	empresa_id,
+	NULL AS titulo,
+	nivel_hierarquico_id,
+	niveis_escolaridade_id,
+	exibir_fases,
+	confidencial,
+	pcd,
+	modelo_contratual_id,
+	template_id,
+	publicado,
+	NULL AS titulo_normalizado,
+	created_at::date,
+	updated_at::date,
+	data_abertura::date,
+	data_expiracao::date,
+	primeira_veiculacao::date,
+	maximo_dias_veiculacao,
+	posicoes,
+	teste,
+	id_legado AS Cod_vaga,
+	anuncio_divisao_id,
+	vaga_modelo,
+	suspender_vaga,
+	vaga_migrada,
+	id_origem
+FROM	anuncio_vaga_service.public.anuncios 
+WHERE     vaga_migrada = false
+                  AND publicado = true
+                  AND teste = false  ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Connections[ODBCConnection]"
+                  connectionManagerID="Package.ConnectionManagers[PostgreSQL_novaPublicacao_vaga]"
+                  connectionManagerRefId="Package.ConnectionManagers[PostgreSQL_novaPublicacao_vaga]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[funcionario_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[funcionario_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[funcionario_id]"
+                      name="funcionario_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[empresa_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[empresa_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[empresa_id]"
+                      name="empresa_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[titulo]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[titulo]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[titulo]"
+                      name="titulo" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[nivel_hierarquico_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[nivel_hierarquico_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[nivel_hierarquico_id]"
+                      name="nivel_hierarquico_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[niveis_escolaridade_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[niveis_escolaridade_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[niveis_escolaridade_id]"
+                      name="niveis_escolaridade_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[exibir_fases]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[exibir_fases]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[exibir_fases]"
+                      name="exibir_fases" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[confidencial]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[confidencial]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[confidencial]"
+                      name="confidencial" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[pcd]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[pcd]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[pcd]"
+                      name="pcd" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[modelo_contratual_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[modelo_contratual_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[modelo_contratual_id]"
+                      name="modelo_contratual_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[template_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[template_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[template_id]"
+                      name="template_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[publicado]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[publicado]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[publicado]"
+                      name="publicado" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[titulo_normalizado]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[titulo_normalizado]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[titulo_normalizado]"
+                      name="titulo_normalizado" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[created_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[created_at]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[created_at]"
+                      name="created_at" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[updated_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[updated_at]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[updated_at]"
+                      name="updated_at" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[data_abertura]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_abertura]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[data_abertura]"
+                      name="data_abertura" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[data_expiracao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_expiracao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[data_expiracao]"
+                      name="data_expiracao" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[primeira_veiculacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[primeira_veiculacao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[primeira_veiculacao]"
+                      name="primeira_veiculacao" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[maximo_dias_veiculacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[maximo_dias_veiculacao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[maximo_dias_veiculacao]"
+                      name="maximo_dias_veiculacao" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[posicoes]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[posicoes]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[posicoes]"
+                      name="posicoes" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[teste]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[teste]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[teste]"
+                      name="teste" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_vaga]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_vaga]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_vaga]"
+                      name="cod_vaga" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[anuncio_divisao_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[anuncio_divisao_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[anuncio_divisao_id]"
+                      name="anuncio_divisao_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[vaga_modelo]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[vaga_modelo]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[vaga_modelo]"
+                      name="vaga_modelo" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[suspender_vaga]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[suspender_vaga]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[suspender_vaga]"
+                      name="suspender_vaga" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[vaga_migrada]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[vaga_migrada]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[vaga_migrada]"
+                      name="vaga_migrada" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[id_origem]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[id_origem]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[id_origem]"
+                      name="id_origem" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[id]"
+                      dataType="i4"
+                      name="id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[funcionario_id]"
+                      dataType="i4"
+                      name="funcionario_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[empresa_id]"
+                      dataType="i4"
+                      name="empresa_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[titulo]"
+                      codePage="1252"
+                      dataType="text"
+                      name="titulo" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[nivel_hierarquico_id]"
+                      dataType="i4"
+                      name="nivel_hierarquico_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[niveis_escolaridade_id]"
+                      dataType="i4"
+                      name="niveis_escolaridade_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[exibir_fases]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="exibir_fases" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[confidencial]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="confidencial" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[pcd]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="pcd" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[modelo_contratual_id]"
+                      dataType="i4"
+                      name="modelo_contratual_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[template_id]"
+                      dataType="i4"
+                      name="template_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[publicado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="publicado" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[titulo_normalizado]"
+                      codePage="1252"
+                      dataType="text"
+                      name="titulo_normalizado" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[created_at]"
+                      dataType="dbDate"
+                      name="created_at" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[updated_at]"
+                      dataType="dbDate"
+                      name="updated_at" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_abertura]"
+                      dataType="dbDate"
+                      name="data_abertura" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_expiracao]"
+                      dataType="dbDate"
+                      name="data_expiracao" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[primeira_veiculacao]"
+                      dataType="dbDate"
+                      name="primeira_veiculacao" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[maximo_dias_veiculacao]"
+                      dataType="i4"
+                      name="maximo_dias_veiculacao" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[posicoes]"
+                      dataType="i4"
+                      name="posicoes" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[teste]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="teste" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_vaga]"
+                      dataType="i4"
+                      name="cod_vaga" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[anuncio_divisao_id]"
+                      dataType="i4"
+                      name="anuncio_divisao_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[vaga_modelo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="vaga_modelo" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[suspender_vaga]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="suspender_vaga" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[vaga_migrada]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="vaga_migrada" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[id_origem]"
+                      dataType="i4"
+                      name="id_origem" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[funcionario_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[funcionario_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[funcionario_id]"
+                      name="funcionario_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[empresa_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[empresa_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[empresa_id]"
+                      name="empresa_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[titulo]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[titulo]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[titulo]"
+                      name="titulo" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[nivel_hierarquico_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[nivel_hierarquico_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[nivel_hierarquico_id]"
+                      name="nivel_hierarquico_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[niveis_escolaridade_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[niveis_escolaridade_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[niveis_escolaridade_id]"
+                      name="niveis_escolaridade_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[exibir_fases]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[exibir_fases]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[exibir_fases]"
+                      name="exibir_fases" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[confidencial]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[confidencial]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[confidencial]"
+                      name="confidencial" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[pcd]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[pcd]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[pcd]"
+                      name="pcd" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[modelo_contratual_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[modelo_contratual_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[modelo_contratual_id]"
+                      name="modelo_contratual_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[template_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[template_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[template_id]"
+                      name="template_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[publicado]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[publicado]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[publicado]"
+                      name="publicado" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[titulo_normalizado]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[titulo_normalizado]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[titulo_normalizado]"
+                      name="titulo_normalizado" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[created_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[created_at]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[created_at]"
+                      name="created_at" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[updated_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[updated_at]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[updated_at]"
+                      name="updated_at" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[data_abertura]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_abertura]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[data_abertura]"
+                      name="data_abertura" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[data_expiracao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[data_expiracao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[data_expiracao]"
+                      name="data_expiracao" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[primeira_veiculacao]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[primeira_veiculacao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[primeira_veiculacao]"
+                      name="primeira_veiculacao" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[maximo_dias_veiculacao]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[maximo_dias_veiculacao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[maximo_dias_veiculacao]"
+                      name="maximo_dias_veiculacao" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[posicoes]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[posicoes]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[posicoes]"
+                      name="posicoes" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[teste]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[teste]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[teste]"
+                      name="teste" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_vaga]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[cod_vaga]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[cod_vaga]"
+                      name="cod_vaga" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[anuncio_divisao_id]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[anuncio_divisao_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[anuncio_divisao_id]"
+                      name="anuncio_divisao_id" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[vaga_modelo]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[vaga_modelo]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[vaga_modelo]"
+                      name="vaga_modelo" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[suspender_vaga]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[suspender_vaga]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[suspender_vaga]"
+                      name="suspender_vaga" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[vaga_migrada]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[vaga_migrada]"
+                      length="5"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[vaga_migrada]"
+                      name="vaga_migrada" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[id_origem]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].ExternalColumns[id_origem]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[id_origem]"
+                      name="id_origem" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="Destino OLE DB"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[Vagas_novaPublicacao]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Connections[OleDbConnection]"
+                  connectionManagerID="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_VAGAS_DW]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[id]"
+                      cachedDataType="i4"
+                      cachedName="id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[funcionario_id]"
+                      cachedDataType="i4"
+                      cachedName="funcionario_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[funcionario_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[funcionario_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[empresa_id]"
+                      cachedDataType="i4"
+                      cachedName="empresa_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[empresa_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[empresa_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[titulo]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="titulo"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[titulo]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[titulo]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[nivel_hierarquico_id]"
+                      cachedDataType="i4"
+                      cachedName="nivel_hierarquico_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[nivel_hierarquico_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[nivel_hierarquico_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[niveis_escolaridade_id]"
+                      cachedDataType="i4"
+                      cachedName="niveis_escolaridade_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[niveis_escolaridade_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[niveis_escolaridade_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[exibir_fases]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="exibir_fases"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[exibir_fases]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[exibir_fases]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[confidencial]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="confidencial"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[confidencial]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[confidencial]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[pcd]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="pcd"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[pcd]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[pcd]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[modelo_contratual_id]"
+                      cachedDataType="i4"
+                      cachedName="modelo_contratual_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[modelo_contratual_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[modelo_contratual_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[template_id]"
+                      cachedDataType="i4"
+                      cachedName="template_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[template_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[template_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[publicado]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="publicado"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[publicado]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[publicado]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[titulo_normalizado]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="titulo_normalizado"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[titulo_normalizado]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[titulo_normalizado]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[data_abertura]"
+                      cachedDataType="dbDate"
+                      cachedName="data_abertura"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_abertura]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[data_abertura]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[data_expiracao]"
+                      cachedDataType="dbDate"
+                      cachedName="data_expiracao"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_expiracao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[data_expiracao]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[primeira_veiculacao]"
+                      cachedDataType="dbDate"
+                      cachedName="primeira_veiculacao"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[primeira_veiculacao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[primeira_veiculacao]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[maximo_dias_veiculacao]"
+                      cachedDataType="i4"
+                      cachedName="maximo_dias_veiculacao"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[maximo_dias_veiculacao]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[maximo_dias_veiculacao]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[posicoes]"
+                      cachedDataType="i4"
+                      cachedName="posicoes"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[posicoes]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[posicoes]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[teste]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="teste"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[teste]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[teste]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[cod_vaga]"
+                      cachedDataType="i4"
+                      cachedName="cod_vaga"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_vaga]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[cod_vaga]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[anuncio_divisao_id]"
+                      cachedDataType="i4"
+                      cachedName="anuncio_divisao_id"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[anuncio_divisao_id]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[anuncio_divisao_id]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[vaga_modelo]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="vaga_modelo"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[vaga_modelo]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[vaga_modelo]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[suspender_vaga]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="suspender_vaga"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[suspender_vaga]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[suspender_vaga]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[vaga_migrada]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="vaga_migrada"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[vaga_migrada]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[vaga_migrada]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[id_origem]"
+                      cachedDataType="i4"
+                      cachedName="id_origem"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_origem]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[id_origem]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[created_at]"
+                      cachedDataType="dbDate"
+                      cachedName="created_at"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[created_at]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[created_at]" />
+                    <inputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[updated_at]"
+                      cachedDataType="dbDate"
+                      cachedName="updated_at"
+                      externalMetadataColumnId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[updated_at]"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output].Columns[updated_at]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[id]"
+                      dataType="i4"
+                      name="id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[funcionario_id]"
+                      dataType="i4"
+                      name="funcionario_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[empresa_id]"
+                      dataType="i4"
+                      name="empresa_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[titulo]"
+                      codePage="1252"
+                      dataType="text"
+                      name="titulo" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[nivel_hierarquico_id]"
+                      dataType="i4"
+                      name="nivel_hierarquico_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[niveis_escolaridade_id]"
+                      dataType="i4"
+                      name="niveis_escolaridade_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[exibir_fases]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="exibir_fases" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[confidencial]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="confidencial" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[pcd]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="pcd" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[modelo_contratual_id]"
+                      dataType="i4"
+                      name="modelo_contratual_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[template_id]"
+                      dataType="i4"
+                      name="template_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[publicado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="publicado" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[titulo_normalizado]"
+                      codePage="1252"
+                      dataType="text"
+                      name="titulo_normalizado" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[created_at]"
+                      dataType="dbTimeStamp"
+                      name="created_at" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[updated_at]"
+                      dataType="dbTimeStamp"
+                      name="updated_at" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_abertura]"
+                      dataType="dbDate"
+                      name="data_abertura" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_expiracao]"
+                      dataType="dbTimeStamp"
+                      name="data_expiracao" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[primeira_veiculacao]"
+                      dataType="dbDate"
+                      name="primeira_veiculacao" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[maximo_dias_veiculacao]"
+                      dataType="i4"
+                      name="maximo_dias_veiculacao" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[posicoes]"
+                      dataType="i4"
+                      name="posicoes" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[teste]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="teste" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[senha]"
+                      codePage="1252"
+                      dataType="text"
+                      name="senha" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_vaga]"
+                      dataType="i4"
+                      name="cod_vaga" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[anuncio_divisao_id]"
+                      dataType="i4"
+                      name="anuncio_divisao_id" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[vaga_modelo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="vaga_modelo" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[suspender_vaga]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="suspender_vaga" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[vaga_migrada]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="vaga_migrada" />
+                    <externalMetadataColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_origem]"
+                      dataType="i4"
+                      name="id_origem" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server).Paths[ODBC Source Output]"
+              endId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL).Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar tabela VAGAS_DW_Vagas_novaPublicacao"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{FCC2ADDB-FF2A-43BB-9391-D25CC7FA86D1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar tabela VAGAS_DW_Vagas_novaPublicacao"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="truncate table [vagas_dw].[VAGAS_DW].[Vagas_novaPublicacao] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{BE9DD269-6D07-47F2-8D41-1317B4DB72D2}"
+      DTS:From="Package\Limpar tabela VAGAS_DW_Vagas_novaPublicacao"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="376,42"
+          Id="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)"
+          TopLeft="403,248" />
+        <NodeLayout
+          Size="313,42"
+          Id="Package\Limpar tabela VAGAS_DW_Vagas_novaPublicacao"
+          TopLeft="416,139" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="572.5,181">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.5,67"
+              Start="0,0"
+              End="18.5,59.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29.5"
+                    Point2="0,33.5"
+                    Point3="4,33.5" />
+                  <mssgle:LineSegment
+                    End="14.5,33.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.5,33.5"
+                    Point2="18.5,33.5"
+                    Point3="18.5,37.5" />
+                  <mssgle:LineSegment
+                    End="18.5,59.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="153,42"
+          Id="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB"
+          TopLeft="462,256" />
+        <NodeLayout
+          Size="187,42"
+          Id="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Anuncios (PostgreSQL)"
+          TopLeft="435,133" />
+        <EdgeLayout
+          Id="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server).Paths[ODBC Source Output]"
+          TopLeft="528.5,175">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="10,81"
+              Start="0,0"
+              End="10,73.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,36.5"
+                    Point2="0,40.5"
+                    Point3="4,40.5" />
+                  <mssgle:LineSegment
+                    End="6,40.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="6,40.5"
+                    Point2="10,40.5"
+                    Point3="10,44.5" />
+                  <mssgle:LineSegment
+                    End="10,73.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Anuncios (PostgreSQL) -&gt; Vagas_NovaPublicacao (SQL Server)\Destino OLE DB">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

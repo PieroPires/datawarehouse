@@ -87,6 +87,7 @@ SET  VAGAS_Cod_Vaga = B.VAGAS_Cod_Vaga
 	,ORIGEM_VAGA_MODELO = B.ORIGEM_VAGA_MODELO
 	,QTD_FICHAS_VAGA = B.QTD_FICHAS_VAGA
 	,QTD_FICHAS_COMPLEMENTAR = B.QTD_FICHAS_COMPLEMENTAR
+	,Cod_publicacaoVaga = B.Cod_publicacaoVaga
 FROM VAGAS_DW.VAGAS A
 	JOIN [STAGE].[VAGAS_DW].[TMP_VAGAS] AS B ON A.VAGAS_Cod_Vaga = B.VAGAS_Cod_Vaga
 	
@@ -125,13 +126,13 @@ VAGA_VALIDADA,DATA_CADASTRAMENTO_SOURCE,DATA_CADASTRAMENTO,DATA_VALIDACAO_SOURCE
 ACEITA_CAND_OUTRO_NIVEL,ACEITA_CAND_OUTRA_AREA,DISPONIB_VIAGEM,DATA_EXPIRACAO_SOURCE,DATA_EXPIRACAO,DATA_ULT_TRIAGEM_SOURCE,
 DATA_ULT_TRIAGEM,SOLICITA_PREENCHIMENTO_FICHA,PCD,ANUNCIO_IDENTIFICADO,SEGMENTO,GRUPO_SEGMENTO,QTD_POSICOES,QTD_DIAS_ALERTADO,
 QTD_ALERTA_DISPARADO,PERC_RETORNO,QTD_PageViews,PAIS,DATA_ATUALIZACAO_SOURCE,DATA_ATUALIZACAO,VEICULACAO_SUSPENSA,CLIENTE_BLOQUEADO,
-ATINGIU_LIMITE_CANDIDATURAS,NAV_EXC,CAPTACAO_CONTINUA,EXIBE_VAGAS_COM,INVISIVEL,TIPO_PROCESSO,FLAG_VAGA_TESTE, CNAE_SECAO_ID, CNAE_SECAO, CNAE_DIVISAO_ID, CNAE_DIVISAO, CNAE_CLASSE_ID, CNAE_CLASSE, CNAE_FAIXA_FUNCIONARIOS,CNAE_SUBCLASSE_ID_C, CNAE_SUBCLASSE_DESCR_C,REGIAO, COD_FUNC, DIVISAO, SOLICITA_TESTE, TESTE_OBRIGATORIO, VAGAS_ETALENT, INDICACAO_VAGA,POSSUI_TESTE_CUSTOMIZADO, POSSUI_FICHA_COMPLEMENTAR,ORIGEM_VAGA_MODELO,QTD_FICHAS_VAGA,QTD_FICHAS_COMPLEMENTAR)
+ATINGIU_LIMITE_CANDIDATURAS,NAV_EXC,CAPTACAO_CONTINUA,EXIBE_VAGAS_COM,INVISIVEL,TIPO_PROCESSO,FLAG_VAGA_TESTE, CNAE_SECAO_ID, CNAE_SECAO, CNAE_DIVISAO_ID, CNAE_DIVISAO, CNAE_CLASSE_ID, CNAE_CLASSE, CNAE_FAIXA_FUNCIONARIOS,CNAE_SUBCLASSE_ID_C, CNAE_SUBCLASSE_DESCR_C,REGIAO, COD_FUNC, DIVISAO, SOLICITA_TESTE, TESTE_OBRIGATORIO, VAGAS_ETALENT, INDICACAO_VAGA,POSSUI_TESTE_CUSTOMIZADO, POSSUI_FICHA_COMPLEMENTAR,ORIGEM_VAGA_MODELO,QTD_FICHAS_VAGA,QTD_FICHAS_COMPLEMENTAR, Cod_publicacaoVaga)
 SELECT VAGAS_Cod_Vaga,COD_CLI,CLIENTE,CARGO,ESCOLARIDADE,NIVEL,CIDADE,UF,PREF_SEXO,AREA_01,AREA_02,AREA_03,ACEITA_CAND_OUTRA_REGIAO,
 VAGA_VALIDADA,DATA_CADASTRAMENTO_SOURCE,DATA_CADASTRAMENTO,DATA_VALIDACAO_SOURCE,DATA_VALIDACAO,DATA_PUBLICACAO_SOURCE,DATA_PUBLICACAO,
 ACEITA_CAND_OUTRO_NIVEL,ACEITA_CAND_OUTRA_AREA,DISPONIB_VIAGEM,DATA_EXPIRACAO_SOURCE,DATA_EXPIRACAO,DATA_ULT_TRIAGEM_SOURCE,
 DATA_ULT_TRIAGEM,SOLICITA_PREENCHIMENTO_FICHA,PCD,ANUNCIO_IDENTIFICADO,SEGMENTO,GRUPO_SEGMENTO,QTD_POSICOES,QTD_DIAS_ALERTADO,
 QTD_ALERTA_DISPARADO,PERC_RETORNO,QTD_PageViews,PAIS,DATA_ATUALIZACAO_SOURCE,DATA_ATUALIZACAO,VEICULACAO_SUSPENSA,CLIENTE_BLOQUEADO,
-ATINGIU_LIMITE_CANDIDATURAS,NAV_EXC,CAPTACAO_CONTINUA,EXIBE_VAGAS_COM,INVISIVEL,TIPO_PROCESSO,FLAG_VAGA_TESTE, CNAE_SECAO_ID, CNAE_SECAO, CNAE_DIVISAO_ID, CNAE_DIVISAO, CNAE_CLASSE_ID, CNAE_CLASSE, CNAE_FAIXA_FUNCIONARIOS,CNAE_SUBCLASSE_ID_C, CNAE_SUBCLASSE_DESCR_C,REGIAO, COD_FUNC, DIVISAO, SOLICITA_TESTE, TESTE_OBRIGATORIO, VAGAS_ETALENT, INDICACAO_VAGA,POSSUI_TESTE_CUSTOMIZADO, POSSUI_FICHA_COMPLEMENTAR,ORIGEM_VAGA_MODELO,QTD_FICHAS_VAGA,QTD_FICHAS_COMPLEMENTAR
+ATINGIU_LIMITE_CANDIDATURAS,NAV_EXC,CAPTACAO_CONTINUA,EXIBE_VAGAS_COM,INVISIVEL,TIPO_PROCESSO,FLAG_VAGA_TESTE, CNAE_SECAO_ID, CNAE_SECAO, CNAE_DIVISAO_ID, CNAE_DIVISAO, CNAE_CLASSE_ID, CNAE_CLASSE, CNAE_FAIXA_FUNCIONARIOS,CNAE_SUBCLASSE_ID_C, CNAE_SUBCLASSE_DESCR_C,REGIAO, COD_FUNC, DIVISAO, SOLICITA_TESTE, TESTE_OBRIGATORIO, VAGAS_ETALENT, INDICACAO_VAGA,POSSUI_TESTE_CUSTOMIZADO, POSSUI_FICHA_COMPLEMENTAR,ORIGEM_VAGA_MODELO,QTD_FICHAS_VAGA,QTD_FICHAS_COMPLEMENTAR, Cod_publicacaoVaga
 FROM [STAGE].[VAGAS_DW].[TMP_VAGAS]
 
 -- MARCAR VAGAS INATIVAS / ATIVAS
@@ -153,78 +154,89 @@ UPDATE VAGAS_DW.VAGAS SET VAGA_ATIVA = 'SIM'
 FROM VAGAS_DW.VAGAS 
 WHERE VAGA_ATIVA IS NULL 
 
--- Limpeza dos campos referentes ao VAGAS FLIX:
+-----------------------------------------------------------------------
+--- Vagas que foram cadastradas ou migradas na nova publicação da vaga:
+-----------------------------------------------------------------------
+UPDATE	[VAGAS_DW].[VAGAS_DW].[VAGAS]
+SET		Ambiente_vaga = 'Nova versão'
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS DW_Vagas		INNER JOIN [VAGAS_DW].[VAGAS_DW].[Vagas_novaPublicacao] AS Pub
+														ON DW_Vagas.VAGAS_Cod_vaga = Pub.cod_vaga
+WHERE	ISNULL(DW_Vagas.Ambiente_vaga, '') <> 'Nova versão' ;
+
+
+UPDATE	[VAGAS_DW].[VAGAS_DW].[VAGAS]
+SET		Ambiente_vaga = 'Versão antiga'
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS DW_Vagas	
+WHERE	DW_Vagas.Ambiente_vaga IS NULL ;	
+
+
+--------------------------------------------------------------------------------------------------------------
+-- Atualiza o campo que informa se a vaga foi cadastrada na nova versão a partir do zero (migrada (sim/não)):
+--------------------------------------------------------------------------------------------------------------
+UPDATE	[VAGAS_DW].[VAGAS_DW].[VAGAS]
+SET		Vaga_novaVersao = 'Cadastrada'
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS DW_Vagas		INNER JOIN [VAGAS_DW].[VAGAS_DW].[Vagas_novaPublicacao] AS Pub
+														ON DW_Vagas.VAGAS_Cod_vaga = Pub.cod_vaga ;
+
+UPDATE	[VAGAS_DW].[VAGAS_DW].[VAGAS]
+SET		Vaga_novaVersao = 'Versão antiga'
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS DW_Vagas
+WHERE	Vaga_novaVersao IS NULL ;
+
+
+------------------------------------------------------------------
+-- Atualiza o campo que informa se o cliente fez uso do multipost:
+------------------------------------------------------------------
 UPDATE	[VAGAS_DW].[VAGAS]
-SET		FLAG_EMPRESA_VAGAS_FLIX = NULL ,
-		COD_CLI_VAGAS_FLIX = NULL ,
-		ULT_DT_RF_VAGASFLIX = NULL ;
+SET		Vaga_novaVersao_MULTPOST = 'Sim'
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS DW_Vagas
+WHERE	EXISTS (SELECT	*
+				FROM	[hrh-data].[dbo].[Vagas-canaispublicacao] AS VagasCanais_Pub_A1
+				WHERE	DW_Vagas.VAGAS_Cod_Vaga = VagasCanais_Pub_A1.CodVaga_vagCanalPub)
+		AND EXISTS (SELECT *
+					FROM	[VAGAS_DW].[VAGAS_DW].[Vagas_novaPublicacao] AS Pub_A1
+					WHERE	DW_Vagas.VAGAS_Cod_vaga = Pub_A1.Cod_vaga)
+		AND ISNULL(DW_Vagas.Vaga_novaVersao, 'Não') <> 'Sim' ;
 
-
--- Atualização da FLAG_EMPRES_VAGAS_FLIX:
-UPDATE	[VAGAS_DW].[VAGAS]
-SET		FLAG_EMPRESA_VAGAS_FLIX = (SELECT	1
-								   FROM		[hrh-data].[dbo].[FranqueadorxFranqueado] AS A1		INNER JOIN [hrh-data].[dbo].[Clientes] AS A2 ON A1.codclifranqueado_fcf = A2.Cod_cli
-																								INNER JOIN [hrh-data].[dbo].[Divisoes] AS A3 ON A1.coddivfranqueador_fcf = A3.Cod_div
-								   WHERE	A1.cod_fcf = A.codfranqueado_vaga
-											AND A1.codclifranqueador_fcf = 65561)
-FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_COD_VAGA ;
 
 UPDATE	[VAGAS_DW].[VAGAS]
-SET		FLAG_EMPRESA_VAGAS_FLIX = 0
-FROM	[VAGAS_DW].[VAGAS] AS A
-WHERE	A.FLAG_EMPRESA_VAGAS_FLIX IS NULL ;
+SET		Vaga_novaVersao_MULTPOST = 'Não'
+FROM	[VAGAS_DW].[VAGAS_DW].[VAGAS] AS DW_Vagas
+WHERE	DW_Vagas.Vaga_novaVersao_MULTPOST IS NULL ;
 
 
-
--- Atualização do COD_CLI_VAGAS_FLIX:
+-------------------------------------------------------
+-- Funcionário que fez uso da nova publicação de vagas:
+-------------------------------------------------------
 UPDATE	[VAGAS_DW].[VAGAS]
-SET		COD_CLI_VAGAS_FLIX = (SELECT	A3.Cod_cli AS COD_CLI_VAGAS_FLIX
-							  FROM		[hrh-data].[dbo].[Vagas] AS A1	INNER JOIN [hrh-data].[dbo].[FranqueadorxFranqueado] AS A2 ON A1.codfranqueado_vaga = A2.cod_fcf
-																		INNER JOIN [hrh-data].[dbo].[Clientes] AS A3 ON A2.codclifranqueado_fcf = A3.cod_cli
-																		INNER JOIN [hrh-data].[dbo].[Divisoes] AS A4 ON A2.coddivfranqueador_fcf = A4.Cod_div
-							  WHERE	A2.codclifranqueador_fcf = 65561
-									AND A1.Cod_vaga = A.Cod_vaga)
-FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_Cod_Vaga ;
+SET		CodFunc_vagaNovaVersao = Pub.funcionario_id
+FROM	[VAGAS_DW].[VAGAS] AS DW_Vagas		INNER JOIN [VAGAS_DW].[Vagas_novaPublicacao] AS Pub
+											ON DW_Vagas.VAGAS_Cod_vaga = Pub.Cod_vaga
+--WHERE	Pub.teste = 0
+--		AND Pub.publicado = 1
 
+-------------------------------------------------------------------------------------------
+-- Vagas cadastradas na nova versão a partir de vaga modelo ou a partir de vaga recorrente:
+-------------------------------------------------------------------------------------------
+update	[vagas_dw].[VAGAS_DW].[VAGAS]
+set		Vaga_novaVersao_CriadaModelo = iif(VagaModelo.id is null, 'Não', 'Sim'),
+		Vaga_criada_posicaorec_novaVersao = iif(VagaRec.id is null, 'Não', 'Sim')
+from	[vagas_dw].[VAGAS] as DW_vagas		inner join [vagas_dw].[VAGAS_DW].[Vagas_novaPublicacao] as VagaNobPub
+											on VagaNobPub.Cod_vaga = DW_vagas.VAGAS_Cod_Vaga
+											left join [vagas_dw].[VAGAS_DW].[Vagas_novaPublicacao] as VagaModelo
+											on VagaNobPub.id_origem = VagaModelo.id
+											and VagaModelo.vaga_modelo = 1
+											left join [vagas_dw].[VAGAS_DW].[Vagas_novaPublicacao] as VagaRec
+											on VagaNobPub.id_origem = VagaRec.id
+											and VagaRec.vaga_modelo = 0 ;
 
--- Atualização do campo ULT_DT_RF_VAGASFLIX:
-DECLARE	@MAIOR_DATA_REF_CARGA_FLIX SMALLDATETIME ;
-SET		@MAIOR_DATA_REF_CARGA_FLIX = (SELECT MAX(A1.DATA_REFERENCIA) FROM [VAGAS_DW].[BASE_EMPRESAS_VAGAS_FLIX] AS A1) ;
+update	[vagas_dw].[VAGAS_DW].[VAGAS]
+set		Vaga_novaVersao_CriadaModelo = 'Não',
+		Vaga_criada_posicaorec_novaVersao  = 'Não'
+from	[vagas_dw].[VAGAS_DW].[VAGAS]
+where	Vaga_novaVersao_CriadaModelo is null
+		or Vaga_criada_posicaorec_novaVersao is null ; 
 
-UPDATE	[VAGAS_DW].[VAGAS]
-SET		ULT_DT_RF_VAGASFLIX = IIF(DATEPART(YEAR, A.DATA_CADASTRAMENTO) = DATEPART(YEAR, @MAIOR_DATA_REF_CARGA_FLIX)
-								  AND DATEPART(MONTH, A.DATA_CADASTRAMENTO) = DATEPART(MONTH, @MAIOR_DATA_REF_CARGA_FLIX), 1, 0)
-FROM	[VAGAS_DW].[VAGAS] AS A
-WHERE	A.FLAG_EMPRESA_VAGAS_FLIX = 1 ;
-
-UPDATE	[VAGAS_DW].[VAGAS]
-SET		ULT_DT_RF_VAGASFLIX = 0
-FROM	[VAGAS_DW].[VAGAS] AS A
-WHERE	A.ULT_DT_RF_VAGASFLIX IS NULL ;
-
--- Atualização do CNPJ dos clientes VAGAS FLIX:
-UPDATE	[VAGAS_DW].[VAGAS]
-SET		CNPJ_VAGAS_FLIX = (SELECT	A3.CGC_cli AS CNPJ_VAGAS_FLIX
-						   FROM		[hrh-data].[dbo].[Vagas] AS A1	INNER JOIN [hrh-data].[dbo].[FranqueadorxFranqueado] AS A2 ON A1.codfranqueado_vaga = A2.cod_fcf
-																	INNER JOIN [hrh-data].[dbo].[Clientes] AS A3 ON A2.codclifranqueado_fcf = A3.cod_cli
-																	INNER JOIN [hrh-data].[dbo].[Divisoes] AS A4 ON A2.coddivfranqueador_fcf = A4.Cod_div
-				  		   WHERE	A2.codclifranqueador_fcf = 65561
-									AND A1.Cod_vaga = A.Cod_vaga)
-FROM	[hrh-data].[dbo].[Vagas] AS A	INNER JOIN [VAGAS_DW].[VAGAS] AS B ON A.Cod_vaga = B.VAGAS_Cod_Vaga
-WHERE	B.COD_CLI_VAGAS_FLIX IS NOT NULL ;
-
-
--- Atualização do NOME_FANTASIA dos clientes VAGAS FLIX:
-UPDATE	[VAGAS_DW].[VAGAS]
-SET		NOME_FANTASIA_VAGASFLIX = B.NOME_FANTASIA
-FROM	[VAGAS_DW].[VAGAS] AS A		INNER JOIN [VAGAS_DW].[BASE_EMPRESAS_VAGAS_FLIX] AS B ON A.COD_CLI_VAGAS_FLIX = B.COD_CLI_VAGAS_EPARTNER ;
-
--- 13/10/2017: Tratamento de vagas da MagazineLuiza que excedem o volume de posições normalmente publicado pelas empresas:
-UPDATE	[VAGAS_DW].[VAGAS]
-SET		QTD_POSICOES = 1
-FROM	[VAGAS_DW].[VAGAS] AS A
-WHERE	A.VAGAS_Cod_Vaga IN (1462564, 1585461, 1506684, 1505748, 1483950, 1453337, 1517694, 1528982, 1518892, 1564768, 1458374, 1524462, 1539953, 1528189, 1532546, 1523707
-, 1508158, 1535731, 1474097, 1470753, 1516049, 1523346, 1536257, 1518882, 1458563, 1518029, 1485367, 1462761, 1489707, 1538869, 1453781, 1456994, 1577664, 1470437, 1518712, 1506764, 1548150) ;
 
 -- 14/11/2018: 
 --------------------------------------------------------------
@@ -683,3 +695,9 @@ WHERE	 (A.VAGAS_COD_VAGA = 853804
 	SET		QTD_ALERTA_DISPARADO = B.QTD_ENVIO
 	FROM	[VAGAS_DW].[VAGAS] AS A		INNER JOIN [VAGAS_DW].[CONTROLE_DISPAROS_ALERTA] AS B ON A.VAGAS_Cod_Vaga = B.COD_VAGA
 	WHERE	ISNULL(A.QTD_ALERTA_DISPARADO, 0) < B.QTD_ENVIO ;
+
+
+	-- Deleta registros de teste:
+	delete from [vagas_dw].[VAGAS]
+	from [vagas_dw].[VAGAS]
+	where COD_CLI in (67312,58459,12702,47635,68897,66969) ;
