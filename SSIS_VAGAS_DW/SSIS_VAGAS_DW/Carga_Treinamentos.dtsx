@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\fiama.cristi"
   DTS:DTSID="{0880CFBE-C08E-414E-BF29-01765C3BF674}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.0800.90"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
   DTS:LocaleID="1046"
   DTS:ObjectName="Carga_Treinamentos"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="114"
-  DTS:VersionGUID="{C32A58CE-B68A-4798-8A70-A844979FE9C9}">
+  DTS:VersionBuild="115"
+  DTS:VersionGUID="{202DCC9A-2528-4452-BDAC-024BAC47EB89}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -201,6 +201,12 @@
                       cachedLength="100"
                       cachedName="SEGMENTO_SC"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[SEGMENTO_SC]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[IDIOMA]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="IDIOMA"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[IDIOMA]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -731,6 +737,28 @@
                           name="FastParse">false</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[IDIOMA_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[IDIOMA_Conv]"
+                      name="IDIOMA_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[IDIOMA]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -804,7 +832,8 @@
          END AS TIPO_ACADEMIA_VAGAS ,
 UPPER(IF(IFNULL(E.mercado_c, '') = '', 'EM BRANCO', E.mercado_c)) AS MERCADO ,
     E.id_c AS CONTA_ID ,
-    UPPER(IF(IFNULL(E.segmento_c, '') = '', 'EM BRANCO', E.segmento_c)) AS SEGMENTO_SC
+    UPPER(IF(IFNULL(E.segmento_c, '') = '', 'EM BRANCO', E.segmento_c)) AS SEGMENTO_SC,
+A.idioma AS IDIOMA
 FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.modified_user_id = B.id
 										LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
                                         LEFT OUTER JOIN sugarcrm.users AS D ON A.assigned_user_id = D.id
@@ -1046,6 +1075,13 @@ FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[SEGMENTO_SC]"
                       name="SEGMENTO_SC" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[IDIOMA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[IDIOMA]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[IDIOMA]"
+                      name="IDIOMA" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1170,6 +1206,11 @@ FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       dataType="wstr"
                       length="100"
                       name="SEGMENTO_SC" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[IDIOMA]"
+                      dataType="wstr"
+                      length="100"
+                      name="IDIOMA" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1348,6 +1389,13 @@ FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       length="100"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[SEGMENTO_SC]"
                       name="SEGMENTO_SC" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[IDIOMA]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[IDIOMA]"
+                      length="100"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[IDIOMA]"
+                      name="IDIOMA" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1620,6 +1668,14 @@ FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       cachedName="SEGMENTO_SC_Conv"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[SEGMENTO_SC]"
                       lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[SEGMENTO_SC_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[IDIOMA_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="IDIOMA_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[IDIOMA]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[IDIOMA_Conv]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1762,6 +1818,12 @@ FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       dataType="str"
                       length="100"
                       name="SEGMENTO_SC" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[IDIOMA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="IDIOMA" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1867,12 +1929,12 @@ FROM sugarcrm.trn_treinamentos AS A		LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
       DTS:To="Package\Processar CUBO" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>

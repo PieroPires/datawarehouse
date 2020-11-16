@@ -1,0 +1,2311 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/17/2016 1:32:37 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="srv-sqlmirror05"
+  DTS:CreatorName="VAGASTEC\luiz.braz"
+  DTS:DTSID="{A66927D4-A01B-4B4F-9FFC-D0CB8DFD872C}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="MigracaoDados_Carga_Leads_Sugar"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="154"
+  DTS:VersionGUID="{DA053A91-CB4E-4CED-BF97-6EDAB0A3C68B}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0E38A127-802C-4DD4-8FF2-DF6DC736E861}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_ALTERACAO">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{91FDC465-C74C-48EE-92FD-F16919492D1C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_AUTO_CADASTRO">
+      <DTS:VariableValue
+        DTS:DataType="8">1901-01-01 00:00:00</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DelayValidation="True"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{4650FCC3-676C-40D6-8631-CD66D84CC1C9}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="AUTO CADASTRO MySQL -&gt; SQL Server"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[AutoCadastro].[SqlCommand]">"select eml.id 'email_id', ld.id 'lead_id', CONVERT_TZ(eml.date_sent,@@session.time_zone,'America/Sao_Paulo') 'date_sent', ld.first_name, ld.last_name, ld.account_name, lds.cnpj_c, addr.email_address
+from emails eml
+left join leads ld on ld.id = eml.parent_id
+left join leads_cstm lds on lds.id_c = ld.id
+left join emails_email_addr_rel eaddr on eaddr.email_id = eml.id and eaddr.address_type = 'to'
+left join email_addresses addr on addr.id = eaddr.email_address_id
+inner join emails_text emt on emt.email_id = eml.id
+where eml.assigned_user_id = 1 and eml.name = 'Proposta VAGAS for business'
+	and eml.date_sent &gt; '" +  @[User::DATA_AUTO_CADASTRO] + "'"</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="[ODBC Source].[SqlCommand]">"SELECT CONVERT(A.id  USING Latin1) AS ID_LEAD,
+	   CONVERT(A.first_name USING Latin1) AS PRIMEIRO_NOME,
+       CONVERT(A.last_name USING Latin1) AS ULTIMO_NOME,
+       CONVERT(A.account_name USING Latin1) AS CONTA,
+      CASE WHEN A.lead_source IS NULL OR A.lead_source = \"\" 
+			THEN CONVERT(CONVERT(B.form_origem_c,CHAR(50)) USING Latin1) 
+            ELSE CONVERT(CONVERT(A.lead_source,CHAR(50)) USING Latin1) END AS ORIGEM,
+       CONVERT(A.converted USING Latin1) AS FLAG_CONVERTIDO,
+       CONVERT(B.industry_c USING Latin1) AS SEGMENTO,
+       CONVERT(C.user_name USING Latin1) AS USUARIO,
+       CONVERT(A.status USING Latin1) AS STATUS,
+       A.date_entered AS DATA_INCLUSAO,
+       A.date_modified AS DATA_ALTERACAO,
+       CONVERT(E.email_address USING Latin1) AS EMAIL,
+       CONVERT(B.como_conheceu_o_vagas_c USING Latin1) AS COMO_CONHECEU_VAGAS,
+       CONVERT(B.motivo_da_perda_c USING Latin1) AS MOTIVO_PERDA,
+       CONVERT(F.name USING Latin1) AS OPORTUNIDADE,
+       CONVERT(F.sales_stage USING Latin1) AS FASE_OPORTUNIDADE,
+       CONVERT(F.amount USING Latin1) AS VALOR_VENDA,CONVERT(A.opportunity_id USING Latin1) AS OPORTUNIDADE_ID,
+       CASE WHEN A.description LIKE \"%Créditos VAGAS%\" THEN 1 ELSE 0 END AS CREDITOS_VAGAS, (SELECT	CONVERT(A1.name USING Latin1) AS CAMPANHA
+        FROM	sugarcrm.campaigns AS A1
+		WHERE	A.campaign_id = A1.id) AS CAMPANHA ,
+	   CONVERT(A.account_id USING Latin1) AS CONTA_ID ,
+	   B.data_de_conclusao_c AS DATA_CONCLUSAO ,
+       CONVERT(A.title USING Latin1) AS CARGO ,
+       CONVERT(B.form_origem_c USING Latin1) AS FORMULARIO_ORIGEM ,
+       CONVERT(B.lead_type_c USING Latin1) AS CATEGORIA_LEAD
+ FROM leads A
+ LEFT OUTER JOIN leads_cstm B ON B.id_c = A.id
+ INNER JOIN users C ON C.id = A.assigned_user_id 
+				   AND C.deleted = 0
+LEFT OUTER JOIN email_addr_bean_rel D ON D.bean_id = A.id
+									  AND D.deleted = 0
+                                      AND D.primary_address = '1'
+                                      AND D.bean_module = 'Leads' 
+LEFT OUTER JOIN email_addresses E ON E.id = D.email_address_id
+								  AND E.deleted = 0 
+LEFT OUTER JOIN opportunities F ON F.id = A.opportunity_id 
+								AND F.deleted = 0
+ LEFT OUTER JOIN opportunities_cstm G ON G.id_c = F.id 
+WHERE A.deleted = 0 
+
+ AND A.date_modified &gt; " +  @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="AutoCadastro"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">select eml.id 'email_id', ld.id 'lead_id', CONVERT_TZ(eml.date_sent,@@session.time_zone,'America/Sao_Paulo') 'date_sent', ld.first_name, ld.last_name, ld.account_name, lds.cnpj_c, addr.email_address
+from emails eml
+left join leads ld on ld.id = eml.parent_id
+left join leads_cstm lds on lds.id_c = ld.id
+left join emails_email_addr_rel eaddr on eaddr.email_id = eml.id and eaddr.address_type = 'to'
+left join email_addresses addr on addr.id = eaddr.email_address_id
+inner join emails_text emt on emt.email_id = eml.id
+where eml.assigned_user_id = 1 and eml.name = 'Proposta VAGAS for business'
+	and eml.date_sent &gt; '1901-01-01 00:00:00'</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Connections[ODBCConnection]"
+                  connectionManagerID="{85D523B7-CBEA-4308-BABD-BE0191B264D8}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_id]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[email_id]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_id]"
+                      name="email_id" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[lead_id]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[lead_id]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[lead_id]"
+                      name="lead_id" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[date_sent]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[date_sent]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[date_sent]"
+                      name="date_sent" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[first_name]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[first_name]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[first_name]"
+                      name="first_name" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[last_name]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[last_name]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[last_name]"
+                      name="last_name" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[account_name]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[account_name]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[account_name]"
+                      name="account_name" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[cnpj_c]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[cnpj_c]"
+                      length="30"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[cnpj_c]"
+                      name="cnpj_c" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_address]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[email_address]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_address]"
+                      name="email_address" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[email_id]"
+                      dataType="wstr"
+                      length="36"
+                      name="email_id" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[lead_id]"
+                      dataType="wstr"
+                      length="36"
+                      name="lead_id" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[date_sent]"
+                      dataType="dbTimeStamp"
+                      name="date_sent" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[first_name]"
+                      dataType="wstr"
+                      length="100"
+                      name="first_name" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[last_name]"
+                      dataType="wstr"
+                      length="100"
+                      name="last_name" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[account_name]"
+                      dataType="wstr"
+                      length="255"
+                      name="account_name" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[cnpj_c]"
+                      dataType="wstr"
+                      length="30"
+                      name="cnpj_c" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[email_address]"
+                      dataType="wstr"
+                      length="255"
+                      name="email_address" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[email_id]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[email_id]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[email_id]"
+                      name="email_id" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[lead_id]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[lead_id]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[lead_id]"
+                      name="lead_id" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[date_sent]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[date_sent]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[date_sent]"
+                      name="date_sent" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[first_name]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[first_name]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[first_name]"
+                      name="first_name" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[last_name]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[last_name]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[last_name]"
+                      name="last_name" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[account_name]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[account_name]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[account_name]"
+                      name="account_name" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[cnpj_c]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[cnpj_c]"
+                      length="30"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[cnpj_c]"
+                      name="cnpj_c" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[email_address]"
+                      dataType="wstr"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].ExternalColumns[email_address]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[email_address]"
+                      name="email_address" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[email_id]"
+                      cachedDataType="wstr"
+                      cachedLength="36"
+                      cachedName="email_id"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_id]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[lead_id]"
+                      cachedDataType="wstr"
+                      cachedLength="36"
+                      cachedName="lead_id"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[lead_id]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[first_name]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="first_name"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[first_name]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[last_name]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="last_name"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[last_name]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[account_name]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="account_name"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[account_name]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[cnpj_c]"
+                      cachedDataType="wstr"
+                      cachedLength="30"
+                      cachedName="cnpj_c"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[cnpj_c]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[email_address]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="email_address"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_address]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of lead_id]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of lead_id]"
+                      name="Copy of lead_id"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[lead_id]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of last_name]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of last_name]"
+                      name="Copy of last_name"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[last_name]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of first_name]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of first_name]"
+                      name="Copy of first_name"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[first_name]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of email_id]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of email_id]"
+                      name="Copy of email_id"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_id]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of email_address]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of email_address]"
+                      name="Copy of email_address"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[email_address]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of cnpj_c]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="30"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of cnpj_c]"
+                      name="Copy of cnpj_c"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[cnpj_c]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of account_name]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of account_name]"
+                      name="Copy of account_name"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[account_name]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="ODBC Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">SELECT CONVERT(A.id  USING Latin1) AS ID_LEAD,
+	   CONVERT(A.first_name USING Latin1) AS PRIMEIRO_NOME,
+       CONVERT(A.last_name USING Latin1) AS ULTIMO_NOME,
+       CONVERT(A.account_name USING Latin1) AS CONTA,
+      CASE WHEN A.lead_source IS NULL OR A.lead_source = "" 
+			THEN CONVERT(CONVERT(B.form_origem_c,CHAR(50)) USING Latin1) 
+            ELSE CONVERT(CONVERT(A.lead_source,CHAR(50)) USING Latin1) END AS ORIGEM,
+       CONVERT(A.converted USING Latin1) AS FLAG_CONVERTIDO,
+       CONVERT(B.industry_c USING Latin1) AS SEGMENTO,
+       CONVERT(C.user_name USING Latin1) AS USUARIO,
+       CONVERT(A.status USING Latin1) AS STATUS,
+       A.date_entered AS DATA_INCLUSAO,
+       A.date_modified AS DATA_ALTERACAO,
+       CONVERT(E.email_address USING Latin1) AS EMAIL,
+       CONVERT(B.como_conheceu_o_vagas_c USING Latin1) AS COMO_CONHECEU_VAGAS,
+       CONVERT(B.motivo_da_perda_c USING Latin1) AS MOTIVO_PERDA,
+       CONVERT(F.name USING Latin1) AS OPORTUNIDADE,
+       CONVERT(F.sales_stage USING Latin1) AS FASE_OPORTUNIDADE,
+       CONVERT(F.amount USING Latin1) AS VALOR_VENDA,CONVERT(A.opportunity_id USING Latin1) AS OPORTUNIDADE_ID,
+       CASE WHEN A.description LIKE "%Créditos VAGAS%" THEN 1 ELSE 0 END AS CREDITOS_VAGAS, (SELECT	CONVERT(A1.name USING Latin1) AS CAMPANHA
+        FROM	sugarcrm.campaigns AS A1
+		WHERE	A.campaign_id = A1.id) AS CAMPANHA ,
+	   CONVERT(A.account_id USING Latin1) AS CONTA_ID ,
+	   B.data_de_conclusao_c AS DATA_CONCLUSAO ,
+       CONVERT(A.title USING Latin1) AS CARGO ,
+       CONVERT(B.form_origem_c USING Latin1) AS FORMULARIO_ORIGEM ,
+       CONVERT(B.lead_type_c USING Latin1) AS CATEGORIA_LEAD
+ FROM leads A
+ LEFT OUTER JOIN leads_cstm B ON B.id_c = A.id
+ INNER JOIN users C ON C.id = A.assigned_user_id 
+				   AND C.deleted = 0
+LEFT OUTER JOIN email_addr_bean_rel D ON D.bean_id = A.id
+									  AND D.deleted = 0
+                                      AND D.primary_address = '1'
+                                      AND D.bean_module = 'Leads' 
+LEFT OUTER JOIN email_addresses E ON E.id = D.email_address_id
+								  AND E.deleted = 0 
+LEFT OUTER JOIN opportunities F ON F.id = A.opportunity_id 
+								AND F.deleted = 0
+ LEFT OUTER JOIN opportunities_cstm G ON G.id_c = F.id 
+WHERE A.deleted = 0 
+
+ AND A.date_modified &gt; </property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Connections[ODBCConnection]"
+                  connectionManagerID="{85D523B7-CBEA-4308-BABD-BE0191B264D8}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[PROJ - MySQL Produção]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ID_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ID_LEAD]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ID_LEAD]"
+                      name="ID_LEAD" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[PRIMEIRO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[PRIMEIRO_NOME]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[PRIMEIRO_NOME]"
+                      name="PRIMEIRO_NOME" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ULTIMO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ULTIMO_NOME]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ULTIMO_NOME]"
+                      name="ULTIMO_NOME" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CONTA]"
+                      name="CONTA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ORIGEM]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ORIGEM]"
+                      name="ORIGEM" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FLAG_CONVERTIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FLAG_CONVERTIDO]"
+                      length="4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FLAG_CONVERTIDO]"
+                      name="FLAG_CONVERTIDO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[SEGMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[SEGMENTO]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[SEGMENTO]"
+                      name="SEGMENTO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[USUARIO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[USUARIO]"
+                      length="60"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[USUARIO]"
+                      name="USUARIO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_INCLUSAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_INCLUSAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_INCLUSAO]"
+                      name="DATA_INCLUSAO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_ALTERACAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_ALTERACAO]"
+                      name="DATA_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[EMAIL]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[EMAIL]"
+                      name="EMAIL" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[COMO_CONHECEU_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[COMO_CONHECEU_VAGAS]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[COMO_CONHECEU_VAGAS]"
+                      name="COMO_CONHECEU_VAGAS" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[MOTIVO_PERDA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[MOTIVO_PERDA]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[MOTIVO_PERDA]"
+                      name="MOTIVO_PERDA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[OPORTUNIDADE]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[OPORTUNIDADE]"
+                      name="OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FASE_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FASE_OPORTUNIDADE]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FASE_OPORTUNIDADE]"
+                      name="FASE_OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[VALOR_VENDA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[VALOR_VENDA]"
+                      length="22"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[VALOR_VENDA]"
+                      name="VALOR_VENDA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[OPORTUNIDADE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[OPORTUNIDADE_ID]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[OPORTUNIDADE_ID]"
+                      name="OPORTUNIDADE_ID" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CREDITOS_VAGAS]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CREDITOS_VAGAS]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CREDITOS_VAGAS]"
+                      name="CREDITOS_VAGAS" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CAMPANHA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CAMPANHA]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CAMPANHA]"
+                      name="CAMPANHA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_CONCLUSAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_CONCLUSAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_CONCLUSAO]"
+                      name="DATA_CONCLUSAO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CARGO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CARGO]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CARGO]"
+                      name="CARGO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FORMULARIO_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FORMULARIO_ORIGEM]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FORMULARIO_ORIGEM]"
+                      name="FORMULARIO_ORIGEM" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CATEGORIA_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA_LEAD]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CATEGORIA_LEAD]"
+                      name="CATEGORIA_LEAD" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ID_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="ID_LEAD" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[PRIMEIRO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PRIMEIRO_NOME" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ULTIMO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ULTIMO_NOME" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FLAG_CONVERTIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="FLAG_CONVERTIDO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[SEGMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SEGMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[USUARIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="USUARIO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_INCLUSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_INCLUSAO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EMAIL" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[COMO_CONHECEU_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="COMO_CONHECEU_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[MOTIVO_PERDA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MOTIVO_PERDA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FASE_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="FASE_OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[VALOR_VENDA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="22"
+                      name="VALOR_VENDA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[OPORTUNIDADE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="OPORTUNIDADE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CREDITOS_VAGAS]"
+                      dataType="i8"
+                      name="CREDITOS_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CAMPANHA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CAMPANHA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_CONCLUSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CONCLUSAO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CARGO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CARGO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FORMULARIO_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="FORMULARIO_ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CATEGORIA_LEAD" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ID_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ID_LEAD]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ID_LEAD]"
+                      name="ID_LEAD" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[PRIMEIRO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[PRIMEIRO_NOME]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[PRIMEIRO_NOME]"
+                      name="PRIMEIRO_NOME" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ULTIMO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ULTIMO_NOME]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ULTIMO_NOME]"
+                      name="ULTIMO_NOME" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CONTA]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CONTA]"
+                      name="CONTA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[ORIGEM]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ORIGEM]"
+                      name="ORIGEM" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[FLAG_CONVERTIDO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FLAG_CONVERTIDO]"
+                      length="4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[FLAG_CONVERTIDO]"
+                      name="FLAG_CONVERTIDO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[SEGMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[SEGMENTO]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[SEGMENTO]"
+                      name="SEGMENTO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[USUARIO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[USUARIO]"
+                      length="60"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[USUARIO]"
+                      name="USUARIO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[STATUS]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[STATUS]"
+                      name="STATUS" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[DATA_INCLUSAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_INCLUSAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[DATA_INCLUSAO]"
+                      name="DATA_INCLUSAO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_ALTERACAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[DATA_ALTERACAO]"
+                      name="DATA_ALTERACAO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[EMAIL]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[EMAIL]"
+                      name="EMAIL" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[COMO_CONHECEU_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[COMO_CONHECEU_VAGAS]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[COMO_CONHECEU_VAGAS]"
+                      name="COMO_CONHECEU_VAGAS" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[MOTIVO_PERDA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[MOTIVO_PERDA]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[MOTIVO_PERDA]"
+                      name="MOTIVO_PERDA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[OPORTUNIDADE]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[OPORTUNIDADE]"
+                      name="OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[FASE_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FASE_OPORTUNIDADE]"
+                      length="255"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[FASE_OPORTUNIDADE]"
+                      name="FASE_OPORTUNIDADE" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[VALOR_VENDA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[VALOR_VENDA]"
+                      length="22"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[VALOR_VENDA]"
+                      name="VALOR_VENDA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[OPORTUNIDADE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[OPORTUNIDADE_ID]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[OPORTUNIDADE_ID]"
+                      name="OPORTUNIDADE_ID" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CREDITOS_VAGAS]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CREDITOS_VAGAS]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CREDITOS_VAGAS]"
+                      name="CREDITOS_VAGAS" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CAMPANHA]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CAMPANHA]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CAMPANHA]"
+                      name="CAMPANHA" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CONTA_ID]"
+                      length="36"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CONTA_ID]"
+                      name="CONTA_ID" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[DATA_CONCLUSAO]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[DATA_CONCLUSAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[DATA_CONCLUSAO]"
+                      name="DATA_CONCLUSAO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CARGO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CARGO]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CARGO]"
+                      name="CARGO" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[FORMULARIO_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[FORMULARIO_ORIGEM]"
+                      length="50"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[FORMULARIO_ORIGEM]"
+                      name="FORMULARIO_ORIGEM" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CATEGORIA_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].ExternalColumns[CATEGORIA_LEAD]"
+                      length="100"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[CATEGORIA_LEAD]"
+                      name="CATEGORIA_LEAD" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_LEADS]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ID_LEAD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="ID_LEAD"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ID_LEAD]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ID_LEAD]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PRIMEIRO_NOME]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="PRIMEIRO_NOME"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRIMEIRO_NOME]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[PRIMEIRO_NOME]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ULTIMO_NOME]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="ULTIMO_NOME"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ULTIMO_NOME]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ULTIMO_NOME]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CONTA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="CONTA"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CONTA]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ORIGEM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="ORIGEM"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORIGEM]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[ORIGEM]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FLAG_CONVERTIDO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="FLAG_CONVERTIDO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_CONVERTIDO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FLAG_CONVERTIDO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[SEGMENTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="SEGMENTO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SEGMENTO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[SEGMENTO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[USUARIO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="60"
+                      cachedName="USUARIO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[USUARIO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[STATUS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="STATUS"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[STATUS]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DATA_INCLUSAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_INCLUSAO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INCLUSAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_INCLUSAO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DATA_ALTERACAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_ALTERACAO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_ALTERACAO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EMAIL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="EMAIL"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[EMAIL]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[COMO_CONHECEU_VAGAS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="COMO_CONHECEU_VAGAS"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COMO_CONHECEU_VAGAS]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[COMO_CONHECEU_VAGAS]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MOTIVO_PERDA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="MOTIVO_PERDA"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOTIVO_PERDA]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[MOTIVO_PERDA]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[OPORTUNIDADE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="OPORTUNIDADE"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OPORTUNIDADE]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[OPORTUNIDADE]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FASE_OPORTUNIDADE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="FASE_OPORTUNIDADE"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FASE_OPORTUNIDADE]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FASE_OPORTUNIDADE]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[VALOR_VENDA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="22"
+                      cachedName="VALOR_VENDA"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_VENDA]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[VALOR_VENDA]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[OPORTUNIDADE_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="OPORTUNIDADE_ID"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OPORTUNIDADE_ID]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[OPORTUNIDADE_ID]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CREDITOS_VAGAS]"
+                      cachedDataType="i8"
+                      cachedName="CREDITOS_VAGAS"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CREDITOS_VAGAS]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CREDITOS_VAGAS]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CAMPANHA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="CAMPANHA"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CAMPANHA]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CAMPANHA]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CONTA_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="CONTA_ID"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CONTA_ID]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DATA_CONCLUSAO]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="DATA_CONCLUSAO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONCLUSAO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[DATA_CONCLUSAO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CARGO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="CARGO"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CARGO]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CARGO]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FORMULARIO_ORIGEM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="FORMULARIO_ORIGEM"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FORMULARIO_ORIGEM]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[FORMULARIO_ORIGEM]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CATEGORIA_LEAD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="CATEGORIA_LEAD"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CATEGORIA_LEAD]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output].Columns[CATEGORIA_LEAD]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ID_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="ID_LEAD" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRIMEIRO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="PRIMEIRO_NOME" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ULTIMO_NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ULTIMO_NOME" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_CONVERTIDO]"
+                      dataType="bool"
+                      name="FLAG_CONVERTIDO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SEGMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SEGMENTO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="USUARIO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATUS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_INCLUSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_INCLUSAO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_ALTERACAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_ALTERACAO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EMAIL" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COMO_CONHECEU_VAGAS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="COMO_CONHECEU_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MOTIVO_PERDA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="MOTIVO_PERDA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FASE_OPORTUNIDADE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="FASE_OPORTUNIDADE" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_VENDA]"
+                      dataType="cy"
+                      name="VALOR_VENDA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OPORTUNIDADE_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="OPORTUNIDADE_ID" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CREDITOS_VAGAS]"
+                      dataType="bool"
+                      name="CREDITOS_VAGAS" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CAMPANHA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CAMPANHA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTA_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="55"
+                      name="CONTA_ID" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DATA_CONCLUSAO]"
+                      dataType="dbTimeStamp"
+                      name="DATA_CONCLUSAO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CARGO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CARGO" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FORMULARIO_ORIGEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="FORMULARIO_ORIGEM" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CATEGORIA_LEAD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CATEGORIA_LEAD" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LEAD_DELETED]"
+                      dataType="i4"
+                      name="LEAD_DELETED" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="VAGAS_DW - LEADS_AUTO_CADASTRO"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[VAGAS_DW].[TMP_LEADS_AUTO_CADASTRO]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of email_id]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="Copy of email_id"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_ID]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of email_id]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of lead_id]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="Copy of lead_id"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[LEAD_ID]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of lead_id]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[date_sent]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="date_sent"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[DATA]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output].Columns[date_sent]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of first_name]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Copy of first_name"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[NOME]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of first_name]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of last_name]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Copy of last_name"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[SOBRENOME]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of last_name]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of account_name]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of account_name"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of account_name]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of cnpj_c]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="Copy of cnpj_c"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of cnpj_c]" />
+                    <inputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].Columns[Copy of email_address]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of email_address"
+                      externalMetadataColumnId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL]"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of email_address]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="EMAIL_ID" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[LEAD_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="LEAD_ID" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[DATA]"
+                      dataType="dbTimeStamp"
+                      name="DATA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[NOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="NOME" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[SOBRENOME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SOBRENOME" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[CONTA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="CONTA" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[CNPJ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="CNPJ" />
+                    <externalMetadataColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="EMAIL" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+              endId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+              endId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input]"
+              name="ODBC Source Output"
+              startId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro.Outputs[ODBC Source Output]" />
+            <path
+              refId="Package\AUTO CADASTRO MySQL -&gt; SQL Server.Paths[ODBC Source Output1]"
+              endId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="ODBC Source Output"
+              startId="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar  VAGAS_DW_LEADS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{CF9335FF-0FF2-429A-9670-BB6332207AAC}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar  VAGAS_DW_LEADS"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE VAGAS_DW.TMP_LEADS&#xA;TRUNCATE TABLE VAGAS_DW.TMP_LEADS_AUTO_CADASTRO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Pegar Última Data Alteração"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{5E0C0CAA-4740-4085-8FC3-EFC8B7CA7B69}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pegar Última Data Alteração"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="SELECT CONVERT(VARCHAR,DATEADD(DAY,-1,CONVERT(SMALLDATETIME,CONVERT(VARCHAR,ISNULL(MAX(DATA_ALTERACAO),'19010101'),112))) ,112) AS DATA_ALTERACAO&#xA;&#x9;,(SELECT ISNULL(CONVERT(VARCHAR,MAX(DATA),112),'19010101') FROM STAGE.VAGAS_DW.TMP_LEADS_AUTO_CADASTRO) AS DATA_AUTO_CADASTRO&#xA;FROM VAGAS_DW.LEADS"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="DATA_ALTERACAO"
+            SQLTask:DtsVariableName="User::DATA_ALTERACAO" />
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="DATA_AUTO_CADASTRO"
+            SQLTask:DtsVariableName="User::DATA_AUTO_CADASTRO" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Analysis Services Processing Task"
+      DTS:DTSID="{E8CFDB69-805A-4234-8EB0-A530C6BFA327}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LEADS - DATA ALTERACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LEADS&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LEADS - DATA INCLUSAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;LEADS - DATA_CONCLUSAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\VAGAS_DW_SPR_OLAP_Carga_LEADS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{5B9BD796-F806-4DCC-A8A7-220918F61D16}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="VAGAS_DW_SPR_OLAP_Carga_LEADS"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC VAGAS_DW.SPR_OLAP_Carga_LEADS" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{B2961547-224C-496C-852C-5C257A87C9FE}"
+      DTS:From="Package\Pegar Última Data Alteração"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Limpar  VAGAS_DW_LEADS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{4B65AC34-3E52-46A1-8D25-D7B9602AE2CD}"
+      DTS:From="Package\Limpar  VAGAS_DW_LEADS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\AUTO CADASTRO MySQL -&gt; SQL Server" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{BAF94BA5-1621-47B5-B13A-1939717BB351}"
+      DTS:From="Package\VAGAS_DW_SPR_OLAP_Carga_LEADS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{14545FDF-5801-4B6B-8D62-0D8755696A78}"
+      DTS:From="Package\AUTO CADASTRO MySQL -&gt; SQL Server"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\VAGAS_DW_SPR_OLAP_Carga_LEADS" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="269,42"
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server"
+          TopLeft="391.5,320.5" />
+        <NodeLayout
+          Size="209,42"
+          Id="Package\Limpar  VAGAS_DW_LEADS"
+          TopLeft="421.5,218.5" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Pegar Última Data Alteração"
+          TopLeft="420,116.5" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="448.5,524.5" />
+        <NodeLayout
+          Size="259,42"
+          Id="Package\VAGAS_DW_SPR_OLAP_Carga_LEADS"
+          TopLeft="396.5,422.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="526,158.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="526,260.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="526,464.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="526,362.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\AUTO CADASTRO MySQL -&gt; SQL Server">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="142,42"
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server\AutoCadastro"
+          TopLeft="638.5,70.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server\Data Conversion"
+          TopLeft="635,186" />
+        <NodeLayout
+          Size="267,42"
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server\VAGAS_DW - LEADS_AUTO_CADASTRO"
+          TopLeft="582,291" />
+        <EdgeLayout
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server.Paths[ODBC Source Output]"
+          TopLeft="711.25,112.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,73.5"
+              Start="0,0"
+              End="0,66">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,66" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server.Paths[Data Conversion Output]"
+          TopLeft="714.25,228">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,63"
+              Start="0,0"
+              End="0,55.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,55.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="142,42"
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server\ODBC Source"
+          TopLeft="205,64" />
+        <NodeLayout
+          Size="171,42"
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination"
+          TopLeft="183,275" />
+        <EdgeLayout
+          Id="Package\AUTO CADASTRO MySQL -&gt; SQL Server.Paths[ODBC Source Output1]"
+          TopLeft="272.25,106">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,169"
+              Start="0,0"
+              End="0,161.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,161.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\AUTO CADASTRO MySQL -&gt; SQL Server\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
