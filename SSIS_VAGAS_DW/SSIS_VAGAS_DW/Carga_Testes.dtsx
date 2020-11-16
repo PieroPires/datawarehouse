@@ -12,12 +12,479 @@
   DTS:ObjectName="Carga_Testes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="6"
-  DTS:VersionGUID="{7AB10DB0-493E-4C12-9FC0-465F694BC366}">
+  DTS:VersionBuild="21"
+  DTS:VersionGUID="{0B08F000-762D-4AD4-AC88-82571DE63DFC}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PostgreSQL_Construtor_testes]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{52A83E2C-F990-440E-9834-B3D7B89F5890}"
+      DTS:ObjectName="PostgreSQL_Construtor_testes">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Dsn=PostgreSQL_Construtor_testes;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
   <DTS:Variables />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{D002D5B8-DAA9-46CC-8377-8A93C1B0C80E}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Construtor_testes (PostgreSQL) -&gt; (SQL Server)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">select
+	name
+	,company_id
+	,employee_id
+	,created_at::date
+	,updated_at::date
+	,status
+                  , id
+from public.questionaries q</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="Package.ConnectionManagers[PostgreSQL_Construtor_testes]"
+                  connectionManagerRefId="Package.ConnectionManagers[PostgreSQL_Construtor_testes]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[name]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[name]"
+                      length="255"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[name]"
+                      name="name" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[company_id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[company_id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[company_id]"
+                      name="company_id" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[employee_id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[employee_id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[employee_id]"
+                      name="employee_id" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[created_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[created_at]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[created_at]"
+                      name="created_at" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[updated_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[updated_at]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[updated_at]"
+                      name="updated_at" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[status]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[status]"
+                      name="status" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[id]"
+                      name="id" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[name]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="name" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[company_id]"
+                      dataType="i8"
+                      name="company_id" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[employee_id]"
+                      dataType="i8"
+                      name="employee_id" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[created_at]"
+                      dataType="dbDate"
+                      name="created_at" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[updated_at]"
+                      dataType="dbDate"
+                      name="updated_at" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      dataType="i4"
+                      name="status" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      dataType="i8"
+                      name="id" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[name]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[name]"
+                      length="255"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[name]"
+                      name="name" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[company_id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[company_id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[company_id]"
+                      name="company_id" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[employee_id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[employee_id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[employee_id]"
+                      name="employee_id" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[created_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[created_at]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[created_at]"
+                      name="created_at" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[updated_at]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[updated_at]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[updated_at]"
+                      name="updated_at" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[status]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[status]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[status]"
+                      name="status" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[id]"
+                      name="id" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="SQL Server"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[TESTES_CONSTRUTOR]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[name]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="name"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[name]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[name]" />
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[company_id]"
+                      cachedDataType="i8"
+                      cachedName="company_id"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[company_id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[company_id]" />
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[employee_id]"
+                      cachedDataType="i8"
+                      cachedName="employee_id"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[employee_id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[employee_id]" />
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[created_at]"
+                      cachedDataType="dbDate"
+                      cachedName="created_at"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[created_at]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[created_at]" />
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[updated_at]"
+                      cachedDataType="dbDate"
+                      cachedName="updated_at"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[updated_at]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[updated_at]" />
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[status]"
+                      cachedDataType="i4"
+                      cachedName="status"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[status]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[status]" />
+                    <inputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].Columns[id]"
+                      cachedDataType="i8"
+                      cachedName="id"
+                      externalMetadataColumnId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[id]"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output].Columns[id]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[name]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="name" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[company_id]"
+                      dataType="i8"
+                      name="company_id" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[employee_id]"
+                      dataType="i8"
+                      name="employee_id" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[created_at]"
+                      dataType="dbDate"
+                      name="created_at" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[updated_at]"
+                      dataType="dbDate"
+                      name="updated_at" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[status]"
+                      dataType="i4"
+                      name="status" />
+                    <externalMetadataColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB].ExternalColumns[id]"
+                      dataType="i4"
+                      name="id" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server).Paths[ODBC Source Output]"
+              endId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar a tabela VAGAS_DW_TESTES_CONSTRUTOR"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{91073077-F39E-4380-944D-2CFE4C91ECE9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar a tabela VAGAS_DW_TESTES_CONSTRUTOR"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [STAGE].[VAGAS_DW].[TESTES_CONSTRUTOR] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Processar CUBO"
       DTS:CreationName="Microsoft.DTSProcessingTask"
@@ -31,7 +498,7 @@
       <DTS:ObjectData>
         <ASProcessingData
           ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
-          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TESTES&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TESTES - DATA_CRIACAO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TESTES&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;TESTES - DATA_RASCUNHO&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -84,45 +551,69 @@
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 1"
       DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{110DE8E9-4665-4BDF-8637-3F106891646D}"
+      DTS:From="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\VAGAS_DW_Stage_SPR_OLTP_Carga_Testes" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{C10E9F1A-D00A-435A-B9E0-466E9FCF9CE8}"
+      DTS:From="Package\Limpar a tabela VAGAS_DW_TESTES_CONSTRUTOR"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="307,42"
+          Id="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)"
+          TopLeft="331,169" />
+        <NodeLayout
+          Size="325,42"
+          Id="Package\Limpar a tabela VAGAS_DW_TESTES_CONSTRUTOR"
+          TopLeft="322,78" />
         <NodeLayout
           Size="155,42"
           Id="Package\Processar CUBO"
-          TopLeft="403,225" />
+          TopLeft="400,460" />
         <NodeLayout
           Size="259,42"
           Id="Package\VAGAS_DW_SPR_OLAP_Carga_Testes"
-          TopLeft="354,153" />
+          TopLeft="353,359" />
         <NodeLayout
           Size="291,42"
           Id="Package\VAGAS_DW_Stage_SPR_OLTP_Carga_Testes"
-          TopLeft="344,71" />
+          TopLeft="343,264" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="486.5,113">
+          TopLeft="485.5,306">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,40"
+              EndConnector="0,53"
               Start="0,0"
-              End="0,32.5">
+              End="0,45.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.5" />
+                    End="0,45.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -133,18 +624,62 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="482,195">
+          TopLeft="480,401">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,30"
+              EndConnector="0,59"
               Start="0,0"
-              End="0,22.5">
+              End="0,51.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,22.5" />
+                    End="0,51.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="486.5,211">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53"
+              Start="0,0"
+              End="0,45.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="484.5,120">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49"
+              Start="0,0"
+              End="0,41.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -156,5 +691,56 @@
       </GraphLayout>
     </LayoutInfo>
   </Package>
+  <TaskHost
+    design-time-name="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="131,42"
+          Id="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server"
+          TopLeft="327,195" />
+        <NodeLayout
+          Size="133,42"
+          Id="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\PostgreSQL"
+          TopLeft="320,84" />
+        <EdgeLayout
+          Id="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server).Paths[ODBC Source Output]"
+          TopLeft="389.5,126">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,69"
+              Start="0,0"
+              End="0,61.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,61.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Construtor_testes (PostgreSQL) -&gt; (SQL Server)\SQL Server">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
