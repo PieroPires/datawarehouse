@@ -1,0 +1,1064 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/28/2020 1:43:24 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="2WNP172"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DTSID="{A7752EA5-EC23-41EA-BDCA-711333E59C19}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Carga_PainelVaga"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="157"
+  DTS:VersionGUID="{D4B8C971-8027-4DCC-BF26-66FF55D632ED}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PostgreSQL_Painel_vaga]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{6397DA0F-65C4-43E9-88DE-564174D0A78D}"
+      DTS:ObjectName="PostgreSQL_Painel_vaga">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Dsn=PostgreSQL_Painel_vaga;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2B649890-9E83-4282-A50F-9E68A0C22033}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Executavel">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\Python3\python.exe</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5889B26C-EE52-4936-9887-89C1ED36B335}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Script">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\Users\diego.gatto\Documents\integracao_sensedata\upload_s3_sensedata.py</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Carga - acessos painel"
+      DTS:CreationName="Microsoft.ExecuteProcess"
+      DTS:Description="Tarefa Executar Processo"
+      DTS:DTSID="{02c7f543-06e7-4df3-9a4b-20c0ecbfa6e3}"
+      DTS:ExecutableType="Microsoft.ExecuteProcess"
+      DTS:ForceExecutionResult="0"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga - acessos painel"
+      DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2017; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecuteProcessData
+          Executable="C:\Program Files (x86)\Python38-32\python.exe"
+          Arguments="\\srv-sqlmirror07\Scripts\Scripts_Python\Painel_vaga_acessos.py" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga - acessos painel 1"
+      DTS:CreationName="Microsoft.ExecuteProcess"
+      DTS:Description="Tarefa Executar Processo"
+      DTS:Disabled="True"
+      DTS:DTSID="{57032e04-1933-4d96-9397-57ba8ffb27e9}"
+      DTS:ExecutableType="Microsoft.ExecuteProcess"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga - acessos painel 1"
+      DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2017; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecuteProcessData
+          Executable="C:\Windows\System32\cmd.exe"
+          Arguments="/c \\SRV-SQLMIRROR07\Scripts\Scripts_Python\Painel_vaga\Painel_vaga_acessos.py"
+          WindowStyle="Hidden" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Carga - acessos painel da vaga - bkp"
+      DTS:CreationName="Microsoft.ExecuteProcess"
+      DTS:Description="Tarefa Executar Processo"
+      DTS:Disabled="True"
+      DTS:DTSID="{8cb0b299-e39c-4bfb-aef3-67736e003cc0}"
+      DTS:ExecutableType="Microsoft.ExecuteProcess"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga - acessos painel da vaga - bkp"
+      DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2017; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecuteProcessData
+          Executable="C:\Program Files (x86)\Python38-32\python.exe"
+          Arguments="\\SRV-SQLMIRROR07\Scripts\Scripts_Python\Painel_vaga_acessos.py" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar tabela temporária"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:Disabled="True"
+      DTS:DTSID="{C270FA7F-F87E-47B5-9393-3B481EB574EC}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar tabela temporária"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="truncate table [VAGAS_DW].[Tmp_PainelVaga_CompartilhamentoGestores] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar Tmp_PainelVaga_acessos"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{978DDEFA-8E1C-4AAF-92F7-3E63888FA3D4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar Tmp_PainelVaga_acessos"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE [VAGAS_DW].[Tmp_PainelVaga_acessos] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Painel - compartilhamento gestores"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:Disabled="True"
+      DTS:DTSID="{EF71218B-1331-4213-A9C6-DBEC6416D452}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Painel - compartilhamento gestores"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="compartilhamento_gestores - PostgreSQL"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">select	distinct Painel_compVaga.id as id_vaga_Painel,
+		Painel_compVaga.vaga_id as cod_vaga_Painel,
+        Painel_compGestor.created_at::date as Data_comp_gestorPainel,
+        Painel_compGestor.cliente_id as cod_cli_gestorPainel,
+        Painel_compGestor.funcionario_id as cod_func_gestorPainel,
+        Painel_candComp.id as id_comp_CandPainel,
+        Painel_candComp.candidato_id as cod_cand_CandPainel,
+        Painel_candComp.created_at::date as Data_comp_CandPainel,
+        Comentarios_candPainel.id as id_coment_CandPainel,
+        Comentarios_candPainel.created_at::date as Data_coment_CandPainel
+from	vagas_compartilhadas as Painel_compVaga	left join compartilhamento_gestores as Painel_compGestor
+												on Painel_compVaga.id = Painel_compGestor.vaga_compartilhada_id
+                                                left outer join candidatos_compartilhados as Painel_candComp
+                                                on Painel_compVaga.id = Painel_candComp.vaga_compartilhada_id
+                                                left outer join comentarios as Comentarios_candPainel
+                                                on Painel_compVaga.vaga_id = Comentarios_candPainel.vaga_id
+                                                and Painel_candComp.candidato_id = Comentarios_candPainel.candidato_id
+                                                and Comentarios_candPainel.candidato_id is not null ;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Connections[ODBCConnection]"
+                  connectionManagerID="Package.ConnectionManagers[PostgreSQL_Painel_vaga]"
+                  connectionManagerRefId="Package.ConnectionManagers[PostgreSQL_Painel_vaga]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_vaga_painel]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_vaga_painel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_vaga_painel]"
+                      name="id_vaga_painel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_vaga_painel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_vaga_painel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_vaga_painel]"
+                      name="cod_vaga_painel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_comp_gestorpainel]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_comp_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_comp_gestorpainel]"
+                      name="data_comp_gestorpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli_gestorpainel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli_gestorpainel]"
+                      name="cod_cli_gestorpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_func_gestorpainel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_func_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_func_gestorpainel]"
+                      name="cod_func_gestorpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_comp_candpainel]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_comp_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_comp_candpainel]"
+                      name="id_comp_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cand_candpainel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cand_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cand_candpainel]"
+                      name="cod_cand_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_comp_candpainel]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_comp_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_comp_candpainel]"
+                      name="data_comp_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_coment_candpainel]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_coment_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_coment_candpainel]"
+                      name="id_coment_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_coment_candpainel]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_coment_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_coment_candpainel]"
+                      name="data_coment_candpainel" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_vaga_painel]"
+                      dataType="i8"
+                      name="id_vaga_painel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_vaga_painel]"
+                      dataType="i4"
+                      name="cod_vaga_painel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_comp_gestorpainel]"
+                      dataType="dbDate"
+                      name="data_comp_gestorpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli_gestorpainel]"
+                      dataType="i4"
+                      name="cod_cli_gestorpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_func_gestorpainel]"
+                      dataType="i4"
+                      name="cod_func_gestorpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_comp_candpainel]"
+                      dataType="i8"
+                      name="id_comp_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cand_candpainel]"
+                      dataType="i4"
+                      name="cod_cand_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_comp_candpainel]"
+                      dataType="dbDate"
+                      name="data_comp_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_coment_candpainel]"
+                      dataType="i8"
+                      name="id_coment_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_coment_candpainel]"
+                      dataType="dbDate"
+                      name="data_coment_candpainel" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[id_vaga_painel]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_vaga_painel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[id_vaga_painel]"
+                      name="id_vaga_painel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_vaga_painel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_vaga_painel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_vaga_painel]"
+                      name="cod_vaga_painel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_comp_gestorpainel]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_comp_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_comp_gestorpainel]"
+                      name="data_comp_gestorpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cli_gestorpainel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cli_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cli_gestorpainel]"
+                      name="cod_cli_gestorpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_func_gestorpainel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_func_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_func_gestorpainel]"
+                      name="cod_func_gestorpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[id_comp_candpainel]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_comp_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[id_comp_candpainel]"
+                      name="id_comp_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cand_candpainel]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[cod_cand_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[cod_cand_candpainel]"
+                      name="cod_cand_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_comp_candpainel]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_comp_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_comp_candpainel]"
+                      name="data_comp_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[id_coment_candpainel]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[id_coment_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[id_coment_candpainel]"
+                      name="id_coment_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_coment_candpainel]"
+                      dataType="dbDate"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].ExternalColumns[data_coment_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[data_coment_candpainel]"
+                      name="data_coment_candpainel" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="Tmp_PainelVaga_CompartilhamentoGestores"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[Tmp_PainelVaga_CompartilhamentoGestores]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[id_vaga_painel]"
+                      cachedDataType="i8"
+                      cachedName="id_vaga_painel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_vaga_painel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_vaga_painel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[cod_vaga_painel]"
+                      cachedDataType="i4"
+                      cachedName="cod_vaga_painel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_vaga_painel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_vaga_painel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[cod_cli_gestorpainel]"
+                      cachedDataType="i4"
+                      cachedName="cod_cli_gestorpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_cli_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cli_gestorpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[cod_func_gestorpainel]"
+                      cachedDataType="i4"
+                      cachedName="cod_func_gestorpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_func_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_func_gestorpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[id_comp_candpainel]"
+                      cachedDataType="i8"
+                      cachedName="id_comp_candpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_comp_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_comp_candpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[cod_cand_candpainel]"
+                      cachedDataType="i4"
+                      cachedName="cod_cand_candpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_cand_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[cod_cand_candpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[id_coment_candpainel]"
+                      cachedDataType="i8"
+                      cachedName="id_coment_candpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_coment_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[id_coment_candpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[data_comp_gestorpainel]"
+                      cachedDataType="dbDate"
+                      cachedName="data_comp_gestorpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_comp_gestorpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_comp_gestorpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[data_comp_candpainel]"
+                      cachedDataType="dbDate"
+                      cachedName="data_comp_candpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_comp_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_comp_candpainel]" />
+                    <inputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].Columns[data_coment_candpainel]"
+                      cachedDataType="dbDate"
+                      cachedName="data_coment_candpainel"
+                      externalMetadataColumnId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_coment_candpainel]"
+                      lineageId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output].Columns[data_coment_candpainel]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_vaga_painel]"
+                      dataType="i8"
+                      name="id_vaga_painel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_vaga_painel]"
+                      dataType="i4"
+                      name="cod_vaga_painel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_cli_gestorpainel]"
+                      dataType="i4"
+                      name="cod_cli_gestorpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_func_gestorpainel]"
+                      dataType="i4"
+                      name="cod_func_gestorpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_comp_candpainel]"
+                      dataType="i8"
+                      name="id_comp_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[cod_cand_candpainel]"
+                      dataType="i4"
+                      name="cod_cand_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_coment_candpainel]"
+                      dataType="i8"
+                      name="id_coment_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_comp_gestorpainel]"
+                      dataType="dbDate"
+                      name="Data_comp_gestorpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_comp_candpainel]"
+                      dataType="dbDate"
+                      name="Data_comp_candpainel" />
+                    <externalMetadataColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB].ExternalColumns[Data_coment_candpainel]"
+                      dataType="dbDate"
+                      name="Data_coment_candpainel" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Painel - compartilhamento gestores.Paths[ODBC Source Output]"
+              endId="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores.Inputs[Entrada de Destino OLE DB]"
+              name="ODBC Source Output"
+              startId="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL.Outputs[ODBC Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Tarefa Processamento do Analysis Services"
+      DTS:Disabled="True"
+      DTS:DTSID="{368A21DD-0045-41F0-B077-2A567D402287}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Painel da vaga&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Painel da vaga - data painel compartilhado&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO (PainelVaga_acessos)"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Tarefa Processamento do Analysis Services"
+      DTS:DTSID="{E07F3158-39CB-471C-96B1-54FA61C76C66}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO (PainelVaga_acessos)"
+      DTS:ThreadHint="3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Painel da vaga acessos - Data acesso&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Painel da vaga acessos&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;VAGAS_Painel&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SPR_OLAP_Carga_PainelVaga_CompartilhamentoGestores"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:Disabled="True"
+      DTS:DTSID="{538AD25A-3BD1-4589-AB3E-8B5753777FC3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SPR_OLAP_Carga_PainelVaga_CompartilhamentoGestores"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_PainelVaga_CompartilhamentoGestores] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SPR_OLAP_Carga_Painel_vaga_acessos"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{9079b36c-959a-471d-a6e4-5cc4db60ccc4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SPR_OLAP_Carga_Painel_vaga_acessos"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Painel_vaga_acessos] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Tarefa Executar SQL"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:Disabled="True"
+      DTS:DTSID="{1F64E580-B50D-4DCE-BBC8-9C35E23EBF3F}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Tarefa Executar SQL"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="4">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="EXEC XP_CMDSHELL '\\SRV-SQLMIRROR07\Scripts\Scripts_Python\Painel_vaga\executa_painel_acessos.bat'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{35EB2B5A-82E1-4BF4-AF6B-51F9C7CC5766}"
+      DTS:From="Package\Painel - compartilhamento gestores"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\SPR_OLAP_Carga_PainelVaga_CompartilhamentoGestores" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{AD2C62BB-EC97-44A1-B87C-4047126E4113}"
+      DTS:From="Package\Limpar tabela temporária"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\Painel - compartilhamento gestores" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{2C197E81-760F-4503-B230-F5452F0B9D74}"
+      DTS:From="Package\SPR_OLAP_Carga_PainelVaga_CompartilhamentoGestores"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 2"
+      DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{E9C70158-195C-4243-A69A-FF5A8610C511}"
+      DTS:From="Package\Limpar Tmp_PainelVaga_acessos"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 3"
+      DTS:To="Package\Carga - acessos painel" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{EE4A0F80-E932-4E4D-946C-051A584D7B52}"
+      DTS:From="Package\SPR_OLAP_Carga_Painel_vaga_acessos"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 4"
+      DTS:To="Package\Processar CUBO (PainelVaga_acessos)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{B2BB1E77-2F58-4216-846F-9DF309AD6071}"
+      DTS:From="Package\Carga - acessos painel"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 5"
+      DTS:To="Package\SPR_OLAP_Carga_Painel_vaga_acessos" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="184,42"
+          Id="Package\Carga - acessos painel"
+          TopLeft="800,158" />
+        <NodeLayout
+          Size="194,42"
+          Id="Package\Carga - acessos painel 1"
+          TopLeft="1384,40" />
+        <NodeLayout
+          Size="253,42"
+          Id="Package\Carga - acessos painel da vaga - bkp"
+          TopLeft="1350,135" />
+        <NodeLayout
+          Size="198,42"
+          Id="Package\Limpar tabela temporária"
+          TopLeft="394,49" />
+        <NodeLayout
+          Size="235,42"
+          Id="Package\Limpar Tmp_PainelVaga_acessos"
+          TopLeft="778,52" />
+        <NodeLayout
+          Size="246,42"
+          Id="Package\Painel - compartilhamento gestores"
+          TopLeft="365,138" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="417,348" />
+        <NodeLayout
+          Size="259,42"
+          Id="Package\Processar CUBO (PainelVaga_acessos)"
+          TopLeft="786,377" />
+        <NodeLayout
+          Size="266,42"
+          Id="Package\SPR_OLAP_Carga_Painel_vaga_acessos"
+          TopLeft="781,272" />
+        <NodeLayout
+          Size="352,42"
+          Id="Package\SPR_OLAP_Carga_PainelVaga_CompartilhamentoGestores"
+          TopLeft="319,244" />
+        <NodeLayout
+          Size="166,42"
+          Id="Package\Tarefa Executar SQL"
+          TopLeft="1401,242" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="491.5,180">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64"
+              Start="0,0"
+              End="0,56.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,56.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="490.5,91">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47"
+              Start="0,0"
+              End="0,39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 2]"
+          TopLeft="494.75,286">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,62"
+              Start="0,0"
+              End="0,54.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,54.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 3]"
+          TopLeft="893.75,94">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64"
+              Start="0,0"
+              End="0,56.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,56.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 4]"
+          TopLeft="914.75,314">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,63"
+              Start="0,0"
+              End="0,55.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,55.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 5]"
+          TopLeft="892,200">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="22,72"
+              Start="0,0"
+              End="22,64.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,32"
+                    Point2="0,36"
+                    Point3="4,36" />
+                  <mssgle:LineSegment
+                    End="18,36" />
+                  <mssgle:CubicBezierSegment
+                    Point1="18,36"
+                    Point2="22,36"
+                    Point3="22,40" />
+                  <mssgle:LineSegment
+                    End="22,64.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Painel - compartilhamento gestores">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="274,42"
+          Id="Package\Painel - compartilhamento gestores\compartilhamento_gestores - PostgreSQL"
+          TopLeft="427,108" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores"
+          TopLeft="437,233" />
+        <EdgeLayout
+          Id="Package\Painel - compartilhamento gestores.Paths[ODBC Source Output]"
+          TopLeft="564,150">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.5,83"
+              Start="0,0"
+              End="18.5,75.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,37.5"
+                    Point2="0,41.5"
+                    Point3="4,41.5" />
+                  <mssgle:LineSegment
+                    End="14.5,41.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.5,41.5"
+                    Point2="18.5,41.5"
+                    Point3="18.5,45.5" />
+                  <mssgle:LineSegment
+                    End="18.5,75.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Painel - compartilhamento gestores\Tmp_PainelVaga_CompartilhamentoGestores">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
