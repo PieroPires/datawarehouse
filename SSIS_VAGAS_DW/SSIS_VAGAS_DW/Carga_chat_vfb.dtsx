@@ -1,0 +1,1575 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/7/2020 10:33:31 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="2WNP172"
+  DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DelayValidation="True"
+  DTS:DTSID="{09B06953-7BD3-4A79-A41F-E49FA0994FB8}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Carga_chat_vfb"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="2"
+  DTS:VersionBuild="179"
+  DTS:VersionGUID="{8D0DBD0D-8725-4C1D-B06D-09E2C5590128}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Chat_vagas_postgres]"
+      DTS:CreationName="ODBC"
+      DTS:DTSID="{524BF1AA-C4AA-4DE2-9ADB-55633B4CC8DF}"
+      DTS:ObjectName="Chat_vagas_postgres">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Dsn=Chat_vagas_postgres;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DDC7EA22-22C3-413B-934A-CE63CEC83922}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Data_UltLeituraMsg">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3FCF8E1A-7DCB-4F9A-B346-E42F0634C206}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Id_UltMsg">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6A11A053-D170-4422-A769-C2B94236D58F}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;'&quot; +(DT_WSTR, 50)&quot;2020-08-17 00:00:00&quot; + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Variável">
+      <DTS:VariableValue
+        DTS:DataType="8">'2020-08-17 00:00:00'</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Tarefa Fluxo de Dados"
+      DTS:DTSID="{C79DD6C9-F8B6-474E-A0CF-6631FD84214C}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[Chat].[SqlCommand]">"
+SELECT	messages.id 				AS id_mensagem,	
+        messages.direct_message_id 	AS id_chat,
+        messages.inserted_at at time zone 'utc' at time zone 'America/Sao_Paulo' 		AS data_envio_mensagem,
+        messages.read_at at time zone 'utc' at time zone 'America/Sao_Paulo'			AS data_leitura_mensagem,
+       	sender.vagas_id				AS id_origem_mensagem,
+        CASE
+        	WHEN sender.role = 'applicant'
+            	THEN 'Candidato'
+            WHEN sender.role = 'applicant_in_company'
+                THEN 'Candidato em navegação exclusiva'
+            WHEN sender.role = 'employee'
+         		THEN 'Empresa'
+			WHEN sender.role = 'manager'
+				THEN 'Gestor'
+         END AS origem_mensagem,
+        target.vagas_id	AS id_destino_mensagem,
+        CASE
+        	WHEN target.role = 'applicant'
+            	THEN 'Candidato'
+            WHEN target.role = 'applicant_in_company'
+                THEN 'Candidato em navegação exclusiva'
+            WHEN target.role = 'employee'
+         		THEN 'Empresa'
+			WHEN target.role = 'manager'
+				THEN 'Gestor'
+         END AS destino_mensagem,
+        direct_messages.company_id	AS codcli_chat,
+        NULL AS resposta_candidato_chat,
+		 CASE
+        	WHEN sender.role = 'employee'
+            	THEN sender.vagas_id
+            WHEN target.role = 'employee'
+            	THEN target.vagas_id
+            ELSE NULL
+          END AS codfunc_chat,
+         CASE
+         	WHEN sender.role IN ('applicant', 'applicant_in_company')
+            	THEN sender.vagas_id
+            WHEN target.role IN ('applicant', 'applicant_in_company')
+            	THEN target.vagas_id
+            ELSE NULL
+          END AS codcand_chat,
+		  messages.type AS Tipo_mensagem
+FROM	messages 	INNER JOIN direct_messages
+					ON messages.direct_message_id = direct_messages.id	
+                    INNER JOIN users as sender
+                    ON messages.origin_id = sender.id
+                    INNER JOIN users as target
+                    ON messages.target_id = target.id
+WHERE	
+	(messages.type &lt;&gt; 'system' or messages.type is null)
+	and (messages.id &gt;" +  @[User::Id_UltMsg]  +
+	"OR messages.read_at &gt;=" + "'"  + (DT_WSTR, 50)@[User::Data_UltLeituraMsg]  + "'"+")"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat"
+              componentClassID="Attunity.SSISODBCSrc"
+              contactInfo="ODBC Source;Connector for Open Database Connectivity (ODBC) by Attunity; Attunity Ltd.; All Rights Reserved; http://www.attunity.com;7"
+              description="ODBC Source"
+              name="Chat"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand">
+SELECT	messages.id 				AS id_mensagem,	
+        messages.direct_message_id 	AS id_chat,
+        messages.inserted_at at time zone 'utc' at time zone 'America/Sao_Paulo' 		AS data_envio_mensagem,
+        messages.read_at at time zone 'utc' at time zone 'America/Sao_Paulo'			AS data_leitura_mensagem,
+       	sender.vagas_id				AS id_origem_mensagem,
+        CASE
+        	WHEN sender.role = 'applicant'
+            	THEN 'Candidato'
+            WHEN sender.role = 'applicant_in_company'
+                THEN 'Candidato em navegação exclusiva'
+            WHEN sender.role = 'employee'
+         		THEN 'Empresa'
+			WHEN sender.role = 'manager'
+				THEN 'Gestor'
+         END AS origem_mensagem,
+        target.vagas_id	AS id_destino_mensagem,
+        CASE
+        	WHEN target.role = 'applicant'
+            	THEN 'Candidato'
+            WHEN target.role = 'applicant_in_company'
+                THEN 'Candidato em navegação exclusiva'
+            WHEN target.role = 'employee'
+         		THEN 'Empresa'
+			WHEN target.role = 'manager'
+				THEN 'Gestor'
+         END AS destino_mensagem,
+        direct_messages.company_id	AS codcli_chat,
+        NULL AS resposta_candidato_chat,
+		 CASE
+        	WHEN sender.role = 'employee'
+            	THEN sender.vagas_id
+            WHEN target.role = 'employee'
+            	THEN target.vagas_id
+            ELSE NULL
+          END AS codfunc_chat,
+         CASE
+         	WHEN sender.role IN ('applicant', 'applicant_in_company')
+            	THEN sender.vagas_id
+            WHEN target.role IN ('applicant', 'applicant_in_company')
+            	THEN target.vagas_id
+            ELSE NULL
+          END AS codcand_chat,
+		  messages.type AS Tipo_mensagem
+FROM	messages 	INNER JOIN direct_messages
+					ON messages.direct_message_id = direct_messages.id	
+                    INNER JOIN users as sender
+                    ON messages.origin_id = sender.id
+                    INNER JOIN users as target
+                    ON messages.target_id = target.id
+WHERE	
+	(messages.type &lt;&gt; 'system' or messages.type is null)
+	and (messages.id &gt;OR messages.read_at &gt;='')</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines how the component exposes CHAR columns. If False, CHAR columns are exposed as (multi-)byte strings (DT_STR), if True, CHAR columns are exposed as wide strings (DT_WSTR)"
+                  expressionType="Notify"
+                  name="ExposeCharColumnsAsUnicode">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds to wait for an SQL statement to execute before returning to the application."
+                  expressionType="Notify"
+                  name="StatementTimeout">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The method used for fetching data."
+                  expressionType="Notify"
+                  name="FetchMethod"
+                  typeConverter="FetchMethod">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="The ODBC C data type for binding numeric data."
+                  expressionType="Notify"
+                  name="BindNumericAs"
+                  typeConverter="BindNumericAs">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines how the component would bind columns of (multi)-byte string types (i.e., SQL_CHAR, SQL_VARCHAR, SQL_LONGVARCHAR). The options are: Unicode (SQL_C_WCHAR) and ANSI (SQL_C_CHAR)."
+                  expressionType="Notify"
+                  name="BindCharColumnsAs"
+                  typeConverter="BindCharColumnsAs">0</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Connections[ODBCConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Chat_vagas_postgres]"
+                  connectionManagerRefId="Package.ConnectionManagers[Chat_vagas_postgres]"
+                  description="The ODBC runtime connection"
+                  name="ODBCConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="ODBC Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_mensagem]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_mensagem]"
+                      name="id_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_chat]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_chat]"
+                      name="id_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_envio_mensagem]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[data_envio_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_envio_mensagem]"
+                      name="data_envio_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_leitura_mensagem]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[data_leitura_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_leitura_mensagem]"
+                      name="data_leitura_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_origem_mensagem]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_origem_mensagem]"
+                      name="id_origem_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[origem_mensagem]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[origem_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[origem_mensagem]"
+                      name="origem_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_destino_mensagem]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_destino_mensagem]"
+                      name="id_destino_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[destino_mensagem]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[destino_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[destino_mensagem]"
+                      name="destino_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcli_chat]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codcli_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcli_chat]"
+                      name="codcli_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[resposta_candidato_chat]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[resposta_candidato_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[resposta_candidato_chat]"
+                      name="resposta_candidato_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codfunc_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codfunc_chat]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codfunc_chat]"
+                      name="codfunc_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcand_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codcand_chat]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcand_chat]"
+                      name="codcand_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[tipo_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[tipo_mensagem]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[tipo_mensagem]"
+                      name="tipo_mensagem" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_mensagem]"
+                      dataType="i8"
+                      name="id_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_chat]"
+                      dataType="i8"
+                      name="id_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[data_envio_mensagem]"
+                      dataType="dbTimeStamp"
+                      name="data_envio_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[data_leitura_mensagem]"
+                      dataType="dbTimeStamp"
+                      name="data_leitura_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="id_origem_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[origem_mensagem]"
+                      codePage="1252"
+                      dataType="text"
+                      name="origem_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="id_destino_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[destino_mensagem]"
+                      codePage="1252"
+                      dataType="text"
+                      name="destino_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codcli_chat]"
+                      dataType="i4"
+                      name="codcli_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[resposta_candidato_chat]"
+                      codePage="1252"
+                      dataType="text"
+                      name="resposta_candidato_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codfunc_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="codfunc_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codcand_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="codcand_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[tipo_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="255"
+                      name="tipo_mensagem" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output]"
+                  isErrorOut="true"
+                  name="ODBC Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_mensagem]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_mensagem]"
+                      name="id_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_chat]"
+                      dataType="i8"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_chat]"
+                      name="id_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[data_envio_mensagem]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[data_envio_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[data_envio_mensagem]"
+                      name="data_envio_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[data_leitura_mensagem]"
+                      dataType="dbTimeStamp"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[data_leitura_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[data_leitura_mensagem]"
+                      name="data_leitura_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_origem_mensagem]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_origem_mensagem]"
+                      name="id_origem_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[origem_mensagem]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[origem_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[origem_mensagem]"
+                      name="origem_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[id_destino_mensagem]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[id_destino_mensagem]"
+                      name="id_destino_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[destino_mensagem]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[destino_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[destino_mensagem]"
+                      name="destino_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[codcli_chat]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codcli_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[codcli_chat]"
+                      name="codcli_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[resposta_candidato_chat]"
+                      codePage="1252"
+                      dataType="text"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[resposta_candidato_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[resposta_candidato_chat]"
+                      name="resposta_candidato_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[codfunc_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codfunc_chat]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[codfunc_chat]"
+                      name="codfunc_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[codcand_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[codcand_chat]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[codcand_chat]"
+                      name="codcand_chat" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[tipo_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].ExternalColumns[tipo_mensagem]"
+                      length="255"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[tipo_mensagem]"
+                      name="tipo_mensagem" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+              description="Destino OLE DB"
+              name="Chat_envio_mensagem"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowset">[VAGAS_DW].[tmp_Chat_envio_mensagem]</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="O comando SQL a ser executado."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica o modo usado para acessar o banco de dados."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadKeepNulls">true</property>
+                <property
+                  dataType="System.String"
+                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Connections[OleDbConnection]"
+                  connectionManagerID="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[SRV-SQLSERVER-DW_STAGE]"
+                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB]"
+                  errorOrTruncationOperation="Inserir"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Entrada de Destino OLE DB">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_id_mensagem]"
+                      cachedDataType="i4"
+                      cachedName="Conv_id_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_id_chat]"
+                      cachedDataType="i4"
+                      cachedName="Conv_id_chat"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_data_envio_mensagem]"
+                      cachedDataType="date"
+                      cachedName="Conv_data_envio_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_envio_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_data_envio_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_data_leitura_mensagem]"
+                      cachedDataType="date"
+                      cachedName="Conv_data_leitura_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_leitura_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_data_leitura_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_id_origem_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="300"
+                      cachedName="Conv_id_origem_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_origem_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_origem_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_origem_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Conv_origem_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[origem_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_origem_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_id_destino_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="300"
+                      cachedName="Conv_id_destino_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_destino_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_destino_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_destino_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Conv_destino_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[destino_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_destino_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_codcli_chat]"
+                      cachedDataType="i4"
+                      cachedName="Conv_codcli_chat"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[codcli_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codcli_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_tipo_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="Conv_tipo_mensagem"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[tipo_mensagem]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_tipo_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_codfunc_chat]"
+                      cachedDataType="i4"
+                      cachedName="Conv_codfunc_chat"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[codfunc_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codfunc_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].Columns[Conv_codcand_chat]"
+                      cachedDataType="i4"
+                      cachedName="Conv_codcand_chat"
+                      externalMetadataColumnId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[codcand_chat]"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codcand_chat]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_mensagem]"
+                      dataType="i4"
+                      name="id_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_chat]"
+                      dataType="i4"
+                      name="id_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_envio_mensagem]"
+                      dataType="dbTimeStamp"
+                      name="data_envio_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[data_leitura_mensagem]"
+                      dataType="dbTimeStamp"
+                      name="data_leitura_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="id_origem_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="origem_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[id_destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="300"
+                      name="id_destino_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="destino_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[codcli_chat]"
+                      dataType="i4"
+                      name="codcli_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[tipo_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="tipo_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[origem_destino]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="origem_destino" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[mensagem_lida]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="mensagem_lida" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[resposta_candidato_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="resposta_candidato_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[codfunc_chat]"
+                      dataType="i4"
+                      name="codfunc_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[codcand_chat]"
+                      dataType="i4"
+                      name="codcand_chat" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[ambiente_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ambiente_mensagem" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[chat_lido]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="chat_lido" />
+                    <externalMetadataColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB].ExternalColumns[resposta_usuario_chat]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="resposta_usuario_chat" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Outputs[Saída de Erro de Destino OLE DB]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Destino OLE DB"
+                  synchronousInputId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Conversão de Dados;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;0"
+              description="Conversão de Dados"
+              name="Conversão de Dados"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados]"
+                  name="Entrada de Conversão de Dados">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[id_mensagem]"
+                      cachedDataType="i8"
+                      cachedName="id_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[id_chat]"
+                      cachedDataType="i8"
+                      cachedName="id_chat"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[data_envio_mensagem]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="data_envio_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_envio_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[data_leitura_mensagem]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="data_leitura_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_leitura_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[id_origem_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="id_origem_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_origem_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[origem_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="origem_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[origem_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[id_destino_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="id_destino_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_destino_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[destino_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="destino_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[destino_mensagem]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[codcli_chat]"
+                      cachedDataType="i4"
+                      cachedName="codcli_chat"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcli_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[codfunc_chat]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="codfunc_chat"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codfunc_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[codcand_chat]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="codcand_chat"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcand_chat]" />
+                    <inputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados].Columns[tipo_mensagem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="tipo_mensagem"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[tipo_mensagem]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados]"
+                  exclusionGroup="1"
+                  name="Saída de Conversão de Dados"
+                  synchronousInputId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_origem_mensagem]"
+                      name="Conv_origem_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[origem_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_destino_mensagem]"
+                      name="Conv_destino_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[destino_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_tipo_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_tipo_mensagem]"
+                      name="Conv_tipo_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[tipo_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_data_envio_mensagem]"
+                      dataType="date"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_data_envio_mensagem]"
+                      name="Conv_data_envio_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_envio_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_data_leitura_mensagem]"
+                      dataType="date"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_data_leitura_mensagem]"
+                      name="Conv_data_leitura_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[data_leitura_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_mensagem]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_mensagem]"
+                      name="Conv_id_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_chat]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_chat]"
+                      name="Conv_id_chat"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_chat]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_origem_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="300"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_origem_mensagem]"
+                      name="Conv_id_origem_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_origem_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_destino_mensagem]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="300"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_id_destino_mensagem]"
+                      name="Conv_id_destino_mensagem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[id_destino_mensagem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codcli_chat]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codcli_chat]"
+                      name="Conv_codcli_chat"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcli_chat]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codfunc_chat]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codfunc_chat]"
+                      name="Conv_codfunc_chat"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codfunc_chat]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codcand_chat]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados].Columns[Conv_codcand_chat]"
+                      name="Conv_codcand_chat"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output].Columns[codcand_chat]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Saída de Erro de Conversão de Dados"
+                  synchronousInputId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Erro de Conversão de Dados].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server).Paths[ODBC Source Output]"
+              endId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Inputs[Entrada de Conversão de Dados]"
+              name="ODBC Source Output"
+              startId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat.Outputs[ODBC Source Output]" />
+            <path
+              refId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server).Paths[Saída de Conversão de Dados]"
+              endId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem.Inputs[Entrada de Destino OLE DB]"
+              name="Saída de Conversão de Dados"
+              startId="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados.Outputs[Saída de Conversão de Dados]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data da última leitura (mensagem)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{91C007BC-F288-4EA9-A295-5E7A83B1FB06}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data da última leitura (mensagem)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="SELECT&#x9;CONVERT(VARCHAR, ISNULL(MAX(Data_leitura_mensagem), '1900-01-01'), 120) AS Data_UltLeituraMsg &#xA;FROM&#x9;[VAGAS_DW].[VAGAS_DW].[Chat_envio_mensagem] ;"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="Data_UltLeituraMsg"
+            SQLTask:DtsVariableName="User::Data_UltLeituraMsg" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Id da última mensagem"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{A3B8EC77-D14E-424F-BDDA-C1E616869F2B}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Id da última mensagem"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="SELECT&#x9;ISNULL(MAX(Id_mensagem),0) AS Id_UltMsg &#xA;FROM&#x9;[vagas_dw].[VAGAS_DW].[Chat_envio_mensagem] ;"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="Id_UltMsg"
+            SQLTask:DtsVariableName="User::Id_UltMsg" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Limpar a tabela Chat_envio_mensagem"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{C13D03F8-1BB9-41D5-8A12-2A751C9B41A5}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Limpar a tabela Chat_envio_mensagem"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{23C0B51A-8225-45C7-82A2-7A90B71A1C31}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE STAGE.VAGAS_DW.tmp_Chat_envio_mensagem ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\OLAP_Carga_Chat_envio_mensagem"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{A78B6EE6-7E30-48A5-A055-F92FFB5C18EC}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="OLAP_Carga_Chat_envio_mensagem"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLAP_Carga_Chat_envio_mensagem] ;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Processar CUBO"
+      DTS:CreationName="Microsoft.DTSProcessingTask"
+      DTS:Description="Tarefa Processamento do Analysis Services"
+      DTS:DTSID="{7D8C31E3-8279-47F7-BE0D-A3CEE4EA9980}"
+      DTS:ExecutableType="Microsoft.DTSProcessingTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Processar CUBO"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ASProcessingData
+          ConnectionName="SRV-SQLSERVER-DW_MSOLAP"
+          ProcessingCommands="{&#xA;  &quot;sequence&quot;: {&#xA;    &quot;operations&quot;: [&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Chat_envio_mensagem - Data_envio&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      },&#xA;      {&#xA;        &quot;refresh&quot;: {&#xA;          &quot;type&quot;: &quot;full&quot;,&#xA;          &quot;objects&quot;: [&#xA;            {&#xA;              &quot;database&quot;: &quot;VAGAS_DW&quot;,&#xA;              &quot;table&quot;: &quot;Chat_envio_mensagem&quot;&#xA;            }&#xA;          ]&#xA;        }&#xA;      }&#xA;    ]&#xA;  }&#xA;}" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{A837C734-B625-4388-BB7C-3C6E094DA3C2}"
+      DTS:From="Package\Data da última leitura (mensagem)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{F4D3F02D-4756-4FC2-B133-E8ADA7C64704}"
+      DTS:From="Package\Id da última mensagem"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\Data da última leitura (mensagem)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{01B55E62-DFF0-4F00-92C7-D22ED5812126}"
+      DTS:From="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 2"
+      DTS:To="Package\OLAP_Carga_Chat_envio_mensagem" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{25845347-DD3A-495F-A39E-5C25E2F6FE9F}"
+      DTS:From="Package\Limpar a tabela Chat_envio_mensagem"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 3"
+      DTS:To="Package\Id da última mensagem" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{DD870DA9-6EE7-46B0-B2B6-05F5F234DE24}"
+      DTS:From="Package\OLAP_Carga_Chat_envio_mensagem"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 4"
+      DTS:To="Package\Processar CUBO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="358,42"
+          Id="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)"
+          TopLeft="161,322" />
+        <NodeLayout
+          Size="244,42"
+          Id="Package\Data da última leitura (mensagem)"
+          TopLeft="225.5,243.5" />
+        <NodeLayout
+          Size="191,42"
+          Id="Package\Id da última mensagem"
+          TopLeft="257.5,155.5" />
+        <NodeLayout
+          Size="265,42"
+          Id="Package\Limpar a tabela Chat_envio_mensagem"
+          TopLeft="217.5,67.5" />
+        <NodeLayout
+          Size="253,42"
+          Id="Package\OLAP_Carga_Chat_envio_mensagem"
+          TopLeft="218.5,401.5" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Processar CUBO"
+          TopLeft="265.5,479.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="343.75,285.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.5"
+              Start="0,0"
+              End="0,29">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="350.25,197.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 2]"
+          TopLeft="342.5,364">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37.5"
+              Start="0,0"
+              End="0,30">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 3]"
+          TopLeft="351.5,109.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 4]"
+          TopLeft="344,443.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36"
+              Start="0,0"
+              End="0,28.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="176,42"
+          Id="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Conversão de Dados"
+          TopLeft="351,150" />
+        <NodeLayout
+          Size="189,42"
+          Id="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem"
+          TopLeft="344,260" />
+        <NodeLayout
+          Size="101,42"
+          Id="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat"
+          TopLeft="387,50" />
+        <EdgeLayout
+          Id="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server).Paths[Saída de Conversão de Dados]"
+          TopLeft="438.75,192">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,68"
+              Start="0,0"
+              End="0,60.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,60.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server).Paths[ODBC Source Output]"
+          TopLeft="438.25,92">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,58"
+              Start="0,0"
+              End="0,50.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,50.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Chat (PostgreSQL) -&gt; Chat_envio_mensagem (SQL Server)\Chat_envio_mensagem">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
