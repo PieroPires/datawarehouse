@@ -13,8 +13,8 @@
   DTS:ObjectName="Clientes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="179"
-  DTS:VersionGUID="{A7586ED7-4792-4D28-8BB1-5C37B6130DDF}">
+  DTS:VersionBuild="180"
+  DTS:VersionGUID="{39CD6AF2-AD9F-424E-8AB2-120E1533C10D}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -34,7 +34,7 @@
           DTS:RowDelimiter=""
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="1252"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_08_06\clientes.csv">
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_08_20\clientes.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -280,7 +280,7 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:FileUsageType="3"
-          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_08_06" />
+          DTS:ConnectionString="C:\Users\fiama.cristi\Documents\integracao_sensedata\ftp\2020_08_20" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -365,457 +365,6 @@
         <SQLTask:SqlTaskData
           SQLTask:Connection="{01D8D567-93B2-4E49-A51A-28782164D7C4}"
           SQLTask:SqlStatementSource="-- Campos Rescisão Opp:&#xA;DROP TABLE IF EXISTS STAGE.VAGAS_DW.TMP_Tab_Opp_Rescisao_Motivos;&#xA;&#xA;SELECT&#x9;A.CONTAID ,&#xA;&#x9;&#x9;A.OportunidadeID ,&#xA;&#x9;&#x9;ISNULL(B.Concorrente_Outro, '') AS Concorrente_outro ,&#xA;&#x9;&#x9;ISNULL(B.Outra_empresa_cliente, '') AS Outra_empresa_cliente&#xA;INTO&#x9;STAGE.VAGAS_DW.TMP_Tab_Opp_Rescisao_Motivos&#xA;FROM&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A&#x9;&#x9;INNER JOIN OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A1.id_c AS OportunidadeID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.concorrente_outro_c AS Concorrente_Outro ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.outra_empresa_cliente_c AS Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;sugarcrm.opportunities_cstm AS A1') AS B&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A.OportunidadeID = B.OportunidadeID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;WHERE&#x9;EXISTS ( SELECT&#x9;1&#xA;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CONTAID = A1.CONTA_ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.EX_CLIENTE = 0)&#xA;&#x9;&#x9;AND A.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;AND A.Fase = 'fechado_e_ganho' &#xA;&#x9;&#x9;AND A.RECORRENTE = 1 ;&#xA;&#xA;CREATE NONCLUSTERED INDEX IDX_TMP_Tab_Opp_Rescisao_Motivos_OportunidadeID ON STAGE.VAGAS_DW.TMP_Tab_Opp_Rescisao_Motivos (OportunidadeID) ;&#xA;&#xA;-- Clientes implantados:&#xA;IF OBJECT_ID ('STAGE.VAGAS_DW.TMP_CLIENTES_IMPLANTADOS') IS NOT NULL&#xA;DROP TABLE [STAGE].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] ;&#xA;&#xA;SELECT&#x9;C.Id_ClienteCRM,&#xA;&#x9;&#x9;C.Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;C.Chave_Cliente_CRM_ContaID,&#xA;&#x9;&#x9;A.CLIENTE,&#xA;&#x9;&#x9;MAX(A.DATA_CONCLUSAO) AS DATA_IMPLANTACAO&#xA;INTO&#x9;[STAGE].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS]&#xA;FROM&#x9;[VAGAS_DW].[DEMANDAS_EQUIPES] AS A&#x9;&#x9;INNER JOIN OPENQUERY(MYSQLPROVIDER, &#xA;&#x9;'SELECT DISTINCT A.ID AS ID_DEMANDA ,&#xA;&#x9;&#x9;&#x9;A.issuenum AS NUMERO_DEMANDA ,&#xA;&#x9;&#x9;&#x9;CONVERT(A.SUMMARY USING Latin1) AS NOME_DEMANDA,&#xA;&#x9;&#x9;&#x9;CASE&#xA;&#x9;&#x9;&#x9;&#x9;WHEN  PP.customvalue IS NULL AND QQ.customvalue IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN LTRIM(RTRIM(QQ.customvalue))&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PP.customvalue IS NOT NULL AND QQ.customvalue IS NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN LTRIM(RTRIM(PP.customvalue))&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PP.customvalue IS NOT NULL AND QQ.customvalue IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN CONCAT(LTRIM(RTRIM(PP.customvalue)), '' - '', LTRIM(RTRIM(QQ.customvalue)))&#xA;&#x9;&#x9;&#x9;END AS TIPO_CLIENTE_IMPL&#xA;&#x9;FROM&#x9;jiradb.jiraissue AS A&#x9;&#x9;INNER JOIN jiradb.project AS B ON A.PROJECT = B.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN jiradb.issuetype AS C ON A.issuetype = C.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN jiradb.issuestatus D ON A.issuestatus = D.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.issuelink E ON E.DESTINATION = A.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.resolution F ON F.ID = A.RESOLUTION&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.nodeassociation G ON G.SOURCE_NODE_ID = A.ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.projectversion H ON H.ID = G.SINK_NODE_ID AND H.PROJECT = 14701 #Kanban equipe Implantação&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.jiraissue I ON I.ID = E.SOURCE&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldvalue AS P ON A.id = P.ISSUE AND P.CUSTOMFIELD = 15200 AND P.PARENTKEY IS NULL &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldoption AS PP ON P.STRINGVALUE = PP.id&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldvalue AS Q ON A.id = Q.ISSUE AND Q.CUSTOMFIELD = 15200 AND Q.PARENTKEY IS NOT NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN jiradb.customfieldoption AS QQ ON Q.STRINGVALUE = QQ.id&#xA;                                    &#xA;&#x9;WHERE&#x9;A.project = 14701&#xA;&#x9;&#x9;&#x9;AND NOT (PP.customvalue IS NULL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; AND QQ.customvalue IS NULL)') AS B&#x9;ON A.ID_DEMANDA = B.ID_DEMANDA&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.CONTA_ID AS Id_ClienteCRM,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  A1.CLIENTE_VAGAS AS Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  A1.CLIENTE_CRM AS Chave_Cliente_CRM_ContaID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CLIENTES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CLIENTE = ISNULL(A1.CLIENTE_VAGAS, A1.CLIENTE_CRM) COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_PRM_VAGA_PUBLICADA DESC) AS C&#xA;WHERE&#x9;A.NOME_PROJETO = 'Implantação'&#xA;&#x9;&#x9;AND A.TIPO_DEMANDA = 'Demanda'&#xA;&#x9;&#x9;AND A.STATUS_DEMANDA = 'Concluída'&#xA;&#x9;&#x9;AND&#x9;LEFT(B.TIPO_CLIENTE_IMPL, 12) = 'Novo Cliente'&#xA;GROUP BY&#xA;&#x9;&#x9;C.Id_ClienteCRM,&#xA;&#x9;&#x9;C.Chave_Cliente_VAGAS_ContaID,&#xA;&#x9;&#x9;C.Chave_Cliente_CRM_ContaID,&#xA;&#x9;&#x9;A.CLIENTE ;&#xA;&#xA;&#xA;-- Query TMP_CLIENTES_SENSEDATA:&#xA;truncate table [stage].[vagas_dw].[tmp_clientes_sensedata];&#xA;&#xA;insert into [STAGE].[VAGAS_DW].[TMP_CLIENTES_SENSEDATA]&#xA;SELECT&#x9;&#xA;&#x9;&#x9;(SELECT CLIENTE_CRM FROM VAGAS_DW.CLIENTES WHERE CONTA_ID = G.CONTA_ID_PAI) AS GrupoEconomico ,&#xA;&#x9;&#x9;A.CONTA_ID AS Id_ClienteCRM ,&#xA;&#x9;&#x9;A.CLIENTE_CRM AS ClienteCRM ,&#xA;&#x9;&#x9;B.DescricaoCliente ,&#xA;&#x9;&#x9;C.CNPJ ,&#xA;&#x9;&#x9;CONVERT(DATE, D.DataFechamento) AS Cliente_desde ,&#xA;&#x9;&#x9;G.MUNICIPIO as Municipio,&#xA;&#x9;&#x9;CASE &#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Acre' OR G.UF = 'AC' THEN 'AC'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Alagoas' OR G.UF = 'AL' THEN 'AL'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Amapá' OR G.UF = 'AP' THEN 'AP'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Amazonas' OR G.UF = 'AM' THEN 'AM'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Bahia' OR G.UF = 'BA' THEN 'BA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Ceará' OR G.UF = 'CE' THEN 'CE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Distrito Federal' OR G.UF = 'DF' THEN 'DF'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Espírito Santo' OR G.UF = 'ES' THEN 'ES'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Goiás' OR G.UF = 'GO' THEN 'GO'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Maranhão' OR G.UF = 'MA' THEN 'MA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Mato Grosso' OR G.UF = 'MT' THEN 'MT'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Mato Grosso do Sul' OR G.UF = 'MS' THEN 'MS'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Minas Gerais' OR G.UF = 'MG' THEN 'MG'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Pará' OR G.UF = 'PA' THEN 'PA'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Paraíba' OR G.UF = 'PB' THEN 'PB'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Paraná' OR G.UF = 'PR' THEN 'PR'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Pernambuco' OR G.UF = 'PE' THEN 'PE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Piauí' OR G.UF = 'PI' THEN 'PI'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio de Janeiro' OR G.UF = 'RJ' THEN 'RJ'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio Grande do Norte' OR G.UF = 'RN' THEN 'RN'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rio Grande do Sul' OR G.UF = 'RS' THEN 'RS'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Rondônia' OR G.UF = 'RO' THEN 'RO'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Roraima' OR G.UF = 'RR' THEN 'RR'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Santa Catarina' OR G.UF = 'SC' THEN 'SC'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'São Paulo' OR G.UF = 'SP' THEN 'SP'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Sergipe' OR G.UF = 'SE' THEN 'SE'&#xA;&#x9;&#x9;&#x9;WHEN G.UF = 'Tocantins' OR G.UF = 'TO' THEN 'TO'&#xA;&#x9;&#x9;&#x9;ELSE NULL&#xA;&#x9;&#x9;END AS Estado,&#xA;&#x9;&#x9;A.SEGMENTO_SC AS Porte ,&#xA;&#x9;&#x9;NULL AS Fase ,&#xA;&#x9;&#x9;A.CNAE_SECAO AS Segmento ,&#xA;&#x9;&#x9;IIF(A.CONTA_ID = G.CONTA_ID_PAI, 'ATIVO', 'ATIVO - Conta Filha') AS [Status] ,&#xA;&#x9;&#x9;NULL AS CSM ,&#xA;&#x9;&#x9;IIF(CHARINDEX('.', GR) = 0, GR, UPPER(LEFT(GR, 1)) + LOWER(SUBSTRING(GR, 2, (LEN(SUBSTRING(GR, 1, CHARINDEX('.', GR)-1))-1))) + ' ' + UPPER(SUBSTRING(GR, (CHARINDEX('.', GR)+1), 1)) + LOWER(REVERSE(LEFT(SUBSTRING(REVERSE(GR), 1, CHARINDEX('.', REVERSE(GR))-1), LEN(SUBSTRING(REVERSE(GR), 1, CHARINDEX('.', REVERSE(GR))-1))-1)))) AS GR ,&#xA;&#x9;&#x9;IIF(CHARINDEX('.', D.Proprietario) = 0, D.Proprietario, UPPER(LEFT(D.Proprietario, 1)) + LOWER(SUBSTRING(D.Proprietario, 2, (LEN(SUBSTRING(D.Proprietario, 1, CHARINDEX('.', D.Proprietario)-1))-1))) + ' ' + UPPER(SUBSTRING(D.Proprietario, (CHARINDEX('.', D.Proprietario)+1), 1)) + LOWER(REVERSE(LEFT(SUBSTRING(REVERSE(D.Proprietario), 1, CHARINDEX('.', REVERSE(D.Proprietario))-1), LEN(SUBSTRING(REVERSE(D.Proprietario), 1, CHARINDEX('.', REVERSE(D.Proprietario))-1))-1)))) AS Proprietario_Opp ,&#xA;&#x9;&#x9;E.DataFimUso AS Data_FimUso ,&#xA;&#x9;&#x9;CONCAT_WS(' / ', F.MOTIVO_FECHAMENTO, F.MOTIVO_FECHAMENTO_DETALHE) AS Motivo_cancelamento,&#xA;&#x9;&#x9;CASE&#xA;&#x9;&#x9;&#x9;WHEN F.MOTIVO_FECHAMENTO = 'utiliza_outro_sistema'&#xA;&#x9;&#x9;&#x9;&#x9;THEN ISNULL(F.MOTIVO_CONCORRENTE, F.Concorrente_Outro)&#xA;&#x9;&#x9;&#x9;WHEN F.MOTIVO_FECHAMENTO = 'fusao_entre_empresas'&#xA;&#x9;&#x9;&#x9;&#x9;THEN F.Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;ELSE ''&#xA;&#x9;&#x9;END AS Concorrente_fusao ,&#xA;&#x9;&#x9;G.TIPO AS TIPO_CONTA ,&#xA;&#x9;&#x9;G.CATEGORIA AS CATEGORIA_CONTA,&#xA;&#x9;&#x9;IIF(A.CONTA_ID = G.CONTA_ID_PAI, 'Conta Pai', 'Conta Filha') AS HIERARQUIA_CONTA,&#xA;&#x9;&#x9;Subquery_Implantacao_Cliente.Data_implantacao&#xA;        ,CONVERT(DATE, GETDATE()) AS DATA_CARGA,&#xA;&#x9;&#x9;A.COD_CLI,&#xA;&#x9;&#x9;CASE &#xA;&#x9;&#x9;&#x9;WHEN G.TIPO = 'cliente_em_aviso_previo'&#xA;&#x9;&#x9;&#x9;&#x9;THEN ISNULL(DATEDIFF(DAY, H.Data_rescisao, CONVERT(DATE, GETDATE())),0)&#xA;&#x9;&#x9;&#x9; ELSE 0&#xA;&#x9;&#x9;END AS Dias_AposRescisao,&#xA;&#x9;&#x9;A.CLIENTE_VAGAS AS Id_vagas&#xA;FROM&#x9;[VAGAS_DW].[CLIENTES] AS A&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.RAZAO_SOCIAL AS DescricaoCliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[STAGE].[VAGAS_DW].[TMP_Clientes_DadosERP] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.IdCliente_CRM OR A.CONTA_ID = A1.IdCliente_CRM_Filho ) AS B&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.CNPJ&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[FATURAS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.COD_CLI_CRM&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DATA_REFERENCIA DESC ) AS C&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 *&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria IN ('cliente_potencial', 'cliente_cotacao')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento ) AS D&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LEFT OUTER JOIN OPENQUERY(MYSQLPROVIDER, 'SELECT&#x9;A2.id_c AS CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.data_fim_uso_c AS DataFimUso&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;oqc_offering_cstm AS A1&#x9;INNER JOIN accounts_cstm AS A2&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A1.id_c = A2.oqc_offering_id_c') AS E&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A.CONTA_ID = E.CONTA_ID COLLATE SQL_Latin1_General_CP1_CI_AI&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY ( SELECT&#x9;TOP 1 A1.OportunidadeID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.Oportunidade ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento AS DataUltRescisao ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_FECHAMENTO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_FECHAMENTO_DETALHE ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MOTIVO_CONCORRENTE ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A2.CONCORRENTE_OUTRO COLLATE SQL_Latin1_General_CP1_CI_AI AS CONCORRENTE_OUTRO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A2.Outra_empresa_cliente COLLATE SQL_Latin1_General_CP1_CI_AI AS Outra_empresa_cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  FROM&#x9;&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#x9;INNER JOIN STAGE.VAGAS_DW.TMP_Tab_Opp_Rescisao_Motivos AS A2 &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ON A1.OportunidadeID = A2.OportunidadeID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  WHERE&#x9;&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.RECORRENTE = 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento DESC ) AS F&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN ( SELECT A1.CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CONTA_ID AS CONTA_ID_PAI,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.TIPO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CATEGORIA ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MUNICIPIO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.UF&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CONTAS_CRM] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; UNION ALL&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT A1.CONTA_ID ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CONTA_ID_PAI,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.TIPO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.CATEGORIA ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.MUNICIPIO ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.UF&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[CONTAS_MEMBRO_CRM] AS A1 ) AS G ON A.CONTA_ID = G.CONTA_ID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.DATA_IMPLANTACAO AS Data_implantacao&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           FROM&#x9;[STAGE].[VAGAS_DW].[TMP_CLIENTES_IMPLANTADOS] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           WHERE&#x9;A.CONTA_ID = A1.Id_ClienteCRM&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;           A1.DATA_IMPLANTACAO DESC) AS Subquery_Implantacao_Cliente&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUTER APPLY (SELECT TOP 1 A1.DataFechamento AS Data_rescisao&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM&#x9;[VAGAS_DW].[OPORTUNIDADES] AS A1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE&#x9;A.CONTA_ID = A1.CONTAID&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.OportunidadeCategoria = 'rescisão'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND A1.Fase = 'fechado_e_ganho'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A1.DataFechamento DESC) AS H&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;WHERE&#x9;&#x9;A.EX_CLIENTE = 0&#xA;&#x9;&#x9;AND G.TIPO IN ('cliente_fit','cliente_em_aviso_previo','cliente_vagas_redes','cliente_bloqueado','cliente_bloqueado_inadimplencia','cliente_recrutador')&#xA;&#x9;&#x9;AND G.CATEGORIA IN ('cliente_fit','cliente_em_aviso_previo','cliente_vagas_redes','cliente_bloqueado','cliente_bloqueado_inadimplencia','cliente_recrutador')&#xA;&#x9;&#x9;AND A.CLIENTE_CRM NOT IN ('ficticia')" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
-      DTS:refId="Package\ERP -&gt; VAGAS_DW"
-      DTS:CreationName="Microsoft.Pipeline"
-      DTS:Description="Tarefa Fluxo de Dados"
-      DTS:DTSID="{DCFB2F3E-9EE9-4D9E-9BBB-0FE26C8D97AA}"
-      DTS:ExecutableType="Microsoft.Pipeline"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="ERP -&gt; VAGAS_DW"
-      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <pipeline
-          version="1">
-          <components>
-            <component
-              refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB"
-              componentClassID="Microsoft.OLEDBDestination"
-              contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
-              description="Destino OLE DB"
-              name="Destino OLE DB"
-              usesDispositions="true"
-              version="4">
-              <properties>
-                <property
-                  dataType="System.Int32"
-                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
-                  name="CommandTimeout">0</property>
-                <property
-                  dataType="System.String"
-                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
-                  name="OpenRowset">[VAGAS_DW].[TMP_Clientes_DadosERP]</property>
-                <property
-                  dataType="System.String"
-                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
-                  name="OpenRowsetVariable"></property>
-                <property
-                  dataType="System.String"
-                  description="O comando SQL a ser executado."
-                  name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
-                <property
-                  dataType="System.Int32"
-                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
-                  name="DefaultCodePage">1252</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
-                  name="AlwaysUseDefaultCodePage">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Especifica o modo usado para acessar o banco de dados."
-                  name="AccessMode"
-                  typeConverter="AccessMode">3</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
-                  name="FastLoadKeepIdentity">false</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
-                  name="FastLoadKeepNulls">false</property>
-                <property
-                  dataType="System.String"
-                  description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
-                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
-                <property
-                  dataType="System.Int32"
-                  description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
-                  name="FastLoadMaxInsertCommitSize">2147483647</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Connections[OleDbConnection]"
-                  connectionManagerID="{C9C5C2E3-4F23-4A32-8949-107BB2A1C923}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[STAGE]"
-                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
-                  name="OleDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB]"
-                  errorOrTruncationOperation="Inserir"
-                  errorRowDisposition="FailComponent"
-                  hasSideEffects="true"
-                  name="Entrada de Destino OLE DB">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[IdCliente_CRM]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="36"
-                      cachedName="IdCliente_CRM"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[IdCliente_CRM]"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[IdCliente_CRM]" />
-                    <inputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[IdCliente_CRM_Filho]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="36"
-                      cachedName="IdCliente_CRM_Filho"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[IdCliente_CRM_Filho]"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[IdCliente_CRM_Filho]" />
-                    <inputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[MUNICIPIO]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="60"
-                      cachedName="MUNICIPIO"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[Municipio]"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[MUNICIPIO]" />
-                    <inputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[ESTADO]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="ESTADO"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[Estado]"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[ESTADO]" />
-                    <inputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[RAZAO_SOCIAL]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="75"
-                      cachedName="RAZAO_SOCIAL"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[RAZAO_SOCIAL]"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[RAZAO_SOCIAL]" />
-                    <inputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].Columns[CNPJ]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="14"
-                      cachedName="CNPJ"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[CNPJ]"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[CNPJ]" />
-                  </inputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[IdCliente_CRM]"
-                      codePage="1252"
-                      dataType="str"
-                      length="100"
-                      name="IdCliente_CRM" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[Municipio]"
-                      codePage="1252"
-                      dataType="str"
-                      length="100"
-                      name="Municipio" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[Estado]"
-                      codePage="1252"
-                      dataType="str"
-                      length="2"
-                      name="Estado" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[CNPJ]"
-                      codePage="1252"
-                      dataType="str"
-                      length="100"
-                      name="CNPJ" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[RAZAO_SOCIAL]"
-                      codePage="1252"
-                      dataType="str"
-                      length="75"
-                      name="RAZAO_SOCIAL" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB].ExternalColumns[IdCliente_CRM_Filho]"
-                      codePage="1252"
-                      dataType="str"
-                      length="100"
-                      name="IdCliente_CRM_Filho" />
-                  </externalMetadataColumns>
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="Saída de Erro de Destino OLE DB"
-                  synchronousInputId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\ERP -&gt; VAGAS_DW\ERP"
-              componentClassID="Microsoft.OLEDBSource"
-              contactInfo="Origem OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation;  Todos os Direitos Reservados; http://www.microsoft.com/sql/support;7"
-              description="Origem OLE DB"
-              name="ERP"
-              usesDispositions="true"
-              version="7">
-              <properties>
-                <property
-                  dataType="System.Int32"
-                  description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
-                  name="CommandTimeout">0</property>
-                <property
-                  dataType="System.String"
-                  description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
-                  name="OpenRowset"></property>
-                <property
-                  dataType="System.String"
-                  description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
-                  name="OpenRowsetVariable"></property>
-                <property
-                  dataType="System.String"
-                  description="O comando SQL a ser executado."
-                  name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select
-	A1_X_CCRM AS IdCliente_CRM
-	,A1_X_CCRMF AS IdCliente_CRM_Filho
-	,A1_MUN AS MUNICIPIO
-	,CAST(A1_EST AS VARCHAR(2)) AS ESTADO
-	,A1_NOME AS RAZAO_SOCIAL
-	,A1_CGC AS CNPJ
-from SA1010</property>
-                <property
-                  dataType="System.String"
-                  description="A variável que contém o comando SQL a ser executado."
-                  name="SqlCommandVariable"></property>
-                <property
-                  dataType="System.Int32"
-                  description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
-                  name="DefaultCodePage">1252</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
-                  name="AlwaysUseDefaultCodePage">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Especifica o modo usado para acessar o banco de dados."
-                  name="AccessMode"
-                  typeConverter="AccessMode">2</property>
-                <property
-                  dataType="System.String"
-                  description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
-                  name="ParameterMapping"></property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\ERP -&gt; VAGAS_DW\ERP.Connections[OleDbConnection]"
-                  connectionManagerID="{386970EF-4552-491B-90FC-A07720C3C9BC}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[ERP]"
-                  description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
-                  name="OleDbConnection" />
-              </connections>
-              <outputs>
-                <output
-                  refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB]"
-                  name="Saída de Origem OLE DB">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[IdCliente_CRM]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversão"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[IdCliente_CRM]"
-                      length="36"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[IdCliente_CRM]"
-                      name="IdCliente_CRM"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[IdCliente_CRM_Filho]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversão"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[IdCliente_CRM_Filho]"
-                      length="36"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[IdCliente_CRM_Filho]"
-                      name="IdCliente_CRM_Filho"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[MUNICIPIO]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversão"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[MUNICIPIO]"
-                      length="60"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[MUNICIPIO]"
-                      name="MUNICIPIO"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[ESTADO]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversão"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[ESTADO]"
-                      length="20"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[ESTADO]"
-                      name="ESTADO"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[RAZAO_SOCIAL]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversão"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[RAZAO_SOCIAL]"
-                      length="75"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[RAZAO_SOCIAL]"
-                      name="RAZAO_SOCIAL"
-                      truncationRowDisposition="FailComponent" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[CNPJ]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversão"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[CNPJ]"
-                      length="14"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].Columns[CNPJ]"
-                      name="CNPJ"
-                      truncationRowDisposition="FailComponent" />
-                  </outputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[IdCliente_CRM]"
-                      codePage="1252"
-                      dataType="str"
-                      length="36"
-                      name="IdCliente_CRM" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[IdCliente_CRM_Filho]"
-                      codePage="1252"
-                      dataType="str"
-                      length="36"
-                      name="IdCliente_CRM_Filho" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[MUNICIPIO]"
-                      codePage="1252"
-                      dataType="str"
-                      length="60"
-                      name="MUNICIPIO" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[ESTADO]"
-                      codePage="1252"
-                      dataType="str"
-                      length="2"
-                      name="ESTADO" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[RAZAO_SOCIAL]"
-                      codePage="1252"
-                      dataType="str"
-                      length="75"
-                      name="RAZAO_SOCIAL" />
-                    <externalMetadataColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB].ExternalColumns[CNPJ]"
-                      codePage="1252"
-                      dataType="str"
-                      length="14"
-                      name="CNPJ" />
-                  </externalMetadataColumns>
-                </output>
-                <output
-                  refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB]"
-                  isErrorOut="true"
-                  name="Saída de Erro de Origem OLE DB">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[IdCliente_CRM]"
-                      codePage="1252"
-                      dataType="str"
-                      length="36"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[IdCliente_CRM]"
-                      name="IdCliente_CRM" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[IdCliente_CRM_Filho]"
-                      codePage="1252"
-                      dataType="str"
-                      length="36"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[IdCliente_CRM_Filho]"
-                      name="IdCliente_CRM_Filho" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[MUNICIPIO]"
-                      codePage="1252"
-                      dataType="str"
-                      length="60"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[MUNICIPIO]"
-                      name="MUNICIPIO" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ESTADO]"
-                      codePage="1252"
-                      dataType="str"
-                      length="2"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ESTADO]"
-                      name="ESTADO" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[RAZAO_SOCIAL]"
-                      codePage="1252"
-                      dataType="str"
-                      length="75"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[RAZAO_SOCIAL]"
-                      name="RAZAO_SOCIAL" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[CNPJ]"
-                      codePage="1252"
-                      dataType="str"
-                      length="14"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[CNPJ]"
-                      name="CNPJ" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-          </components>
-          <paths>
-            <path
-              refId="Package\ERP -&gt; VAGAS_DW.Paths[Saída de Origem OLE DB]"
-              endId="Package\ERP -&gt; VAGAS_DW\Destino OLE DB.Inputs[Entrada de Destino OLE DB]"
-              name="Saída de Origem OLE DB"
-              startId="Package\ERP -&gt; VAGAS_DW\ERP.Outputs[Saída de Origem OLE DB]" />
-          </paths>
-        </pipeline>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -2049,14 +1598,6 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
       DTS:ObjectName="Constraint 2"
       DTS:To="Package\Upload S3 Bucket" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
-      DTS:CreationName=""
-      DTS:DTSID="{8C6C099B-F3C6-4375-9B17-479D0F1863A8}"
-      DTS:From="Package\Limpeza da tabela TMP_Clientes_DadosERP"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 3"
-      DTS:To="Package\ERP -&gt; VAGAS_DW" />
-    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
       DTS:CreationName=""
       DTS:DTSID="{1C97220A-DCBE-4662-ACCB-C39E5DD9C8BE}"
@@ -2075,8 +1616,8 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Restrição]"
       DTS:CreationName=""
-      DTS:DTSID="{F1EAF4F0-9C4A-4F60-B05C-E2F1FC18E889}"
-      DTS:From="Package\ERP -&gt; VAGAS_DW"
+      DTS:DTSID="{6F5D5F68-F555-4B5E-9642-57E07D33D459}"
+      DTS:From="Package\Limpeza da tabela TMP_Clientes_DadosERP"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Restrição"
       DTS:To="Package\Carrega campos de contas inativas" />
@@ -2112,11 +1653,11 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
         <NodeLayout
           Size="293,42"
           Id="Package\Atualização da informação do campo STATUS"
-          TopLeft="412,294" />
+          TopLeft="413,225" />
         <NodeLayout
           Size="243,42"
           Id="Package\Carrega campos de contas inativas"
-          TopLeft="441,212" />
+          TopLeft="440,127" />
         <NodeLayout
           Size="176,42"
           Id="Package\Criar diretório do dia"
@@ -2124,11 +1665,7 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
         <NodeLayout
           Size="263,42"
           Id="Package\Criar tabelas temporárias - VAGAS_DW"
-          TopLeft="434.5,399.5" />
-        <NodeLayout
-          Size="171,42"
-          Id="Package\ERP -&gt; VAGAS_DW"
-          TopLeft="475.5,124.5" />
+          TopLeft="433.5,317.5" />
         <NodeLayout
           Size="247,42"
           Id="Package\Excluir arquivos com mais de 7 dias"
@@ -2136,11 +1673,11 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
         <NodeLayout
           Size="206,42"
           Id="Package\Excluir tabelas temporárias"
-          TopLeft="456,615.5" />
+          TopLeft="467,514.5" />
         <NodeLayout
           Size="141,42"
           Id="Package\Exportar CSV"
-          TopLeft="490.5,512.5" />
+          TopLeft="496.5,418.5" />
         <NodeLayout
           Size="284,42"
           Id="Package\Limpeza da tabela TMP_Clientes_DadosERP"
@@ -2148,21 +1685,21 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
         <NodeLayout
           Size="162,42"
           Id="Package\Upload S3 Bucket"
-          TopLeft="483,714.5" />
+          TopLeft="490,600.5" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="563.5,441.5">
+          TopLeft="566,359.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,71"
+              EndConnector="0,59"
               Start="0,0"
-              End="0,63.5">
+              End="0,51.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,63.5" />
+                    End="0,51.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2173,18 +1710,18 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="560,554.5">
+          TopLeft="568.5,460.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,61"
+              EndConnector="0,54"
               Start="0,0"
-              End="0,53.5">
+              End="0,46.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,53.5" />
+                    End="0,46.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2195,40 +1732,18 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="561.5,657.5">
+          TopLeft="570.5,556.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,57"
+              EndConnector="0,44"
               Start="0,0"
-              End="0,49.5">
+              End="0,36.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,49.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="560.5,63.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,61"
-              Start="0,0"
-              End="0,53.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.5" />
+                    End="0,36.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2282,19 +1797,19 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição]"
-          TopLeft="561.75,166.5">
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="562.25,267">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,45.5"
+              EndConnector="0,50.5"
               Start="0,0"
-              End="0,38">
+              End="0,43">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,38" />
+                    End="0,43" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2304,8 +1819,30 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição 1]"
-          TopLeft="562.25,336">
+          Id="Package.PrecedenceConstraints[Restrição 2]"
+          TopLeft="560.5,169">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,56"
+              Start="0,0"
+              End="0,48.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,48.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="560.75,63.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -2325,90 +1862,9 @@ WHERE	LEFT(STATUS_CONTA_ID, 7) = 'INATIVO' ;</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restrição 2]"
-          TopLeft="560.5,254">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40"
-              Start="0,0"
-              End="0,32.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,32.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>
-  <TaskHost
-    design-time-name="Package\ERP -&gt; VAGAS_DW">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="97,42"
-          Id="Package\ERP -&gt; VAGAS_DW\ERP"
-          TopLeft="471,76" />
-        <NodeLayout
-          Size="153,42"
-          Id="Package\ERP -&gt; VAGAS_DW\Destino OLE DB"
-          TopLeft="447,189" />
-        <EdgeLayout
-          Id="Package\ERP -&gt; VAGAS_DW.Paths[Saída de Origem OLE DB]"
-          TopLeft="521.5,118">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,71"
-              Start="0,0"
-              End="0,63.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,63.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\ERP -&gt; VAGAS_DW\Destino OLE DB">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\ERP -&gt; VAGAS_DW\ERP">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\Exportar CSV">
     <LayoutInfo>
