@@ -89,11 +89,11 @@ UPDATE VAGAS_DW.OPORTUNIDADES SET FECHADO_GANHO = CASE WHEN Fase = 'fechado_e_ga
  UPDATE VAGAS_DW.OPORTUNIDADES SET FIT = CASE WHEN FECHADO_GANHO = 1 AND COD_PRODUTO = 'FIT' THEN 1 ELSE 0 END  
 
 -- var ÉFGRevFit 
-UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO_FIT = CASE WHEN FIT = 1 AND OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil') THEN 1 ELSE 0 END
+UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO_FIT = CASE WHEN FIT = 1 AND OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil') AND NOT (OportunidadeCategoria = 'retencao' AND Fase = 'fechado_e_perdido' AND DataFechamento >= '20201112' AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468') THEN 1 ELSE 0 END
 
 -- var new ÉRev
 UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO = 1 
-WHERE OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil','rescisao')
+WHERE OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil','rescisao') OR (OportunidadeCategoria = 'retencao' AND Fase = 'fechado_e_perdido' AND DataFechamento >= '20201112' AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 
 -- var Rec
 UPDATE VAGAS_DW.OPORTUNIDADES SET RECORRENTE = CASE WHEN PRODUTO_RECORRENCIA = 'monthly' THEN 1 ELSE 0 END 
@@ -245,11 +245,11 @@ UPDATE VAGAS_DW.OPORTUNIDADES SET FECHADO_GANHO = CASE WHEN Fase = 'fechado_e_ga
 UPDATE VAGAS_DW.OPORTUNIDADES SET FIT = CASE WHEN FECHADO_GANHO = 1 AND COD_PRODUTO = 'FIT' THEN 1 ELSE 0 END
 
 -- var ÉFGRevFit 
-UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO_FIT = CASE WHEN FIT = 1 AND OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil') THEN 1 ELSE 0 END
+UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO_FIT = CASE WHEN FIT = 1 AND OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil') AND NOT (OportunidadeCategoria = 'retencao' AND Fase = 'fechado_e_perdido' AND DataFechamento >= '20201112' AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468') THEN 1 ELSE 0 END
 
 -- var new ÉRev
 UPDATE VAGAS_DW.OPORTUNIDADES SET REVISAO = 1 
-WHERE OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil','rescisao')
+WHERE OportunidadeCategoria IN ('renovacao','retencao','revisao_de_perfil','rescisao') OR (OportunidadeCategoria = 'retencao' AND Fase = 'fechado_e_perdido' AND DataFechamento >= '20201112' AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 
 -- var Rec
 UPDATE VAGAS_DW.OPORTUNIDADES SET RECORRENTE = CASE WHEN PRODUTO_RECORRENCIA = 'monthly' THEN 1 ELSE 0 END 
@@ -289,12 +289,13 @@ OUTER APPLY ( SELECT TOP 1 * FROM VAGAS_DW.OPORTUNIDADES
 			  WHERE COD_PRODUTO = A.COD_PRODUTO
 			    AND PropostaPrincipal = 1
 				AND Conta = A.Conta
-				AND RECORRENTE = 1
+				AND PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 				AND Fase = 'fechado_e_ganho'
 				AND (    ( DataFechamento < A.DataFechamento )
 					  OR ( DataFechamento = A.DataFechamento AND DataCriacao < A.DataCriacao ) )
 			  ORDER BY DataFechamento DESC,DataCriacao DESC) ULT
-WHERE A.RECORRENTE = 1 -- apenas produtos recorrentes
+--WHERE A.RECORRENTE = 1 -- apenas produtos recorrentes
+WHERE	A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 
 
 -- atualização "Grupo Votorantim" (segmentação de conta) [processo acordado com Tati Pires e Baraza]
@@ -408,7 +409,7 @@ WHERE Conta = 'Ficticia'
 
 -- Alteração solicitada pela Mari (22/04/2016) para criação de campo "AgrupamentoOportunidade" 
 UPDATE VAGAS_DW.OPORTUNIDADES SET GRUPO_OPORTUNIDADE = CASE 
-			WHEN OPORTUNIDADECATEGORIA = 'rescisao' THEN 'Rescisões'  
+			WHEN OPORTUNIDADECATEGORIA = 'rescisao' OR (OportunidadeCategoria = 'retencao' AND Fase = 'fechado_e_perdido' AND DataFechamento >= '20201112' AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468') THEN 'Rescisões'  
 			WHEN OPORTUNIDADECATEGORIA = 'cliente_potencial' THEN 'Novos'
 			WHEN OPORTUNIDADECATEGORIA = 'produtos_complementares' 
 				 OR PRODUTO_RECORRENTE IN ('FIT-REV-POS','PROD COMP-NOV','VET-NOV') THEN 'Rev Positiva'
@@ -507,26 +508,30 @@ EXEC [VAGAS_DW].[SPR_OLAP_Carga_Oportunidades_Ajustes_GRUPO_VENDEDOR] ;
 -- Negociações que compõem o MRR:
 UPDATE	[VAGAS_DW].[OPORTUNIDADES]
 SET		NEGOCIACAO_MRR = CASE
+							WHEN ((A.OportunidadeCategoria IN ('rescisao'))
+								 OR (A.OportunidadeCategoria = 'retencao'
+									 AND A.Fase = 'fechado_e_perdido'
+									 AND A.DataFechamento >= '20201112'
+									 AND A.CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468'))
+							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
+								THEN 'CHURN'
 							WHEN A.OportunidadeCategoria IN ('cliente_potencial','cliente_cotacao')
-							AND A.RECORRENTE = 1
+							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 								THEN 'NOVO'
 							WHEN A.OportunidadeCategoria IN ('revisao_de_perfil','retencao')
 							AND A.VALOR_REAL >= 0
-							AND A.RECORRENTE = 1
+							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 								THEN 'UPSELL'
 							WHEN A.OportunidadeCategoria IN ('revisao_de_perfil','retencao')
 							AND A.VALOR_REAL < 0
-							AND A.RECORRENTE = 1
+							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 								THEN 'DOWNSELL'
-							WHEN A.OportunidadeCategoria IN ('rescisao')
-							AND A.RECORRENTE = 1
-								THEN 'CHURN'
 							WHEN A.OportunidadeCategoria IN ('venda_pontual','projeto')
 							AND A.PRODUTO_GRUPO IN ('DSM', 'PROD COMP')
 							AND A.RECORRENTE = 0
 								THEN 'CROSS SELL'
 							WHEN A.OportunidadeCategoria = 'renovacao'
-							AND A.RECORRENTE = 1
+							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 								THEN 'RENEWAL'
 							ELSE NULL
 						END
