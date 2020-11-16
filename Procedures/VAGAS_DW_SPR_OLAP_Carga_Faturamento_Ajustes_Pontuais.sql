@@ -863,3 +863,63 @@ UPDATE	[VAGAS_DW].[FATURAMENTO]
 SET		FLAG_EXIBICAO_PADRAO = 0
 FROM	[VAGAS_DW].[FATURAMENTO]
 WHERE	COD_CLI_CRM = '471becf9-e60e-11e4-a9bf-0ea319e5a468' ;
+
+
+-- Ajuste solicitado no dia 28/10/2020 pelo Antony (Financeiro): Trocar o produto do pedido 110198 para o COMPL AVALIACAO no DW.
+UPDATE	[VAGAS_DW].[FATURAMENTO]
+SET		PRODUTO = 'COMPL AVALIACAO',
+		GRUPO_I = 'COMPLEMENTAR',
+		GRUPO_II = 'AVALIACAO'
+FROM	[VAGAS_DW].[FATURAMENTO] AS Faturamento_DW
+WHERE	Faturamento_DW.NUM_PEDIDO = '110198' ;
+
+
+-- Ajuste solicitado no dia 28/10/2020 pelo Antony (Financeiro): No pedido 111418, alterar o valor do produto VAGAS PET pra 3400, e inserir uma nova linha com produto COMPL AVALIACAO no valor de 1400:
+-- 1.1 Atualiza o valor do produto VAGAS PET pra 3.400:
+UPDATE	[VAGAS_DW].[FATURAMENTO]
+SET		VALOR = '3400'
+FROM	[VAGAS_DW].[FATURAMENTO] AS Faturamento_DW
+WHERE	Faturamento_DW.NUM_PEDIDO = '111418'
+		AND Faturamento_DW.PRODUTO = 'VAGAS PET' ;
+
+-- 1.2 Nova linha: COMPL AVALIACAO:
+INSERT INTO [VAGAS_DW].[FATURAMENTO]
+SELECT	Faturamento_DW.NUM_PEDIDO,
+		Faturamento_DW.COD_CLI_CRM,
+		Faturamento_DW.COD_CLI,
+		Faturamento_DW.CLIENTE,
+		--Faturamento_DW.PRODUTO,
+		'COMPL AVALIACAO' AS PRODUTO,
+		Faturamento_DW.DATA_EMISSAO,
+		Faturamento_DW.DATA_REFERENCIA,
+		--Faturamento_DW.VALOR,
+		1400 AS VALOR,
+		Faturamento_DW.DATA_INICIO_VIGENCIA,
+		Faturamento_DW.DATA_FIM_VIGENCIA,
+		--Faturamento_DW.GRUPO_I,
+		'COMPLEMENTAR' AS GRUPO_I,
+		--Faturamento_DW.GRUPO_II,
+		'AVALIACAO' AS GRUPO_II,
+		Faturamento_DW.FLAG_IMPORTACAO,
+		Faturamento_DW.FLAG_EXIBICAO_PADRAO,
+		Faturamento_DW.SEGMENTO_COMERC,
+		Faturamento_DW.CONTA_PROPRIETARIO,
+		Faturamento_DW.MERCADO_FATURADO,
+		Faturamento_DW.GR_FATURADO,
+		Faturamento_DW.GR_ATUAL,
+		Faturamento_DW.AVISO_PREVIO
+FROM	[VAGAS_DW].[FATURAMENTO] AS Faturamento_DW
+WHERE	Faturamento_DW.NUM_PEDIDO = '111418'
+		AND NOT EXISTS (SELECT *
+						FROM	[VAGAS_DW].[FATURAMENTO] AS Faturamento_DW_A1
+						WHERE	Faturamento_DW.NUM_PEDIDO = Faturamento_DW_A1.NUM_PEDIDO
+								AND Faturamento_DW_A1.PRODUTO = 'COMPL AVALIACAO'
+								AND Faturamento_DW_A1.VALOR = 1400) ;
+
+-- Alteração solicitada pela Tatiane Figueiredo (Publicidade) em 29/10/2020: Substituir o produto PUBL BANNER por PUBL ADNETWORK:
+UPDATE	[VAGAS_DW].[FATURAMENTO]
+SET		PRODUTO = 'PUBL ADNETWORK',
+		GRUPO_I = 'PUBLICIDADE',
+		GRUPO_II = 'ADNETWORK'
+FROM	[VAGAS_DW].[FATURAMENTO] AS FatDW
+WHERE	FatDW.NUM_PEDIDO = '113379' ;
