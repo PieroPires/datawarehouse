@@ -37,7 +37,7 @@ CREATE TABLE #TMP_CANDIDATOS([Cod_Cand] [int] NOT NULL,[CodFormMax_cand] [smalli
 	[FezAcessoIrrestrito_cand] [bit] NOT NULL,[DtUltSal_cand] [datetime] NULL,[UltSal_cand] [int] NULL,
 	[CodCidade_cand] [int] NULL,[CodEstadoCivil_cand] [smallint] NULL,[EstadoReg_cand] [tinyint] NOT NULL,
 	[Ficticio_cand] [bit] NOT NULL,[CPF_Cand] [nvarchar](11) NULL,LIBERACAO_CV_NOVO TINYINT,Email varchar(120), 
-	[MalaDiretaSite_cand] [bit], [MalaDireta_cand] [bit]) 
+	[MalaDiretaSite_cand] [bit], [MalaDireta_cand] [bit], [codraca_cand] TINYINT) 
 
 IF @DT_ATUALIZACAO_INICIO IS NOT NULL -- TESTA SE É CARGA FULL
 BEGIN 
@@ -65,7 +65,8 @@ BEGIN
 		   liberacaocvnovo AS LIBERACAO_CV_NOVO,
 		   Email_Cand,
 		   MalaDiretaSite_cand,
-		   MalaDireta_cand
+		   MalaDireta_cand,
+		   codraca_cand
 	FROM [hrh-data].dbo.Candidatos A
 	WHERE A.UltDtAtual_cand >= @DT_ATUALIZACAO_INICIO AND A.UltDtAtual_cand < @DT_ATUALIZACAO_FIM 
 END
@@ -96,7 +97,8 @@ BEGIN
 		   liberacaocvnovo AS LIBERACAO_CV_NOVO,
 		   Email_Cand,
 		   MalaDiretaSite_cand,
-		   MalaDireta_cand
+		   MalaDireta_cand,
+		   codraca_cand
 	FROM [hrh-data].dbo.Candidatos A	
 END
 
@@ -224,7 +226,8 @@ SELECT A.Cod_Cand,
 	A.MalaDireta_cand AS ACEITA_MAILING_PARCEIROS,
 	S.MalaDireta_VeTPriv AS ACEITA_MAILING_ETALENT,
 	T.AceitaSMS_smsCandDiv AS ACEITA_MAILING_SMS_VAGAS,
-	E.Cod_CidadeMer AS COD_MUNICIPIO
+	E.Cod_CidadeMer AS COD_MUNICIPIO,
+	Raca.descr_racacand AS RACA_CANDIDATO
 FROM #TMP_CANDIDATOS A
 OUTER APPLY ( SELECT TOP 1 * FROM [hrh-data].dbo.[Cand-Experiencia] 
 			  WHERE CodCand_Exp = A.Cod_Cand 
@@ -290,3 +293,4 @@ LEFT OUTER JOIN [hrh-data].[dbo].[Cad_estadosBR] AS Q ON F.Cod_EstadoMer = Q.Cod
 --LEFT OUTER JOIN [hrh-data].[dbo].[Cand-REM] AS R ON A.Cod_Cand = R.CodCand_candREM
 LEFT OUTER JOIN [hrh-data].[dbo].[VAGAS_eTalent_privacidade_cand] AS S ON S.CodCand_VeTPriv = A.COD_CAND
 LEFT OUTER JOIN [hrh-data].[dbo].[SMS_CandidatoxDivisao] AS T ON T.CodCand_smsCandDiv = A.cod_cand and T.CodDiv_smsCandDiv = -1
+LEFT OUTER JOIN [hrh-data].[dbo].[cad_racacandidato] AS Raca ON A.codraca_cand = Raca.cod_racacand
