@@ -32,6 +32,7 @@ BEGIN
 	FROM	[hrh-data].[dbo].[Clientes-Login] AS A		INNER JOIN [hrh-data].[dbo].[Clientes] AS B ON A.CodCli_log = B.Cod_cli
 	WHERE	A.Cod_log > ISNULL(@Max_Login, 0)
 			AND A.Cod_log > ISNULL(@Max_LoginTemp, 0)
+			AND ISNULL(A.CodUsuManut_log,0) < 1
 	ORDER BY
 			A.Cod_log ASC
 	SET	@Max_LoginTemp = (SELECT MAX(Cod_login) FROM [VAGAS_DW].[TMP_Login_VagasEpartner_Clientes])
