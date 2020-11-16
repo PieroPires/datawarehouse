@@ -154,6 +154,7 @@ CROSS APPLY ( SELECT TOP 1
 					,CNPJ
 					,OPORTUNIDADECATEGORIA
 					,DATAFECHAMENTO
+					,FASE
 					,SUM(ValorProdutoFINAL) AS ValorProdutoFINAL
 				FROM VAGAS_DW.OPORTUNIDADES
 				WHERE CONTAID  = A.CONTA_ID
@@ -170,8 +171,13 @@ CROSS APPLY ( SELECT TOP 1
 					,OPORTUNIDADECATEGORIA
 					,DATAFECHAMENTO
 					,PRODUTO
+					,FASE
 				ORDER BY DataFechamento DESC ) B
 WHERE B.OPORTUNIDADECATEGORIA <> 'rescisao'
+	  AND NOT  (B.OportunidadeCategoria = 'retencao'
+				AND B.Fase = 'fechado_e_perdido'
+				AND B.DataFechamento >= '20201112'
+				AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 	--AND A.EX_CLIENTE = 0
 
 -- MARCAR CLIENTES COM PRODUTO REDES ATIVO
@@ -189,6 +195,7 @@ CROSS APPLY ( SELECT TOP 1
 				,CNPJ
 				,OPORTUNIDADECATEGORIA
 				,DATAFECHAMENTO
+				,FASE
 				,SUM(ValorProdutoFINAL) AS ValorProdutoFINAL
 			FROM VAGAS_DW.OPORTUNIDADES
 			WHERE CONTAID  = A.CONTA_ID
@@ -205,9 +212,14 @@ CROSS APPLY ( SELECT TOP 1
 				,OPORTUNIDADECATEGORIA
 				,DATAFECHAMENTO
 				,PRODUTO
+				,FASE
 			ORDER BY DataFechamento DESC  ) B
-WHERE B.OPORTUNIDADECATEGORIA <> 'rescisao'
-	--AND A.EX_CLIENTE =  0 
+WHERE	B.OPORTUNIDADECATEGORIA <> 'rescisao'
+		--AND A.EX_CLIENTE =  0 
+		AND NOT (B.OportunidadeCategoria = 'retencao'
+				 AND B.Fase = 'fechado_e_perdido'
+				 AND B.DataFechamento >= '20201112'
+				 AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 
 -- MARCAR CLIENTES COM PRODUTO REDES INATIVO: Empresas clientes que não possuem o produto VREDES na proposta aprovada.
 UPDATE	[STAGE].[VAGAS_DW].[TMP_CLIENTES]
@@ -243,6 +255,7 @@ CROSS APPLY ( SELECT TOP 1
 				,CNPJ
 				,OPORTUNIDADECATEGORIA
 				,DATAFECHAMENTO
+				,FASE
 				,SUM(ValorProdutoFINAL) AS ValorProdutoFINAL
 			FROM VAGAS_DW.OPORTUNIDADES
 			WHERE CONTAID  = A.CONTA_ID
@@ -259,9 +272,14 @@ CROSS APPLY ( SELECT TOP 1
 				,OPORTUNIDADECATEGORIA
 				,DATAFECHAMENTO
 				,PRODUTO
+				,FASE
 			ORDER BY DataFechamento DESC ) B
-WHERE B.OPORTUNIDADECATEGORIA <> 'rescisao'
-	--AND A.EX_CLIENTE =  0 
+WHERE	B.OPORTUNIDADECATEGORIA <> 'rescisao'
+		--AND A.EX_CLIENTE =  0 
+		AND NOT (B.OportunidadeCategoria = 'retencao'
+					AND B.Fase = 'fechado_e_perdido'
+					AND B.DataFechamento >= '20201112'
+					AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 
 -- MARCAR CLIENTES COM PRODUTO VET ATIVO
 UPDATE [STAGE].[VAGAS_DW].[TMP_CLIENTES] SET CONTEM_VET = 1,
@@ -278,6 +296,10 @@ CROSS APPLY ( SELECT CONTAID,CONTAPROPRIETARIO,NEGOCIO,CONTA,PERFIL,SUM(ValorPro
 			  AND PRODUTO_GRUPO = 'VET'
 			  AND FECHADO_GANHO = 1
 			  AND OPORTUNIDADECATEGORIA <> 'rescisao'
+			  AND NOT (OportunidadeCategoria = 'retencao'
+					   AND Fase = 'fechado_e_perdido'
+					   AND DataFechamento >= '20201112'
+					   AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 			  AND RECORRENTE = 1
 			  AND DATAFECHAMENTO = ( SELECT MAX(DATAFECHAMENTO) 
 				 				     FROM VAGAS_DW.OPORTUNIDADES 
@@ -303,6 +325,10 @@ CROSS APPLY ( SELECT CONTAID,CONTAPROPRIETARIO,NEGOCIO,CONTA,PERFIL,SUM(ValorPro
 			  AND PRODUTO = 'PET'
 			  AND FECHADO_GANHO = 1
 			  AND OPORTUNIDADECATEGORIA <> 'rescisao'
+			  AND NOT (OportunidadeCategoria = 'retencao'
+					   AND Fase = 'fechado_e_perdido'
+					   AND DataFechamento >= '20201112'
+					   AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 			  AND RECORRENTE = 1
 			  AND DATAFECHAMENTO = ( SELECT MAX(DATAFECHAMENTO) 
 				 				     FROM VAGAS_DW.OPORTUNIDADES 
@@ -330,8 +356,12 @@ CROSS APPLY ( SELECT TOP 1 *
 			   AND FECHADO_GANHO = 1
 			   AND RECORRENTE = 1
 			   ORDER BY DataFechamento DESC ) B
-WHERE B.OPORTUNIDADECATEGORIA <> 'rescisao'
---AND A.EX_CLIENTE = 0
+WHERE	B.OPORTUNIDADECATEGORIA <> 'rescisao'
+		--AND A.EX_CLIENTE = 0
+		AND NOT (OportunidadeCategoria = 'retencao'
+				 AND Fase = 'fechado_e_perdido'
+				 AND DataFechamento >= '20201112'
+				 AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 
 -- MARCAR CLIENTES COM PRODUTO FLEXC
 UPDATE [STAGE].[VAGAS_DW].[TMP_CLIENTES] SET CONTEM_FLEX_C = 1,
@@ -348,6 +378,10 @@ CROSS APPLY ( SELECT TOP 1 *
 			   AND PRODUTO = 'FLEXC'
 			   AND FECHADO_GANHO = 1
 			   AND OPORTUNIDADECATEGORIA <> 'rescisao'
+			   AND NOT (OportunidadeCategoria = 'retencao'
+						AND Fase = 'fechado_e_perdido'
+						AND DataFechamento >= '20201112'
+					AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
 			   ORDER BY DataFechamento DESC ) B
 WHERE
 	--A.EX_CLIENTE =  0 
@@ -363,10 +397,15 @@ UPDATE [STAGE].[VAGAS_DW].[TMP_CLIENTES] SET CONTEM_FLEX_A = 1,
 								 CNPJ = B.CNPJ
 FROM [STAGE].[VAGAS_DW].[TMP_CLIENTES] A
 CROSS APPLY ( SELECT TOP 1 * 
-				FROM VAGAS_DW.OPORTUNIDADES
-			   WHERE CONTAID  = A.CONTA_ID
-			   AND PRODUTO = 'FLEXA'
-			   AND OPORTUNIDADECATEGORIA <> 'rescisao'
+			  FROM VAGAS_DW.OPORTUNIDADES
+			  WHERE CONTAID  = A.CONTA_ID
+					AND PRODUTO = 'FLEXA'
+					AND OPORTUNIDADECATEGORIA <> 'rescisao'
+					AND NOT (OportunidadeCategoria = 'retencao'
+							 AND Fase = 'fechado_e_perdido'
+							 AND DataFechamento >= '20201112'
+							 AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
+
 			   AND FECHADO_GANHO = 1
 			   ORDER BY DataFechamento DESC ) B
 WHERE 
@@ -406,6 +445,11 @@ CROSS APPLY ( SELECT TOP 1 *
 			  ORDER BY DataFechamento DESC ) B
 WHERE B.OPORTUNIDADECATEGORIA <> 'rescisao'
 	--AND A.EX_CLIENTE = 0 
+	AND NOT (OportunidadeCategoria = 'retencao'
+			AND Fase = 'fechado_e_perdido'
+			AND DataFechamento >= '20201112'
+			AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468')
+
 
 
 /*
@@ -450,9 +494,14 @@ FROM [STAGE].[VAGAS_DW].[TMP_CLIENTES] A
 CROSS APPLY ( SELECT TOP 1 * 
 			  FROM VAGAS_DW.OPORTUNIDADES
 			  WHERE CONTAID = A.CONTA_ID 
-			  AND OPORTUNIDADECATEGORIA = 'rescisao' 
-			  AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
-			  AND FECHADO_GANHO = 1
+			  AND ((OPORTUNIDADECATEGORIA = 'rescisao' 
+				   AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+				   AND FECHADO_GANHO = 1)
+					OR (OPORTUNIDADECATEGORIA = 'retencao' 
+						AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+						AND Fase = 'fechado_e_perdido'
+						AND DataFechamento >= '20201112'
+						AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468'))
 			  ORDER BY DATAFECHAMENTO DESC ) B
 WHERE 
 NOT EXISTS ( SELECT 1 FROM VAGAS_DW.CONTAS_CRM WHERE CONTA_ID = A.CONTA_ID AND (TIPO = 'cliente_em_aviso_previo' OR CATEGORIA = 'cliente_em_aviso_previo')
@@ -624,10 +673,16 @@ UPDATE [STAGE].[VAGAS_DW].[TMP_CLIENTES] SET DATA_RESCISAO = DATAFECHAMENTO,
 FROM [STAGE].[VAGAS_DW].[TMP_CLIENTES] A
 OUTER APPLY ( SELECT TOP 1 * FROM VAGAS_DW.OPORTUNIDADES
 				WHERE CONTAID = A.CONTA_ID 
-				AND OPORTUNIDADECATEGORIA = 'rescisao' 
-				AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
-				AND RECORRENTE = 1
-				AND FECHADO_GANHO = 1 ) TAB -- Filtrar Ex Clientes
+				AND ((OPORTUNIDADECATEGORIA = 'rescisao' 
+					  AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+					  AND RECORRENTE = 1
+					  AND FECHADO_GANHO = 1)
+					 OR (OPORTUNIDADECATEGORIA = 'retencao' 
+						 AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+						 AND RECORRENTE = 1
+						 AND Fase = 'fechado_e_perdido'
+						 AND DataFechamento >= '20201112'
+						 AND CONTAID = '47b10efc-e60e-11e4-a9bf-0ea319e5a468'))) TAB -- Filtrar Ex Clientes
 WHERE A.EX_CLIENTE = 1
 
 -- Criar marcação para clientes que estão ativos porém não abriram vagas nos últimos 6 meses
