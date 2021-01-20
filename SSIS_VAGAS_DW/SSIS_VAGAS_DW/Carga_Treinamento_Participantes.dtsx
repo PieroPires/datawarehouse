@@ -7,13 +7,13 @@
   DTS:CreatorName="VAGASTEC\fiama.cristi"
   DTS:DTSID="{A5AEA583-3707-45BC-A425-BCBF4EC17C15}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.0800.90"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
   DTS:LocaleID="1046"
   DTS:ObjectName="Carga_Treinamento_Participantes"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="53"
-  DTS:VersionGUID="{23794FC2-975C-4A19-AB4A-C7A57240D731}">
+  DTS:VersionBuild="55"
+  DTS:VersionGUID="{330D6CE5-2A78-4660-A8B0-9B6C0282C8D2}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -143,6 +143,13 @@
                       cachedLength="255"
                       cachedName="EMAIL_PARTICIPANTE"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[EMAIL_PARTICIPANTE]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Inputs[Data Conversion Input].Columns[COD_CONTATO_TREINAMENTO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="COD_CONTATO_TREINAMENTO"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[COD_CONTATO_TREINAMENTO]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -413,6 +420,28 @@
                           name="FastParse">false</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[COD_CONTATO_TREINAMENTO_Conv]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversão"
+                      errorRowDisposition="FailComponent"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[COD_CONTATO_TREINAMENTO_Conv]"
+                      name="COD_CONTATO_TREINAMENTO_Conv"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Especifica a coluna de entrada usada como a origem dois dados para a conversão."
+                          name="SourceInputColumnLineageID">#{Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[COD_CONTATO_TREINAMENTO]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indica se a coluna usa as rotinas de análise de localidade neutro mais rápidas."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -468,7 +497,8 @@
     CONVERT(F.name USING Latin1) AS NOME_TREINAMENTO, 
     CONVERT(G.name USING Latin1) AS CONTA ,
     F.ID AS ID_TREINAMENTO ,
-    CONVERT(I.email_address USING Latin1) AS EMAIL_PARTICIPANTE
+    CONVERT(I.email_address USING Latin1) AS EMAIL_PARTICIPANTE,
+    CONVERT(D.id USING Latin1) AS COD_CONTATO_TREINAMENTO
 FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.modified_user_id = B.id
 										LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
                                         LEFT OUTER JOIN sugarcrm.contacts AS D ON A.contact_id_c = D.id
@@ -635,6 +665,14 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[EMAIL_PARTICIPANTE]"
                       name="EMAIL_PARTICIPANTE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[COD_CONTATO_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[COD_CONTATO_TREINAMENTO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[COD_CONTATO_TREINAMENTO]"
+                      name="COD_CONTATO_TREINAMENTO" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -708,6 +746,12 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       dataType="str"
                       length="255"
                       name="EMAIL_PARTICIPANTE" />
+                    <externalMetadataColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[COD_CONTATO_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="36"
+                      name="COD_CONTATO_TREINAMENTO" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -809,6 +853,14 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       length="255"
                       lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[EMAIL_PARTICIPANTE]"
                       name="EMAIL_PARTICIPANTE" />
+                    <outputColumn
+                      refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[COD_CONTATO_TREINAMENTO]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[COD_CONTATO_TREINAMENTO]"
+                      length="36"
+                      lineageId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[COD_CONTATO_TREINAMENTO]"
+                      name="COD_CONTATO_TREINAMENTO" />
                     <outputColumn
                       refId="Package\MySQL -&gt; SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -989,6 +1041,14 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
                       cachedName="EMAIL_PARTICIPANTE_Conv"
                       externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[EMAIL_PARTICIPANTE]"
                       lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[EMAIL_PARTICIPANTE_Conv]" />
+                    <inputColumn
+                      refId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[COD_CONTATO_TREINAMENTO_Conv]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="36"
+                      cachedName="COD_CONTATO_TREINAMENTO_Conv"
+                      externalMetadataColumnId="Package\MySQL -&gt; SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[COD_CONTATO_TREINAMENTO]"
+                      lineageId="Package\MySQL -&gt; SQL Server\Data Conversion.Outputs[Data Conversion Output].Columns[COD_CONTATO_TREINAMENTO_Conv]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1174,12 +1234,12 @@ FROM sugarcrm.trn_participantes AS A	LEFT OUTER JOIN sugarcrm.users AS B ON A.mo
       DTS:To="Package\Processar CUBO" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
