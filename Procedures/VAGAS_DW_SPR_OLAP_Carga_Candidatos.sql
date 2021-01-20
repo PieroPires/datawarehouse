@@ -274,3 +274,90 @@ WHERE	A.Visual_necEsp > -1
 		AND EXISTS ( SELECT 1
 					 FROM	[STAGE].[VAGAS_DW].[TMP_CANDIDATOS] AS A1
 					 WHERE	A.CodCand_necEsp = A1.Cod_cand ) ;
+
+-- Insere candidatos na Candidatos_deficiencias que deveriam existir:
+INSERT INTO [VAGAS_DW].[CANDIDATOS_DEFICIENCIAS]
+SELECT	A.CodCand_necEsp AS Cod_cand ,
+		'Auditiva' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Auditiva_necEsp > -1
+		AND EXISTS (SELECT *
+					FROM	[VAGAS_DW].[CANDIDATOS] AS CandDW
+					WHERE	A.CodCand_NecEsp = CandDW.COD_CAND
+							AND CandDW.POSSUI_DEFIC = 'SIM')
+		AND NOT EXISTS (SELECT *
+						FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS CandDef
+						WHERE	A.CodCand_NecEsp = CandDef.COD_CAND
+								AND CandDef.TipoDeficiencia = 'Auditiva')
+UNION ALL
+SELECT	A.CodCand_necEsp AS Cod_cand ,
+		'Fala' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Fala_necEsp > -1
+		AND EXISTS (SELECT *
+					FROM	[VAGAS_DW].[CANDIDATOS] AS CandDW
+					WHERE	A.CodCand_NecEsp = CandDW.COD_CAND
+							AND CandDW.POSSUI_DEFIC = 'SIM')
+		AND NOT EXISTS (SELECT *
+						FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS CandDef
+						WHERE	A.CodCand_NecEsp = CandDef.COD_CAND
+								AND CandDef.TipoDeficiencia = 'Fala')
+UNION ALL
+SELECT	A.CodCand_necEsp AS Cod_cand ,
+		'Física' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Fisica_necEsp > -1
+		AND EXISTS (SELECT *
+					FROM	[VAGAS_DW].[CANDIDATOS] AS CandDW
+					WHERE	A.CodCand_NecEsp = CandDW.COD_CAND
+							AND CandDW.POSSUI_DEFIC = 'SIM')
+		AND NOT EXISTS (SELECT *
+						FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS CandDef
+						WHERE	A.CodCand_NecEsp = CandDef.COD_CAND
+								AND CandDef.TipoDeficiencia = 'Física')
+UNION ALL
+SELECT	A.CodCand_necEsp AS Cod_cand ,
+		'Mental' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Mental_necEsp > -1
+		AND EXISTS (SELECT *
+					FROM	[VAGAS_DW].[CANDIDATOS] AS CandDW
+					WHERE	A.CodCand_NecEsp = CandDW.COD_CAND
+							AND CandDW.POSSUI_DEFIC = 'SIM')
+		AND NOT EXISTS (SELECT *
+						FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS CandDef
+						WHERE	A.CodCand_NecEsp = CandDef.COD_CAND
+								AND CandDef.TipoDeficiencia = 'Mental')
+UNION ALL
+SELECT	A.CodCand_necEsp AS Cod_cand ,
+		'Visual' AS TipoDeficiencia
+FROM	[hrh-data].[dbo].[Cand-NecEsp] AS A
+WHERE	A.Visual_necEsp > -1
+		AND EXISTS (SELECT *
+					FROM	[VAGAS_DW].[CANDIDATOS] AS CandDW
+					WHERE	A.CodCand_NecEsp = CandDW.COD_CAND
+							AND CandDW.POSSUI_DEFIC = 'SIM')
+		AND NOT EXISTS (SELECT *
+						FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS CandDef
+						WHERE	A.CodCand_NecEsp = CandDef.COD_CAND
+								AND CandDef.TipoDeficiencia = 'Visual') ;
+
+
+
+
+-- Remove candidatos da tabela CANDIDATOS_DEFICIENCIAS que deixaram de existir na tabela domínio:
+DELETE FROM [VAGAS_DW].[CANDIDATOS_DEFICIENCIAS]
+FROM	[VAGAS_DW].[CANDIDATOS_DEFICIENCIAS] AS CandDefDW
+WHERE	NOT EXISTS (SELECT *
+					FROM	[hrh-data].[dbo].[Cand-NecEsp] AS CandNecEsp
+					WHERE	CandDefDW.COD_CAND = CandNecEsp.CodCand_NecEsp) ;
+
+
+-- Ajusta o campo POSSUI_DEFIC, conforme a tabela domínio:
+UPDATE	[VAGAS_DW].[CANDIDATOS]
+SET		POSSUI_DEFIC = 'NÃO'
+FROM	[VAGAS_DW].[CANDIDATOS] AS CandDW
+WHERE	NOT EXISTS (SELECT *
+					FROM	[hrh-data].[dbo].[Cand-NecEsp] AS CandNecEsp
+					WHERE	CandDW.COD_CAND = CandNecEsp.CodCand_NecEsp)
+		AND CandDW.POSSUI_DEFIC = 'SIM' ;
