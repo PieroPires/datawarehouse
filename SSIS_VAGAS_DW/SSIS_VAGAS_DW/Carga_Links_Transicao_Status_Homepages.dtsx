@@ -5,18 +5,40 @@
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="SRV-SQLMIRROR05"
   DTS:CreatorName="VAGASTEC\fiama.cristi"
+  DTS:DelayValidation="True"
   DTS:DTSID="{1560C367-B562-4099-A636-77B051F95678}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.0800.90"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
   DTS:LocaleID="1033"
   DTS:ObjectName="Carga_Links_Transicao_Status_Homepages"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="17"
-  DTS:VersionGUID="{10FE60E3-E099-4333-99DA-BDB2D431E52F}">
+  DTS:VersionBuild="48"
+  DTS:VersionGUID="{3B4F5276-2C3E-4DC4-BE52-930988BB4F6F}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
-  <DTS:Variables />
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{227C1E34-40F4-48FE-ACC6-A046CF7E3C0A}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DATA_ALTERACAO">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F8542664-32C6-419F-969F-F4EAE3462CF3}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Variável">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
   <DTS:Executables>
     <DTS:Executable
       DTS:refId="Package\Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
@@ -44,6 +66,34 @@
       DTS:ObjectName="MySQL - SQL Server"
       DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="[MySQL - SugarCRM].[SqlCommand]">"SELECT	CONVERT(SUBQUERY_2.ID_LINK USING Latin1) AS ID_LINK ,
+		CONVERT(SUBQUERY_2.NOME_LINK USING Latin1) AS NOME_LINK ,
+        SUBQUERY_2.DATA_CRIACAO_ALTERACAO ,
+        CONVERT(SUBQUERY_2.VALOR_ANTERIOR USING Latin1) AS VALOR_ANTERIOR ,
+        CONVERT(SUBQUERY_2.VALOR_POSTERIOR USING Latin1) AS VALOR_POSTERIOR ,
+        SUBQUERY_2.ROW_NUMBER
+FROM	(
+	SELECT	SUBQUERY.ID_LINK ,
+			SUBQUERY.NOME_LINK ,
+			SUBQUERY.DATA_CRIACAO_ALTERACAO ,
+			SUBQUERY.VALOR_ANTERIOR ,
+			SUBQUERY.VALOR_POSTERIOR ,
+			1 AS ROW_NUMBER
+	FROM	(
+		SELECT	B.id AS ID_LINK  ,
+				B.name AS NOME_LINK ,
+				CONVERT_TZ(A.date_created, @@session.time_zone, 'America/Sao_Paulo') AS DATA_CRIACAO_ALTERACAO ,
+				C.user_name AS USUARIO_ALTERACAO ,
+				A.before_value_string AS VALOR_ANTERIOR ,
+				A.after_value_string AS VALOR_POSTERIOR
+		FROM	sugarcrm.lnk_links_audit AS A	LEFT OUTER JOIN sugarcrm.lnk_links AS B ON A.parent_id = B.id
+												LEFT OUTER JOIN sugarcrm.users AS C ON A.created_by = C.id
+		WHERE	A.field_name = 'status' ) AS SUBQUERY
+ORDER BY
+	SUBQUERY.ID_LINK ASC ,
+	SUBQUERY.DATA_CRIACAO_ALTERACAO ASC) AS SUBQUERY_2
+WHERE SUBQUERY_2.DATA_CRIACAO_ALTERACAO&gt; " +  @[User::DATA_ALTERACAO]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <pipeline
           version="1">
@@ -77,8 +127,7 @@ FROM	(
 			SUBQUERY.DATA_CRIACAO_ALTERACAO ,
 			SUBQUERY.VALOR_ANTERIOR ,
 			SUBQUERY.VALOR_POSTERIOR ,
-			@ROW_NUMBER:= IF(@ID_LINK = SUBQUERY.ID_LINK, @ROW_NUMBER + 1, 1) AS ROW_NUMBER ,
-			@ID_LINK := SUBQUERY.ID_LINK AS ID_LINK_CONTROLE
+			1 AS ROW_NUMBER
 	FROM	(
 		SELECT	B.id AS ID_LINK  ,
 				B.name AS NOME_LINK ,
@@ -91,7 +140,8 @@ FROM	(
 		WHERE	A.field_name = 'status' ) AS SUBQUERY
 ORDER BY
 	SUBQUERY.ID_LINK ASC ,
-	SUBQUERY.DATA_CRIACAO_ALTERACAO ASC) AS SUBQUERY_2 ;</property>
+	SUBQUERY.DATA_CRIACAO_ALTERACAO ASC) AS SUBQUERY_2
+WHERE SUBQUERY_2.DATA_CRIACAO_ALTERACAO&gt; </property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -196,7 +246,7 @@ ORDER BY
                       name="VALOR_POSTERIOR" />
                     <outputColumn
                       refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ROW_NUMBER]"
-                      dataType="r8"
+                      dataType="i4"
                       externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ROW_NUMBER]"
                       lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ROW_NUMBER]"
                       name="ROW_NUMBER" />
@@ -233,7 +283,7 @@ ORDER BY
                       name="VALOR_POSTERIOR" />
                     <externalMetadataColumn
                       refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ROW_NUMBER]"
-                      dataType="r8"
+                      dataType="i4"
                       name="ROW_NUMBER" />
                   </externalMetadataColumns>
                 </output>
@@ -282,7 +332,7 @@ ORDER BY
                       name="VALOR_POSTERIOR" />
                     <outputColumn
                       refId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ROW_NUMBER]"
-                      dataType="r8"
+                      dataType="i4"
                       externalMetadataColumnId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].ExternalColumns[ROW_NUMBER]"
                       lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Error Output].Columns[ROW_NUMBER]"
                       name="ROW_NUMBER" />
@@ -405,12 +455,6 @@ ORDER BY
                       cachedName="VALOR_POSTERIOR"
                       externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[VALOR_POSTERIOR]"
                       lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[VALOR_POSTERIOR]" />
-                    <inputColumn
-                      refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ROW_NUMBER]"
-                      cachedDataType="r8"
-                      cachedName="ROW_NUMBER"
-                      externalMetadataColumnId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].ExternalColumns[CONTROLE]"
-                      lineageId="Package\MySQL - SQL Server\MySQL - SugarCRM.Outputs[ODBC Source Output].Columns[ROW_NUMBER]" />
                     <inputColumn
                       refId="Package\MySQL - SQL Server\SQL Server - DW.Inputs[OLE DB Destination Input].Columns[ID_LINK]"
                       cachedCodepage="1252"
@@ -556,16 +600,30 @@ ORDER BY
           SQLTask:SqlStatementSource="EXEC [VAGAS_DW].[SPR_OLTP_Carga_Links_Transicao_Status_HomePages]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Última data de alteração"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Tarefa Executar SQL"
+      DTS:DTSID="{3F7969FB-96CF-4FBB-BB48-EAEFFD7EDBF2}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Última data de alteração"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 RC1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{73F9ACD8-F3F6-4BCD-8BEB-BE66EF9767F7}"
+          SQLTask:SqlStatementSource="-- Extrai a data da última alteração:&#xA;SELECT&#x9;ISNULL(CONVERT(VARCHAR, DATEADD(DAY, -1, CONVERT(DATE, MAX(DATA_VALOR_NORMALIZADO))), 112), '19000101') AS DATA_ALTERACAO&#xA;FROM&#x9;[vagas_dw].[VAGAS_DW].[LINKS_TRANSICAO_STATUS]"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="DATA_ALTERACAO"
+            SQLTask:DtsVariableName="User::DATA_ALTERACAO" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint]"
-      DTS:CreationName=""
-      DTS:DTSID="{31DFD724-A2EB-4404-B35B-CB0ED37B889A}"
-      DTS:From="Package\Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint"
-      DTS:To="Package\MySQL - SQL Server" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -590,14 +648,30 @@ ORDER BY
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 4"
       DTS:To="Package\Processar CUBO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{E24787B4-6738-46C3-BC44-51A73730315C}"
+      DTS:From="Package\Limpar VAGAS_DW_TMP_LINKS_TRANSICAO_STATUS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\Última data de alteração" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{3D8BA15D-800F-4B5F-8880-C68F9821D560}"
+      DTS:From="Package\Última data de alteração"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\MySQL - SQL Server" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
@@ -610,44 +684,26 @@ ORDER BY
         <NodeLayout
           Size="174,42"
           Id="Package\MySQL - SQL Server"
-          TopLeft="450,203" />
+          TopLeft="446,270" />
         <NodeLayout
           Size="155,42"
           Id="Package\Processar CUBO"
-          TopLeft="445,464" />
+          TopLeft="441,561" />
         <NodeLayout
           Size="338,42"
           Id="Package\SPR_OLAP_Carga_Links_Transicao_Status_Homepages"
-          TopLeft="359,379" />
+          TopLeft="356,476" />
         <NodeLayout
           Size="338,42"
           Id="Package\SPR_OLTP_Carga_Links_Transicao_Status_HomePages"
-          TopLeft="365,289" />
+          TopLeft="362,360" />
+        <NodeLayout
+          Size="194,42"
+          Id="Package\Última data de alteração"
+          TopLeft="443,179" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="535.5,245">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,44"
-              Start="0,0"
-              End="0,36.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,36.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="531,331">
+          TopLeft="532,312">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -668,8 +724,30 @@ ORDER BY
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="528,402">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,74"
+              Start="0,0"
+              End="0,66.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,66.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="525.25,421">
+          TopLeft="521.75,518">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -690,19 +768,41 @@ ORDER BY
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="540.5,114">
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="542,114">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,89"
+              EndConnector="0,65"
               Start="0,0"
-              End="0,81.5">
+              End="0,57.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,81.5" />
+                    End="0,57.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="536.5,221">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49"
+              Start="0,0"
+              End="0,41.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -722,7 +822,7 @@ ORDER BY
         <NodeLayout
           Size="159,42"
           Id="Package\MySQL - SQL Server\SQL Server - DW"
-          TopLeft="396,150" />
+          TopLeft="396,151" />
         <NodeLayout
           Size="170,42"
           Id="Package\MySQL - SQL Server\MySQL - SugarCRM"
@@ -733,14 +833,14 @@ ORDER BY
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,66"
+              EndConnector="0,67"
               Start="0,0"
-              End="0,58.5">
+              End="0,59.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,58.5" />
+                    End="0,59.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
