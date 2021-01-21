@@ -813,6 +813,11 @@
             "dataType": "string",
             "isDataTypeInferred": true,
             "expression": "IF(VAGAS[TIPO_PROCESSO] = \"RE\" || VAGAS[TIPO_PROCESSO] = \"GESTÃO\", \"Sim\", \"Não\")"
+          },
+          {
+            "name": "Vaga_temporaria",
+            "dataType": "string",
+            "sourceColumn": "Vaga_temporaria"
           }
         ],
         "partitions": [
@@ -1015,7 +1020,8 @@
                 "Vaga_criada_posicaorec_novaVersao,",
                 "Vaga_novaVersao_MULTPOST,",
                 "CodFunc_vagaNovaVersao,",
-                "Vaga_novaVersao_CriadaModelo",
+                "Vaga_novaVersao_CriadaModelo,",
+                "Vaga_temporaria",
                 "FROM [VAGAS_DW].[VAGAS] AS A ;"
               ],
               "dataSource": "VAGAS_DW"
@@ -1219,7 +1225,8 @@
                   "Vaga_criada_posicaorec_novaVersao,",
                   "Vaga_novaVersao_MULTPOST,",
                   "CodFunc_vagaNovaVersao,",
-                  "Vaga_novaVersao_CriadaModelo",
+                  "Vaga_novaVersao_CriadaModelo,",
+                  "Vaga_temporaria",
                   "FROM [VAGAS_DW].[VAGAS] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
                 ]
               }
@@ -1663,7 +1670,8 @@
               "Vaga_criada_posicaorec_novaVersao,",
               "Vaga_novaVersao_MULTPOST,",
               "CodFunc_vagaNovaVersao,",
-              "Vaga_novaVersao_CriadaModelo",
+              "Vaga_novaVersao_CriadaModelo,",
+              "Vaga_temporaria",
               "FROM [VAGAS_DW].[VAGAS] AS A ;"
             ]
           },
@@ -1865,7 +1873,8 @@
               "Vaga_criada_posicaorec_novaVersao,",
               "Vaga_novaVersao_MULTPOST,",
               "CodFunc_vagaNovaVersao,",
-              "Vaga_novaVersao_CriadaModelo",
+              "Vaga_novaVersao_CriadaModelo,",
+              "Vaga_temporaria",
               "FROM [VAGAS_DW].[VAGAS] AS A ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
             ]
           }
@@ -25776,6 +25785,11 @@
             "name": "Status_Orcamento_Demandas_SP",
             "dataType": "string",
             "sourceColumn": "Status_Orcamento_Demandas_SP"
+          },
+          {
+            "name": "Motivo_fechamento",
+            "dataType": "string",
+            "sourceColumn": "Motivo_fechamento"
           }
         ],
         "partitions": [
@@ -25802,8 +25816,10 @@
                 "\t\t\t\t\t AND ISNULL([VAGAS_DW].[DEMANDAS_EQUIPES].DATA_CAN_ORC, '') = '' THEN 'Orçamento em andamento'",
                 "\t\t\t\tELSE NULL",
                 "\t\t\tEND, '') AS [Status_Orcamento_Demandas_SP]",
-                "",
-                "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]"
+                ", ",
+                "\tisnull(iif(Equipe_projeto = 'Soluções Personalizadas', Motivos_SOLUDSM.Motivo_fechamento, ''), '') as Motivo_fechamento",
+                "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]\t\tLEFT OUTER JOIN [VAGAS_DW].[Demandas_SOLUDSM_Motivos] AS Motivos_SOLUDSM",
+                "\t\t\t\t\t\t\t\t\t\t\tON [VAGAS_DW].[DEMANDAS_EQUIPES].NUMERO_DEMANDA = Motivos_SOLUDSM.NUMERO_DEMANDA ;"
               ],
               "dataSource": "VAGAS_DW"
             },
@@ -25830,8 +25846,10 @@
                   "\t\t\t\t\t AND ISNULL([VAGAS_DW].[DEMANDAS_EQUIPES].DATA_CAN_ORC, '') = '' THEN 'Orçamento em andamento'",
                   "\t\t\t\tELSE NULL",
                   "\t\t\tEND, '') AS [Status_Orcamento_Demandas_SP]",
-                  "",
-                  "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                  ", ",
+                  "\tisnull(iif(Equipe_projeto = 'Soluções Personalizadas', Motivos_SOLUDSM.Motivo_fechamento, ''), '') as Motivo_fechamento",
+                  "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]\t\tLEFT OUTER JOIN [VAGAS_DW].[Demandas_SOLUDSM_Motivos] AS Motivos_SOLUDSM",
+                  "\t\t\t\t\t\t\t\t\t\t\tON [VAGAS_DW].[DEMANDAS_EQUIPES].NUMERO_DEMANDA = Motivos_SOLUDSM.NUMERO_DEMANDA ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
                 ]
               }
             ]
@@ -26061,8 +26079,10 @@
               "\t\t\t\t\t AND ISNULL([VAGAS_DW].[DEMANDAS_EQUIPES].DATA_CAN_ORC, '') = '' THEN 'Orçamento em andamento'",
               "\t\t\t\tELSE NULL",
               "\t\t\tEND, '') AS [Status_Orcamento_Demandas_SP]",
-              "",
-              "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]"
+              ", ",
+              "\tisnull(iif(Equipe_projeto = 'Soluções Personalizadas', Motivos_SOLUDSM.Motivo_fechamento, ''), '') as Motivo_fechamento",
+              "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]\t\tLEFT OUTER JOIN [VAGAS_DW].[Demandas_SOLUDSM_Motivos] AS Motivos_SOLUDSM",
+              "\t\t\t\t\t\t\t\t\t\t\tON [VAGAS_DW].[DEMANDAS_EQUIPES].NUMERO_DEMANDA = Motivos_SOLUDSM.NUMERO_DEMANDA ;"
             ]
           },
           {
@@ -26087,8 +26107,10 @@
               "\t\t\t\t\t AND ISNULL([VAGAS_DW].[DEMANDAS_EQUIPES].DATA_CAN_ORC, '') = '' THEN 'Orçamento em andamento'",
               "\t\t\t\tELSE NULL",
               "\t\t\tEND, '') AS [Status_Orcamento_Demandas_SP]",
-              "",
-              "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+              ", ",
+              "\tisnull(iif(Equipe_projeto = 'Soluções Personalizadas', Motivos_SOLUDSM.Motivo_fechamento, ''), '') as Motivo_fechamento",
+              "   FROM [VAGAS_DW].[DEMANDAS_EQUIPES]\t\tLEFT OUTER JOIN [VAGAS_DW].[Demandas_SOLUDSM_Motivos] AS Motivos_SOLUDSM",
+              "\t\t\t\t\t\t\t\t\t\t\tON [VAGAS_DW].[DEMANDAS_EQUIPES].NUMERO_DEMANDA = Motivos_SOLUDSM.NUMERO_DEMANDA ;</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
             ]
           }
         ]
@@ -57819,6 +57841,11 @@
             "dataType": "double",
             "sourceColumn": "LONGITUDE",
             "sourceProviderType": "Numeric"
+          },
+          {
+            "name": "NOME_UF_SEM_ACENTO",
+            "dataType": "string",
+            "sourceColumn": "NOME_UF_SEM_ACENTO"
           }
         ],
         "partitions": [
@@ -57826,7 +57853,7 @@
             "name": "CIDADES",
             "dataView": "full",
             "source": {
-              "query": " SELECT [VAGAS_DW].[CIDADES].[SIGLA_PAIS],[VAGAS_DW].[CIDADES].[NOME_PAIS],[VAGAS_DW].[CIDADES].[SIGLA_UF],[VAGAS_DW].[CIDADES].[NOME_UF],[VAGAS_DW].[CIDADES].[COD_CIDADE],[VAGAS_DW].[CIDADES].[NOME_CIDADE],[VAGAS_DW].[CIDADES].[NOME_REGIAO_METROPOLITANA],[VAGAS_DW].[CIDADES].[LATITUDE],[VAGAS_DW].[CIDADES].[LONGITUDE] FROM [VAGAS_DW].[CIDADES] ",
+              "query": " \t\t\t\tSELECT [VAGAS_DW].[CIDADES].[SIGLA_PAIS],[VAGAS_DW].[CIDADES].[NOME_PAIS],[VAGAS_DW].[CIDADES].[SIGLA_UF],[VAGAS_DW].[CIDADES].[NOME_UF],[VAGAS_DW].[CIDADES].[COD_CIDADE],[VAGAS_DW].[CIDADES].[NOME_CIDADE],[VAGAS_DW].[CIDADES].[NOME_REGIAO_METROPOLITANA],[VAGAS_DW].[CIDADES].[LATITUDE],[VAGAS_DW].[CIDADES].[LONGITUDE],[VAGAS_DW].[CIDADES].[NOME_UF_SEM_ACENTO]   FROM [VAGAS_DW].[CIDADES] ",
               "dataSource": "VAGAS_DW"
             },
             "annotations": [
@@ -57922,6 +57949,14 @@
                   "        <int>87</int>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOME_UF_SEM_ACENTO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>151</int>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnWidths>",
                   "  <ColumnDisplayIndex>",
                   "    <item>",
@@ -58004,6 +58039,14 @@
                   "        <int>9</int>",
                   "      </value>",
                   "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOME_UF_SEM_ACENTO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>10</int>",
+                  "      </value>",
+                  "    </item>",
                   "  </ColumnDisplayIndex>",
                   "  <ColumnFrozen />",
                   "  <ColumnChecked>",
@@ -58013,6 +58056,14 @@
                   "      </key>",
                   "      <value>",
                   "        <boolean>false</boolean>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>NOME_UF_SEM_ACENTO</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <boolean>true</boolean>",
                   "      </value>",
                   "    </item>",
                   "  </ColumnChecked>",
@@ -58051,7 +58102,7 @@
         "annotations": [
           {
             "name": "_TM_ExtProp_QueryDefinition",
-            "value": " SELECT [VAGAS_DW].[CIDADES].[SIGLA_PAIS],[VAGAS_DW].[CIDADES].[NOME_PAIS],[VAGAS_DW].[CIDADES].[SIGLA_UF],[VAGAS_DW].[CIDADES].[NOME_UF],[VAGAS_DW].[CIDADES].[COD_CIDADE],[VAGAS_DW].[CIDADES].[NOME_CIDADE],[VAGAS_DW].[CIDADES].[NOME_REGIAO_METROPOLITANA],[VAGAS_DW].[CIDADES].[LATITUDE],[VAGAS_DW].[CIDADES].[LONGITUDE] FROM [VAGAS_DW].[CIDADES] "
+            "value": " \t\t\t\tSELECT [VAGAS_DW].[CIDADES].[SIGLA_PAIS],[VAGAS_DW].[CIDADES].[NOME_PAIS],[VAGAS_DW].[CIDADES].[SIGLA_UF],[VAGAS_DW].[CIDADES].[NOME_UF],[VAGAS_DW].[CIDADES].[COD_CIDADE],[VAGAS_DW].[CIDADES].[NOME_CIDADE],[VAGAS_DW].[CIDADES].[NOME_REGIAO_METROPOLITANA],[VAGAS_DW].[CIDADES].[LATITUDE],[VAGAS_DW].[CIDADES].[LONGITUDE],[VAGAS_DW].[CIDADES].[NOME_UF_SEM_ACENTO]   FROM [VAGAS_DW].[CIDADES] "
           },
           {
             "name": "_TM_ExtProp_DbTableName",
@@ -58153,6 +58204,14 @@
               "        <int>87</int>",
               "      </value>",
               "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOME_UF_SEM_ACENTO</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>151</int>",
+              "      </value>",
+              "    </item>",
               "  </ColumnWidths>",
               "  <ColumnDisplayIndex>",
               "    <item>",
@@ -58235,6 +58294,14 @@
               "        <int>9</int>",
               "      </value>",
               "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOME_UF_SEM_ACENTO</string>",
+              "      </key>",
+              "      <value>",
+              "        <int>10</int>",
+              "      </value>",
+              "    </item>",
               "  </ColumnDisplayIndex>",
               "  <ColumnFrozen />",
               "  <ColumnChecked>",
@@ -58244,6 +58311,14 @@
               "      </key>",
               "      <value>",
               "        <boolean>false</boolean>",
+              "      </value>",
+              "    </item>",
+              "    <item>",
+              "      <key>",
+              "        <string>NOME_UF_SEM_ACENTO</string>",
+              "      </key>",
+              "      <value>",
+              "        <boolean>true</boolean>",
               "      </value>",
               "    </item>",
               "  </ColumnChecked>",
@@ -76283,6 +76358,290 @@
             "value": "VAGAS_DW"
           }
         ]
+      },
+      {
+        "name": "Despesas_Marketing",
+        "columns": [
+          {
+            "name": "Data_src",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Data",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "Vencimento_src",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Vencimento",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "Mesano_src",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Mesano",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "Passado_src",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Passado",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Numero",
+            "dataType": "string",
+            "sourceColumn": "Numero",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Categoria",
+            "dataType": "string",
+            "sourceColumn": "Categoria",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Natureza",
+            "dataType": "string",
+            "sourceColumn": "Natureza",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Historico",
+            "dataType": "string",
+            "sourceColumn": "Historico",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Beneficiario",
+            "dataType": "string",
+            "sourceColumn": "Beneficiario",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Valor_src",
+            "dataType": "double",
+            "isHidden": true,
+            "sourceColumn": "Valor",
+            "formatString": "\"R$\" #,0.00;-\"R$\" #,0.00;\"R$\" #,0.00",
+            "sourceProviderType": "Double",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1046\" DisplayName=\"R$ Português (Brasil)\" Symbol=\"R$\" PositivePattern=\"2\" NegativePattern=\"9\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Tipo",
+            "dataType": "string",
+            "sourceColumn": "Tipo",
+            "sourceProviderType": "Char"
+          },
+          {
+            "type": "calculated",
+            "name": "Passado",
+            "dataType": "boolean",
+            "isDataTypeInferred": true,
+            "expression": "IF(Despesas_Marketing[Passado_src] = \"S\",True(),False())",
+            "formatString": "\"TRUE\";\"TRUE\";\"FALSE\""
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Despesas_Marketing",
+            "dataView": "full",
+            "source": {
+              "query": " \t\t\t\tSELECT [VAGAS_DW].[Despesas_Marketing].*   FROM [VAGAS_DW].[Despesas_Marketing] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "ValorDespesa",
+            "expression": "SUM(Despesas_Marketing[Valor_src])"
+          },
+          {
+            "name": "Qtde_despesas",
+            "expression": "COUNT([Data_src])"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [VAGAS_DW].[Despesas_Marketing].*   FROM [VAGAS_DW].[Despesas_Marketing] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "Despesas_Marketing"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "Despesas_Marketing - Data",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "Data",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "Dia",
+            "dataType": "int64",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "NumMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "MES",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "Mês",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "NumMes",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Ano",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Despesas_Marketing - Data",
+            "dataView": "full",
+            "source": {
+              "query": " \t\t\t\tSELECT [VAGAS_DW].[DATAS].*   FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [VAGAS_DW].[DATAS].*   FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
+      },
+      {
+        "name": "Despesas_Marketing - Vencimento",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DATAKEY",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DATAKEY",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "Vencimento",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "DATAALTKEY",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "Dia",
+            "dataType": "int64",
+            "sourceColumn": "DIA",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "NumMes_src",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "MES",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "Mês",
+            "dataType": "string",
+            "sourceColumn": "NOMEMES",
+            "sortByColumn": "NumMes_src",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "Ano",
+            "dataType": "int64",
+            "sourceColumn": "ANO",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "SEMANA",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "SEMANA",
+            "sourceProviderType": "Char"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Despesas_Marketing - Vencimento",
+            "dataView": "full",
+            "source": {
+              "query": " \t\t\t\tSELECT [VAGAS_DW].[DATAS].*   FROM [VAGAS_DW].[DATAS] ",
+              "dataSource": "VAGAS_DW"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [VAGAS_DW].[DATAS].*   FROM [VAGAS_DW].[DATAS] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "DATAS"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "VAGAS_DW"
+          }
+        ]
       }
     ],
     "relationships": [
@@ -77936,6 +78295,20 @@
         "fromColumn": "Cod_cand",
         "toTable": "CANDIDATOS",
         "toColumn": "COD_CAND"
+      },
+      {
+        "name": "fba8c2c8-7636-40b4-80db-1bf04e5a99be",
+        "fromTable": "Despesas_Marketing",
+        "fromColumn": "Data_src",
+        "toTable": "Despesas_Marketing - Data",
+        "toColumn": "Data"
+      },
+      {
+        "name": "822adc0a-bad5-4a14-8721-c8aae4b4c6ac",
+        "fromTable": "Despesas_Marketing",
+        "fromColumn": "Vencimento_src",
+        "toTable": "Despesas_Marketing - Vencimento",
+        "toColumn": "Vencimento"
       }
     ],
     "perspectives": [
