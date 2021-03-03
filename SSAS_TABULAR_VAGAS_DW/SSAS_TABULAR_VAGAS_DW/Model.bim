@@ -2799,6 +2799,18 @@
             "name": "SEGMENTO_SC",
             "dataType": "string",
             "sourceColumn": "SEGMENTO_SC"
+          },
+          {
+            "type": "calculated",
+            "name": "CARTEIRA",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "OPORTUNIDADES[SEGMENTO_SC]"
+          },
+          {
+            "name": "PLANO",
+            "dataType": "string",
+            "sourceColumn": "PLANO"
           }
         ],
         "partitions": [
@@ -2886,7 +2898,8 @@
                 "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
                 "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
                 "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO],",
-                "Cnt.SEGMENTO_SC",
+                "Cnt.SEGMENTO_SC,",
+                "PLANO",
                 " FROM [VAGAS_DW].[VW_OPORTUNIDADES]",
                 "LEFT OUTER JOIN ",
                 "(SELECT\tCnt.CONTA_ID,",
@@ -2986,7 +2999,8 @@
                   "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
                   "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
                   "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO],",
-                  "Cnt.SEGMENTO_SC",
+                  "Cnt.SEGMENTO_SC,",
+                  "PLANO",
                   " FROM [VAGAS_DW].[VW_OPORTUNIDADES]",
                   "LEFT OUTER JOIN ",
                   "(SELECT\tCnt.CONTA_ID,",
@@ -3248,7 +3262,8 @@
               "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
               "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
               "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO],",
-              "Cnt.SEGMENTO_SC",
+              "Cnt.SEGMENTO_SC,",
+              "PLANO",
               " FROM [VAGAS_DW].[VW_OPORTUNIDADES]",
               "LEFT OUTER JOIN ",
               "(SELECT\tCnt.CONTA_ID,",
@@ -3346,7 +3361,8 @@
               "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_PROPOSTA],",
               "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_AVALIACAO_PROPOSTA],",
               "[VAGAS_DW].[VW_OPORTUNIDADES].[DATA_CONTRATO],",
-              "Cnt.SEGMENTO_SC",
+              "Cnt.SEGMENTO_SC,",
+              "PLANO",
               " FROM [VAGAS_DW].[VW_OPORTUNIDADES]",
               "LEFT OUTER JOIN ",
               "(SELECT\tCnt.CONTA_ID,",
@@ -3675,7 +3691,9 @@
               "IF([FONTE_CANDIDATURA] = \"Recomendação de vagas - algoritmo A\" || ",
               "CANDIDATURAS[FONTE_CANDIDATURA] = \"Recomendação de vagas - algoritmo B\" || ",
               "CANDIDATURAS[FONTE_CANDIDATURA] = \"Recomendação de vagas via vagas similares\" || ",
-              "CANDIDATURAS[FONTE_CANDIDATURA] = \"Recomendação pós candidatura\", \"SIM\", \"NÃO\")"
+              "CANDIDATURAS[FONTE_CANDIDATURA] = \"Recomendação pós candidatura\"||",
+              "CANDIDATURAS[FONTE_CANDIDATURA] = \"Mais recomendações de vagas\"||",
+              "CANDIDATURAS[FONTE_CANDIDATURA] = \"Novo sistema de email de monitoração: Alerta de vagas padrão, cruzamento de área de interesse e vagas\", \"SIM\", \"NÃO\")"
             ]
           },
           {

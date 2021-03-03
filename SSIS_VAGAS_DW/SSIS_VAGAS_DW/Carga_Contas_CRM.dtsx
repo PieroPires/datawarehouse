@@ -12,8 +12,8 @@
   DTS:ObjectName="Carga_Contas_CRM"
   DTS:PackageType="5"
   DTS:ProtectionLevel="2"
-  DTS:VersionBuild="62"
-  DTS:VersionGUID="{CDA34D07-27C6-4A4E-BEF6-FFA8857875AF}">
+  DTS:VersionBuild="63"
+  DTS:VersionGUID="{20CDC9D1-83E8-4D24-92BB-22721C9BB1B4}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -127,7 +127,7 @@
          CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
          CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
          CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C ,
-		 CONVERT(B.segmento_c USING Latin1) AS PLANO ,
+         CONVERT(IF(B.segmento_c IN ('basico','controle','enterprise','gestao','premium'), B.segmento_c, '') USING Latin1) AS PLANO ,
          CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH ,
 		 CONVERT(A.billing_address_city USING Latin1) AS Municipio ,
          CONVERT(A.billing_address_state USING Latin1) AS UF
@@ -1323,7 +1323,7 @@ WHERE	IFNULL(A.parent_id, '') != '' # Conta Membro
          CONVERT(B.cnae_faixa_funcionarios_c USING Latin1) AS CNAE_FAIXA_FUNCIONARIOS ,
          CONVERT(B.cnae_subclasse_id_c USING Latin1) AS CNAE_SUBCLASSE_ID_C ,
          CONVERT(B.cnae_subclasse_descr_c USING Latin1) AS CNAE_SUBCLASSE_DESCR_C ,
-         CONVERT(B.segmento_c USING Latin1) AS PLANO ,
+         CONVERT(IF(B.segmento_c IN ('basico','controle','enterprise','gestao','premium'), B.segmento_c, '') USING Latin1) AS PLANO ,
          CONVERT(B.consultoria_rh_c USING Latin1) AS CONSULTORIA_RH ,
          CONVERT(A.billing_address_city USING Latin1) AS Municipio ,
          CONVERT(A.billing_address_state USING Latin1) AS UF
@@ -2530,17 +2530,21 @@ WHERE	A.deleted = 0
       DTS:To="Package\Criação de índices" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
-<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
-<!--If you manually edit this section and make a mistake, you can delete it. -->
-<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
 <Objects
   Version="8">
-  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
   <Package
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="164,42"
+          Id="Package\Criação de índices"
+          TopLeft="425,414" />
         <NodeLayout
           Size="242,42"
           Id="Package\Limpar VAGAS_DW_CONTAS_CRM"
@@ -2623,10 +2627,6 @@ WHERE	A.deleted = 0
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="164,42"
-          Id="Package\Criação de índices"
-          TopLeft="425,414" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
           TopLeft="508,346.5">
@@ -2658,13 +2658,13 @@ WHERE	A.deleted = 0
       <GraphLayout
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="220,42"
-          Id="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM"
-          TopLeft="389.5,74.5" />
-        <NodeLayout
           Size="131,42"
           Id="Package\MySQL -&gt; SQL Server (Contas Membro)\SQL Server"
           TopLeft="432,162" />
+        <NodeLayout
+          Size="220,42"
+          Id="Package\MySQL -&gt; SQL Server (Contas Membro)\MySQL - Contas Membro CRM"
+          TopLeft="389.5,74.5" />
         <EdgeLayout
           Id="Package\MySQL -&gt; SQL Server (Contas Membro).Paths[ODBC Source Output]"
           TopLeft="498.5,116.5">

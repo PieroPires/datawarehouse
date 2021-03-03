@@ -18,7 +18,7 @@ TRUNCATE TABLE [VAGAS_DW].[TMP_Login_VagasEpartner_Clientes] ;
 
 DECLARE	@Max_Login INT = (SELECT MAX(Cod_login) FROM [VAGAS_DW].[VAGAS_DW].[Login_VagasEpartner_Clientes]) ,
 		@Max_LoginTemp INT = (SELECT MAX(Cod_login) FROM [VAGAS_DW].[TMP_Login_VagasEpartner_Clientes]) ,
-		@Max_LoginData INT = (SELECT MAX(Cod_log) FROM [hrh-data].[dbo].[Clientes-Login] WITH(NOLOCK)) ;
+		@Max_LoginData INT = (SELECT MAX(Cod_log) FROM [hrh-data].[dbo].[Clientes-Login] WHERE ISNULL(CodUsuManut_log,0) < 1) ;
 
 WHILE ISNULL(@Max_Login, 0) < @Max_LoginData AND ISNULL(@Max_LoginTemp, 0) < @Max_LoginData
 BEGIN

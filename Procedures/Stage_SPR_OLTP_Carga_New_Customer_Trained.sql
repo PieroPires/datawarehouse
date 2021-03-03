@@ -65,7 +65,7 @@ FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS A		LEFT OUTER JOIN [VAGAS_DW].[VAG
 																A1.DataFechamento DESC ) AS D
 WHERE	A.Fase = 'fechado_e_ganho'
 		AND A.OportunidadeCategoria IN ('cliente_potencial', 'cliente_cotacao')
-		AND A.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'VREDES')
+		AND A.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'REDES')
 		AND A.RECORRENTE = 1
 		--AND A.DataFechamento >= '20180101'
 		AND D.OportunidadeCategoria <> 'rescisão' -- Exclui contas onde a última oportunidade é de rescisão.
@@ -73,7 +73,7 @@ WHERE	A.Fase = 'fechado_e_ganho'
 						FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS A1
 						WHERE	A.CONTAID = A1.CONTAID
 							AND A1.Fase = 'fechado_e_ganho'
-							AND A1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'VREDES')
+							AND A1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'REDES')
 							AND A1.RECORRENTE = 1
 							--AND A1.DataFechamento >= '20180101'
 							AND A1.OportunidadeCategoria = 'rescisão'
@@ -83,7 +83,7 @@ WHERE	A.Fase = 'fechado_e_ganho'
 								WHERE	A.CONTAID = A1.CONTAID
 										AND A1.Fase = 'fechado_e_ganho'
 										AND A1.OportunidadeCategoria IN ('cliente_potencial', 'cliente_cotacao')
-										AND A1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'VREDES')
+										AND A1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'REDES')
 										AND A1.RECORRENTE = 1
 										--AND A1.DataFechamento >= '20180101'
 										AND D.OportunidadeCategoria <> 'rescisão' -- Exclui contas onde a última oportunidade é de rescisão.
@@ -91,7 +91,7 @@ WHERE	A.Fase = 'fechado_e_ganho'
 														FROM	[VAGAS_DW].[VAGAS_DW].[OPORTUNIDADES] AS AA1
 														WHERE	A1.CONTAID = AA1.CONTAID
 																AND AA1.Fase = 'fechado_e_ganho'
-																AND AA1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'VREDES')
+																AND AA1.PRODUTO_GRUPO IN ('FIT', 'RECRUTADOR', 'REDES')
 																AND AA1.RECORRENTE = 1
 																--AND AA1.DataFechamento >= '20180101'
 																AND AA1.OportunidadeCategoria = 'rescisão'																

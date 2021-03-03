@@ -58,3 +58,36 @@ TRUNCATE TABLE VAGAS_DW.VAGAS_DW.CONTROLE_FONTE_CANDIDATURAS
 INSERT INTO VAGAS_DW.VAGAS_DW.CONTROLE_FONTE_CANDIDATURAS 
 SELECT MAX(COD_CandVAGA) FROM [HRH-DATA].DBO.CandidatoXVagas
 
+
+-- Levanta as candidaturas que ficaram vazias e que existem na tabela fonte do hrh-data:
+SELECT	Descr_FonteCandidatura AS FONTE_CANDIDATURA,
+		Fontecompl_candvaga AS FONTE_CUSTOMIZADA,
+		CandVaga.CodVaga_candVaga AS Cod_vaga,
+		CandVaga.CodCand_candVaga AS Cod_cand
+INTO	#Tab_FonteCandidaturas
+FROM	[vagas_dw].[VAGAS_DW].[CANDIDATURAS]	AS CandDW		INNER JOIN [hrh-data].[dbo].[Candidatoxvagas] AS CandVaga
+																ON CandDW.CodCand_HistCand = CandVaga.CodCand_candVaga
+																AND CandDW.CodVaga_HistCand = CandVaga.CodVaga_candVaga
+																INNER JOIN [hrh-data].[dbo].[Cad_FonteCandidaturas] AS FonteCand
+																ON CandVaga.FonteTipo_candVaga = FonteCand.Cod_FonteCandidatura
+WHERE	FONTE_CANDIDATURA IS NULL
+		AND FonteTipo_candVaga > -1 ;
+
+CREATE NONCLUSTERED INDEX IDX_#Tab_FonteCandidaturas_Cod_vaga ON #Tab_FonteCandidaturas (Cod_vaga) ;
+CREATE NONCLUSTERED INDEX IDX_#Tab_FonteCandidaturas_Cod_cand ON #Tab_FonteCandidaturas (Cod_cand) ;
+
+
+-- Atualiza as candidaturas que ficaram vazias:
+WHILE (SELECT TOP 1 1 
+	   FROM	[vagas_dw].[VAGAS_DW].[CANDIDATURAS]	AS CandDW		INNER JOIN #Tab_FonteCandidaturas AS FonteCand 
+														ON CandDW.CodCand_HistCand = FonteCand.Cod_cand
+														AND CandDW.CodVaga_HistCand = FonteCand.Cod_vaga		
+	   WHERE	CandDW.FONTE_CANDIDATURA IS NULL) = 1
+BEGIN 
+	UPDATE	TOP (100000) [vagas_dw].[VAGAS_DW].[CANDIDATURAS]
+	SET		FONTE_CANDIDATURA = FonteCand.FONTE_CANDIDATURA,
+			FONTE_CUSTOMIZADA = FonteCand.FONTE_CUSTOMIZADA
+	FROM	[vagas_dw].[VAGAS_DW].[CANDIDATURAS]	AS CandDW		INNER JOIN #Tab_FonteCandidaturas AS FonteCand 
+																	ON CandDW.CodCand_HistCand = FonteCand.Cod_cand
+																	AND CandDW.CodVaga_HistCand = FonteCand.Cod_vaga
+END

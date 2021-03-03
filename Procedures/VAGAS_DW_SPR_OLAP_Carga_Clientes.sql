@@ -197,7 +197,7 @@ CROSS APPLY ( SELECT TOP 1
 				,SUM(ValorProdutoFINAL) AS ValorProdutoFINAL
 			FROM VAGAS_DW.OPORTUNIDADES
 			WHERE CONTAID  = A.CONTA_ID
-						  AND PRODUTO_GRUPO = 'VREDES'
+						  AND PRODUTO_GRUPO = 'REDES'
 						  AND FECHADO_GANHO = 1
 						  AND RECORRENTE = 1
 			GROUP BY 
@@ -228,13 +228,13 @@ WHERE
 						FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
 						WHERE	A.CONTA_ID = A1.CONTAID
 								AND A1.PROPOSTA = A1.CONTAPROPOSTAAPROV
-								AND A1.PRODUTO_GRUPO IN ('VREDES', 'REDES')
+								AND A1.PRODUTO_GRUPO IN ('REDES')
 								AND A1.FECHADO_GANHO = 1
 								AND A1.RECORRENTE = 1)
 		AND EXISTS (SELECT	1
 					FROM	[VAGAS_DW].[OPORTUNIDADES] AS A1
 					WHERE	A.CONTA_ID = A1.CONTAID
-							AND A1.PRODUTO_GRUPO IN ('VREDES', 'REDES')
+							AND A1.PRODUTO_GRUPO IN ('REDES')
 							AND A1.FECHADO_GANHO = 1) ;
 
 -- MARCAR CLIENTES COM PRODUTO SMS "RECORRENTE" ATIVO
@@ -485,10 +485,10 @@ CROSS APPLY ( SELECT TOP 1 *
 			  FROM VAGAS_DW.OPORTUNIDADES
 			  WHERE CONTAID = A.CONTA_ID 
 			  AND ((OPORTUNIDADECATEGORIA = 'rescisao' 
-				   AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+				   AND PRODUTO_GRUPO IN ('REDES','FIT','FLEX','PRC','VET','PET')
 				   AND FECHADO_GANHO = 1)
 					OR (OPORTUNIDADECATEGORIA = 'retencao' 
-						AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+						AND PRODUTO_GRUPO IN ('REDES','FIT','FLEX','PRC','VET','PET')
 						AND Fase = 'fechado_e_perdido'
 					    AND DataFechamento >= '20210101'))
 			  ORDER BY DATAFECHAMENTO DESC ) B
@@ -664,11 +664,11 @@ FROM [STAGE].[VAGAS_DW].[TMP_CLIENTES] A
 OUTER APPLY ( SELECT TOP 1 * FROM VAGAS_DW.OPORTUNIDADES
 				WHERE CONTAID = A.CONTA_ID 
 				AND ((OPORTUNIDADECATEGORIA = 'rescisao' 
-					  AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+					  AND PRODUTO_GRUPO IN ('REDES','FIT','FLEX','PRC','VET','PET')
 					  AND RECORRENTE = 1
 					  AND FECHADO_GANHO = 1)
 					 OR (OPORTUNIDADECATEGORIA = 'retencao' 
-						 AND PRODUTO_GRUPO IN ('VREDES','FIT','FLEX','PRC','VET','PET')
+						 AND PRODUTO_GRUPO IN ('REDES','FIT','FLEX','PRC','VET','PET')
 						 AND RECORRENTE = 1
 						 AND Fase = 'fechado_e_perdido'
 						 AND DataFechamento >= '20210101'))) TAB -- Filtrar Ex Clientes
@@ -685,7 +685,7 @@ FROM [STAGE].[VAGAS_DW].[TMP_CLIENTES] A
 CROSS APPLY ( SELECT TOP 1 * 
 			  FROM VAGAS_DW.OPORTUNIDADES 
 			  WHERE CONTAID = A.CONTA_ID
-			  AND ( PRODUTO_GRUPO IN ('VREDES','FIT','FLEX') )
+			  AND ( PRODUTO_GRUPO IN ('REDES','FIT','FLEX') )
 			  AND FECHADO_GANHO = 1
 			  AND DATAFECHAMENTO IS NOT NULL
 			  ORDER BY DATAFECHAMENTO ASC ) B
@@ -2353,18 +2353,6 @@ FROM
 	JOIN VAGAS_DW.CNPJ_CNAE AS A ON REPLACE(TRANSLATE(Z.CNPJ, '.-/','   '),' ','') = A.CNPJ
 	LEFT JOIN  [VAGAS_DW].[CNAE_SUBCLASSE] AS B ON A.CNAE_FISCAL = B.SUBCLASSE_ID AND B.VERSAO = '2.3'	;
 
--- Inserir dados na base historica
-INSERT INTO VAGAS_DW.CLIENTES_HISTORICO 
-SELECT * FROM VAGAS_DW.CLIENTES 
-
--- expurgar datas de referencia antigas (deixar apenas a últ. de cada mes)
--- apenas a base historico 
-DELETE VAGAS_DW.CLIENTES_HISTORICO 
-FROM VAGAS_DW.CLIENTES_HISTORICO A 
-WHERE DATA_REFERENCIA <> ( SELECT MAX(DATA_REFERENCIA) 
-              FROM VAGAS_DW.CLIENTES_HISTORICO 
-              WHERE YEAR(DATA_REFERENCIA) = YEAR(A.DATA_REFERENCIA) 
-              AND MONTH(DATA_REFERENCIA) = MONTH(A.DATA_REFERENCIA) ) 
 			  
 			  
 
@@ -2393,3 +2381,34 @@ WHERE  EXISTS ( SELECT 1 FROM VAGAS_DW.CONTAS_CRM WHERE CONTA_ID = A.CONTA_ID AN
 					(TIPO IN ('cliente_fit', 'cliente_pet', 'cliente_vagas_redes', 'cliente_em_aviso_previo', 'cliente_recrutador', 'cliente_vagas_redes', 'cliente_flex_anuidade', 'cliente_flex_credito')
 					AND CATEGORIA IN ('cliente_fit', 'cliente_pet', 'cliente_vagas_redes', 'cliente_em_aviso_previo', 'cliente_recrutador', 'cliente_vagas_redes', 'cliente_flex_anuidade', 'cliente_flex_credito'))
 				)			  
+
+
+-- Informa se o cliente é ativo e já rescindiu em algum momento:
+UPDATE VAGAS_DW.[VAGAS_DW].[CLIENTES] SET DATA_RESCISAO = DATAFECHAMENTO
+FROM VAGAS_DW.[VAGAS_DW].[CLIENTES] A
+CROSS APPLY ( SELECT TOP 1 * FROM VAGAS_DW.OPORTUNIDADES
+				WHERE CONTAID = A.CONTA_ID 
+				AND ((OPORTUNIDADECATEGORIA = 'rescisao' 
+					  AND PRODUTO_GRUPO IN ('REDES','FIT','FLEX','PRC','VET','PET','RECRUTADOR')
+					  AND RECORRENTE = 1
+					  AND FECHADO_GANHO = 1)
+					 OR (OPORTUNIDADECATEGORIA = 'retencao' 
+						 AND PRODUTO_GRUPO IN ('REDES','FIT','FLEX','PRC','VET','PET','RECRUTADOR')
+						 AND RECORRENTE = 1
+						 AND Fase = 'fechado_e_perdido'
+						 AND DataFechamento >= '20210101'))
+			 ORDER BY DATAFECHAMENTO DESC) TAB -- Filtrar Ex Clientes
+WHERE A.EX_CLIENTE = 0
+
+-- Inserir dados na base historica
+INSERT INTO VAGAS_DW.CLIENTES_HISTORICO 
+SELECT * FROM VAGAS_DW.CLIENTES 
+
+-- expurgar datas de referencia antigas (deixar apenas a últ. de cada mes)
+-- apenas a base historico 
+DELETE VAGAS_DW.CLIENTES_HISTORICO 
+FROM VAGAS_DW.CLIENTES_HISTORICO A 
+WHERE DATA_REFERENCIA <> ( SELECT MAX(DATA_REFERENCIA) 
+              FROM VAGAS_DW.CLIENTES_HISTORICO 
+              WHERE YEAR(DATA_REFERENCIA) = YEAR(A.DATA_REFERENCIA) 
+              AND MONTH(DATA_REFERENCIA) = MONTH(A.DATA_REFERENCIA) ) 
