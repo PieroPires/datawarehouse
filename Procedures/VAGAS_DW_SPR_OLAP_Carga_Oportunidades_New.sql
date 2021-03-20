@@ -440,7 +440,6 @@ SET @DATA_REFERENCIA = CONVERT(SMALLDATETIME, CONVERT(VARCHAR,GETDATE(),112))
 -- Ajustes do GRUPO_VENDEDOR:
 EXEC [VAGAS_DW].[SPR_OLAP_Carga_Oportunidades_Ajustes_GRUPO_VENDEDOR] ;
 
-
 -- Negociações que compõem o MRR:
 UPDATE	[VAGAS_DW].[OPORTUNIDADES]
 SET		NEGOCIACAO_MRR = CASE
@@ -462,15 +461,24 @@ SET		NEGOCIACAO_MRR = CASE
 							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 								THEN 'DOWNSELL'
 							WHEN A.OportunidadeCategoria IN ('venda_pontual','projeto')
-							AND A.PRODUTO_GRUPO IN ('DSM', 'PROD COMP')
+							--AND A.PRODUTO_GRUPO IN ('DSM', 'PROD COMP')
 							AND A.RECORRENTE = 0
 								THEN 'CROSS SELL'
 							WHEN A.OportunidadeCategoria = 'renovacao'
 							AND A.PRODUTO_RECORRENCIA IN ('monthly', 'annually')
 								THEN 'RENEWAL'
+							WHEN A.fase = 'fechado_e_ganho'
+								AND A.RECORRENTE = 0
+								AND EXISTS (SELECT *
+											FROM	[vagas_dw].[OPORTUNIDADES] AS Opp_A1
+											WHERE	A.OportunidadeID = Opp_A1.OportunidadeID
+													AND Opp_A1.OportunidadeCategoria IN ('cliente_potencial','cliente_cotacao')
+													AND Opp_A1.PRODUTO_RECORRENCIA IN ('monthly', 'annually'))
+								THEN 'IMPLANTAÇÃO DE NOVO CLIENTE'
 							ELSE NULL
 						END
-FROM	[VAGAS_DW].[OPORTUNIDADES] AS A ;
+FROM	[VAGAS_DW].[OPORTUNIDADES] AS A
+WHERE	A.Produto IS NOT NULL ;
 
 
 -- Plano da conta (adicionado no dia 02/03/2021):
@@ -489,7 +497,7 @@ FROM	(
 																					     FROM	[VAGAS_DW].[OPORTUNIDADES] AS Opp_A1
 																						 WHERE	ContasCRM.CONTA_ID = Opp_A1.CONTAID
 																								AND Opp_A1.RECORRENTE = 1
-																								AND Opp_A1.Fase = 'fechado_e_ganho'
+																								--AND Opp_A1.Fase = 'fechado_e_ganho'
 																								AND Opp_A1.INSERT_MANUAL IS NULL
 																						 ORDER BY
 																								Opp_a1.DataFechamento DESC) AS UltOpp_Rec

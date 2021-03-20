@@ -52,7 +52,7 @@ FROM	(
 					ELSE UPPER(CONCAT(VALOR_ANTERIOR, ' ', '->', ' ', VALOR_POSTERIOR, ' ', '[CONTRAFLUXO]'))
 				END AS FASES
 		FROM	[VAGAS_DW].[TMP_LINKS_TRANSICAO_STATUS] AS LinksTransicao) AS SUB
-	WHERE	SUB.CONTROLE > 1  -- Desconsiderar o registro com CONTROLE = 1 (Transição de status = ELABORACAO -> ELABORANDO). Combinado com Thais Equipe homepages
+	--WHERE	SUB.CONTROLE > 1  -- Desconsiderar o registro com CONTROLE = 1 (Transição de status = ELABORACAO -> ELABORANDO). Combinado com Thais Equipe homepages
 ) AS SUBQUERY_2 ;
 
 

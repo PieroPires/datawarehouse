@@ -80,7 +80,7 @@ CREATE NONCLUSTERED INDEX IDX_#Base_candidatos_DW_Cod_cand ON #Base_candidatos_D
 -- DROP TABLE #Dados_Funil_candidatos ;
 SELECT	A.COD_CAND ,
 		A.LIBERACAO_CV_NOVO ,
-		A1.DtCriacao_cand AS DATA_CADASTRO ,
+		CONVERT(DATE, A1.DtCriacao_cand) AS DATA_CADASTRO ,
 		CASE WHEN (A1.Nome_cand IS NULL) THEN 0 ELSE 1 END AS NOME ,
 		CASE WHEN (A1.Imagem_cand IS NULL) THEN 0 ELSE 1 END AS FOTO ,
 		CASE WHEN (A1.DtNasc_cand IS NULL OR A1.CodEstadoCivil_cand IS NULL OR A1.CodNacion_cand IS NULL OR B.CodCand_candDoc IS NULL) THEN 0 ELSE 1 END AS DADOS_PESSOAIS ,

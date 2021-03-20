@@ -11,8 +11,8 @@
   </DataSources>
   <DataSets>
     <DataSet Name="DataSet1">
-      <Query>
-        <DataSourceName>VAGAS_DW</DataSourceName>
+      <SharedDataSet>
+        <SharedDataSetReference>DataSet1</SharedDataSetReference>
         <QueryParameters>
           <QueryParameter Name="@Regiao">
             <Value>=Join(Parameters!Regiao.Value, ",")</Value>
@@ -33,16 +33,7 @@
             <Value>=Join(Parameters!Nivel_Escolaridade.Value, ",")</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT	TOP 100 *
-FROM	[dbo].[Mailing_List_CanddBCC] AS CandBCC
-WHERE	(CandBCC.Cod_regiao IN (SELECT Item FROM dbo.DelimitedSplit8k(@Regiao,N',')) OR @Regiao = '-1')
-		AND (CandBCC.Pais IN (SELECT ListValue COLLATE SQL_Latin1_General_CP1_CI_AI FROM stage.dbo.FN_ListToTable(',',@Pais)) OR @Pais IS NULL)
-		AND (CandBCC.Estado IN (SELECT ListValue COLLATE SQL_Latin1_General_CP1_CI_AI FROM stage.dbo.FN_ListToTable(',',@Estado)) OR @Estado IS NULL)
-		AND (CandBCC.Cidade IN (SELECT ListValue COLLATE SQL_Latin1_General_CP1_CI_AI FROM stage.dbo.FN_ListToTable(',',@Cidade)) OR @Cidade IS NULL)
-		AND (CONVERT(VARCHAR, CandBCC.Cod_Nivel_UltExperiencia) IN (SELECT Item FROM dbo.DelimitedSplit8k(@Nivel_UltExperiencia,N',')) OR @Nivel_UltExperiencia = '-1')
-		AND (CONVERT(VARCHAR, CandBCC.Cod_Nivel_Escolaridade) IN (SELECT Item FROM dbo.DelimitedSplit8k(@Nivel_Escolaridade,N',')) OR @Nivel_Escolaridade = '-1')</CommandText>
-        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
-      </Query>
+      </SharedDataSet>
       <Fields>
         <Field Name="Cod_cand">
           <DataField>Cod_cand</DataField>
@@ -383,7 +374,7 @@ FROM            Mailing_Idiomas</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Este é o perfil do Mailing, a partir dos filtros selecionados</Value>
+                    <Value>Total de candidatos resultante dos filtros aplicados</Value>
                     <Style>
                       <FontSize>14pt</FontSize>
                       <FontWeight>Bold</FontWeight>
@@ -395,10 +386,10 @@ FROM            Mailing_Idiomas</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox7</rd:DefaultName>
-            <Top>3.41194in</Top>
+            <Top>3.49528in</Top>
             <Left>0.25in</Left>
             <Height>0.37847in</Height>
-            <Width>11.83335in</Width>
+            <Width>6.29168in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -417,21 +408,22 @@ FROM            Mailing_Idiomas</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Parameters!Pais.Value</Value>
+                    <Value>Qtde_candidatos</Value>
                     <Style>
-                      <FontFamily>Arial</FontFamily>
-                      <FontSize>9pt</FontSize>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <Color>DarkBlue</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>4.0925in</Top>
-            <Left>2.214in</Left>
-            <Height>0.35417in</Height>
-            <Width>9.85543in</Width>
+            <rd:DefaultName>Textbox7</rd:DefaultName>
+            <Top>3.49528in</Top>
+            <Left>6.79166in</Left>
+            <Height>0.37847in</Height>
+            <Width>3.44793in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -443,260 +435,8 @@ FROM            Mailing_Idiomas</CommandText>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox9">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>="País"</Value>
-                    <Style>
-                      <FontSize>12pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>4.0925in</Top>
-            <Left>0.24997in</Left>
-            <Height>0.35417in</Height>
-            <Width>1.89456in</Width>
-            <ZIndex>4</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox10">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>="Região"</Value>
-                    <Style>
-                      <FontSize>12pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>4.61917in</Top>
-            <Left>0.23608in</Left>
-            <Height>0.35417in</Height>
-            <Width>1.90847in</Width>
-            <ZIndex>5</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox11">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Join(Parameters!Regiao.Label, ",")</Value>
-                    <Style>
-                      <FontFamily>Arial</FontFamily>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>4.61917in</Top>
-            <Left>2.214in</Left>
-            <Height>0.35417in</Height>
-            <Width>9.85543in</Width>
-            <ZIndex>6</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Line Name="Line2">
-            <Top>5.65737in</Top>
-            <Left>0.24997in</Left>
-            <Height>0in</Height>
-            <Width>11.83334in</Width>
-            <ZIndex>7</ZIndex>
-            <Style>
-              <Border>
-                <Color>Gray</Color>
-                <Style>Dotted</Style>
-              </Border>
-            </Style>
-          </Line>
-          <Textbox Name="Textbox12">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style>
-                      <FontFamily>Arial</FontFamily>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>5.10528in</Top>
-            <Left>2.21398in</Left>
-            <Height>0.35417in</Height>
-            <Width>9.85543in</Width>
-            <ZIndex>8</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox14">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>="Estado"</Value>
-                    <Style>
-                      <FontSize>12pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>5.10528in</Top>
-            <Left>0.23606in</Left>
-            <Height>0.35417in</Height>
-            <Width>1.90847in</Width>
-            <ZIndex>9</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox15">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>="Estado"</Value>
-                    <Style>
-                      <FontSize>12pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>6.15042in</Top>
-            <Left>0.23606in</Left>
-            <Height>0.35417in</Height>
-            <Width>1.90847in</Width>
-            <ZIndex>10</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox16">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style>
-                      <FontFamily>Arial</FontFamily>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>6.15042in</Top>
-            <Left>2.21398in</Left>
-            <Height>0.35417in</Height>
-            <Width>9.85543in</Width>
-            <ZIndex>11</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
         </ReportItems>
-        <Height>6.61334in</Height>
+        <Height>7.23834in</Height>
         <Style />
       </Body>
       <Width>20.8125in</Width>
